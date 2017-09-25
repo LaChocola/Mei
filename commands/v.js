@@ -52,23 +52,6 @@ module.exports = {
 			var cleanNames = cleanishNames.replace("Duni,", "Duni,\n")
 		}
 
-
-		if (m.guild.id === "344035503634382848") { // Macro Utopia Only
-			if (m.channel.id != "344928612539170816") { // Not in the Giantess only channel
-			var names = ["Kurama", "Inuyasha", "Tomoe", "Mikazuki", "Kogitsunemaru", "Koga", "Nakigitsune", "Mutsunokami", "Izuminokami", "Ranulf", "Keaton", "Kaden", "Leon", "Felix",
-			"Myabi", "Kuronue", "Kiba", "Max", "Luka", "Tholo", "Kageyama", "Niko", "Naruto", "Ignus", "Kevin", "Iso", "Ita", "Ban", "Sebastian", "Pluto", "Nate", "Jeff", "Aaron", "Jay"];
-			var cleanishNames = names.join(', ')
-			var cleanNames = cleanishNames.replace("Mikazuki,", "Mikazuki,\n")
-			var cleanNames = cleanNames.replace("Leon,", "Leon,\n")
-			var male = true
-		} else {
-			var male = false
-	    var names = Array.from(new Set(["Kagome", "Ahri", "Holo", "Nanami"].concat(names)))
-			var cleanishNames = names.join(', ')
-			var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n").replace("Baiken,", "Baiken,\n").replace("Gwen,", "Gwen,\n").replace("Aqua,", "Aqua,\n").replace("Lulu,", "Lulu,\n").replace("Samus,", "Samus,\n")
-		}
-		}
-
 		const randomPick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 		var customName = [];
