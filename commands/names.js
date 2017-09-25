@@ -62,7 +62,7 @@ module.exports = {
         return;
       }
       var incoming = name1.replace("remove ", "").replace(": ", " ").split(" ")
-      if (data.people[id].names.indexOf(incoming[0]) > -1) {
+      if (data.people[id].names[incoming[0]]) {
         delete data.people[id].names[incoming[0]]
         _.save(data)
         Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your names list" + hand);
