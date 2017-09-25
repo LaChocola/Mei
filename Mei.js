@@ -131,7 +131,7 @@ Bot.on("guildMemberAdd",function(guild, member) {
           Bot.createMessage("358797182876385280", {
             embed: {
                 color: 0xA260F6,
-                title:  member.username + " (" + member.id + ") joined Small World \nWe now have: "+ guild.memberCount + " people! :smiley:",
+                title:  member.username + " (" + member.id + ") joined Small World \nWe now have: "+ m.channel.guild.members.filter(m => !m.bot).length + " people! :smiley:",
                 timestamp: new Date().toISOString(),
                 author: {
                   name: member.username,
@@ -147,7 +147,7 @@ Bot.on("guildMemberRemove",function(guild, member) {
           Bot.createMessage("358797182876385280", {
             embed: {
                 color: 0xA260F6,
-                title:  member.username + " (" + member.id + ") left Small World \nWe now have: "+ guild.memberCount + " people! :frowning2:",
+                title:  member.username + " (" + member.id + ") left Small World \nWe now have: "+ m.channel.guild.members.filter(m => !m.bot).length + " people! :frowning2:",
                 timestamp: new Date().toISOString(),
                 author: {
                   name: member.username,
