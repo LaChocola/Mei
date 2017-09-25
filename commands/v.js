@@ -135,7 +135,12 @@ module.exports = {
 		name +  " licked you and adhered your saliva-coated body to her friend’s rear. A playful slap against the cheek was all it took…",
 		"You had always admired " + name + "'s beauty from inside your model world on her bedside table. She got pretty bored with you guys after a while, and the last thing you saw was the moon… er… her mooning you, before taking a seat.",
 		"A single wrinkle on " + name + "'s rectum was an impressive sight. You would live here until she ate too many beans one day.",
-		name +  " was the hero of the city for stopping the fire. Unfortunately she did this by sitting on the engulfed building, and you were the last one left inside."
+		name +  " was the hero of the city for stopping the fire. Unfortunately she did this by sitting on the engulfed building, and you were the last one left inside.",
+		"You met your fate when " + name + " clenched her rectum while you were inside. For a moment it fixed your sore back",
+		"To determine if you were strong enough to be her slave, " + name + " placed you between her cheeks and clenched. You weren't",
+		"To determine if you were strong enough to be her slave, " + name + " placed you between her cheeks and clenched. You were, although that might be a bad thing...",
+		name + " constructed a specialised chair to sit on, with a little cut out for you. She also developed a habit of not wearing pants around the house.",
+		name + "'s friend dropped you between " + name + "'s butt cheeks while she slept. She woke up with a strange wet feeling in that spot."
 		];
 		var buttLength = butt.length
 		var buttSmush = randomPick(butt)
@@ -166,7 +171,17 @@ module.exports = {
 		"You shrunk to nothing in the " + side + " of " + name + "'s " + type1 +". They never even knew you were there",
 		"" + name + " forced you to live in the " + side + " of her " + type1 + " after one too many tall jokes",
 		"You were caught exploring " + name + "'s " + type2 + " drawer, and as a result, were forced to ride in them until her pussy rubbed you out of existence",
-		"You lost yourself after an entire day inside " + name + "'s panties. Crawling inside you realise that humans weren’t designed to breathe in smells so intense."
+		"You lost yourself after an entire day inside " + name + "'s panties. Crawling inside you realise that humans weren’t designed to breathe in smells so intense.",
+		name + " kidnapped you and decided that the real world was too scary, and kept you in her panties where you could enjoy her smell forever and ever...",
+		name + "'s labia were surprisingly rigid as she pulled up her panties. The goose-bumped surface was the last thing you saw.",
+		"The panties " + name + " wore were wedged tight inside her, with you along. She clumsily pulled them out, and the pinch was a little too hard.",
+		"The feeling of you against her labia was too much for " + name + " to handle. You drowned in a froth of female excretion.",
+		"You were crusted to " + name + "'s panties while they were discarded on the floor. She may not have noticed when she stepped on them.",
+		name + " kidnapped you and decided that the real world was too scary, and kept you in her panties where you could enjoy her smell forever and ever...",
+		name + "'s labia were surprisingly rigid as she pulled up her panties. The goose-bumped surface was the last thing you saw.",
+		"The panties " + name + " wore were wedged tight inside her, with you along. She clumsily pulled them out, and the pinch was a little too hard.",
+		"The feeling of you against her labia was too much for " + name + " to handle. You drowned in a froth of female excretion.",
+		"You were crusted to " + name + "'s panties while they were discarded on the floor. She may not have noticed when she stepped on them."
 	];
 		var pantyLength = panty.length
 		var pantySmush = panty[Math.floor(Math.random() * panty.length)]
@@ -271,7 +286,12 @@ module.exports = {
 		"After a pathetic life scrounging around " + name + "'s shoe you met your demise when she finally sprayed the smelly things with disinfectant; it made sense, you were a parasite in a way.",
 		name +  " strapped you to her toe ring. The smell, heat, and sweat were bad, but the fact that she only acknowledged you when showing you off to her friends was worse.",
 		"It turns out that " + name + " was slightly perverse, and had a lot of fun sucking up your tiny body from between her friend’s toes.",
-		"After your tongue was bloody from licking as much of " + name + " as you could, she tried to ‘hug’ you with her toes. Lungs aren’t designed for such pressure."
+		"After your tongue was bloody from licking as much of " + name + " as you could, she tried to ‘hug’ you with her toes. Lungs aren’t designed for such pressure.",
+		name + " tied you to the thong of her flip-flop and had a beach day. The endless rain of gravel-like sand spelled your end.",
+		"You tripped out on the fumes while painting " + name + "'s toenails. She decided to continue herself and adhered your unconscious body under a layer of varnish.",
+		"Even " + name + "'s tiniest toe was too powerful for you to resist. And the tiny splurt made her giggle.",
+		"A stray keratin chunk hit you when " + name + " was clipping her toenails.",
+		"You were so tiny the wrinkles of " + name + "'s foot were like hills to you. You spent the day exploring before she shifted and sent you to her toes, where she scrunched."
 		];
 		var footLength = foot.length
 		var footSmush = foot[Math.floor(Math.random() * foot.length)]
@@ -315,7 +335,12 @@ module.exports = {
 		name + " sucks on your torso, before biting down to get to your chewy centre.",
 		"You swam happily through " + name + "'s dessert. She thought the crunch was a piece of cookie.",
 		"Despite your best efforts, " + name + "'s uvula was simply too slippery to hold onto, and her friend mistook your screaming down her gullet for " + name + "'s own scream.",
-		"Unfortunately all of you were only the garnishing on " + name + "'s birthday cake. Her and her friends liked it, you guys, not so much."
+		"Unfortunately all of you were only the garnishing on " + name + "'s birthday cake. Her and her friends liked it, you guys, not so much.",
+		name + " repeatedly beat you against the roof of her mouth to make sure you were nice and tired for going down her gullet.",
+		"The tooth of " + name + " held you in place at your midsection. The tiniest amount of pressure would surely spell your death...",
+		"Unfortunately you simply couldn't escape the bowl of cereal, and would die while inside " + name + "'s cheerio.",
+		name + " thought it was funny that you could swim in her soup. Not for long as she forgot you were there and continued her meal.",
+		name + " rolled you up into her roll of sushi and enjoyed a tasty lunch."
 		];
 		var voreLength = voreMouth.length
 		var voreSmush = voreMouth[Math.floor(Math.random() * voreMouth.length)]
@@ -338,8 +363,12 @@ module.exports = {
 		"You were squashed under " + name + "'s fingers as she tapped them idly",
 		"" + name + " forcibly tears off your clothing with her fingers and begins to play with your private areas",
 		name +  " cruelly berated you for your size as she poked your shrunken genitals. It appears she didn’t know her own strength and her fingertip was quite painful.",
-		"An entire day riding around on " + name + "'s shoulder ended in disaster when she answered her phone. The person on the opposite end heard your death under her wrist."
-
+		"An entire day riding around on " + name + "'s shoulder ended in disaster when she answered her phone. The person on the opposite end heard your death under her wrist.",
+		"You were so tiny that you could fit in the folds of " + name + "'s fingerprint. She decided the best way to get rid of her infestation was a hand-soaking.",
+		"Your body was strained to the max by being placed inside " + name + "'s ring and finger. She didn't really acknowledge you after that.",
+		name + " crushed you under her thumb after a brief game of 'run around her palm and try not to get squished.'",
+		"You were giving " + name + " a palm reading when you tickled her a little too much and she involuntarily bawled up her fist.",
+		"You were covered in perfume and used as a bar of soap for " + name + " , unfortunately your body wasn't as strong as she hoped."
 		];
 		var handLength = handPlay.length
 		var handSmush = handPlay[Math.floor(Math.random() * handPlay.length)]
@@ -354,7 +383,12 @@ module.exports = {
 			"You were squashed between " + name + "'s toes during her honeymoon as she stirred in her sleep.",
 			"You live every day of you life happily as " + name + "'s tiny husbando",
 			"You didn't read the prenup and end up as " + name + "'s personal slave.",
-			"" + name + " was disgusted with you, so she decided it would be best to turn into a little red stain."
+			"" + name + " was disgusted with you, so she decided it would be best to turn into a little red stain.",
+			"You were crushed under the bouquet at " + name + "'s wedding.",
+			"You were the gemstone for the engagement ring " + name + " received from her girlfriend.",
+			name + " was so hungover after your wedding last night she didn't even remember dropping you into her panties. You drowned in her sweat while she danced.",
+			name + " found you on your bucks night before your wedding. Not even your friends were spared from her dangerous heels.",
+			"You were the groom on top of your own wedding cake with " + name + " . Unfortunately she didn't realise you didn't eat that part."
 		];
 		var proposalLength = proposal.length
 		var proposalSmush = proposal[Math.floor(Math.random() * proposal.length)]
@@ -376,7 +410,12 @@ module.exports = {
 		"You drowned in " + name + "'s sweat inside her yogapants on a hot summer day",
 		"Your tiny body was trapped between thigh flesh when " + name + " sat down without looking",
 		name +  "'s thighs proved to be too much to handle when you decided to re-enact the garbage dump scene from A New Hope.",
-		"Your tiny body was absolutely shredded when " + name + " pulled her fishnets upwards."
+		"Your tiny body was absolutely shredded when " + name + " pulled her fishnets upwards.",
+		name + " repeated squeezed her thighs together, with you between, until not even a trace of you remained.",
+		name + " strut her stuff with you dangling from her anklet.",
+		"You were sitting on " + name + "'s knee when she heard a hilarious joke. A 'knee-slapping' joke even...",
+		"You were wedged into the crease between " + name + "'s thigh and crotch. You didn't survive when she put her legs together.",
+		"You were rubbed onto " + name + "'s shin roughly after she bruised it. It seems you had even more bruises afterwards."
 		];
 
 		var legsLength = legs.length
@@ -405,8 +444,12 @@ module.exports = {
 		"You were flattened and trapped in one of the bras in a lingerie store after " + name + " tried one on with you inside.",
 		name +  "'s thought that paizuri at your size would be fun! Unfortunately she didn’t know her strength, and your bones were no match for boob flesh.",
 		"Someone your size could very easily fall into many places. It happened the one you would never come out of was " + name + "'s nipple hole.",
-		"In a feat of strength befitting the titan Atlas, you held up the infinite weight of " + name + "'s boob. Unlike Atlas, you weren’t a god, and the steamy meat proved too much for you."
-
+		"In a feat of strength befitting the titan Atlas, you held up the infinite weight of " + name + "'s boob. Unlike Atlas, you weren’t a god, and the steamy meat proved too much for you.",
+		name + " poked you with her erect nipple so hard you fell over and got bulldozed by her giant tit.",
+		"The supple flesh of " + name + "'s breast was tantalising until she noticed a little pervert there. She jiggled her boobs until you were crushed.",
+		name + " slipped you into her sports bra while she jogged. You drowned in the sweat.",
+		"After dancing around on " + name + "'s nipple you fell off after she giggled. The small drop to her areola was too great.",
+		name + " hung you from her new nipple-piercing."
 		];
 		var breastLength = breasts.length
 		var breastSmush = breasts[Math.floor(Math.random() * breasts.length)]
@@ -445,7 +488,12 @@ module.exports = {
 		"A funny joke played on " + name + " made her squeal in fear. At your size, the sound made your head explode.",
 		name +  " decided to exercise, which would make her sweaty. Apparently, you weren’t as absorbent of a sweat rag as she hoped, and after being used as such ended up in her absolutely stench-ridden locker, where you suffocated.",
 		"While making armpit farts " + name + " forgot you were in her hand. At least her pits smelled like deodorant.",
-		"You were used as a toy for " + name + " during one of her live camshows"
+		"You were used as a toy for " + name + " during one of her live camshows",
+		"Your life as a human dildo was cut short when " + name + " decided you would be better suited to be her new butt-plug.",
+		"After minutes of trying " + name + " couldn't fish you out of her vagina. She decided to wait until you starved and then just wiggle her hips until you fell out.",
+		"You danced a jig on " + name + "'s expanded clitoris. The thing was too slippery however, and you tumbled down and fell to your death.",
+		name + " was harsh with her human dildos, and they never lasted for more than a month. That was your new job.",
+		"You lived your life inside a tiny city built in " + name + "'s womanhood. Unfortunately she didn't know about this and decided to have some fun with her vibrator."
 		];
 		var miscLength = misc.length
 		var miscSmush = misc[Math.floor(Math.random() * misc.length)]
