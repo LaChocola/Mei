@@ -287,7 +287,7 @@ name + " brought you into a party tinies weren't allowed in smuggled in her pant
 "You had a wacky adventure to tell your future grandkids, with " + name + ", on " + name,
 "You had a book club meeting with " + name + "",
 "You had a risqué full body exploration with " + name + "",
-"You had a discussion on the finer points of GTS with " + name + "",
+"You had a discussion about the GTS fetish with " + name + ". It turns out she was somewhat willing to try it, and sent you a link with the dreaded shrinking virus",
 "You had a nice nap in " + name + "'s comfy navel",
 "You had some boating experience from atop of a rubber ducky, floating in a bath of " + name + "",
 "You had a highly successful spelunking trip into " + name + " as she slept",
