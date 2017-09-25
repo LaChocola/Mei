@@ -556,33 +556,43 @@ var slength = smush.length
 
 							if (args.indexOf("butt") > -1 || args.indexOf("ass") > -1 || args.indexOf("bum") > -1 || args.indexOf("bums") > -1 || args.indexOf("butts") > -1) {
           			Bot.createMessage(m.channel.id, tellem + buttSmush);
+								return;
 							}
-							if (args.indexOf("proposal") > -1 || args.indexOf("marriage") > -1 || args.indexOf("marry") > -1 || args.indexOf("wed") > -1) {
+							else if (args.indexOf("proposal") > -1 || args.indexOf("marriage") > -1 || args.indexOf("marry") > -1 || args.indexOf("wed") > -1) {
 								Bot.createMessage(m.channel.id, tellem + proposalSmush);
+								return;
 							}
 							else if (args.indexOf("panty") > -1 || args.indexOf("panties") > -1 || args.indexOf("underwear") > -1 || args.indexOf("thong") > -1 || args.indexOf("thongs") > -1) {
           			Bot.createMessage(m.channel.id, tellem + pantySmush);
+								return;
 							}
 							else if (args.indexOf("foot") > -1 || args.indexOf("feet") > -1 || args.indexOf("foote") > -1) {
 								Bot.createMessage(m.channel.id, tellem + footSmush);
+								return;
 							}
 							else if (args.indexOf("vore") > -1 || args.indexOf("mouth") > -1)  {
 								Bot.createMessage(m.channel.id, tellem + voreSmush);
+								return;
 							}
 							else if (args.indexOf("hand") > -1 || args.indexOf("hands") > -1) {
 								Bot.createMessage(m.channel.id, tellem + handSmush);
+								return;
 							}
 							else if (args.indexOf("legs") > -1 || args.indexOf("leg") > -1 || args.indexOf("thighs") > -1)  {
 								Bot.createMessage(m.channel.id, tellem + legsSmush);
+								return;
 							}
 							else if (args.indexOf("boobs") > -1 || args.indexOf("breasts") > -1 || args.indexOf("breast") > -1 || args.indexOf("boob") > -1 || args.indexOf("tit") > -1 || args.indexOf("tits") > -1) {
 								Bot.createMessage(m.channel.id, tellem + breastSmush);
+								return;
 							}
 							else if (args.indexOf("misc") > -1 || args.indexOf("alt") > -1 || args.indexOf("other") > -1) {
 								Bot.createMessage(m.channel.id, tellem + miscSmush);
+								return;
 							}
 							else {
 								Bot.createMessage(m.channel.id, tellem + smush1);
+								return;
 							}
 						}
 	},
