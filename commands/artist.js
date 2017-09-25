@@ -17,15 +17,13 @@ module.exports = {
     var id = mentioned.id
     var hands = [ ":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
     var hand = hands[Math.floor(Math.random() * hands.length)]
-    if (!(data.people[id].links)) {
-			if (data.people[id]) {
-				data.people[id].links = {}
-				return;
-			} else {
+    if (!(data.people[id])) {
 	      data.people[id]= {};
 				data.people[id].links = {}
 			}
-    }
+		if (!(data.people[id].links)) {
+				data.people[id].links = {}
+			}
 
     if (args.includes("add")) {
       if (mentioned.id != m.author.id) {
