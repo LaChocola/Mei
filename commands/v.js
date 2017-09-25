@@ -141,6 +141,25 @@ module.exports = {
 			var types2 = ["underwear", "underwear"]
 			var type2 = types2[Math.floor(Math.random() * types2.length)]
 		}
+		var vagina = [
+		name + " encased you inside her sex toy. The vibrations rattled your bones.",
+		"You were ground into the walls of " + name + "'s vagina harshly, the juices stinging your eyes.",
+		"You and your friends were adhered to " + name + "'s labia by her sticky secretion.",
+		name + " forced you deep, deep inside her. So deep that you would never be able to escape.",
+		"You were inside the building " + name + " decided to use as a dildo. After the windows broke you drowned in her juices.",
+		"You were used up as a sex toy in a single indulgent night by " + name,
+		"You and your friends were strapped together to add a bit more girth as " + name + "'s sex toy.",
+		name + " was unimpressed by your height, and you failed to become her dildo. Instead you were relegated to 'back-door' duty.",
+		name + " didn't know what was on her vulva but it felt good. She unknowingly ground you against her, disposed of for her pleasure.",
+		"How was " + name + " supposed to know that you were stuck in her fingerprint as she 'flicked her bean'? You died from the juices.",
+		name + " dropped you on her shoe and sat on it, grinding her lips against it and moaning in pleasure.",
+		name + "'s muscular vagina proved your end.",
+		"The prostitute " + name + " hired dropped you on her tongue before eating out " + name + " for a little extra stimulation.",
+		"So many tinies were forced inside " + name + " that you thought you would drown in a sea of people before you would drown in her excretion.",
+		name + "'s girlfriend strapped you to her strap-on and had a fun night with " + name
+		];
+		var vaginaLength = vagina.length
+		var vaginaSmush = vagina[Math.floor(Math.random() * vagina.length)]
 
 		var panty = [
 		"You were dropped into " + name + "'s " + type1 + " for some lewd fun",
@@ -494,7 +513,7 @@ module.exports = {
 			var footSmush = footSmush.replace(/ her/gi, " his").replace(" she", " he").replace(" GTS", " GT").replace(/breasts/gi, "chest").replace(" pussy", " dick")
 			var proposalSmush = proposalSmush.replace(/ her/gi, " his").replace(" she", " he").replace(" GTS", " GT").replace(/breasts/gi, "chest").replace(" pussy", " dick")
 		} else if (male != true) {
-			var smush = Array.from(new Set([].concat(butt, panty, foot, voreMouth, handPlay, legs, proposal, breasts, misc)))
+			var smush = Array.from(new Set([].concat(butt, vagina, panty, foot, voreMouth, handPlay, legs, proposal, breasts, misc)))
 
 			var smush1 = smush[Math.floor(Math.random() * smush.length)]
 		}
@@ -506,9 +525,9 @@ var slength = smush.length
 				Bot.createMessage(m.channel.id, {
 		        embed: {
 		            color: 0xA260F6,
-		            description: "**Names Availible: **" + nameLength + "\n " + cleanNames + "\n \n**Total Smush's:** " + total + "\n \n**Butt Smush's:** " + buttLength + "\n**Panty Smush's:** " + pantyLength +
-								"\n**Foot Smush's:** " + footLength + "\n**Vore Death's:** " + voreLength + "\n**Hand Smush's:** " + handLength + "\n**Leg Smush's:** " + legsLength + "\n**Boob Smush's:** " + breastLength +
-								"\n**Misc Smush's:** " + miscLength + "\n**Proposal Smush's:** " + proposalLength
+		            description: "**Names Availible: **" + nameLength + "\n " + cleanNames + "\n \n**Total Smush's:** " + total + "\n \n**Butt Smush's:** " + buttLength + "\n**Vagina Smush's:** " + vaginaLength +
+								"\n**Panty Smush's:** " + pantyLength + "\n**Foot Smush's:** " + footLength + "\n**Vore Death's:** " + voreLength + "\n**Hand Smush's:** " + handLength + "\n**Leg Smush's:** " + legsLength +
+								"\n**Boob Smush's:** " + breastLength + "\n**Misc Smush's:** " + miscLength + "\n**Proposal Smush's:** " + proposalLength
 		        }
 		    });
 			}
@@ -531,7 +550,6 @@ var slength = smush.length
 
 	 if (m.content.toLowerCase().startsWith(`${prefix}v`) && m.content.toLowerCase() != `${prefix}v length` && m.content.toLowerCase() != `${prefix}v someone`) {
 		 var tellem = "<@" + m.author.id + '>, '
-
 					if (m.mentions.length > 0) {
 						var smushee = m.channel.guild.members.get(m.mentions[0].id).nick || m.mentions[0].username
 						var tellem = "**" + smushee + ",** "
@@ -539,6 +557,10 @@ var slength = smush.length
 
 							if (args.indexOf("butt") > -1 || args.indexOf("ass") > -1 || args.indexOf("bum") > -1 || args.indexOf("bums") > -1 || args.indexOf("butts") > -1) {
           			Bot.createMessage(m.channel.id, tellem + buttSmush);
+								return;
+							}
+							else if (args.indexOf("vagina") > -1 || args.indexOf("pussy") > -1 || args.indexOf("insertion") > -1 || args.indexOf("cunt") > -1 || args.indexOf("cunny") > -1) {
+								Bot.createMessage(m.channel.id, tellem + vaginaSmush);
 								return;
 							}
 							else if (args.indexOf("proposal") > -1 || args.indexOf("marriage") > -1 || args.indexOf("marry") > -1 || args.indexOf("wed") > -1) {

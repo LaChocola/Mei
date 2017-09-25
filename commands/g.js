@@ -102,6 +102,26 @@ name + " allowed you to venture through the peachy hills of her butt cheeks, onl
 		var buttLength = butt.length
 		var buttGentle = butt[Math.floor(Math.random() * butt.length)]
 
+		var vagina = [
+name + " spread her lips and sat on you, placing you in an aromatic world and granting the bounty of her body all for you to enjoy.",
+name + " dropped you into her moist womanhood, and you slid down the canal like a water slide.",
+"As a naive tiny " + name + " was the one to show you the ropes of 'real sex'. You were her favourite student.",
+"It was cute how scared " + name + " was about putting you inside her. She refused to move and constantly asked if you were okay.",
+"You lewdly played around inside " + name + " for a bit, after which she cleaned you up and cuddled.",
+name + " was simply so nice. She held open her vaginal lips to ensure you had enough air and light to enjoy yourself.",
+"You were at the right size to lovingly kiss " + name + "'s clitoris. Swollen from the joy of having you so close.",
+"You kayaked through the juices inside of " + name,
+name + " was teased as you sat on her pubic hair and kicked your legs against her vulva.",
+"You danced upon " + name + "'s slippery clitoris.",
+"When you moved in with " + name + " you said 'we have no room for me!'. She just winked and pulled out her shrink ray.",
+name + " shrunk you and your girlfriend, and as you made love to her " + name + " forced both of you inside her womanhood, delighted at the adorableness of two tiny people having sex inside her.",
+"You participated in an orgy on top of " + name + ". Of all the people she plucked you from her body and had you personally finish her off.",
+name + " licked off all the juice she left on you after love making. It was so adorable and sweet how you always pleased her, even while being so small.",
+"Although you began your life with " + name + " as a simple sex toy, your relationship blossomed, and she thanked you, cleaned you up and cuddled after every session."
+];
+		var vaginaLength = vagina.length
+		var vaginaGentle = vagina[Math.floor(Math.random() * vagina.length)]
+
 		var foot = [
 "You had an adventure on " + name + "'s feet when she shrunk you further for the afternoon",
 "You had a safe trip home in between " + name + "'s toes",
@@ -326,7 +346,7 @@ if (male ==  true) {
 		var footGentle = footGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
 
 } else if (male != true) {
-		var gentle = butt.concat(foot, voreMouth, handPlay, legs, breasts, misc);
+		var gentle = butt.concat(foot, vagina, voreMouth, handPlay, legs, breasts, misc);
 
 		var gentle1 = gentle[Math.floor(Math.random() * gentle.length)]
 }
@@ -340,7 +360,8 @@ var glength = gentle.length
 		Bot.createMessage(m.channel.id, {
 				embed: {
 						color: 0xA260F6,
-						description: "**Names Availible: **" + nameLength + "\n " + cleanNames + "\n \n**Total Gentle's:** " + total + "\n \n**Butt Gentle's:** " + buttLength + "\n**Foot Gentle's:** " + footLength + "\n**Vore Death's:** " + voreLength + "\n**Hand Gentle's:** " + handLength + "\n**Leg Gentle's:** " + legsLength +
+						description: "**Names Availible: **" + nameLength + "\n " + cleanNames + "\n \n**Total Gentle's:** " + total + "\n \n**Butt Gentle's:** " + buttLength + "\n**Vagina Gentle's:** " + vaginaLength +
+						"\n**Foot Gentle's:** " + footLength + "\n**Vore Death's:** " + voreLength + "\n**Hand Gentle's:** " + handLength + "\n**Leg Gentle's:** " + legsLength +
 						"\n**Boob Gentle's:** " + breastLength + "\n**Panty Gentle's:** " + pantyLength + "\n**Misc Gentle's:** " + miscLength
 				}
 		});
@@ -371,6 +392,10 @@ var glength = gentle.length
 
 						 if (args.indexOf("butt") > -1 || args.indexOf("ass") > -1 || args.indexOf("bum") > -1 || args.indexOf("bums") > -1 || args.indexOf("butts") > -1) {
 							 Bot.createMessage(m.channel.id, tellem + buttGentle);
+						 }
+						 else if (args.indexOf("vagina") > -1 || args.indexOf("pussy") > -1 || args.indexOf("insertion") > -1 || args.indexOf("cunt") > -1 || args.indexOf("cunny") > -1) {
+							 Bot.createMessage(m.channel.id, tellem + vaginaGentle);
+							 return;
 						 }
 						 else if (args.indexOf("foot") > -1 || args.indexOf("feet") > -1 || args.indexOf("foote") > -1) {
 							 Bot.createMessage(m.channel.id, tellem + footGentle);
