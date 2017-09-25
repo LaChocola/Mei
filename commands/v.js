@@ -601,5 +601,5 @@ var slength = smush.length
 							}
 						}
 	},
-	help: "A Violent Smush, most args can be stacked. \n \n **Usage/Args:** | ``!v`` | ``!v <mention>`` | ``!v someone`` | ``!v length`` | ``!v <name>`` | ``!v <category>``"
+	help: "A Violent Smush"
 }
