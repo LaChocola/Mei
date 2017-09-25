@@ -560,11 +560,7 @@ var slength = smush.length
 								return;
 							}
 							else if (args.indexOf("vagina") > -1 || args.indexOf("pussy") > -1 || args.indexOf("insertion") > -1 || args.indexOf("cunt") > -1 || args.indexOf("cunny") > -1) {
-<<<<<<< HEAD
 								Bot.createMessage(m.channel.id, tellem + vaginaSmush);
-=======
-								Bot.createMessage(m.channel.id, tellem + proposalSmush);
->>>>>>> origin/master
 								return;
 							}
 							else if (args.indexOf("proposal") > -1 || args.indexOf("marriage") > -1 || args.indexOf("marry") > -1 || args.indexOf("wed") > -1) {
