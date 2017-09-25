@@ -318,7 +318,7 @@ module.exports = {
 		"You were stuck to " + name + "'s lower lip by her saliva for 20 minutes before her lips licking habit finally got you",
 		"You were never seen again after attempting to go spelunking one night at Mt. Sleeping " + name +"",
 		"You were dangerously cheesy after falling into " + name + "'s Cheetos and got eaten",
-		"After an unfortunate mishap, you found yourself in " + name + "'a bowl of popcorn as she slowly eats away at it while watching a movie.",
+		"After an unfortunate mishap, you found yourself in " + name + "'s bowl of popcorn as she slowly eats away at it while watching a movie.",
 		"You were gulped down by " + name + " along with her milk tea boba",
 		"You became one with the cake as " + name + " stacked one of the layers on top of you, trapping you inside, waiting to be devoured.",
 		"You were lost in the chip dip for " + name + "'s party, who was wondering where you went as she went for a bite...",
