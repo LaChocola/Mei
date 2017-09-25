@@ -1,4 +1,6 @@
 'use strict';
+const _ = require("../people.js");
+var data = _.load();
 module.exports = {
 	main: function(Bot, m, args) {
 		var args = args.toLowerCase()
@@ -11,6 +13,8 @@ module.exports = {
 		"Aqua", "Megumin", "Cortana", "Yuna", "Lulu", "Rikku", "Rosalina", "Samus", "Princess Peach", "Palutena", "Shin", "Kimmy", "Zoey", "Camilla", "Lillian", "Narumi", "D.va", "Satsuki"];
 		var cleanishNames = names.join(', ')
 		var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n").replace("Baiken,", "Baiken,\n").replace("Gwen,", "Gwen,\n").replace("Aqua,", "Aqua,\n").replace("Lulu,", "Lulu,\n").replace("Samus,", "Samus,\n")
+		var mentioned = m.mentions[0] || m.author
+		var id = mentioned.id
 
 		if (m.guild.id === "261599167695159298") { // Krumbly's Ant Farm Only
 			var names = ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Lucy", "Ryuko", "Krumbly"];
@@ -64,28 +68,20 @@ module.exports = {
 			var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n").replace("Baiken,", "Baiken,\n").replace("Gwen,", "Gwen,\n").replace("Aqua,", "Aqua,\n").replace("Lulu,", "Lulu,\n").replace("Samus,", "Samus,\n")
 		}
 		}
-		if (m.author.id == "114844046047969287") {
-			var names = names.concat(["Tewi"])
-			var cleanishNames = names.join(', ')
-			var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n")
-			var cleanNames = cleanNames.replace("Lucy,", "Lucy,\n")
-		}
-
-		if (m.author.username.indexOf(name) || m.member.nick.indexOf(name)) {
-			var index1 = names.indexOf(m.author.username);
-				if (index1 > -1) {
-    			names.splice(index1, 1);
-					}
-			var index2 = names.indexOf(m.member.nick);
-				if (index2 > -1) {
-	   			names.splice(index2, 1);
-					}
-			var name = names[Math.floor(Math.random() * names.length)]
-		}
 
 		const randomPick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 		var customName = [];
+
+		if (data.people[id]) {
+			if (data.people[id].names) {
+				var namesObj = data.people[id].names
+				var names = [];
+				Object.keys(namesObj).forEach(function(key){
+					 names.push(key);
+				});
+			}
+		}
 
 		var argsArray = args.split(' ')
 
@@ -100,6 +96,14 @@ module.exports = {
 			var name = customName[Math.floor(Math.random() * customName.length)]
 		} else {
 			var name = names[Math.floor(Math.random() * names.length)]
+		}
+
+		if (data.people[id]) {
+			if (data.people[id].names) {
+				if (data.people[id].names[name] == "male") {
+					var male = true
+				}
+			}
 		}
 
 		var nameLength = names.length
@@ -500,9 +504,6 @@ var slength = smush.length
 					if (m.mentions.length > 0) {
 						var smushee = m.channel.guild.members.get(m.mentions[0].id).nick || m.mentions[0].username
 						var tellem = "**" + smushee + ",** "
-						 if (m.mentions[0].id === '188539363141877760') {
-							 	 var tellem = "<@" + m.author.id + '>, '
-						 }
 					 }
 
 							if (args.indexOf("butt") > -1 || args.indexOf("ass") > -1 || args.indexOf("bum") > -1 || args.indexOf("bums") > -1 || args.indexOf("butts") > -1) {

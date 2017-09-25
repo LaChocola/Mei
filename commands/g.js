@@ -65,12 +65,6 @@ module.exports = {
 					var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n").replace("Baiken,", "Baiken,\n").replace("Gwen,", "Gwen,\n").replace("Aqua,", "Aqua,\n").replace("Lulu,", "Lulu,\n").replace("Samus,", "Samus,\n")
 				}
 			}
-		if (m.author.id == "114844046047969287") {
-			var names = names.concat(["Tewi"])
-			var cleanishNames = names.join(', ')
-			var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n")
-			var cleanNames = cleanNames.replace("Lucy,", "Lucy,\n")
-		}
 
 		var customName = [];
 		if (data.people[id]) {
@@ -131,7 +125,7 @@ name + " allowed you to venture through the peachy hills of her butt cheeks, onl
 "You exhausted yourself while trying to give " + name + " a pedicure",
 name + " trapped you between her toes and wiggled you around while giggling",
 "You received the most intense foot job of your life from " + name + " , especially considering you were as tall as her foot was wide.",
-"You spent the day at the beach sunbathing on " + name + "'s smooth sole. Later that day + name +  looked like a bit of maniac smearing ice-cream on her foot.",
+"You spent the day at the beach sunbathing on " + name + "'s smooth sole. Later that day " + name + " looked like a bit of maniac smearing ice-cream on her foot.",
 "You gave giant ladies foot rubs at the local spa. The one you gave to " + name + " was so good that she came back just to see you; even outside of work she began visiting you.",
 name +  " almost cried when she accidentally stepped on you one day. She spent the following days nursing you back to full health and catering to your every need. When you were healed, she didn’t want to give you up.",
 "You sat between " + name + "'s big and second toes as she kicked her feet up and relaxed.",
@@ -339,13 +333,13 @@ name + " and you enjoyed a romantic honeymoon on a pacific island.",
 if (male ==  true) {
 		var gentle = butt.concat(foot, voreMouth, handPlay, legs, misc);
 		var gentle1 = gentle[Math.floor(Math.random() * gentle.length)]
-		var gentle1 = gentle1.replace("her", "him").replace("she", "he").replace("GTS", "GT").replace("breasts", "chest")
-		var miscGentle = miscGentle.replace("her", "him").replace("she", "he").replace("GTS", "GT").replace("breasts", "chest")
-		var buttGentle = buttGentle.replace("her", "him").replace("she", "he").replace("GTS", "GT").replace("breasts", "chest")
-		var handGentle = handGentle.replace("her", "him").replace("she", "he").replace("GTS", "GT").replace("breasts", "chest")
-		var legsGentle = legsGentle.replace("her", "him").replace("she", "he").replace("GTS", "GT").replace("breasts", "chest")
-		var voreGentle = voreGentle.replace("her", "him").replace("she", "he").replace("GTS", "GT").replace("breasts", "chest")
-		var footGentle = footGentle.replace("her", "him").replace("she", "he").replace("GTS", "GT").replace("breasts", "chest")
+		var gentle1 = gentle1.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
+		var miscGentle = miscGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
+		var buttGentle = buttGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
+		var handGentle = handGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
+		var legsGentle = legsGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
+		var voreGentle = voreGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
+		var footGentle = footGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
 
 } else if (male != true) {
 		var gentle = butt.concat(foot, voreMouth, handPlay, legs, breasts, misc);
