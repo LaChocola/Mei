@@ -18,5 +18,5 @@ module.exports = {
 				Bot.createMessage(m.channel.id, "Suggestion: ``" + msg + "`` Sent to Chocola " + hand);
 	}
 },
-	help: "Suggest something | !suggest <thing> |  i.e. ``!suggest More Violent Smushes please``"
+	help: "Suggest something"
 }

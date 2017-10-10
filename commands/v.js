@@ -8,6 +8,9 @@ module.exports = {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
     var prefix = '!'
+		if (m.channel.guild.id == "187694240585744384") {
+			var prefix = ":"
+		}
 		var male = false
 		var names = ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Baiken", "Ryuko", "Sombra", "Wolfer", "Gwen", "Mercy", "Gwynevere", "Tracer",
 		"Aqua", "Megumin", "Cortana", "Yuna", "Lulu", "Rikku", "Rosalina", "Samus", "Princess Peach", "Palutena", "Shin", "Kimmy", "Zoey", "Camilla", "Lillian", "Narumi", "D.va", "Satsuki"];
@@ -123,7 +126,8 @@ module.exports = {
 		"To determine if you were strong enough to be her slave, " + name + " placed you between her cheeks and clenched. You weren't",
 		"To determine if you were strong enough to be her slave, " + name + " placed you between her cheeks and clenched. You were, although that might be a bad thing...",
 		name + " constructed a specialised chair to sit on, with a little cut out for you. She also developed a habit of not wearing pants around the house.",
-		name + "'s friend dropped you between " + name + "'s butt cheeks while she slept. She woke up with a strange wet feeling in that spot."
+		name + "'s friend dropped you between " + name + "'s butt cheeks while she slept. She woke up with a strange wet feeling in that spot.",
+		"You were crushed under the rear of " + name + " as she sat down heavily on her chair. Forcibly pinned under the giant mass, you were helpless to stop her erratic movements as she masturbated the day away."
 		];
 		var buttLength = butt.length
 		var buttSmush = randomPick(butt)
@@ -156,7 +160,8 @@ module.exports = {
 		name + "'s muscular vagina proved your end.",
 		"The prostitute " + name + " hired dropped you on her tongue before eating out " + name + " for a little extra stimulation.",
 		"So many tinies were forced inside " + name + " that you thought you would drown in a sea of people before you would drown in her excretion.",
-		name + "'s girlfriend strapped you to her strap-on and had a fun night with " + name
+		name + "'s girlfriend strapped you to her strap-on and had a fun night with " + name,
+		"You smiled, ready to surprise " + name + " as you got ready to enact your playful revenge prank. Sneaking into " + name + "'s room, you swiftly regretted your decision as a dildo rolled off the bed, landing onto you. Groaning, you were swiftly picked up and inserted into " + name + " as she tried not to be heard by her roommate."
 		];
 		var vaginaLength = vagina.length
 		var vaginaSmush = vagina[Math.floor(Math.random() * vagina.length)]
@@ -293,7 +298,8 @@ module.exports = {
 		"You tripped out on the fumes while painting " + name + "'s toenails. She decided to continue herself and adhered your unconscious body under a layer of varnish.",
 		"Even " + name + "'s tiniest toe was too powerful for you to resist. And the tiny splurt made her giggle.",
 		"A stray keratin chunk hit you when " + name + " was clipping her toenails.",
-		"You were so tiny the wrinkles of " + name + "'s foot were like hills to you. You spent the day exploring before she shifted and sent you to her toes, where she scrunched."
+		"You were so tiny the wrinkles of " + name + "'s foot were like hills to you. You spent the day exploring before she shifted and sent you to her toes, where she scrunched.",
+		name + " yawned, rolling out of bed. Her " + nakedFeetSingular + " clenched slightly at the coldness in the air- not noticing your struggling body between her toes as she slipped on an old pair of " + footwearPlural
 		];
 		var footLength = foot.length
 		var footSmush = foot[Math.floor(Math.random() * foot.length)]
@@ -342,7 +348,9 @@ module.exports = {
 		"The tooth of " + name + " held you in place at your midsection. The tiniest amount of pressure would surely spell your death...",
 		"Unfortunately you simply couldn't escape the bowl of cereal, and would die while inside " + name + "'s cheerio.",
 		name + " thought it was funny that you could swim in her soup. Not for long as she forgot you were there and continued her meal.",
-		name + " rolled you up into her roll of sushi and enjoyed a tasty lunch."
+		name + " rolled you up into her roll of sushi and enjoyed a tasty lunch.",
+		name + " didn't notice a micro drop into her drink as she went for a sip. Your tiny body barely managed to slip under her tongue, pinned and unnoticed as she got ready to start the day.",
+		"Worn and ragged, you weakly let " + name + "'s tongue pin you under it after a lengthy struggle, her saliva washed over your entire body as she went about her day."
 		];
 		var voreLength = voreMouth.length
 		var voreSmush = voreMouth[Math.floor(Math.random() * voreMouth.length)]

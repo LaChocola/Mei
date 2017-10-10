@@ -31,30 +31,36 @@ module.exports = {
         Bot.createMessage(m.channel.id, "Okay....but that isnt you");
         return;
       }
-      var incomingEntries = name1.replace("add ", "").replace(": ", " ").split(" ")
+      var incomingEntries = name1.replace("add ", "").replace(": ", " ").split(" | ")
 			var incoming = [];
 			var iterator = incomingEntries.entries()
 			for (let e of iterator) {
-				incoming.push(capFirstLetter(e[1]))
-			}
-      if (data.people[id].names[incoming[0]]) {
-        Bot.createMessage(m.channel.id, "That's already been added, silly~");
-        return;
-      }
-      else {
-				if (incoming.indexOf("Male") > -1) {
-					data.people[id].names[incoming[0]] = "male"
-					_.save(data)
-					Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand);
-					return;
+				if (data.people[id].names[e[1]]) {
+					Bot.createMessage(m.channel.id, e[1]+"'s already been added, silly~").then((m) => {
+              return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 10000)
+          })
+					continue;
 				}
 				else {
-					data.people[id].names[incoming[0]] = "female"
-					_.save(data)
-					Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand);
-					return;
+					if (e[1].toLowerCase().includes(" male")) {
+						var cleanName = e[1].replace(" male", "").replace(" Male", "")
+						data.people[id].names[cleanName] = "male"
+						_.save(data)
+						Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then((m) => {
+	              return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 10000)
+	          })
+						continue;
+					}
+					else {
+						data.people[id].names[e[1]] = "female"
+						_.save(data)
+						Bot.createMessage(m.channel.id, "Added **" + e[1] + "** " + hand).then((m) => {
+	              return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 10000)
+	          })
+					}
 				}
-      }
+			}
+			return;
     }
     if (args.includes("remove")) {
       if (mentioned.id != m.author.id) {
@@ -65,7 +71,9 @@ module.exports = {
       if (data.people[id].names[incoming[0]]) {
         delete data.people[id].names[incoming[0]]
         _.save(data)
-        Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your names list" + hand);
+        Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your names list" + hand).then((m) => {
+						return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 10000)
+				})
         return;
       }
       else {

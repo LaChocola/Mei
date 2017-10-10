@@ -17,10 +17,12 @@ module.exports = {
 			"0": "zero"
 		}
 		args.forEach(char=> {
-			if ("qwertyuiopasdfghjklzxcvbnm".indexOf(char) > -1) {
+			if ("qwertyuiopasdfghjklzxcvnm".indexOf(char) > -1) {
 				emojis.push(":regional_indicator_"+char+":");
 			} else if ("1234567890".indexOf(char) > -1) {
 				emojis.push(":"+numbers[char]+":");
+			} else if ("b".indexOf(char) > -1) {
+				emojis.push(":b:");
 			} else if (char == "?") {
 				emojis.push(":question:");
 			} else if (char == "!") {

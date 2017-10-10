@@ -1,4 +1,3 @@
-
 const yt = require("ytdl-core");
 const fs = require("fs");
 module.exports = {
@@ -9,7 +8,6 @@ module.exports = {
     var hand = hands[Math.floor(Math.random() * hands.length)]
     if (m.member.voiceState.channelID) { // User is in Voice Channel
       Bot.joinVoiceChannel(m.member.voiceState.channelID).then(function (voiceConnection) { // Join user voice channel
-        // do shit here
         var BotVoiceState = m.channel.guild.members.get(Bot.user.id).voiceState;
 
         if (BotVoiceState.channelID) { // Bot is in Voice Channel
@@ -47,5 +45,5 @@ module.exports = {
     Bot.createMessage(m.channel.id, "You must be in a Voice Channel to play a song");
   }
 },
-help: "Plays youtube music"
+help: "Plays music"
 }

@@ -27,5 +27,5 @@ module.exports = {
             };
         });
     },
-    help: "Searches for terms on Urban Dictionary" // add description
+    help: "Search Urban Dictionary" // add description
 }

@@ -36,5 +36,5 @@ module.exports = {
       }
   });
 	},
-	help: "Makes me say something"
+	help: "User Stats"
 }
