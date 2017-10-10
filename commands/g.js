@@ -8,6 +8,9 @@ module.exports = {
 		return string.charAt(0).toUpperCase() + string.slice(1);
 }
     var prefix = '!'
+		if (m.channel.guild.id == "187694240585744384") {
+			var prefix = ":"
+		}
 		var male = false
 		var names = ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Baiken", "Ryuko", "Sombra", "Wolfer", "Gwen", "Mercy", "Gwynevere", "Tracer",
 		"Aqua", "Megumin", "Cortana", "Yuna", "Lulu", "Rikku", "Rosalina", "Samus", "Princess Peach", "Palutena", "Shin", "Kimmy", "Zoey", "Camilla", "Lillian", "Narumi", "D.va"];
@@ -97,7 +100,12 @@ name + " let you lie on her butt, enjoying her warmth, as she read a book to you
 "An enjoyable night between " + name + "'s cheeks was had by all.",
 "You hosted your birthday picnic on " + name + "'s backside. All she asked was that you bring her a sandwich.",
 name + " allowed you to venture through the peachy hills of her butt cheeks, only for her to press them together and rub them around until you came.",
-"You spent a nice day tucked into the back of " + name + "'s underpants. She even remembered you when she sat down!"
+"You spent a nice day tucked into the back of " + name + "'s underpants. She even remembered you when she sat down!",
+"You had a nice time relaxing in " + name + "'s butt cleavage as she went about her day.",
+"After " + name + "'s work out she dropped you between her cheeks are relaxed, allowing you to enjoy your sauna.",
+name + " almost didn't see you on the couch when she was going to sit down, luckily she did, and sat on you on purpose.",
+"You had a warm nap in the crease between " + name + "'s butt and thigh.",
+"Laying down, you made 'snow angels' in the yielding flesh of " + name + "'s rear."
 ];
 		var buttLength = butt.length
 		var buttGentle = butt[Math.floor(Math.random() * butt.length)]
@@ -105,7 +113,7 @@ name + " allowed you to venture through the peachy hills of her butt cheeks, onl
 		var vagina = [
 name + " spread her lips and sat on you, placing you in an aromatic world and granting the bounty of her body all for you to enjoy.",
 name + " dropped you into her moist womanhood, and you slid down the canal like a water slide.",
-"As a naive tiny " + name + " was the one to show you the ropes of 'real sex'. You were her favourite student.",
+"As a naive tiny, " + name + " was the one to show you the ropes of 'real sex'. You were her favourite student.",
 "It was cute how scared " + name + " was about putting you inside her. She refused to move and constantly asked if you were okay.",
 "You lewdly played around inside " + name + " for a bit, after which she cleaned you up and cuddled.",
 name + " was simply so nice. She held open her vaginal lips to ensure you had enough air and light to enjoy yourself.",
@@ -136,8 +144,12 @@ name +  " almost cried when she accidentally stepped on you one day. She spent t
 "The size you were all it took was a caressing toe to get you to climax. " + name + "  was delighted to indulge your little kink as she sat back and wiggled her digits over you.",
 "You hugged " + name + "'s foot as you straddled her lower calf, and she put her feet up to the fire on a chilly night.",
 name + " placed her feet together and filled the gap with water for your bath.",
-"You slid down " + name + "'s arch like a water slide."
-
+"You slid down " + name + "'s arch like a water slide.",
+"You made 'snow angels' in the pliant flesh of " + name + "'s wrinkled soles.",
+"You applied oil to " + name + "'s soles and began to skate around as if on an ice rink.",
+"The sweet perfumed atmosphere between " + name + "'s toes made you feel cosy.",
+"In the freezing cold " + name + " slipped you into her sock to warm you up.",
+"With the the gigantic form of " + name + " towering over you, slipper in hand, you were sure you were going to meet your death. Instead the colossus smiled, slipping you onto the soft surface and giving you a toasty place to sleep."
 ];
 		var footLength = foot.length
 		var footGentle = foot[Math.floor(Math.random() * foot.length)]
@@ -161,7 +173,12 @@ name + " gave you the most insane blow-job of your life.",
 name + " always had a breath mint on hand for whenever you wanted her to suck on you like a piece of candy.",
 "You were sucked into " + name + "'s mouth when she kissed you. Luckily she spat you out and apologised.",
 "You grinded into " + name + "'s tooth as if it were a lover.",
-"You had a relaxing steamy bath in the humid pool underneath " + name + "'s tongue."
+"You had a relaxing steamy bath in the humid pool underneath " + name + "'s tongue.",
+name + " held you like a doll and licked at your privates until you climaxed.",
+"The sticky cake adhered you to the spoon. " + name + " slid it into her mouth, and you were lost in a tasty torrent of gooey saliva and cake, until she spat your licked clean body out.",
+"After a brief friendly session of role playing, " + name + " pretended to eat you. The mood was ruined when she giggled as soon as you landed on her tongue.",
+"You sat on " + name + "'s lips in anticipation. She blew quickly, sending you into the air, and opened her mouth so you landed on her spongy tongue.",
+name + " rolled you over her tongue, tasting you as if you were a fine wine."
 ];
 		var voreLength = voreMouth.length
 		var voreGentle = voreMouth[Math.floor(Math.random() * voreMouth.length)]
@@ -185,7 +202,12 @@ name + " rolled you between her palms, giving you a massage as she relieved her 
 name + " had fun petting her newest puppy: you.",
 "On a cold winter's night " + name + " rubbed her hands together and held you lovingly to warm you up.",
 "The crease of " + name + "'s palm was the perfect napping spot for you.",
-name + " pushed you all around her body sensually with only a single finger."
+name + " pushed you all around her body sensually with only a single finger.",
+"You became slightly grumpy as " + name + " continually booped your tiny butt.",
+name + " had a rigorous regiment of hand moisturisers, soaps and perfumes, all to ensure you were comfortable in her giant warm palms.",
+"At your size, " + name + "'s palm was like so many different seats in one: a recliner, sofa, bed, all adjustable at her whim.",
+name + " poked at your belly. She realised that her carrying you everywhere had made you gain a little weight; that only made you squishier however.",
+"You were so fine and delicate it only took being rubbed between " + name + "'s thumb and index finger to allow you to climax."
 ];
 		var handLength = handPlay.length
 		var handGentle = handPlay[Math.floor(Math.random() * handPlay.length)]
@@ -201,7 +223,12 @@ name + " trapped you between her legs when she sat down Indian style, barracadin
 "You received an intense thigh job from " + name + " .",
 "To work out some stress, " + name + " allowed you to straddle and hump her calf.",
 "You hugged into the hemisphere of " + name + "'s giant ankle.",
-name + " set up a series of apartments dangling from her anklet. You happily moved in."
+name + " set up a series of apartments dangling from her anklet. You happily moved in.",
+"You had a lovely night tucked in " + name + "'s lap as she read a book.",
+"Like a little kitten you curled up and napped on the thigh of " + name,
+"You slid along " + name + "'s calf in the paddling pool.",
+name + " giggled as you and your friends performed a play on the platform of her knee for her.",
+"You could have all the fun you wanted with " + name + ", you just needed to make it across her humongous leg."
 ];
 		var legsLength = legs.length
 		var legsGentle = legs[Math.floor(Math.random() * legs.length)]
@@ -223,7 +250,12 @@ name +  " kept you safe when her friends tried to pinch your cheeks with their g
 "You grinded into the ground romantically tucked between the giant boobs of " + name,
 name + " enjoyed the licking and sucking you did to the corner of her erect nipple, even though it was difficult to get even a tiny bit in your mouth.",
 "You build a perch on " + name + "'s necklace for you to sit.",
-"Even though you attempt to jump from one of " + name + "'s nipples to the next, she didn't mind you staying between her boobs when you landed short."
+"Even though you attempt to jump from one of " + name + "'s nipples to the next, she didn't mind you staying between her boobs when you landed short.",
+"To you, the closest thing to heaven was the toasty, soft, fabric scented little nook inside " + name + "'s bra while she wore it.",
+"You hugged into the fleshy nipple of " + name + ", just to have a part of her to cosy up to.",
+"It was scary, but you humped into " + name + "'s nipple to stimulate it. Her laboured breathing threatened to knock you off, but you remained dedicated to your task.",
+name + " always adored it when you hugged her giant bulbous breasts and said you loved 'the biggest boobs in the world.'",
+"You were put in a little cage and dangled around " + name + "'s neck, between her cleavage. You didn't mind, you did this of your own volition."
 ];
 		var breastLength = breasts.length
 		var breastGentle = breasts[Math.floor(Math.random() * breasts.length)]
@@ -265,7 +297,12 @@ name + " made sure you came first, before snapping her " + type1 + " closed with
 "After you got a bad headache, " + name + " kept you in the shade of panties to relax, away from the bright light.",
 name + " sneaked you into work smuggled away in her panties. You had an enjoyable day goofing off both inside and out of the garments.",
 name + " brought you into a party tinies weren't allowed in smuggled in her panties. You got to enjoy the dancing as she gyrated her hips.",
-"You had a nice nap with your favourite pillow tucked into " + name + "'s panties while she went about her day."
+"You had a nice nap with your favourite pillow tucked into " + name + "'s panties while she went about her day.",
+name + " smuggled you into a serious occasion inside her panties. Both of you giggled cheekily the entire time.",
+"The pubic mound of " + name + " proved to be soft enough when pinned inside her panties.",
+name + " smiled when she found you napping peacefully inside her discarded panties.",
+"You loved begin in the rocking boat of " + name + "'s aromatic panties. When you were together, you never felt alone.",
+"You had begged " + name + " to put you in her panties. After your constant nagging she agreed. You loved it, but the people the slowly walking woman not so much."
 		];
 		var pantyLength = panty.length
 		var pantyGentle = panty[Math.floor(Math.random() * panty.length)]
@@ -330,7 +367,12 @@ name + " didn't even care you ruined your tuxedo by swimming through the cake on
 name + " and you enjoyed a romantic honeymoon on a pacific island.",
 "When the celebrant said 'you may now kiss the bride', " + name + " blushed because she knocked over the front row as she bent down on all fours to reach you.",
 "It was a delightful surprise that the groom was inside the bride, " + name + "'s elegant white glove all along.",
-"It took a team of burly men to lift the wedding ring you gifted to " + name + " and slip it on her finger"
+"It took a team of burly men to lift the wedding ring you gifted to " + name + " and slip it on her finger",
+name + " found you in her Christmas stocking; her favourite present yet.",
+"You sat on " + name + "'s head as she looked over the walls of the stadium, and you had a seat for free.",
+"No one dared bully you after you met " + name + ". She made it clear any bullies wouldn't be happy about their punishment.",
+"You went fishing in " + name + "'s bowl of soup, reeling up chunks of potato and the like.",
+"You tucked yourself deep into your bed: " + name + "'s folded sock on her bedside table."
 ];
 		var miscLength = misc.length
 		var miscGentle = misc[Math.floor(Math.random() * misc.length)]

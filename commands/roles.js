@@ -13,7 +13,7 @@ module.exports = {
 		}
 
 	var member = m.guild.members.find(isThisUsernameThatUsername)
-	if (m.mentions.length < 0 ) {
+	if (m.mentions.length < 1 ) {
 		var mentioned = member || guild.members.get(m.author.id)
 	}
 	if (m.mentions.length > 0) {
@@ -24,7 +24,7 @@ module.exports = {
   var arrayOfRoleObjects = arrayOfRoleIDs.map(getRoleObjectFromRoleID);
 	var getRoleNameFromRoleID = function(roleID) { return guild.roles.get(roleID).name; }
   var arrayOfRoleNames = arrayOfRoleIDs.map(getRoleNameFromRoleID);
-
+	console.log(arrayOfRoleObjects);
 	for (let role of arrayOfRoleObjects) {
 		console.log("\n" + role.name + " (" + role.id + ")");
 	}

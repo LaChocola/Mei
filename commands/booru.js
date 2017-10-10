@@ -7,13 +7,6 @@ var URL = require('url-parse');
 
 module.exports = {
 	main: function(Bot, m, args) {
-		if (m.channel.guild.id == "345390985150201859") {
-			var allowedChannels = ["345391802960052236", "345391381876965376", "345393868528812032"]
-			if (allowedChannels.indexOf(m.channel.id) == -1) {
-				Bot.createMessage(m.channel.id, "This command can only be used in nsfw channels.")
-				return;
-			}
-		}
     function isNumeric(num){
         return !isNaN(num)
     }
@@ -23,12 +16,7 @@ module.exports = {
 			m.content = "!booru giantess"
 		}
     var args = m.cleanContent.toLowerCase().replace("!booru ", "").split(", ")
-		console.log(args);
     var site = "giantessbooru.com"
-		if (m.channel.guild.id == "231601066561503243") {
-			var site = "gelbooru"
-		}
-		console.log(site);
 		var imageURL = [];
 		var tags = [];
 		var things = []
@@ -72,6 +60,17 @@ module.exports = {
 			}
 			else if (tags.length > 1) {
 				var pageToVisit = "http://giantessbooru.com/post/list/" + tags.join(",") + "%2C-scat/1"
+			}
+			if (m.channel.id == "187702595723329536") {
+				if (tags.length < 1) {
+					var pageToVisit = "http://giantessbooru.com/post/list"
+				}
+				else if (tags.length == 1) {
+					var pageToVisit = "http://giantessbooru.com/post/list/" + tags[0]
+				}
+				else if (tags.length > 1) {
+					var pageToVisit = "http://giantessbooru.com/post/list/" + tags.join(",")
+				}
 			}
 			var j = request.jar();
 			var cookie1 = request.cookie('agreed=true');

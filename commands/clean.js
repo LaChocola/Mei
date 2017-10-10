@@ -5,7 +5,6 @@ module.exports = {
       }
         var coolkids = ["161027274764713984", "176975815072808960", "211019995214381059"];
         var coolkids = coolkids.push(m.channel.guild.ownerID)
-        console.log(coolkids);
         var member = m.channel.guild.members.get(m.author.id)
         var args = m.cleanContent.replace("!clean ", "").split(" ")
 
@@ -22,12 +21,7 @@ module.exports = {
           Bot.createMessage(m.channel.id, 'Time to clean up')
           Bot.getMessages(m.channel.id, parseInt(int+2)).then(function(msgs) {
               for (var msg of msgs) {
-                  if (msg.author.id == '161027274764713984') {
-                      msg.delete();
-                  }
-                  if (msg.author.id == Bot.user.id) {
-                      msg.delete();
-                  }
+                  msg.delete();
               }
               Bot.sendChannelTyping(m.channel.id).then(async () => {
               Bot.createMessage(m.channel.id, 'Cleaning~').then(a => {
