@@ -5,7 +5,7 @@ const handler = new Sagiri(config.tokens.sauce);
 module.exports = {
     main: function(Bot, m, args) {
       let data;
-      if (m.content.length < 7 && !m.attachments) {
+      if (m.content.length < 7 && !m.attachments || m.content == "!sauce") {
         Bot.createMessage(m.channel.id, "Please add an image, or image url");
         return;
       }
