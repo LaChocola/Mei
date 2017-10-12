@@ -26,6 +26,22 @@ module.exports = {
 		"small": "356005120816971786",
 		"neutral": "358535595892670465"
 	}
+	if (m.channel.guild.id == "326172270370488320") {
+		var roles = {
+			"tiny": "326479817165766657",
+			"expansion": "343903114484776961",
+			"streamlads": "348956858704199683",
+			"expansion": "343903114484776961",
+			"giant": "326479986527567872",
+			"giantess": "326479753806872586",
+			"switch": "326492362123640843",
+			"macro furry": "326479916553994260",
+			"goddess": "346299914222960641",
+			"artist": "326513572966432769",
+			"lurkers": "326834501613518858",
+			"norms": "333002335414386688"
+		}
+	}
 	if (m.mentions.length > 0 && m.mentions[0].id != m.author.id) {
 		Bot.createMessage(m.channel.id, "You can only assign roles to yourself");
 		return;
