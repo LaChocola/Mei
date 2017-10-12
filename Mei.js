@@ -16,10 +16,10 @@ var events = fs.readdirSync("./events/");
 var colors = require("colors");
 var aesthetics = require('aesthetics');
 const _ = require("./data.js");
+var data = _.load();
 var prefix = config.prefix
 var hands = [ ":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
 var hand = hands[Math.floor(Math.random() * hands.length)]
-
 Bot.on("messageCreate", (m)=>{
   if (m.author.id == "309220487957839872") return;
 	if (m.channel.isPrivate) return;
@@ -34,10 +34,6 @@ Bot.on("messageCreate", (m)=>{
     if (m.content.includes("stop")) {
       process.exit(0)
     }
-    if (m.content.includes("trust")) {
-      Bot.createMessage(m.channel.id, hand);
-    }
-
     if (m.content.includes(" mute") && m.mentions.length > 0) {
       Bot.addGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "363854631035469825", "Daddy said shush").then(() => {
           return Bot.createMessage(m.channel.id, hand).then((m) => {
@@ -221,6 +217,11 @@ Bot.on("guildMemberAdd",function(guild, member) {
           })
           return;}, 4000)
   }
+  if (guild.id == "326172270370488320") {
+          Bot.createMessage("326172270370488320", "Welcome to Size Haven, "+ member.mention+"!\nWe now have: "+ guild.members.filter(m => !m.bot).length + " people!\nThere are a list of roles in #Noboruhasnttoldmethechanelyet, please use `!role add rolename` to give yourself roles, and let a Mod know if you have any questions~").then((m) => {
+              return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
+          })
+  }
 });
 
 Bot.on("guildMemberRemove",function(guild, member) {
@@ -236,6 +237,11 @@ Bot.on("guildMemberRemove",function(guild, member) {
                 }
             }
           });
+  }
+  if (guild.id == "326172270370488320") {
+          Bot.createMessage("326172270370488320", member.username + " left Size Haven. \nWe now have: "+ guild.members.filter(m => !m.bot).length + " people :frowning2:").then((m) => {
+              return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
+          })
   }
 });
 
@@ -269,6 +275,30 @@ Bot.on("guildDelete",function(guild) {
             }
           });
       });
+});
+
+Bot.on("messageReactionAdd",function(m, emoji, userID) {
+  var data = _.load();
+  if (data.giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != data.giveaways.creator) {
+    if (m.id == data.giveaways.mID) {
+      data.giveaways.current.contestants[userID] = "entered"
+      _.save(data);
+      return;
+    }
+  }
+});
+
+Bot.on("messageReactionRemove",function(m, emoji, userID)  {
+  var data = _.load();
+  if (data.giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != data.giveaways.creator) {
+    if (m.id == data.giveaways.mID) {
+      if (data.giveaways.current.contestants[userID]) {
+        delete data.giveaways.current.contestants[userID]
+        _.save(data);
+        return;
+      }
+    }
+  }
 });
 
 events.forEach(function(event) {
