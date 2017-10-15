@@ -26,7 +26,7 @@ module.exports = {
     if (!(data.people[id].names)) {
 			data.people[id].names = {}
     }
-    if (args.includes("add")) {
+    if (args.includes("add ")) {
       if (mentioned.id != m.author.id) {
         Bot.createMessage(m.channel.id, "Okay....but that isnt you");
         return;
@@ -62,12 +62,12 @@ module.exports = {
 			}
 			return;
     }
-    if (args.includes("remove")) {
+    if (args.includes("remove ")) {
       if (mentioned.id != m.author.id) {
         Bot.createMessage(m.channel.id, "Okay....but that isnt you");
         return;
       }
-      var incoming = name1.replace("remove ", "").replace(": ", " ").split(" ")
+      var incoming = name1.replace("remove ", "").split(" ")
       if (data.people[id].names[incoming[0]]) {
         delete data.people[id].names[incoming[0]]
         _.save(data)
