@@ -2,7 +2,7 @@ const _ = require("../people.js");
 var data = _.load();
 module.exports = {
 	main: function(Bot, m, args) {
-    	var name1 = m.cleanContent.replace("!fetish ", "")
+    	var name1 = m.cleanContent.replace(/!fetish/i, "")
 			function capFirstLetter(string) {
 				return string.charAt(0).toUpperCase() + string.slice(1);
 			}
@@ -28,8 +28,8 @@ module.exports = {
     if (!(data.people[id].fetishes)) {
 			data.people[id].fetishes = {}
     }
-    if (args.includes("search")) {
-      var incomingEntries = name1.replace("search ", "").replace(": ", " ").split(" ")
+    if (args.toLowerCase().includes("search ")) {
+      var incomingEntries = name1.replace(/ search /i, "").replace(": ", " ").split(" | ")
       var incoming = [];
       var iterator = incomingEntries.entries()
       for (let e of iterator) {
@@ -51,12 +51,29 @@ module.exports = {
         return;
       }
     }
-    if (args.includes("add")) {
+    if (args.toLowerCase().includes("remove ")) {
       if (mentioned.id != m.author.id) {
         Bot.createMessage(m.channel.id, "Okay....but that isnt you");
         return;
       }
-      var incomingEntries = name1.replace("add ", "").replace(": ", " ").split(" ")
+      var incoming = name1.replace(/ remove /i, "").split(" | ")
+      if (data.people[id].fetishes[capFirstLetter(incoming[0])]) {
+        delete data.people[id].fetishes[capFirstLetter(incoming[0])]
+        _.save(data)
+        Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your fetish list" + hand);
+        return;
+      }
+      else {
+        Bot.createMessage(m.channel.id, "Sorry, I couldnt find **" + incoming[0] + "** in your fetish list");
+        return;
+      }
+    }
+    if (args.toLowerCase().includes("add ")) {
+      if (mentioned.id != m.author.id) {
+        Bot.createMessage(m.channel.id, "Okay....but that isnt you");
+        return;
+      }
+      var incomingEntries = name1.replace(/ add /i, "").split(" | ")
 			var incoming = [];
 			var iterator = incomingEntries.entries()
 			for (let e of iterator) {
@@ -80,23 +97,6 @@ module.exports = {
 					Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand);
 					return;
 				}
-      }
-    }
-    if (args.toLowerCase().includes("remove")) {
-      if (mentioned.id != m.author.id) {
-        Bot.createMessage(m.channel.id, "Okay....but that isnt you");
-        return;
-      }
-      var incoming = name1.replace("remove ", "").replace(": ", " ").split(" ")
-      if (data.people[id].fetishes[capFirstLetter(incoming[0])]) {
-        delete data.people[id].fetishes[capFirstLetter(incoming[0])]
-        _.save(data)
-        Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your fetish list" + hand);
-        return;
-      }
-      else {
-        Bot.createMessage(m.channel.id, "Sorry, I couldnt find **" + incoming[0] + "** in your fetish list");
-        return;
       }
     }
     if (Object.keys(data.people[id].fetishes).length < 1) {
