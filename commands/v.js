@@ -511,15 +511,15 @@ module.exports = {
 		if (male) {
 			var smush = Array.from(new Set([].concat(butt, foot, panty, voreMouth, handPlay, legs, proposal, misc)))
 			var smush1 = smush[Math.floor(Math.random() * smush.length)]
-			var smush1 = smush1.replace(/her/gi, " his").replace(" she", " he").replace(" GTS", " GT").replace(/breasts/gi, "chest").replace(" pussy", " dick")
-			var pantySmush = pantySmush.replace(/ her/gi, " his").replace(" she", " he").replace(" GTS", " GT").replace(/breasts/gi, "chest").replace(" pussy", " dick")
-			var miscSmush = miscSmush.replace(/ her/gi, " his").replace(" she", " he").replace(" GTS", " GT").replace(/breasts/gi, "chest").replace(" pussy", " dick")
-			var buttSmush = buttSmush.replace(/ her/gi, " his").replace(" she", " he").replace(" GTS", " GT").replace(/breasts/gi, "chest").replace(" pussy", " dick")
-			var handSmush = handSmush.replace(/ her/gi, " his").replace(" she", " he").replace(" GTS", " GT").replace(/breasts/gi, "chest").replace(" pussy", " dick")
-			var legsSmush = legsSmush.replace(/ her/gi, " his").replace(" she", " he").replace(" GTS", " GT").replace(/breasts/gi, "chest").replace(" pussy", " dick")
-			var voreSmush = voreSmush.replace(/ her/gi, " his").replace(" she", " he").replace(" GTS", " GT").replace(/breasts/gi, "chest").replace(" pussy", " dick")
-			var footSmush = footSmush.replace(/ her/gi, " his").replace(" she", " he").replace(" GTS", " GT").replace(/breasts/gi, "chest").replace(" pussy", " dick")
-			var proposalSmush = proposalSmush.replace(/ her/gi, " his").replace(" she", " he").replace(" GTS", " GT").replace(/breasts/gi, "chest").replace(" pussy", " dick")
+			var smush1 = smush1.replace(" her ", " his ").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+			var pantySmush = pantySmush.replace(" her ", " his ").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+			var miscSmush = miscSmush.replace(" her ", " his ").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+			var buttSmush = buttSmush.replace(" her ", " his ").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+			var handSmush = handSmush.replace(" her ", " his ").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+			var legsSmush = legsSmush.replace(" her ", " his ").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+			var voreSmush = voreSmush.replace(" her ", " his ").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+			var footSmush = footSmush.replace(" her ", " his ").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+			var proposalSmush = proposalSmush.replace(" her ", " his ").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
 		} else if (male != true) {
 			var smush = Array.from(new Set([].concat(butt, vagina, panty, foot, voreMouth, handPlay, legs, proposal, breasts, misc)))
 
