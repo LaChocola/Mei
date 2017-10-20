@@ -202,7 +202,7 @@ Bot.on("guildMemberAdd",function(guild, member) {
             const msgEmbed = {
         			"content": "We have just reached "+guild.members.filter(m => !m.bot).length+" members! :tada: :tada: :tada: :tada: :tada: :tada:",
         			"embed": {
-        				"title": "To celebrate, Snippy drew this for us: https://buttsare.sexy/8ccdb9.png",
+        				"title": "To celebrate, Snippy drew this for us: https://buttsare.sexy/6d853b.png",
         				"color": 0xA260F6,
         				"image": {
         					"url": "https://buttsare.sexy/8ccdb9.png"

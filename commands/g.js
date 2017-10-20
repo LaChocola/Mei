@@ -379,13 +379,13 @@ name + " found you in her Christmas stocking; her favourite present yet.",
 if (male ==  true) {
 		var gentle = butt.concat(foot, voreMouth, handPlay, legs, misc);
 		var gentle1 = gentle[Math.floor(Math.random() * gentle.length)]
-		var gentle1 = gentle1.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
-		var miscGentle = miscGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
-		var buttGentle = buttGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
-		var handGentle = handGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
-		var legsGentle = legsGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
-		var voreGentle = voreGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
-		var footGentle = footGentle.replace(" her", " him").replace(" she", " he").replace(" GTS", " GT").replace(" breasts", " chest")
+		var gentle1 = gentle1.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+		var miscGentle = miscGentle.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+		var buttGentle = buttGentle.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+		var handGentle = handGentle.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+		var legsGentle = legsGentle.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+		var voreGentle = voreGentle.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+		var footGentle = footGentle.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
 
 } else if (male != true) {
 		var gentle = butt.concat(foot, vagina, voreMouth, handPlay, legs, breasts, misc);
