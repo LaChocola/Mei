@@ -24,7 +24,8 @@ module.exports = {
 		"switch": "356005806681882656",
 		"creator": "358537297538318336",
 		"small": "356005120816971786",
-		"neutral": "358535595892670465"
+		"neutral": "358535595892670465",
+		"secret": "372625251819061249"
 	}
 	if (m.channel.guild.id == "326172270370488320") {
 		var roles = {
@@ -52,8 +53,8 @@ module.exports = {
 				if (roles[content]) {
 				var roleID = roles[content]
 				Bot.addGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
-						return Bot.createMessage(m.channel.id, hand + " Successful added: " + content).then((m) => {
-	              return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
+						return Bot.createMessage(m.channel.id, hand + " Successful added: " + content).then((msg) => {
+	              return setTimeout(function() {Bot.deleteMessage(msg.channel.id, msg.id, "Timeout")}, 5000) && setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
 	          })
 				})
 				return;
@@ -91,7 +92,9 @@ module.exports = {
 				if (roles[content]) {
 				var roleID = roles[content]
 				Bot.removeGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
-						return Bot.createMessage(m.channel.id, hand + " Successful removed: " + content);
+						return Bot.createMessage(m.channel.id, hand + " Successful removed: " + content).then((msg) => {
+								return setTimeout(function() {Bot.deleteMessage(msg.channel.id, msg.id, "Timeout")}, 5000) && setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
+						})
 				})
 				return;
 			} else {
