@@ -24,17 +24,25 @@ Bot.on("messageCreate", (m)=>{
   if (m.author.id == "309220487957839872") return;
 	if (m.channel.isPrivate) return;
   if (!m.guild) {
-    Bot.getDMChannel(m.author.id).then(function(DMchannel) {
-			Bot.createMessage(DMchannel.id, "Cease, you heathen!");
-      console.log(m.author.nick || m.author.username + " was a bad kid, and tried to dm me")
-    });
-    return;
+    console.log(m);
   }
   if (m.author.id == "161027274764713984" && m.content.includes("pls")) {
     if (m.content.includes("stop")) {
       process.exit(0)
     }
     if (m.content.includes(" mute") && m.mentions.length > 0) {
+      if (m.mentions.length > 1) {
+        var muteArray = []
+        var mentions = m.mentions
+        for (const mention of mentions) {
+          Bot.addGuildMemberRole(m.channel.guild.id, mention.id, "363854631035469825", "Daddy said shush").then(() => {
+              return Bot.createMessage(m.channel.id, hand).then((m) => {
+                  return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
+              })
+          })
+        }
+        return;
+      }
       Bot.addGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "363854631035469825", "Daddy said shush").then(() => {
           return Bot.createMessage(m.channel.id, hand).then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
@@ -42,6 +50,18 @@ Bot.on("messageCreate", (m)=>{
       })
     }
     if (m.content.includes(" unmute") && m.mentions.length > 0) {
+      if (m.mentions.length > 1) {
+        var unmuteArray = []
+        var mentions = m.mentions
+        for (const mention of mention) {
+          Bot.removeGuildMemberRole(m.channel.guild.id, mention.id, "363854631035469825", "Daddy said speak").then(() => {
+              return Bot.createMessage(m.channel.id, hand).then((m) => {
+                  return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
+              })
+          })
+        }
+        return;
+      }
       Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "363854631035469825", "Daddy said speak").then(() => {
           return Bot.createMessage(m.channel.id, hand).then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
@@ -131,58 +151,6 @@ Bot.on("messageCreate", (m)=>{
       }
     }
   }
-
-	  var ignoredChannels = ['220059213441794050', '220079557644910592', '267443100119597058', '306680956566110208', '285366295040622593', '249099205342134273']
-		var roll = Math.floor(Math.random() * 20) + 1
-		var words = m.content.split("\s+")
-
-		for (let word of words) {
-
-		if (roll > 0 && roll < 15) {
-
-		if (ignoredChannels.indexOf(m.channel.id) == -1 && word.toLowerCase() == "ochiko" || word.toLowerCase() == "poo" || word.toLowerCase() == "poop" || word.toLowerCase() == "shit") {
-			Bot.addMessageReaction(m.channel.id, m.id, "ochiko:244704620650299393")
-		}
-
-		if (ignoredChannels.indexOf(m.channel.id) == -1 && word.toLowerCase() == ":kreygasm:") {
-			Bot.createMessage(m.channel.id, "<:kreygasm:267838274276425728> Do ya like jazz? <:kreygasm:267838274276425728>").then(a => {
-			 setTimeout(function() {
-				a.delete();
-			}, 1000);
-			});
-		}
-
-		if (ignoredChannels.indexOf(m.channel.id) == -1 && word.toLowerCase() == "vore" || word.toLowerCase() == "mouth") {
-			Bot.addMessageReaction(m.channel.id, m.id, "vore:249044969933766656")
-			Bot.addMessageReaction(m.channel.id, m.id, "swallow:249044981455650826")
-		}
-
-		if (ignoredChannels.indexOf(m.channel.id) == -1 && word.toLowerCase() == "boob" || word.toLowerCase() == "boobs") {
-			Bot.addMessageReaction(m.channel.id, m.id, "beefers:237630085534973963")
-		}
-
-		if (ignoredChannels.indexOf(m.channel.id) == -1 && word.toLowerCase() == "feet" || word.toLowerCase() == "foot" || word.toLowerCase() == "stomp") {
-			Bot.addMessageReaction(m.channel.id, m.id, "reddot:248615497212493827")
-			Bot.addMessageReaction(m.channel.id, m.id, "foote:239789836121145344")
-			Bot.addMessageReaction(m.channel.id, m.id, "%F0%9F%91%A3")
-		}
-
-		if (ignoredChannels.indexOf(m.channel.id) == -1 && word.toLowerCase() == "butt" || word.toLowerCase() == "ass" || word.toLowerCase() == "booty") {
-			Bot.addMessageReaction(m.channel.id, m.id, "booty:246514197423325184")
-		}
-
-		if (ignoredChannels.indexOf(m.channel.id) == -1 && word.toLowerCase() == "bibby") {
-			Bot.addMessageReaction(m.channel.id, m.id, "ochiko:244704620650299393")
-			setTimeout(function () {
-			}, 300);
-			Bot.removeMessageReaction(m.channel.id, m.id, "ochiko:244704620650299393")
-		}
-
-		if (ignoredChannels.indexOf(m.channel.id) == -1 && word.toLowerCase() == "peen" || word.toLowerCase() == "dicc" || word.toLowerCase() == "dick" || word.toLowerCase() == "penis") {
-			Bot.addMessageReaction(m.channel.id, m.id, "dicc:267769403318337537")
-			}
-		}
-	}
 });
 
 Bot.on("guildMemberAdd",function(guild, member) {
