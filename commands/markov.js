@@ -1,13 +1,5 @@
 const MarkovGen = require('markov-generator');
 var time = new Date().toISOString();
-var ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/v3');
-var config = require("../etc/config.json");
-var tone_analyzer = new ToneAnalyzerV3({
-  username: config.tokens.ibm.username,
-  password: config.tokens.ibm.password,
-  version_date: '2016-05-19'
-});
-
 
 module.exports = {
     main: async function (Bot, m, args) {
