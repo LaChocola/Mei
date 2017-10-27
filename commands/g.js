@@ -379,13 +379,13 @@ name + " found you in her Christmas stocking; her favourite present yet.",
 if (male ==  true) {
 		var gentle = butt.concat(foot, voreMouth, handPlay, legs, misc);
 		var gentle1 = gentle[Math.floor(Math.random() * gentle.length)]
-		var gentle1 = gentle1.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
-		var miscGentle = miscGentle.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
-		var buttGentle = buttGentle.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
-		var handGentle = handGentle.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
-		var legsGentle = legsGentle.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
-		var voreGentle = voreGentle.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
-		var footGentle = footGentle.replace(" her ", " his").replace(" she ", " he ").replace(" GTS ", " GT ").replace(" breasts ", " chest ").replace(" pussy ", " dick ")
+		var gentle1 = gentle1.replace(/ her /ig, " his ").replace(/ she /ig, " he ").replace(/ GTS /ig, " GT ").replace(/ breasts /ig, " chest ").replace(/ pussy /ig, " dick ")
+		var miscGentle = miscGentle.replace(/ her /ig, " his ").replace(/ she /ig, " he ").replace(/ GTS /ig, " GT ").replace(/ breasts /ig, " chest ").replace(/ pussy /ig, " dick ")
+		var buttGentle = buttGentle.replace(/ her /ig, " his ").replace(/ she /ig, " he ").replace(/ GTS /ig, " GT ").replace(/ breasts /ig, " chest ").replace(/ pussy /ig, " dick ")
+		var handGentle = handGentle.replace(/ her /ig, " his ").replace(/ she /ig, " he ").replace(/ GTS /ig, " GT ").replace(/ breasts /ig, " chest ").replace(/ pussy /ig, " dick ")
+		var legsGentle = legsGentle.replace(/ her /ig, " his ").replace(/ she /ig, " he ").replace(/ GTS /ig, " GT ").replace(/ breasts /ig, " chest ").replace(/ pussy /ig, " dick ")
+		var voreGentle = voreGentle.replace(/ her /ig, " his ").replace(/ she /ig, " he ").replace(/ GTS /ig, " GT ").replace(/ breasts /ig, " chest ").replace(/ pussy /ig, " dick ")
+		var footGentle = footGentle.replace(/ her /ig, " his ").replace(/ she /ig, " he ").replace(/ GTS /ig, " GT ").replace(/ breasts /ig, " chest ").replace(/ pussy /ig, " dick ")
 
 } else if (male != true) {
 		var gentle = butt.concat(foot, vagina, voreMouth, handPlay, legs, breasts, misc);
@@ -434,6 +434,7 @@ var glength = gentle.length
 
 						 if (args.indexOf("butt") > -1 || args.indexOf("ass") > -1 || args.indexOf("bum") > -1 || args.indexOf("bums") > -1 || args.indexOf("butts") > -1) {
 							 Bot.createMessage(m.channel.id, tellem + buttGentle);
+							 return;
 						 }
 						 else if (args.indexOf("vagina") > -1 || args.indexOf("pussy") > -1 || args.indexOf("insertion") > -1 || args.indexOf("cunt") > -1 || args.indexOf("cunny") > -1) {
 							 Bot.createMessage(m.channel.id, tellem + vaginaGentle);
@@ -441,27 +442,35 @@ var glength = gentle.length
 						 }
 						 else if (args.indexOf("foot") > -1 || args.indexOf("feet") > -1 || args.indexOf("foote") > -1) {
 							 Bot.createMessage(m.channel.id, tellem + footGentle);
+							 return;
 						 }
 						 else if (args.indexOf("panty") > -1 || args.indexOf("panties") > -1 || args.indexOf("underwear") > -1 || args.indexOf("thong") > -1 || args.indexOf("thongs") > -1 || args.indexOf("pantie") > -1) {
 							 Bot.createMessage(m.channel.id, tellem + pantyGentle);
+							 return;
 						 }
 						 else if (args.indexOf("vore") > -1 || args.indexOf("mouth") > -1)  {
 							 Bot.createMessage(m.channel.id, tellem + voreGentle);
+							 return;
 						 }
 						 else if (args.indexOf("hand") > -1 || args.indexOf("hands") > -1) {
 							 Bot.createMessage(m.channel.id, tellem + handGentle);
+							 return;
 						 }
 						 else if (args.indexOf("legs") > -1 || args.indexOf("leg") > -1 || args.indexOf("thighs") > -1)  {
 							 Bot.createMessage(m.channel.id, tellem + legsGentle);
+							 return;
 						 }
 						 else if (args.indexOf("boobs") > -1 || args.indexOf("breasts") > -1 || args.indexOf("breast") > -1 || args.indexOf("boob") > -1 || args.indexOf("tit") > -1 || args.indexOf("tits") > -1) {
 							 Bot.createMessage(m.channel.id, tellem + breastGentle);
+							 return;
 						 }
 						 else if (args.indexOf("misc") > -1 || args.indexOf("alt") > -1 || args.indexOf("other") > -1) {
 							 Bot.createMessage(m.channel.id, tellem + miscGentle);
+							 return;
 						 }
 						 else {
 							 Bot.createMessage(m.channel.id, tellem + gentle1);
+							 return;
 						 }
 
 			 }
