@@ -2,7 +2,7 @@ const _ = require("../people.js");
 var data = _.load();
 module.exports = {
 	main: function(Bot, m, args) {
-    	var name1 = m.cleanContent.replace("!artist ", "")
+    	var name1 = m.cleanContent.replace(/!artist /i, "")
       var isThisUsernameThatUsername = function(member) {
         var memberName = member.nick || member.username
         if (memberName.toLowerCase() == name1.toLowerCase()) {
@@ -25,12 +25,12 @@ module.exports = {
 				data.people[id].links = {}
 			}
 
-    if (args.includes("add")) {
+    if (args.toLowerCase().includes("add ")) {
       if (mentioned.id != m.author.id) {
         Bot.createMessage(m.channel.id, "Okay....but that isnt you");
         return;
       }
-      var incoming = name1.replace("add ", "").replace(": ", " ").split(" ")
+      var incoming = name1.replace(/add /i, "").replace(": ", " ").split(" ")
       if (data.people[id].links[incoming[0]]) {
         Bot.createMessage(m.channel.id, "That's already been added, silly~");
         return;
