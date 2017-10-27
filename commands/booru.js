@@ -131,7 +131,7 @@ module.exports = {
 										 },
 										 "author": {
 											 "name": cleanTags,
-											 "url": imageURL.toString()
+											 "url": pageToVisit.slice(0, pageToVisit.indexOf("?")).toString()
 										 }
 									 }
 								 };
@@ -151,7 +151,7 @@ module.exports = {
 										 },
 										 "author": {
 											 "name": cleanTags,
-											 "url": imageURL[0].toString()
+											 "url": pageToVisit.slice(0, pageToVisit.indexOf("?")).toString()
 										 }
 									 }
 								 };
