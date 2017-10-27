@@ -2,7 +2,7 @@ const _ = require("../people.js");
 var data = _.load();
 module.exports = {
 	main: function(Bot, m, args) {
-    	var name1 = m.cleanContent.replace("!names ", "")
+    	var name1 = m.cleanContent.replace(/!names /i, "")
 			function capFirstLetter(string) {
 				return string.charAt(0).toUpperCase() + string.slice(1);
 			}
@@ -26,12 +26,31 @@ module.exports = {
     if (!(data.people[id].names)) {
 			data.people[id].names = {}
     }
-    if (args.includes("add ")) {
+    if (args.search(/remove /i) !== -1) {
       if (mentioned.id != m.author.id) {
         Bot.createMessage(m.channel.id, "Okay....but that isnt you");
         return;
       }
-      var incomingEntries = name1.replace("add ", "").replace(": ", " ").split(" | ")
+      var incoming = name1.replace(/remove /i, "").split(" | ")
+      if (data.people[id].names[incoming[0]]) {
+        delete data.people[id].names[incoming[0]]
+        _.save(data)
+        Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your names list" + hand).then((m) => {
+						return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 10000)
+				})
+        return;
+      }
+      else {
+        Bot.createMessage(m.channel.id, "Sorry, I couldnt find**" + incoming[0] + " in your names list");
+        return;
+      }
+    }
+    if (args.search(/add /i) !== -1) {
+      if (mentioned.id != m.author.id) {
+        Bot.createMessage(m.channel.id, "Okay....but that isnt you");
+        return;
+      }
+      var incomingEntries = name1.replace(/add /i, "").replace(": ", " ").split(" | ")
 			var incoming = [];
 			var iterator = incomingEntries.entries()
 			for (let e of iterator) {
@@ -42,8 +61,8 @@ module.exports = {
 					continue;
 				}
 				else {
-					if (e[1].toLowerCase().includes(" male")) {
-						var cleanName = e[1].replace(" male", "").replace(" Male", "")
+					if (e[1].search(/ male/i) !== -1) {
+						var cleanName = e[1].replace(/ male/i, "")
 						data.people[id].names[cleanName] = "male"
 						_.save(data)
 						Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then((m) => {
@@ -61,25 +80,6 @@ module.exports = {
 				}
 			}
 			return;
-    }
-    if (args.includes("remove ")) {
-      if (mentioned.id != m.author.id) {
-        Bot.createMessage(m.channel.id, "Okay....but that isnt you");
-        return;
-      }
-      var incoming = name1.replace("remove ", "").split(" ")
-      if (data.people[id].names[incoming[0]]) {
-        delete data.people[id].names[incoming[0]]
-        _.save(data)
-        Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your names list" + hand).then((m) => {
-						return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 10000)
-				})
-        return;
-      }
-      else {
-        Bot.createMessage(m.channel.id, "Sorry, I couldnt find**" + incoming[0] + " in your names list");
-        return;
-      }
     }
     if (Object.keys(data.people[id].names).length < 1) {
       Bot.createMessage(m.channel.id, "I could find any names list for **" + name + "** :(");

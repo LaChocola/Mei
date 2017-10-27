@@ -2,7 +2,7 @@ const _ = require("../people.js");
 var data = _.load();
 module.exports = {
 	main: function(Bot, m, args) {
-    	var name1 = m.cleanContent.replace(/!fetish/i, "")
+    	var name1 = m.cleanContent.replace(/!fetish /i, "")
 			function capFirstLetter(string) {
 				return string.charAt(0).toUpperCase() + string.slice(1);
 			}
@@ -29,7 +29,7 @@ module.exports = {
 			data.people[id].fetishes = {}
     }
     if (args.toLowerCase().includes("search ")) {
-      var incomingEntries = name1.replace(/ search /i, "").replace(": ", " ").split(" | ")
+      var incomingEntries = name1.replace(/search /i, "").replace(": ", " ").split(" | ")
       var incoming = [];
       var iterator = incomingEntries.entries()
       for (let e of iterator) {
@@ -56,7 +56,7 @@ module.exports = {
         Bot.createMessage(m.channel.id, "Okay....but that isnt you");
         return;
       }
-      var incoming = name1.replace(/ remove /i, "").split(" | ")
+      var incoming = name1.replace(/remove /i, "").split(" | ")
       if (data.people[id].fetishes[capFirstLetter(incoming[0])]) {
         delete data.people[id].fetishes[capFirstLetter(incoming[0])]
         _.save(data)
@@ -73,7 +73,7 @@ module.exports = {
         Bot.createMessage(m.channel.id, "Okay....but that isnt you");
         return;
       }
-      var incomingEntries = name1.replace(/ add /i, "").split(" | ")
+      var incomingEntries = name1.replace(/add /i, "").split(" | ")
 			var incoming = [];
 			var iterator = incomingEntries.entries()
 			for (let e of iterator) {
@@ -84,8 +84,8 @@ module.exports = {
         return;
       }
       else {
-				if (incoming.indexOf("Dislike") > -1) {
-          incoming.splice(incoming.indexOf("Dislike"), 1)
+				if (incoming[0].toLowerCase().includes("dislike ")) {
+          incoming[0] = incoming[0].replace(/dislike /ig, "")
 					data.people[id].fetishes[incoming[0]] = "dislike"
 					_.save(data)
 					Bot.createMessage(m.channel.id, "Added Dislike: **" + incoming[0] + "** " + hand);
@@ -108,9 +108,9 @@ module.exports = {
       if (mentioned.id != m.author.id) {
         for (const [key, value] of Object.entries(fetishes)) {
           if (data.people[m.author.id].fetishes[key]) {
-          if (data.people[m.author.id].fetishes[key] == "dislike" && data.people[id].fetishes[key] == "dislike") {
-            commonDislikes.push(`${key}`)
-            continue;
+	          if (data.people[m.author.id].fetishes[key] == "dislike" && data.people[id].fetishes[key] == "dislike") {
+	            commonDislikes.push(`${key}`)
+	            continue;
           }
           else if (data.people[m.author.id].fetishes[key] == "like" && data.people[id].fetishes[key] == "like") {
             commonLikes.push(`${key}`)
