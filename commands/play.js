@@ -6,6 +6,7 @@ module.exports = {
     var args = m.cleanContent.replace("!play ", "").toLowerCase()
     var hands = [ ":wave::skin-tone-1:", ":wave::skin-tone-2:", ":wave::skin-tone-3:", ":wave::skin-tone-4:", ":wave::skin-tone-5:", ":wave:"]
     var hand = hands[Math.floor(Math.random() * hands.length)]
+    if (m.channel.nsfw == false) {Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels"); return}
     if (m.member.voiceState.channelID) { // User is in Voice Channel
       Bot.joinVoiceChannel(m.member.voiceState.channelID).then(function (voiceConnection) { // Join user voice channel
         var BotVoiceState = m.channel.guild.members.get(Bot.user.id).voiceState;
