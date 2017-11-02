@@ -1,13 +1,17 @@
-module.exports = {
+amodule.exports = {
 	main: function(Bot, m, args) {
 	var args = args.split(" ")
 	var responses = ["Are you a real villan?", "Have you ever caught a good guy? \nLike a real super hero?", "Have you ever tried a disguise?", "What are you doing?!?!?!", "*NO!*, Don't touch that!", "Fuck Off", "Roses are red\nfuck me ;) "]
 	var response = responses[Math.floor(Math.random() * responses.length)]
 	var authorRoles = m.channel.guild.members.get(m.author.id).roles
 	if (authorRoles.indexOf("356134081093828608") == -1 && m.author.id != "161027274764713984") {
-    Bot.createMessage(m.channel.id, response);
+		Bot.createMessage(m.channel.id, response);
 		return;
   }
+	if (m.channel.guild.id == "373589430448947200") {
+		Bot.createMessage(m.channel.id, response);
+		return;
+	}
   var hands = [ ":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
   var hand = hands[Math.floor(Math.random() * hands.length)]
   var isThisUsernameThatUsername = function(member) {
