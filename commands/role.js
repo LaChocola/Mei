@@ -25,7 +25,7 @@ module.exports = {
 		"creator": "358537297538318336",
 		"small": "356005120816971786",
 		"neutral": "358535595892670465",
-		"secret": "372625251819061249"
+		"degenerate": "372625251819061249"
 	}
 	if (m.channel.guild.id == "326172270370488320") {
 		var roles = {
@@ -40,7 +40,8 @@ module.exports = {
 			"goddess": "346299914222960641",
 			"artist": "326513572966432769",
 			"lurkers": "326834501613518858",
-			"norms": "333002335414386688"
+			"norms": "333002335414386688",
+			"micro": "371363527388299283"
 		}
 	}
 	if (m.mentions.length > 0 && m.mentions[0].id != m.author.id) {
@@ -126,5 +127,5 @@ module.exports = {
 	}
 
 	},
-	help: "WIP"
+	help: "Assign your role. `!role add rolename`"
 }

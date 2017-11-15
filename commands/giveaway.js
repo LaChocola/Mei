@@ -8,7 +8,6 @@ module.exports = {
         return new Promise((resolve, reject) => {
             var time = 0.5
             var base = m.cleanContent.replace("!giveaway ", "").split(" | ");
-            console.log(base);
 						if (!isNaN(+base[1])) {
 							var time = +base[1]
               base.pop();
