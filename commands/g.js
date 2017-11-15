@@ -25,6 +25,10 @@ module.exports = {
 			var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n")
 			var cleanNames = cleanNames.replace("Lucy,", "Lucy,\n")
 		}
+		if (m.guild.id === "373589430448947200") { // r/Macrophilia Only
+			var names = ["Miau"]
+			var cleanNames = names[0]
+		}
 		if (m.guild.id === "319534510318551041") { // The Big House Only
 			var names = names.concat(["Zem", "Ardy", "Vas"])
 			var cleanishNames = names.join(', ')

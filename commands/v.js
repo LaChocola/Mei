@@ -9,7 +9,7 @@ module.exports = {
 }
     var prefix = '!'
 		if (m.channel.guild.id == "187694240585744384") {
-			var prefix = ":"
+			var prefix = "?"
 		}
 		var male = false
 		var names = ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Baiken", "Ryuko", "Sombra", "Wolfer", "Gwen", "Mercy", "Gwynevere", "Tracer",
@@ -30,6 +30,10 @@ module.exports = {
 			var cleanishNames = names.join(', ')
 			var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n")
 			var cleanNames = cleanNames.replace("Lucy,", "Lucy,\n")
+		}
+		if (m.guild.id === "373589430448947200") { // r/Macrophilia Only
+			var names = ["Miau"]
+			var cleanNames = names[0]
 		}
 		if (m.guild.id === "354709664509853708") { // Small World Only
 			var names = names.concat(["Docop", "Mikki", "Spellgirl"])
