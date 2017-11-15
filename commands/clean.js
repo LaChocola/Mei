@@ -7,7 +7,6 @@ module.exports = {
         var coolkids = coolkids.push(m.channel.guild.ownerID)
         var member = m.channel.guild.members.get(m.author.id)
         var args = m.cleanContent.replace("!clean ", "").split(" ")
-
         var argsIterator = args.entries()
     		for (let e of argsIterator) {
         if (isNumeric(+e[1])) {

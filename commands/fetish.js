@@ -105,19 +105,24 @@ module.exports = {
     }
     else {
 			var fetishes = data.people[id].fetishes
+			var fetishes2 = data.people[m.author.id].fetishes
       if (mentioned.id != m.author.id) {
-        for (const [key, value] of Object.entries(fetishes)) {
-          if (data.people[m.author.id].fetishes[key]) {
-	          if (data.people[m.author.id].fetishes[key] == "dislike" && data.people[id].fetishes[key] == "dislike") {
-	            commonDislikes.push(`${key}`)
-	            continue;
-          }
-          else if (data.people[m.author.id].fetishes[key] == "like" && data.people[id].fetishes[key] == "like") {
-            commonLikes.push(`${key}`)
-            continue;
-          }
-        }
-      }
+			let lowerOther = Object.entries(fetishes).map(v => [v[0].toLowerCase(), v[1]]).reduce((map, val) => {
+			    map[val[0]] = val[1];
+			    return map;
+			}, {});
+			let lowerMain = Object.entries(fetishes2).map(v => [v[0].toLowerCase(), v[1]]).reduce((map, val) => {
+			    map[val[0]] = val[1];
+			    return map;
+			}, {});
+			var commonDislikes = [];
+			var commonLikes = [];
+			for (let val in lowerMain) {
+			    if (lowerOther[val] && lowerOther[val] === lowerMain[val]) {
+			        if (lowerMain[val] == 'like') commonLikes.push(val);
+			        if (lowerMain[val] == 'dislike') commonDislikes.push(val);
+			    }
+			}
     }
 
       for (const [key, value] of Object.entries(fetishes)) {
