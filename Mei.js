@@ -9,6 +9,8 @@ Object.defineProperty(bot.Message.prototype, "guild", {
     }
 });
 var fs = require("fs");
+var timeago = require("timeago.js");
+var timediff = require('timediff');
 var config = require("./etc/config.json");
 var Bot = bot(config.tokens.mei);
 var reload = require("require-reload")(require);
@@ -17,6 +19,8 @@ var colors = require("colors");
 var aesthetics = require('aesthetics');
 const _ = require("./data.js");
 var data = _.load();
+const ppl = require("./people.js");
+var people = ppl.load();
 var prefix = config.prefix
 var hands = [ ":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
 var hand = hands[Math.floor(Math.random() * hands.length)]
@@ -25,6 +29,11 @@ Bot.on("messageCreate", (m)=>{
 	if (m.channel.isPrivate) return;
   if (!m.guild) {
     console.log(m);
+  }
+  if (m.guild.id == "373589430448947200") {
+    if (m.content.includes("you joined") == true && m.author.id == "155149108183695360" && m.channel.id == "373589430448947202") { // If shit bot says "you joined" in #welcome
+      Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "375633311449481218", "Removed from role assign") // remove the No channel access role
+    }
   }
   if (m.author.id == "161027274764713984" && m.content.includes("pls")) {
     if (m.content.includes("stop")) {
@@ -114,8 +123,8 @@ Bot.on("messageCreate", (m)=>{
 			}
 		}
 	}
-  if (m.content.startsWith(":")) {
-    var input = m.content.replace(":", "!")
+  if (m.content.startsWith("?") && m.channel.guild.id == "187694240585744384") {
+    var input = m.content.replace("?", "!")
     var command = input.split(" ")[0].replace(prefix, "").toLowerCase();
     if (commands.indexOf(command+".js") > -1) {
       var data = _.load(); // Track command usage in ../db/data.json
@@ -154,6 +163,22 @@ Bot.on("messageCreate", (m)=>{
 });
 
 Bot.on("guildMemberAdd",function(guild, member) {
+  if (guild.id == "373589430448947200") {
+    Bot.addGuildMemberRole(guild.id, member.id, "375633311449481218", "Assined on join")
+    var number = member.id
+    var date = member.joinedAt;
+    var date2 = member.createdAt;
+    var name = member.nick || member.username
+    var length = new Date(date).toDateString();
+    var length2 = new Date(date2).toDateString();
+    var ago = timeago().format(date);
+    var ago2 = timeago().format(date2);
+    var diff = timediff(date2, date, "D")
+    Bot.createMessage("373589430448947202", "**" +name+"**\nJoined: "+length+" | "+ago+"\nCreated: "+length2+" | "+ago2)
+    if (diff.days < 2) {
+      Bot.createMessage("373589430448947202", ":warning: **"+name+"** Joined less than 24 hours after creating account");
+    }
+  }
   if (guild.id == "354709664509853708") {
           Bot.createMessage("358797182876385280", {
             embed: {
@@ -246,7 +271,34 @@ Bot.on("guildDelete",function(guild) {
 });
 
 Bot.on("messageReactionAdd",function(m, emoji, userID) {
-  var data = _.load();
+  if (emoji.name == "😍") {
+    var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
+      if (m.attachments.length == 0) {
+        var link = m.cleanContent
+      }
+      else if (m.attachments[0]) {
+        var link = m.attachments[0].url
+      }
+      var id = userID
+      if (link) {
+        var people = ppl.load();
+        if (!(people.people[id])) {
+    			people.people[id]= {};
+          ppl.save(people);
+    		}
+        if (!(people.people[id].hoard)) {
+    			people.people[id].hoard = {}
+          ppl.save(people);
+        }
+        var people = ppl.load();
+        var hoard = people.people[id].hoard
+        if (!hoard[link]) {
+          hoard[link] = m.author.id
+          ppl.save(people);
+        }
+      }
+    })
+  }
   if (data.giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != data.giveaways.creator) {
     if (m.id == data.giveaways.mID) {
       data.giveaways.current.contestants[userID] = "entered"
@@ -258,15 +310,33 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
 
 Bot.on("messageReactionRemove",function(m, emoji, userID)  {
   var data = _.load();
-  if (data.giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != data.giveaways.creator) {
-    if (m.id == data.giveaways.mID) {
-      if (data.giveaways.current.contestants[userID]) {
-        delete data.giveaways.current.contestants[userID]
-        _.save(data);
+  var people = ppl.load();
+  var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
+    if (emoji.name == "😍") {
+      if (m.attachments.length == 0) {
+        var link = m.cleanContent
+      }
+      else if (m.attachments[0]) {
+        var link = m.attachments[0].url
+      }
+      var id = userID
+      var hoard = people.people[id].hoard
+      if (hoard[link]) {
+        delete hoard[link]
+        ppl.save(people);
         return;
       }
-    }
   }
+    if (data.giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != data.giveaways.creator) {
+      if (m.id == data.giveaways.mID) {
+        if (data.giveaways.current.contestants[userID]) {
+          delete data.giveaways.current.contestants[userID]
+          _.save(data);
+          return;
+        }
+      }
+    }
+  })
 });
 
 events.forEach(function(event) {
