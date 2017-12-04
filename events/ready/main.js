@@ -3,8 +3,7 @@ const colors = require("colors");
 module.exports = {
 	main: function(Bot, m, config) {
 		Bot.editStatus('Online', {name: "with Tinies"})
-		var i = 0;
-		Bot.guilds.map(g=>g.channels.size).forEach(c=>{i+=c;});
+		var i = Bot.guilds.map(g=>g.channels.size).reduce((s,c)=>s+c, 0);
 		console.log('');
 		console.log("BOT".bgMagenta.yellow.bold+" Logged in as "+`${Bot.user.username}#${Bot.user.discriminator}`.cyan.bold);
 		console.log('');
