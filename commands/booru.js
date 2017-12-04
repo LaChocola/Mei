@@ -98,13 +98,14 @@ module.exports = {
 									 }
 									 else { break; }
 							 }
+					 	}
 					 }
 					 const maths = Math.floor(Math.random() * link_array.length)
 					 const pageToVisit = "http://giantessbooru.com" + link_array[maths]
 					 if (link_array.length < 1) {
 					 Bot.createMessage(m.channel.id, "No image found for: **" + tags.join(", ") + "**");
 					 return;
-				 }
+				 	 }
 					 var j = request.jar();
 					 var cookie1 = request.cookie('agreed=true');
 					 var cookie2 = request.cookie('ShowFurryContent=true');
