@@ -87,6 +87,9 @@ module.exports = {
 				 if(response.statusCode === 200) {
 					 // Parse the document body
 					 var $ = cheerio.load(body);
+					 if(response.request.uri.href.startsWith('http://giantessbooru.com/post/view/')) { // gtsbooru redirects to the result pic page immediately if only 1 result exists, so we have to handle that specifically
+							 link_array.push(response.request.uri.path);
+					 } else {
 							 var thing = $('.thumb').children()
 							 for(child in thing){
 									 let child_thing = thing[child];
@@ -95,13 +98,14 @@ module.exports = {
 									 }
 									 else { break; }
 							 }
+					 	}
 					 }
 					 const maths = Math.floor(Math.random() * link_array.length)
 					 const pageToVisit = "http://giantessbooru.com" + link_array[maths]
 					 if (link_array.length < 1) {
 					 Bot.createMessage(m.channel.id, "No image found for: **" + tags.join(", ") + "**");
 					 return;
-				 }
+				 	 }
 					 var j = request.jar();
 					 var cookie1 = request.cookie('agreed=true');
 					 var cookie2 = request.cookie('ShowFurryContent=true');
