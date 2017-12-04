@@ -87,6 +87,9 @@ module.exports = {
 				 if(response.statusCode === 200) {
 					 // Parse the document body
 					 var $ = cheerio.load(body);
+					 if(response.request.uri.href.startsWith('http://giantessbooru.com/post/view/')) { // gtsbooru redirects to the result pic page immediately if only 1 result exists, so we have to handle that specifically
+							 link_array.push(response.request.uri.path);
+					 } else {
 							 var thing = $('.thumb').children()
 							 for(child in thing){
 									 let child_thing = thing[child];
