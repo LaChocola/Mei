@@ -13,22 +13,26 @@ module.exports = {
                 request(url, function(error, response, body) {
                     try {
                         Bot.updateMessage(message, JSON.parse(body)['items'][0]['link']);
-                    } catch (err) {
+                    }
+                    catch (err) {
                         request('https://www.google.com/search?safe=' + safe + '&q=' + encodeURI(args), function(err, res, body) {
                             if (res.statusCode !== 200) {
                                 Bot.error('STATUS:', res.statusCode, 'BODY:', body);
                                 message.edit("`No results found!`");
-                            } else {
+                            }
+                            else {
                                 var $ = cheerio.load(body);
                                 try {
                                     var href = $('.r').first().find('a').first().attr('href');
                                     var res = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
                                     if (res == '?q') {
                                         message.edit('`No results found`');
-                                    } else {
+                                    }
+                                    else {
                                         message.edit(res);
                                     }
-                                } catch (err) {
+                                }
+                                catch (err) {
                                     console.error(err)
                                     message.edit('`No results found`');
                                 }
@@ -36,7 +40,8 @@ module.exports = {
                         });
                     }
                 });
-            } catch (err) {
+            }
+            catch (err) {
                 message.edit('`No results found`');
             }
         });
