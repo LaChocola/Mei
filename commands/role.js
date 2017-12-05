@@ -44,6 +44,20 @@ module.exports = {
 			"micro": "371363527388299283"
 		}
 	}
+	if (m.channel.guild.id == "372587460800282625") {
+		var roles = {
+			"tiny": "372604586978181120",
+			"giantess/giant": "372605057642004481",
+			"normal sized": "376111382103326730",
+			"giga": "376157347594371072",
+			"mega": "376157449901703180",
+			"macro": "376157502720573441",
+			"micro": "376157654525149194",
+			"tamaño normal": "377173536474660864",
+			"gigante/giganta": "379310900210958340"
+		}
+	}
+
 	if (m.mentions.length > 0 && m.mentions[0].id != m.author.id) {
 		Bot.createMessage(m.channel.id, "You can only assign roles to yourself");
 		return;
@@ -60,7 +74,9 @@ module.exports = {
 				})
 				return;
 			} else {
-				Bot.createMessage(m.channel.id, content + ": Not found")
+				Bot.createMessage(m.channel.id, content + ": Not found").then((msg) => {
+						return setTimeout(function() {Bot.deleteMessage(msg.channel.id, msg.id, "Timeout")}, 5000) && setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
+				})
 				return;
 			}
 		} else if (m.content.includes(" | ")) {
@@ -78,11 +94,15 @@ module.exports = {
 				}
 			}
 			if (found.length > 0) {
-				Bot.createMessage(m.channel.id, hand+" Successfuly added: " + found.join(", "));
+				Bot.createMessage(m.channel.id, hand+" Successfuly added: " + found.join(", ")).then((msg) => {
+						return setTimeout(function() {Bot.deleteMessage(msg.channel.id, msg.id, "Timeout")}, 5000) && setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
+				})
 				return;
 			}
 			if (notFound.length > 0) {
-				Bot.createMessage(m.channel.id, down + " Unable to add: " + notFound.join(", "));
+				Bot.createMessage(m.channel.id, down + " Unable to add: " + notFound.join(", ")).then((msg) => {
+						return setTimeout(function() {Bot.deleteMessage(msg.channel.id, msg.id, "Timeout")}, 5000) && setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
+				})
 			}
 				return;
 			}
@@ -99,7 +119,9 @@ module.exports = {
 				})
 				return;
 			} else {
-				Bot.createMessage(m.channel.id, content + ": Not found")
+				Bot.createMessage(m.channel.id, content + ": Not found").then((msg) => {
+						return setTimeout(function() {Bot.deleteMessage(msg.channel.id, msg.id, "Timeout")}, 5000) && setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
+				})
 				return;
 			}
 		} else if (m.content.includes(" | ")) {
@@ -117,10 +139,14 @@ module.exports = {
 				}
 			}
 			if (found.length > 0) {
-				Bot.createMessage(m.channel.id, hand+" Successfuly removed: " + found.join(", "));
+				Bot.createMessage(m.channel.id, hand+" Successfuly removed: " + found.join(", ")).then((msg) => {
+						return setTimeout(function() {Bot.deleteMessage(msg.channel.id, msg.id, "Timeout")}, 5000) && setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
+				})
 			}
 			if (notFound.length > 0) {
-				Bot.createMessage(m.channel.id, down + " Unable to remove: " + notFound.join(", "));
+				Bot.createMessage(m.channel.id, down + " Unable to remove: " + notFound.join(", ")).then((msg) => {
+						return setTimeout(function() {Bot.deleteMessage(msg.channel.id, msg.id, "Timeout")}, 5000) && setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 5000)
+				})
 			}
 				return;
 			}

@@ -52,5 +52,5 @@ module.exports = {
           });
           return;
   },
-  help: "Clean stuff" // add description
+  help: "Show works from an artist channel. (Small World only)" // add description
 }
