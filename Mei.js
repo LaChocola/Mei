@@ -286,7 +286,7 @@ Bot.on("guildDelete", function(guild) {
 });
 
 Bot.on("messageReactionAdd", function(m, emoji, userID) {
-    if (emoji.name == "😍") {
+    if (emoji.name == "ðŸ˜") {
         var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
             if (m.attachments.length == 0) {
                 var link = m.cleanContent
@@ -326,7 +326,7 @@ Bot.on("messageReactionRemove", function(m, emoji, userID) {
     var data = _.load();
     var people = ppl.load();
     var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
-        if (emoji.name == "😍") {
+        if (emoji.name == "ðŸ˜") {
             if (m.attachments.length == 0) {
                 var link = m.cleanContent
             } else if (m.attachments[0]) {
