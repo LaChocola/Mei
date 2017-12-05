@@ -4,6 +4,7 @@ module.exports = {
   var roleSearch = function(role) {
     var roleName = role.name
     if (roleName != "undefined") {
+		console.log(`"${roleName}": "${role.id}"`);
       return roleName;
       }
     }
@@ -13,5 +14,5 @@ module.exports = {
 
   Bot.createMessage(m.channel.id, "**" + roles.join("** | **") + "**");
 	},
-	help: "Get Role Info"
+	help: "Get your role info"
 }

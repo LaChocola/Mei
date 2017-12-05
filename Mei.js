@@ -183,7 +183,7 @@ Bot.on("guildMemberAdd",function(guild, member) {
           Bot.createMessage("358797182876385280", {
             embed: {
                 color: 0xA260F6,
-                title:  member.username + " (" + member.id + ") joined Small World \nWe now have: "+ guild.members.filter(m => !m.bot).length + " people! :smiley:",
+                title:  member.username + " (" + member.id + ") joined Small World \nWe now have: "+ guild.memberCount + " people! :smiley:",
                 timestamp: new Date().toISOString(),
                 author: {
                   name: member.username,
@@ -191,9 +191,9 @@ Bot.on("guildMemberAdd",function(guild, member) {
                 }
             }
           });
-          if (guild.members.filter(m => !m.bot).length % 50 === 0) {
+          if (guild.memberCount % 50 === 0) {
             const msgEmbed = {
-        			"content": "We have just reached "+guild.members.filter(m => !m.bot).length+" members! :tada: :tada: :tada: :tada: :tada: :tada:",
+        			"content": "We have just reached "+guild.memberCount+" members! :tada: :tada: :tada: :tada: :tada: :tada:",
         			"embed": {
         				"title": "To celebrate, Snippy drew this for us: https://buttsare.sexy/6d853b.png",
         				"color": 0xA260F6,
@@ -205,13 +205,13 @@ Bot.on("guildMemberAdd",function(guild, member) {
         		Bot.createMessage("354709664509853712", msgEmbed);
         }
         setTimeout(function() {
-          Bot.createMessage("354709664509853712", "Welcome "+ member.mention+"~\nThere are a list of roles in <#355823130637500417>, use `!role add rolename` to give yourself roles, and let a Guardian know if you have any questions.").then((m) => {
+          Bot.createMessage("354709664509853712", "Welcome "+ member.mention+"~\nThere are a list of roles in <#355823130637500417>, use `!role add rolename` in <#363895860276232193> to give yourself roles. You will be unable to send messages in any other channels until you do this. Let a Guardian know if you have any questions.").then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
           })
           return;}, 4000)
   }
   if (guild.id == "326172270370488320") {
-          Bot.createMessage("326172270370488320", "Welcome to Size Haven, "+ member.mention+"!\nWe now have: "+ guild.members.filter(m => !m.bot).length + " people!\nThere are a list of roles in #Noboruhasnttoldmethechanelyet, please use `!role add rolename` to give yourself roles, and let a Mod know if you have any questions~").then((m) => {
+          Bot.createMessage("326172270370488320", "Welcome to Size Haven, "+ member.mention+"!\nWe now have: "+ guild.memberCount + " people!\nThere are a list of roles in #Noboruhasnttoldmethechanelyet, please use `!role add rolename` to give yourself roles, and let a Mod know if you have any questions~").then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
           })
   }
@@ -222,7 +222,7 @@ Bot.on("guildMemberRemove",function(guild, member) {
           Bot.createMessage("358797182876385280", {
             embed: {
                 color: 0xA260F6,
-                title:  member.username + " (" + member.id + ") left Small World \nWe now have: "+ guild.members.filter(m => !m.bot).length + " people! :frowning2:",
+                title:  member.username + " (" + member.id + ") left Small World \nWe now have: "+ guild.memberCount + " people! :frowning2:",
                 timestamp: new Date().toISOString(),
                 author: {
                   name: member.username,
