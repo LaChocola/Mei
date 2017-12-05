@@ -1,6 +1,8 @@
 var time = new Date().toISOString();
 var request = require('request');
-var request = request.defaults({jar: true})
+var request = request.defaults({
+    jar: true
+})
 var j = request.jar();
 var cheerio = require('cheerio');
 var URL = require('url-parse');
