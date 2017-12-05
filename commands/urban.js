@@ -19,10 +19,9 @@ module.exports = {
                     embed: {
                         color: 0xA260F6,
                         description: message
-        }
-    });
-            }
-            else {
+                    }
+                });
+            } else {
                 Bot.createMessage(m.channel.id, "Not found");
             };
         });
