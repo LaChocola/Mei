@@ -12,7 +12,7 @@ module.exports = {
     }
 
     var name = m.author.nick || m.author.username
-		if (m.content == "!booru") {
+		if (m.content.toLowerCase() == "!booru") {
 			m.content = "!booru giantess"
 		}
     var args = m.cleanContent.toLowerCase().replace("!booru ", "").split(", ")
@@ -34,9 +34,10 @@ module.exports = {
 			if (aliases.indexOf(e[1]) > -1) {
 				site = e[1]
 				args.splice(e[0], 1)
+			}
 		}
-	}
 
+		console.log(args);
 		for (let arg of args) {
 			tags.push(arg)
     }
