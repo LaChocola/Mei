@@ -37,6 +37,7 @@ module.exports = {
 			}
 		}
 
+		console.log(args);
 		for (let arg of args) {
 			tags.push(arg)
     }
