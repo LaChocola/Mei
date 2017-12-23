@@ -18,9 +18,11 @@ module.exports = {
 
         if (m.author.id == '161027274764713984') {
             Bot.createMessage(m.channel.id, 'Time to clean up')
-            Bot.getMessages(m.channel.id, parseInt(int + 2)).then(function(msgs) {
+            Bot.getMessages(m.channel.id, parseInt(int)).then(function(msgs) {
                 for (var msg of msgs) {
-                    msg.delete();
+                    if (msg.author.id == "309220487957839872") {
+                        msg.delete();
+                    }
                 }
                 Bot.sendChannelTyping(m.channel.id).then(async () => {
                     Bot.createMessage(m.channel.id, 'Cleaning~').then(a => {

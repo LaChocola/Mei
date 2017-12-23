@@ -178,9 +178,9 @@ Bot.on("guildMemberAdd",function(guild, member) {
     var ago = timeago().format(date);
     var ago2 = timeago().format(date2);
     var diff = timediff(date2, date, "D")
-    Bot.createMessage("373638900544962571", "**" +name+"**\nJoined: "+length+" | "+ago+"\nCreated: "+length2+" | "+ago2)
+    Bot.createMessage("393839796822343681", "**" +name+"**\nJoined: "+length+" | "+ago+"\nCreated: "+length2+" | "+ago2)
     if (diff.days < 2) {
-      Bot.createMessage("373638900544962571", ":warning: **"+name+"** Joined less than 24 hours after creating account");
+      Bot.createMessage("393839796822343681", ":warning: **"+name+"** Joined less than 24 hours after creating account");
     }
   }
   if (guild.id == "354709664509853708") {
