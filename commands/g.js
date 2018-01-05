@@ -72,7 +72,7 @@ module.exports = {
 		var categories = ["butt", "ass", "bum", "bums", "butts", "vagina", "pussy", "insertion", "cunt", "cunny", "proposal", "marriage", "marry", "wed", "panty", "panties", "underwear", "thong", "thongs", "foot", "feet", "foote", "vore", "mouth",
 "hand", "hands", "legs", "leg", "thighs", "boobs", "breasts", "breast", "boob", "tit", "tits", "misc", "alt", "other"]
 		args1Array.forEach(function(arg) {
-			if (categories.indexOf(arg) > -1) {
+			if (categories.indexOf(arg.toLowerCase()) > -1) {
 				args1Array.splice(args1Array.indexOf(arg), 1)
 			}
 		});
@@ -354,6 +354,7 @@ name + " smiled when she found you napping peacefully inside her discarded panti
 "You and " + name + " fell asleep watching movies together",
 "You rode on " + name + "’s shoulder while she moved about the house, humming sweet tunes",
 "" + name + " prepared you a small bottle cap full of clean water so you could swim a lap",
+`${name} broke you a tiny piece of her KitKat so you could share as you sat on her shoulder`,
 "You latched to " + name + "’s hair for safety when you two went on a bike ride",
 "You snuck under a pile of " + name + "'s laundry while you and " + name + " were playing Hide and Seek, she found you after 10 minutes of cute teasing.",
 "You tried to flip the pages of the book " + name + " was reading and finally succeed, only to know later that she's the one flipping it",

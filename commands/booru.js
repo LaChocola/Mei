@@ -8,7 +8,7 @@ var URL = require('url-parse');
 module.exports = {
 	main: function(Bot, m, args) {
     function isNumeric(num){
-        return !isNaN(num)
+        return !isNaN(+num)
     }
 
     var name = m.author.nick || m.author.username
