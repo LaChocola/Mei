@@ -220,7 +220,7 @@ Bot.on("guildMemberAdd",function(guild, member) {
           })
   }
   if (guild.id == "396122792531197952") {
-          Bot.createMessage("396122792531197954", "Hi and welcome to Size Politics "+member.mention+"~\n Check out <#397239213147422721> and <#397123029345501188> for roles and don't forget to check our <#397120033907802112> for all of the server rules. How you enjoy your stay!").then((m) => {
+          Bot.createMessage("396122792531197954", "Hi and welcome to Size Politics "+member.mention+"~\n Check out <#397239213147422721> and <#397123029345501188> for roles and don't forget to check our <#397120033907802112> for all of the server rules. Hope you enjoy your stay!").then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
           })
   }
