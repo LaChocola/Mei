@@ -24,6 +24,8 @@ var people = ppl.load();
 var prefix = config.prefix
 var hands = [ ":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
 var hand = hands[Math.floor(Math.random() * hands.length)]
+
+
 Bot.on("messageCreate", (m)=>{
   if (m.author.id == "309220487957839872") return;
 	if (m.channel.isPrivate) return;
@@ -220,7 +222,7 @@ Bot.on("guildMemberAdd",function(guild, member) {
           })
   }
   if (guild.id == "396122792531197952") {
-          Bot.createMessage("396122792531197954", "Hi and welcome to Size Politics "+member.mention+"~\n Check out <#397239213147422721> and <#397123029345501188> for roles and don't forget to check our <#397120033907802112> for all of the server rules. Hope you enjoy your stay!").then((m) => {
+          Bot.createMessage("396122792531197954", "Hi and welcome to Size Politics "+member.mention+"~\n Before you begin, first read <#397120033907802112> as it contains the server rules. Once you're done, tag an <@251629183552323584> so he can assign you the citizen role. Once you've gotten the citizen role, check <#397239213147422721> and <#397123029345501188> for all the current active roles. Thank you for joining and I hope you enjoy your stay!\nWe now have "+guild.memberCount+" members").then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
           })
   }
@@ -252,7 +254,7 @@ Bot.on("guildCreate",function(guild) {
           Bot.createMessage(DMchannel.id, {
             embed: {
                 color: 0xA260F6,
-                title:  "I was invited to the guild: " + guild.name + "(" + guild.id + ")",
+                title:  "I was invited to the guild: " + guild.name + "(" + guild.id + ")\nI am now in "+Bot.guilds.size+" guilds",
                 timestamp: new Date().toISOString(),
                 author: {
                   name: guild.name,
@@ -268,7 +270,7 @@ Bot.on("guildDelete",function(guild) {
           Bot.createMessage(DMchannel.id, {
             embed: {
                 color: 0xA260F6,
-                title:  "I was removed from the guild: " + guild.name + "(" + guild.id + ")",
+                title:  "I was removed from the guild: " + guild.name + "(" + guild.id + ")\nI am now in "+Bot.guilds.size+" guilds",
                 timestamp: new Date().toISOString(),
                 author: {
                   name: guild.name,
