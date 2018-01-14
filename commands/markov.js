@@ -58,7 +58,7 @@ module.exports = {
                         icon_url: mentioned.avatarURL
                     },
                     footer: {
-                        text: "-" + name + " 2017"
+                        text: "-" + name + " 2018"
                     }
                 }
             });
