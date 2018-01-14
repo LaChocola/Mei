@@ -4,6 +4,7 @@ var request = require('request');
 var request = request.defaults({jar: true})
 var cheerio = require('cheerio');
 var URL = require('url-parse');
+var Jimp = require('jimp');
 
 module.exports = {
 	main: function(Bot, m, args) {
@@ -121,27 +122,65 @@ module.exports = {
 							 imageURL.push("http://giantessbooru.com" + imgURL.toLowerCase())
 							 }
 							 if (imageURL.length < 2) {
-								 var number = maths + 1
-								 const data = {
-									 "content": "Results on **" + site + "**",
-									 "embed": {
-										 "color": 0xA260F6,
-										 "footer": {
-											 "icon_url": m.channel.guild.members.get(m.author.id).avatarURL.replace(".jpg", ".webp?size=1024"),
-											 "text": "Searched by: " + name + ". Image " + number + " of " + link_array.length
-										 },
-										 "image": {
-											 "url": imageURL.toString()
-										 },
-										 "author": {
-											 "name": cleanTags,
-											 "url": "http://giantessbooru.com"+response.request.uri.path
-										 }
-									 }
-								 };
+								 var random = Math.floor(Math.random() * 420)
+								 if (random == 69 || m.author.id == "187742074412466176") {
+										 Bot.sendChannelTyping(m.channel.id).then(async () => {
+												try {
+													 var funkurl = "http://i0.kym-cdn.com/photos/images/newsfeed/001/331/566/c97.png";
+													 var bg = await Jimp.read(imageURL.toString());
+							             var avy = await Jimp.read(funkurl);
+							             var bgx = bg.bitmap.width;
+							             var nsize = Math.floor(Math.min(bg.bitmap.width/2,bg.bitmap.height/2));
+							             avy.resize(nsize, nsize*(115/140));//140 115
+							             bg.clone()
+							                 .composite(avy, bgx-nsize, 0)
+							                 .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
+																 m.channel.createMessage({
+																	 "content": "Results on **" + site + "**",
+																	 "embed": {
+																		 "color": 0xA260F6,
+																		 "footer": {
+																			 "icon_url": m.channel.guild.members.get(m.author.id).avatarURL.replace(".jpg", ".webp?size=1024"),
+																			 "text": "Searched by: " + name + ". Image " + maths + " of " + link_array.length
+																		 },
+																		 "image": {"url": 'attachment://examplefile.png'},
+																		 "author": {
+																			 "name": cleanTags,
+																			 "url": "http://giantessbooru.com"+response.request.uri.path
+																		 }
+																	 }
+																 }, {file: buffer, name: 'examplefile.png'});
+															 });
+												} catch (error) {
+						                 console.log(error);
+						                 return Bot.createMessage(m.channel.id, "Something went wrong...");
+						           	}
+											});
+											return;
+									 } else {
+										 var number = maths + 1
+										 const data = {
+											 "content": "Results on **" + site + "**",
+											 "embed": {
+												 "color": 0xA260F6,
+												 "footer": {
+													 "icon_url": m.channel.guild.members.get(m.author.id).avatarURL.replace(".jpg", ".webp?size=1024"),
+													 "text": "Searched by: " + name + ". Image " + number + " of " + link_array.length
+												 },
+												 "image": {
+													 "url": imageURL.toString()
+												 },
+												 "author": {
+													 "name": cleanTags,
+													 "url": "http://giantessbooru.com"+response.request.uri.path
+												 }
+											 }
+										 };
 
-								 Bot.createMessage(m.channel.id, data);
-							 } else if (imageURL.length > 1) {
+										 Bot.createMessage(m.channel.id, data);
+										 return;
+									 }
+								} else if (imageURL.length > 1) {
 								 const data = {
 									 "content": "Results on **" + site + "**",
 									 "embed": {
