@@ -3,10 +3,7 @@ module.exports = {
         function isNumeric(num) {
             return !isNaN(num)
         }
-        var coolkids = ["161027274764713984", "176975815072808960", "211019995214381059"];
-        var coolkids = coolkids.push(m.channel.guild.ownerID)
-        var member = m.channel.guild.members.get(m.author.id)
-        var int = 10
+        var number = 202
         var args = m.cleanContent.replace("!clean ", "").split(" ")
         var argsIterator = args.entries()
         for (let e of argsIterator) {
@@ -14,31 +11,47 @@ module.exports = {
                 var int = +e[1]
             }
         }
-        var int = int+2
+        if (!int) {
+          int = 10
+        }
         var responses = ["Are you a real villan?", "Have you ever caught a good guy? \nLike a real super hero?", "Have you ever tried a disguise?", "What are you doing?!?!?!", "*NO!*, Don't touch that!", "Fuck Off", "Roses are red\nfuck me ;) "]
         var response = responses[Math.floor(Math.random() * responses.length)]
         if (m.mentions[0]) {
-          if (m.author.id == '161027274764713984' || m.author.id == m.channel.guild.ownerID) {
-              Bot.createMessage(m.channel.id, 'Time to clean up')
-              Bot.getMessages(m.channel.id, parseInt(int)).then(function(msgs) {
-                  for (var msg of msgs) {
-                      if (msg.author.id == m.mentions[0].id) {
-                          msg.delete();
-                      }
+          if (m.author.id == "161027274764713984" || m.author.id == m.channel.guild.ownerID) {
+              m.delete()
+              Bot.createMessage(m.channel.id, 'Time to clean up').then(a => {
+                return setTimeout(function() {
+                    a.delete()
+                }, 5000)
+              })
+              Bot.getMessages(m.channel.id, parseInt(number)).then(async function(msgs) {
+                  var i = 0
+                  var count = 0
+                  while (i < int) {
+                    if (msgs[count].author.id == m.mentions[0].id) {
+                        Bot.deleteMessage(msgs[count].channel.id, msgs[count].id)
+                        i++
+                    }
+                    if (i == int || count == msgs.length) {
+                          Bot.createMessage(m.channel.id, "All Done~").then(die => {
+                            return setTimeout(function() {
+                                die.delete()
+                            }, 5000)
+                          })
+                          return;
+                    }
+                    count++
                   }
-                  Bot.sendChannelTyping(m.channel.id).then(async () => {
-                      Bot.createMessage(m.channel.id, 'Cleaning~').then(a => {
-                          setTimeout(function() {
-                              a.delete();
-                          }, 4000);
-                      });
-                  });
               });
-              return;
+            return;
           }
+        }
+        if (!m.mentions[0]) {
+          Bot.createMessage(m.channel.id, "Please mention who you want to clean, and optionally, a number of messages to delete from them");
+          return;
         } else {
             Bot.createMessage(m.channel.id, response);
         }
     },
-    help: "Clean stuff" // add description
+    help: "Clean stuff. `!clean @Chocola X` to delete the last X messages. Defaults to 10"
 }
