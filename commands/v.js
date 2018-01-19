@@ -3,7 +3,7 @@ const _ = require("../people.js");
 var data = _.load();
 module.exports = {
 	main: function(Bot, m, args) {
-		var args1 = args.toLowerCase()
+		var args = args.toLowerCase()
 		function capFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -52,6 +52,7 @@ module.exports = {
 			var cleanNames = cleanNames.replace("Cammy,", "Cammy,\n")
 		}
 
+
 		if (m.guild.id === "296104080957505546") { // The Bean Empire Only
 			var names = ["Claire", "Vi", "Awoodi", "Lexi", "Kiri", "Duni"];
 			var cleanishNames = names.join(', ')
@@ -72,22 +73,15 @@ module.exports = {
 			}
 		}
 
-		var args1Array = args.split(' ')
-		var categories = ["butt", "ass", "bum", "bums", "butts", "vagina", "pussy", "insertion", "cunt", "cunny", "proposal", "marriage", "marry", "wed", "panty", "panties", "underwear", "thong", "thongs", "foot", "feet", "foote", "vore", "mouth",
-"hand", "hands", "legs", "leg", "thighs", "boobs", "breasts", "breast", "boob", "tit", "tits", "misc", "alt", "other"]
-		args1Array.forEach(function(arg) {
-			if (categories.indexOf(arg.toLowerCase()) > -1) {
-				args1Array.splice(args1Array.indexOf(arg), 1)
-			}
-		});
-		var args1Array = args1Array.join(" ")
-		var args1Array = args1Array.split(" | ")
-		args1Array.forEach(function(arg) {
-			var arg1 = capFirstLetter(arg)
-			if (names.includes(arg1) === true || names.includes(arg) === true) {
+		var argsArray = args.split(' ')
+
+		argsArray.forEach(function(arg) {
+			var arg = capFirstLetter(arg)
+			if (names.includes(arg) === true) {
 				customName.push(arg)
 			}
 		});
+
 		if (customName.length > 0) {
 			var name = customName[Math.floor(Math.random() * customName.length)]
 		} else {
@@ -105,39 +99,39 @@ module.exports = {
 		var nameLength = names.length
 
 		var butt = [
-		`You were smushed under ${name}'s butt while she played games`,
-		`You were sitting in ${name}'s spot at the wrong time`,
-		`You were flattened by ${name}'s round ass as she sat on the couch`,
-		`You were unwittingly crushed on the stool as ${name} sat down at the bar.`,
-		`You were crushed under ${name}'s butt as she rolled over in bed`,
-		`You were deprived of air between ${name}'s cheeks`,
-		`You were crushed by ${name}'s ass while they sat in traffic for hours`,
-		`You were drowned in ${name}'s sweat in their booty shorts as they ran a mile`,
-		`You were squished by ${name}'s ass as she grinded on someone in the club`,
-		`You were flattened on a mat by ${name}'s butt as they practiced yoga`,
-		`You were inserted up ${name}'s ass when she used you as a buttplug.`,
-		`You were obliterated by ${name}'s tushe as they leaned back into the kitchen counter`,
-		`You fell down the crack of ${name}'s butt to suffocate between their cheeks`,
+		"You were smushed under " + name + "'s butt while she played games",
+		"You were sitting in " + name + "'s spot at the wrong time",
+		"You were flattened by " + name + "'s round ass as she sat on the couch",
+		"You were unwittingly crushed on the stool as " + name + " sat down at the bar.",
+		"You were crushed under " + name + "'s butt as she rolled over in bed",
+		"You were deprived of air between " + name + "'s cheeks",
+		"You were crushed by " + name + "'s ass while they sat in traffic for hours",
+		"You were drowned in " + name + "'s sweat in their booty shorts as they ran a mile",
+		"You were squished by " + name + "'s ass as she grinded on someone in the club",
+		"You were flattened on a mat by " + name + "'s butt as they practiced yoga",
+		"You were inserted up " + name + "'s ass when she used you as a buttplug.",
+		"You were obliterated by " + name + "'s tushe as they leaned back into the kitchen counter",
+		"You fell down the crack of " + name + "'s butt to suffocate between their cheeks",
 		"" + name + " used you as seat cushion as they put on their makeup",
-		`After a long night of partying and drinking, ${name} couldn't find you smushed against her butt cheek.`,
+		"After a long night of partying and drinking, " + name + " couldn't find you smushed against her butt cheek.",
 		"" + name + " crushed you against their plump ass as they showered",
-		`Hoping that you could catch her, ${name} landed her big ass on you after falling out of a tree.`,
-		`You were crushed by ${name}'s ass when they tripped over and fell on you`,
-		`You were suffocated by ${name}'s butt when they wedged their phone in their pocket with you in it`,
+		"Hoping that you could catch her, " + name + " landed her big ass on you after falling out of a tree.",
+		"You were crushed by " + name + "'s ass when they tripped over and fell on you",
+		"You were suffocated by " + name + "'s butt when they wedged their phone in their pocket with you in it",
 		"" + name + " got fed up with your jokes, so they planted their giant ass on you for so long you passed out from lack of air",
 		name + " thought you ran away from her after she accidentally sat on your bed while you were asleep.",
-		`You were continuously flattened underneath ${name}'s fat ass as she biked down to the store.`,
-		`It was discovered that the human body produces vast amounts of heat, and you died of heat stroke deep between ${name}'s butt cheeks.`,
+		"You were continuously flattened underneath " + name + "'s fat ass as she biked down to the store.",
+		"It was discovered that the human body produces vast amounts of heat, and you died of heat stroke deep between " + name + "'s butt cheeks.",
 		name +  " licked you and adhered your saliva-coated body to her friend’s rear. A playful slap against the cheek was all it took…",
-		`You had always admired ${name}'s beauty from inside your model world on her bedside table. She got pretty bored with you guys after a while, and the last thing you saw was the moon… er… her mooning you, before taking a seat.`,
-		`A single wrinkle on ${name}'s rectum was an impressive sight. You would live here until she ate too many beans one day.`,
+		"You had always admired " + name + "'s beauty from inside your model world on her bedside table. She got pretty bored with you guys after a while, and the last thing you saw was the moon… er… her mooning you, before taking a seat.",
+		"A single wrinkle on " + name + "'s rectum was an impressive sight. You would live here until she ate too many beans one day.",
 		name +  " was the hero of the city for stopping the fire. Unfortunately she did this by sitting on the engulfed building, and you were the last one left inside.",
-		`You met your fate when ${name} clenched her rectum while you were inside. For a moment it fixed your sore back`,
-		`To determine if you were strong enough to be her slave, ${name} placed you between her cheeks and clenched. You weren't`,
-		`To determine if you were strong enough to be her slave, ${name} placed you between her cheeks and clenched. You were, although that might be a bad thing...`,
+		"You met your fate when " + name + " clenched her rectum while you were inside. For a moment it fixed your sore back",
+		"To determine if you were strong enough to be her slave, " + name + " placed you between her cheeks and clenched. You weren't",
+		"To determine if you were strong enough to be her slave, " + name + " placed you between her cheeks and clenched. You were, although that might be a bad thing...",
 		name + " constructed a specialised chair to sit on, with a little cut out for you. She also developed a habit of not wearing pants around the house.",
-		name + `'s friend dropped you between ${name}'s butt cheeks while she slept. She woke up with a strange wet feeling in that spot.`,
-		`You were crushed under the rear of ${name} as she sat down heavily on her chair. Forcibly pinned under the giant mass, you were helpless to stop her erratic movements as she masturbated the day away.`
+		name + "'s friend dropped you between " + name + "'s butt cheeks while she slept. She woke up with a strange wet feeling in that spot.",
+		"You were crushed under the rear of " + name + " as she sat down heavily on her chair. Forcibly pinned under the giant mass, you were helpless to stop her erratic movements as she masturbated the day away."
 		];
 		var buttLength = butt.length
 		var buttSmush = randomPick(butt)
@@ -157,19 +151,19 @@ module.exports = {
 		}
 		var vagina = [
 		name + " encased you inside her sex toy. The vibrations rattled your bones.",
-		`You were ground into the walls of ${name}'s vagina harshly, the juices stinging your eyes.`,
-		`You and your friends were adhered to ${name}'s labia by her sticky secretion.`,
+		"You were ground into the walls of " + name + "'s vagina harshly, the juices stinging your eyes.",
+		"You and your friends were adhered to " + name + "'s labia by her sticky secretion.",
 		name + " forced you deep, deep inside her. So deep that you would never be able to escape.",
-		`You were inside the building ${name} decided to use as a dildo. After the windows broke you drowned in her juices.`,
+		"You were inside the building " + name + " decided to use as a dildo. After the windows broke you drowned in her juices.",
 		"You were used up as a sex toy in a single indulgent night by " + name,
-		`You and your friends were strapped together to add a bit more girth as ${name}'s sex toy.`,
+		"You and your friends were strapped together to add a bit more girth as " + name + "'s sex toy.",
 		name + " was unimpressed by your height, and you failed to become her dildo. Instead you were relegated to 'back-door' duty.",
 		name + " didn't know what was on her vulva but it felt good. She unknowingly ground you against her, disposed of for her pleasure.",
-		`How was ${name} supposed to know that you were stuck in her fingerprint as she 'flicked her bean'? You died from the juices.`,
+		"How was " + name + " supposed to know that you were stuck in her fingerprint as she 'flicked her bean'? You died from the juices.",
 		name + " dropped you on her shoe and sat on it, grinding her lips against it and moaning in pleasure.",
 		name + "'s muscular vagina proved your end.",
-		`The prostitute " + name + " hired dropped you on her tongue before eating out ${name} for a little extra stimulation.`,
-		`So many tinies were forced inside ${name} that you thought you would drown in a sea of people before you would drown in her excretion.`,
+		"The prostitute " + name + " hired dropped you on her tongue before eating out " + name + " for a little extra stimulation.",
+		"So many tinies were forced inside " + name + " that you thought you would drown in a sea of people before you would drown in her excretion.",
 		name + "'s girlfriend strapped you to her strap-on and had a fun night with " + name,
 		"You smiled, ready to surprise " + name + " as you got ready to enact your playful revenge prank. Sneaking into " + name + "'s room, you swiftly regretted your decision as a dildo rolled off the bed, landing onto you. Groaning, you were swiftly picked up and inserted into " + name + " as she tried not to be heard by her roommate."
 		];
@@ -270,7 +264,6 @@ module.exports = {
 		var feet = randomPick(feets)
 
 		var foot = [
-		`${name} crushed you under her ${feet}`,
 		"" + name + " got tired of you teasing her for being so small that she shrank you down, put you under her " + feet + " and toyed with you for the rest of the day",
 		"You were trapped in the fiber's of " + name + "'s carpet, unable to move out of the way of her " + feet,
 		"You were crushed by " + name + "'s " + feet + ", not having noticed you",
@@ -314,82 +307,82 @@ module.exports = {
 		];
 		var footLength = foot.length
 		var footSmush = foot[Math.floor(Math.random() * foot.length)]
-		
+
 		var voreMouth = [
-		`You were shoved in ${name}'s mouth with some potato chips`,
-		`You were trapped in ${name}'s sandwich during lunch`,
-		`You were sucked down ${name}'s throat during an intense makeout session`,
-		`You were mashed to a pulp by ${name}'s molars after saying 'What pretty teeth she had'`,
-		`You were inhaled by ${name} as she yawned`,
-		`You were mistaken for a tic-tac when ${name} had bad breath`,
-		`You were used by ${name} as sprinkles on her ice cream`,
-		`You were swallowed after ${name} got impatient while you cleaned her teeth`,
-		`You were turned into mush between ${name}'s teeth`,
-		`You were drowned in a sea of ${name}'s saliva`,
-		`Thinking you were resilient, ${name} throws you in her mouth and pretends to chew you like gum, obliviously mashing you up in a bloody pulp.`,
-		`You were burned to death in a sea of ${name}'s digestive acids`,
-		`You were quickly chewed up and devoured after accidentally getting wrapped up in ${name}'s sushi roll.`,
-		`You were used to fuel ${name} along with her soda for game night`,
-		`While wanting a bit of extra flavour, ${name} puts you in her sandwich and begins to eat.`,
-		`You were forced to jump into ${name}'s mouth for a snackrifice`,
-		`Your body was ripped to shreds after falling into ${name}'s nutritious blended smoothie.`,
-		`You were trapped in ${name}'s pudding as she moved in for the final bite`,
-		`You were stuck to ${name}'s lower lip by her saliva for 20 minutes before her lips licking habit finally got you`,
+		"You were shoved in " + name + "'s mouth with some potato chips",
+		"You were trapped in " + name + "'s sandwich during lunch",
+		"You were sucked down " + name + "'s throat during an intense makeout session",
+		"You were mashed to a pulp by " + name + "'s molars after saying 'What pretty teeth she had'",
+		"You were inhaled by " + name + " as she yawned",
+		"You were mistaken for a tic-tac when " + name + " had bad breath",
+		"You were used by " + name + " as sprinkles on her ice cream",
+		"You were swallowed after " + name + " got impatient while you cleaned her teeth",
+		"You were turned into mush between " + name + "'s teeth",
+		"You were drowned in a sea of " + name + "'s saliva",
+		"Thinking you were resilient, " + name + " throws you in her mouth and pretends to chew you like gum, obliviously mashing you up in a bloody pulp.",
+		"You were burned to death in a sea of " + name + "'s digestive acids",
+		"You were quickly chewed up and devoured after accidentally getting wrapped up in " + name + "'s sushi roll.",
+		"You were used to fuel " + name + " along with her soda for game night",
+		"While wanting a bit of extra flavour, " + name + " puts you in her sandwich and begins to eat.",
+		"You were forced to jump into " + name + "'s mouth for a snackrifice",
+		"Your body was ripped to shreds after falling into " + name + "'s nutritious blended smoothie.",
+		"You were trapped in " + name + "'s pudding as she moved in for the final bite",
+		"You were stuck to " + name + "'s lower lip by her saliva for 20 minutes before her lips licking habit finally got you",
 		"You were never seen again after attempting to go spelunking one night at Mt. Sleeping " + name +"",
-		`You were dangerously cheesy after falling into ${name}'s Cheetos and got eaten`,
-		`After an unfortunate mishap, you found yourself in ${name}'s bowl of popcorn as she slowly eats away at it while watching a movie.`,
-		`You were gulped down by ${name} along with her milk tea boba`,
-		`You became one with the cake as ${name} stacked one of the layers on top of you, trapping you inside, waiting to be devoured.`,
-		`You were lost in the chip dip for ${name}'s party, who was wondering where you went as she went for a bite...`,
+		"You were dangerously cheesy after falling into " + name + "'s Cheetos and got eaten",
+		"After an unfortunate mishap, you found yourself in " + name + "'s bowl of popcorn as she slowly eats away at it while watching a movie.",
+		"You were gulped down by " + name + " along with her milk tea boba",
+		"You became one with the cake as " + name + " stacked one of the layers on top of you, trapping you inside, waiting to be devoured.",
+		"You were lost in the chip dip for " + name + "'s party, who was wondering where you went as she went for a bite...",
 		"You were vaporized by a sudden sneeze from " + name,
-		`You were grilled to death because of your carelessness when you fell into ${name}'s pancake batter when she wasn't looking`,
-		`You were eaten by ${name} because she mistook you for a grain of pepper in her meal`,
-		`You took a trip down ${name}’s throat after taunting her`,
-		`You fell into ${name}’s drink. She unknowingly swallowed you in a tidal wave of water`,
-		`You tried to sleep inside slumbering ${name}’s open mouth. You were never seen again`,
-		`You were thrown into the abyss of ${name}'s mouth because she was hungry`,
+		"You were grilled to death because of your carelessness when you fell into " + name + "'s pancake batter when she wasn't looking",
+		"You were eaten by " + name + " because she mistook you for a grain of pepper in her meal",
+		"You took a trip down " + name + "’s throat after taunting her",
+		"You fell into " + name + "’s drink. She unknowingly swallowed you in a tidal wave of water",
+		"You tried to sleep inside slumbering " + name + "’s open mouth. You were never seen again",
+		"You were thrown into the abyss of " + name + "'s mouth because she was hungry",
 		name + " was cooking a meal for the two of you to share, but you were accidentally cooked into the food.",
-		`After accidentally getting coated in chocolate while baking, ${name} bit hard into your crunchy shell, thinking you were one of the many chocolate bars you two made.`,
-		`You were burned and drowned in ${name}'s hot coffee in the morning, shortly before being gulped down.`,
+		"After accidentally getting coated in chocolate while baking, " + name + " bit hard into your crunchy shell, thinking you were one of the many chocolate bars you two made.",
+		"You were burned and drowned in " + name + "'s hot coffee in the morning, shortly before being gulped down.",
 		name + " sucks on your torso, before biting down to get to your chewy centre.",
-		`You swam happily through ${name}'s dessert. She thought the crunch was a piece of cookie.`,
-		`Despite your best efforts, " + name + "'s uvula was simply too slippery to hold onto, and her friend mistook your screaming down her gullet for ${name}'s own scream.`,
-		`Unfortunately all of you were only the garnishing on ${name}'s birthday cake. Her and her friends liked it, you guys, not so much.`,
+		"You swam happily through " + name + "'s dessert. She thought the crunch was a piece of cookie.",
+		"Despite your best efforts, " + name + "'s uvula was simply too slippery to hold onto, and her friend mistook your screaming down her gullet for " + name + "'s own scream.",
+		"Unfortunately all of you were only the garnishing on " + name + "'s birthday cake. Her and her friends liked it, you guys, not so much.",
 		name + " repeatedly beat you against the roof of her mouth to make sure you were nice and tired for going down her gullet.",
-		`The tooth of ${name} held you in place at your midsection. The tiniest amount of pressure would surely spell your death...`,
-		`Unfortunately you simply couldn't escape the bowl of cereal, and would die while inside ${name}'s cheerio.`,
+		"The tooth of " + name + " held you in place at your midsection. The tiniest amount of pressure would surely spell your death...",
+		"Unfortunately you simply couldn't escape the bowl of cereal, and would die while inside " + name + "'s cheerio.",
 		name + " thought it was funny that you could swim in her soup. Not for long as she forgot you were there and continued her meal.",
 		name + " rolled you up into her roll of sushi and enjoyed a tasty lunch.",
 		name + " didn't notice a micro drop into her drink as she went for a sip. Your tiny body barely managed to slip under her tongue, pinned and unnoticed as she got ready to start the day.",
-		`Worn and ragged, you weakly let ${name}'s tongue pin you under it after a lengthy struggle, her saliva washed over your entire body as she went about her day.`
+		"Worn and ragged, you weakly let " + name + "'s tongue pin you under it after a lengthy struggle, her saliva washed over your entire body as she went about her day."
 		];
 		var voreLength = voreMouth.length
 		var voreSmush = voreMouth[Math.floor(Math.random() * voreMouth.length)]
 
 		var handPlay = [
-		`You were crushed in ${name}'s hands during a sensual massage`,
+		"You were crushed in " + name + "'s hands during a sensual massage",
 		"You were accidentally ripped in half during hand play with " + name + "",
-		`You were flicked across the room by ${name}, splattered on impact against the glass wall of the ant farm`,
+		"You were flicked across the room by " + name + ", splattered on impact against the glass wall of the ant farm",
 		"" + name + " applauded a show, but forgot you were in her hands",
-		`You were slowly squashed between ${name}'s fingers when she was bored at work`,
+		"You were slowly squashed between " + name + "'s fingers when she was bored at work",
 		"" + name + " smacked you, believing you to be a mosqituo",
 		"" + name + " pinched your head and squeezed it, making it pop",
 		"" + name + " crushed you as she punched a punching bag with you taped on it",
 		"" + name + "'s fist slammed down on you as she lost at a video game",
 		"" + name + " brushed you off her shoulder to have you fall to your death",
-		`You were drowned in nail polish as ${name} painted her nails`,
-		`You were grinded to dust as ${name} filed her nails`,
-		`You drowned as ${name} washed her hands with you`,
-		` You were crushed between ${name}'s fingers as she cracked them`,
-		`You were squashed under ${name}'s fingers as she tapped them idly`,
+		"You were drowned in nail polish as " + name + " painted her nails",
+		"You were grinded to dust as " + name + " filed her nails",
+		"You drowned as " + name + " washed her hands with you",
+		" You were crushed between " + name + "'s fingers as she cracked them",
+		"You were squashed under " + name + "'s fingers as she tapped them idly",
 		"" + name + " forcibly tears off your clothing with her fingers and begins to play with your private areas",
 		name +  " cruelly berated you for your size as she poked your shrunken genitals. It appears she didn’t know her own strength and her fingertip was quite painful.",
-		`An entire day riding around on ${name}'s shoulder ended in disaster when she answered her phone. The person on the opposite end heard your death under her wrist.`,
-		`You were so tiny that you could fit in the folds of ${name}'s fingerprint. She decided the best way to get rid of her infestation was a hand-soaking.`,
-		`Your body was strained to the max by being placed inside ${name}'s ring and finger. She didn't really acknowledge you after that.`,
+		"An entire day riding around on " + name + "'s shoulder ended in disaster when she answered her phone. The person on the opposite end heard your death under her wrist.",
+		"You were so tiny that you could fit in the folds of " + name + "'s fingerprint. She decided the best way to get rid of her infestation was a hand-soaking.",
+		"Your body was strained to the max by being placed inside " + name + "'s ring and finger. She didn't really acknowledge you after that.",
 		name + " crushed you under her thumb after a brief game of 'run around her palm and try not to get squished.'",
-		`You were giving ${name} a palm reading when you tickled her a little too much and she involuntarily bawled up her fist.`,
-		`You were covered in perfume and used as a bar of soap for ${name} , unfortunately your body wasn't as strong as she hoped.`
+		"You were giving " + name + " a palm reading when you tickled her a little too much and she involuntarily bawled up her fist.",
+		"You were covered in perfume and used as a bar of soap for " + name + " , unfortunately your body wasn't as strong as she hoped."
 		];
 		var handLength = handPlay.length
 		var handSmush = handPlay[Math.floor(Math.random() * handPlay.length)]
@@ -398,121 +391,121 @@ module.exports = {
 			"" + name + " accepted your proposal and you end up as the jewel on " + name + "'s wedding ring",
 			"" + name + " traded you in to pay for her wedding dress",
 			"" + name + " puts you on top of the wedding cake, but eventually forgets about you when having a slice",
-			`You ended up getting married to ${name}'s sole instead.`,
+			"You ended up getting married to " + name + "'s sole instead.",
 			"You promised to stay with " + name + " until death tore you apart. But after a few days, " + name + " got bored of you, and tears YOU apart.",
-			`You got sucked into ${name}'s mouth and swallowed during your first kiss.`,
-			`You were squashed between ${name}'s toes during her honeymoon as she stirred in her sleep.`,
-			`You live every day of you life happily as ${name}'s tiny husbando`,
-			`You didn't read the prenup and end up as ${name}'s personal slave.`,
+			"You got sucked into " + name + "'s mouth and swallowed during your first kiss.",
+			"You were squashed between " + name + "'s toes during her honeymoon as she stirred in her sleep.",
+			"You live every day of you life happily as " + name + "'s tiny husbando",
+			"You didn't read the prenup and end up as " + name + "'s personal slave.",
 			"" + name + " was disgusted with you, so she decided it would be best to turn into a little red stain.",
-			`You were crushed under the bouquet at ${name}'s wedding.`,
-			`You were the gemstone for the engagement ring ${name} received from her girlfriend.`,
+			"You were crushed under the bouquet at " + name + "'s wedding.",
+			"You were the gemstone for the engagement ring " + name + " received from her girlfriend.",
 			name + " was so hungover after your wedding last night she didn't even remember dropping you into her panties. You drowned in her sweat while she danced.",
 			name + " found you on your bucks night before your wedding. Not even your friends were spared from her dangerous heels.",
-			`You were the groom on top of your own wedding cake with ${name} . Unfortunately she didn't realise you didn't eat that part.`
+			"You were the groom on top of your own wedding cake with " + name + " . Unfortunately she didn't realise you didn't eat that part."
 		];
 		var proposalLength = proposal.length
 		var proposalSmush = proposal[Math.floor(Math.random() * proposal.length)]
 
 		var legs = [
-		`You were squashed by ${name}'s thighs when she folded her legs`,
-		`You were smooshed between ${name}'s thighs as she put on her leggings`,
-		`You were unable to keep your grip while climbing ${name}'s thighs and fell to your death`,
-		`You were ground into paste by ${name}'s thigh when she crossed her legs in the meeting room`,
-		`You were crushed between ${name}'s thighs as she clapped them excitedly at a game`,
-		`You were crushed in the under knee as ${name} squated down`,
-		`You were squished as ${name}'s calf smacked her thigh while running`,
-		`You were Squashed by ${name}'s knee as they knelt to grab something`,
+		"You were squashed by " + name + "'s thighs when she folded her legs",
+		"You were smooshed between " + name + "'s thighs as she put on her leggings",
+		"You were unable to keep your grip while climbing " + name + "'s thighs and fell to your death",
+		"You were ground into paste by " + name + "'s thigh when she crossed her legs in the meeting room",
+		"You were crushed between " + name + "'s thighs as she clapped them excitedly at a game",
+		"You were crushed in the under knee as " + name + " squated down",
+		"You were squished as " + name + "'s calf smacked her thigh while running",
+		"You were Squashed by " + name + "'s knee as they knelt to grab something",
 		"" + name + " calves crushed you as she crossed them while waiting for the bus",
 		"" + name + "'s thighs ended your life as she danced the night away, clapping you between them",
-		`You drowned in ${name}'s lotion as she oiled her legs`,
-		`You were cut to pieces as ${name} shaved her legs`,
-		`As ${name} streched they suffocated you between her legs`,
-		`You drowned in ${name}'s sweat inside her yogapants on a hot summer day`,
-		`Your tiny body was trapped between thigh flesh when ${name} sat down without looking`,
+		"You drowned in " + name + "'s lotion as she oiled her legs",
+		"You were cut to pieces as " + name + " shaved her legs",
+		"As " + name + " streched they suffocated you between her legs",
+		"You drowned in " + name + "'s sweat inside her yogapants on a hot summer day",
+		"Your tiny body was trapped between thigh flesh when " + name + " sat down without looking",
 		name +  "'s thighs proved to be too much to handle when you decided to re-enact the garbage dump scene from A New Hope.",
-		`Your tiny body was absolutely shredded when ${name} pulled her fishnets upwards.`,
+		"Your tiny body was absolutely shredded when " + name + " pulled her fishnets upwards.",
 		name + " repeated squeezed her thighs together, with you between, until not even a trace of you remained.",
 		name + " strut her stuff with you dangling from her anklet.",
-		`You were sitting on ${name}'s knee when she heard a hilarious joke. A 'knee-slapping' joke even...`,
-		`You were wedged into the crease between ${name}'s thigh and crotch. You didn't survive when she put her legs together.`,
-		`You were rubbed onto ${name}'s shin roughly after she bruised it. It seems you had even more bruises afterwards.`
+		"You were sitting on " + name + "'s knee when she heard a hilarious joke. A 'knee-slapping' joke even...",
+		"You were wedged into the crease between " + name + "'s thigh and crotch. You didn't survive when she put her legs together.",
+		"You were rubbed onto " + name + "'s shin roughly after she bruised it. It seems you had even more bruises afterwards."
 		];
 
 		var legsLength = legs.length
 		var legsSmush = legs[Math.floor(Math.random() * legs.length)]
 
 		var breasts = [
-		`You were squished between ${name}'s breasts. She forgot you were there and moved in her sleep`,
-		`You were crushed between ${name}'s breasts, you pervert!`,
-		`You were exploring ${name}'s breasts and were forgotten about when she took a shower`,
-		`You were suffocated in ${name}'s cleavage`,
-		`You were clumsy and fell to your death while standing on ${name}'s nipple`,
-		`You were suffocated by ${name}'s boobs as she put on her Bra`,
+		"You were squished between " + name + "'s breasts. She forgot you were there and moved in her sleep",
+		"You were crushed between " + name + "'s breasts, you pervert!",
+		"You were exploring " + name + "'s breasts and were forgotten about when she took a shower",
+		"You were suffocated in " + name + "'s cleavage",
+		"You were clumsy and fell to your death while standing on " + name + "'s nipple",
+		"You were suffocated by " + name + "'s boobs as she put on her Bra",
 		"" + name + "'s nipple swallowed you whole as you were exploring",
-		`You were caught in ${name}'s underboob, forever lost...`,
-		`You were crushed by ${name}'s breasts as she rested them on a desk`,
-		`You were crushed by ${name}'s breasts while dangling from her necklece`,
+		"You were caught in " + name + "'s underboob, forever lost...",
+		"You were crushed by " + name + "'s breasts as she rested them on a desk",
+		"You were crushed by " + name + "'s breasts while dangling from her necklece",
 		"" + name + "'s Boobs flatted you as they bounced up and down while she ran",
-		`You were constantly crushed as ${name}'s boobs crushed you to the floor while she was doing push ups`,
-		`You drowned in ${name}'s bikini top as she decided to swim`,
-		`Trapped between ${name}'s cleavage, you drowned by her sweat as she worked`,
+		"You were constantly crushed as " + name + "'s boobs crushed you to the floor while she was doing push ups",
+		"You drowned in " + name + "'s bikini top as she decided to swim",
+		"Trapped between " + name + "'s cleavage, you drowned by her sweat as she worked",
 		"" + name + "'s breasts clapped together, crushing you, as she was in a bumpy car ride",
-		`You were crushed against ${name}'s boobs as she hugged someone`,
-		`You were flattened in ${name}'s bra as she stuffed you in there, hoping to keep you safe.`,
-		`You were smushed onto the ground as ${name} tripped and smashed her big breasts against your tiny body.`,
-		`You were made into a splattered smear once ${name} squished you between her breasts, checking to see how durable you were.`,
-		`You were flattened and trapped in one of the bras in a lingerie store after ${name} tried one on with you inside.`,
+		"You were crushed against " + name + "'s boobs as she hugged someone",
+		"You were flattened in " + name + "'s bra as she stuffed you in there, hoping to keep you safe.",
+		"You were smushed onto the ground as " + name + " tripped and smashed her big breasts against your tiny body.",
+		"You were made into a splattered smear once " + name + " squished you between her breasts, checking to see how durable you were.",
+		"You were flattened and trapped in one of the bras in a lingerie store after " + name + " tried one on with you inside.",
 		name +  "'s thought that paizuri at your size would be fun! Unfortunately she didn’t know her strength, and your bones were no match for boob flesh.",
-		`Someone your size could very easily fall into many places. It happened the one you would never come out of was ${name}'s nipple hole.`,
-		`In a feat of strength befitting the titan Atlas, you held up the infinite weight of ${name}'s boob. Unlike Atlas, you weren’t a god, and the steamy meat proved too much for you.`,
+		"Someone your size could very easily fall into many places. It happened the one you would never come out of was " + name + "'s nipple hole.",
+		"In a feat of strength befitting the titan Atlas, you held up the infinite weight of " + name + "'s boob. Unlike Atlas, you weren’t a god, and the steamy meat proved too much for you.",
 		name + " poked you with her erect nipple so hard you fell over and got bulldozed by her giant tit.",
-		`The supple flesh of ${name}'s breast was tantalising until she noticed a little pervert there. She jiggled her boobs until you were crushed.`,
+		"The supple flesh of " + name + "'s breast was tantalising until she noticed a little pervert there. She jiggled her boobs until you were crushed.",
 		name + " slipped you into her sports bra while she jogged. You drowned in the sweat.",
-		`After dancing around on ${name}'s nipple you fell off after she giggled. The small drop to her areola was too great.`,
+		"After dancing around on " + name + "'s nipple you fell off after she giggled. The small drop to her areola was too great.",
 		name + " hung you from her new nipple-piercing."
 		];
 		var breastLength = breasts.length
 		var breastSmush = breasts[Math.floor(Math.random() * breasts.length)]
 
 		var misc = [
-		`You were used as token for a session of Dungeons and Tinies by ${name} and crushed accidently under d20`,
-		`You were captured by ${name} and become a sweat absorber`,
-		`You were suffocated under ${name}'s belly as she laid on you`,
-		`You were drowned in the Washing Machine because ${name} forgot you're in her sock`,
-		`You were trying to escape ${name}'s room but end up lost in the jungle of carpet fibers`,
-		`You were caught masturbating to ${name} while she slept. You had no chance of survival`,
-		`You were shrunk into nothingness on ${name}'s body`,
-		`You were caught in ${name}'s bellybutton and forgotten about`,
-		`You were broken when ${name} broke wind`,
-		`You were trapped and forgotten inside ${name}'s ear after getting wax-cleaning duty`,
-		`You were smeared into ${name}'s armpit, trapped on a stick of deodorant`,
-		`You were lost in ${name}'s pubic forest after trying to explore it without telling her first`,
-		`You were stuck to a tissue when ${name} had a cold and sneezed`,
-		`You were stuck to a tissue when ${name} had some fun RP-ing`,
-		`You were standing a little too close to ${name}'s 'nightime toy' while she was using it`,
-		`You were flattened when ${name} rolled over onto you in her sleep`,
-		`You were ground into paste by ${name}'s pen as she dropped it after jotting some notes`,
-		`You were squashed by ${name}’s eyelids when she blinked`,
-		`You were trapped when ${name} came into her room, and dropped a load of dirty cloths on the floor`,
+		"You were used as token for a session of Dungeons and Tinies by " + name + " and crushed accidently under d20",
+		"You were captured by " + name + " and become a sweat absorber",
+		"You were suffocated under " + name + "'s belly as she laid on you",
+		"You were drowned in the Washing Machine because " + name + " forgot you're in her sock",
+		"You were trying to escape " + name + "'s room but end up lost in the jungle of carpet fibers",
+		"You were caught masturbating to " + name + " while she slept. You had no chance of survival",
+		"You were shrunk into nothingness on " + name + "'s body",
+		"You were caught in " + name + "'s bellybutton and forgotten about",
+		"You were broken when " + name + " broke wind",
+		"You were trapped and forgotten inside " + name + "'s ear after getting wax-cleaning duty",
+		"You were smeared into " + name + "'s armpit, trapped on a stick of deodorant",
+		"You were lost in " + name + "'s pubic forest after trying to explore it without telling her first",
+		"You were stuck to a tissue when " + name + " had a cold and sneezed",
+		"You were stuck to a tissue when " + name + " had some fun RP-ing",
+		"You were standing a little too close to " + name + "'s 'nightime toy' while she was using it",
+		"You were flattened when " + name + " rolled over onto you in her sleep",
+		"You were ground into paste by " + name + "'s pen as she dropped it after jotting some notes",
+		"You were squashed by " + name + "’s eyelids when she blinked",
+		"You were trapped when " + name + " came into her room, and dropped a load of dirty cloths on the floor",
 		"" + name +" cried because she thought she smushed you, and you drowned in her tears",
 		"" + name + " ties you to a ceiling fan and turns it to max power as she stays cool in the summer heat",
-		`You received an unfortunate lesson in human anatomy when you drowned in ${name}'s vaginal fluid, and it was such a bother rescuing your icky body from so deep inside her.`,
-		`Your hometown learned a valuable lesson: " + name + "'s saliva was harder to stay afloat in than water. ${name} just giggled high above after she spat.`,
+		"You received an unfortunate lesson in human anatomy when you drowned in " + name + "'s vaginal fluid, and it was such a bother rescuing your icky body from so deep inside her.",
+		"Your hometown learned a valuable lesson: " + name + "'s saliva was harder to stay afloat in than water. " + name + " just giggled high above after she spat.",
 		name +  " simply enjoyed a day at the spa you worked at. Unfortunately your job was massager. Not the masseuse, the massager; a disposable one at that…",
-		`You hugged onto the giant monolithic strand for dear life, but it helped you little against the swirl-patterned behemoth. ${name} sneakily scratched her bush, hoping no one saw.`,
-		name +  ` showed you to a crowd of ravenous school girls. She smiled smugly in the distance as you were overwhelmed with prods and tickles. ${name} returned finally… to inform them they could keep you.`,
+		"You hugged onto the giant monolithic strand for dear life, but it helped you little against the swirl-patterned behemoth. " + name + " sneakily scratched her bush, hoping no one saw.",
+		name +  " showed you to a crowd of ravenous school girls. She smiled smugly in the distance as you were overwhelmed with prods and tickles. " + name + " returned finally… to inform them they could keep you.",
 		name +  " decided to place you in the crook of her knee for whatever reason. She dangled her feet behind her head playfully, crushing you… that was why.",
-		`You were on the side of Earth that wasn’t being inserted into ${name}'s Lovecraftian womanhood. The ‘luck’ was short lived as the juices quickly overwhelmed the oceans, and a flood of gooey liquid engulfed the globe.`,
-		`You were strapped to ${name}'s sex toy for a night of fun. That night quickly became a week, then a month. Eventually she removed the strap and you were still crusted to the plastic.`,
+		"You were on the side of Earth that wasn’t being inserted into " + name + "'s Lovecraftian womanhood. The ‘luck’ was short lived as the juices quickly overwhelmed the oceans, and a flood of gooey liquid engulfed the globe.",
+		"You were strapped to " + name + "'s sex toy for a night of fun. That night quickly became a week, then a month. Eventually she removed the strap and you were still crusted to the plastic.",
 		name +  " cruelly concocted an experiment, with your extremely tiny self as the subject. Results were conclusive: it was indeed possible to kill something so small by breathing on it. If it was the heat, pressure, or fear however… more tests needed to be done.",
-		`A funny joke played on ${name} made her squeal in fear. At your size, the sound made your head explode.`,
+		"A funny joke played on " + name + " made her squeal in fear. At your size, the sound made your head explode.",
 		name +  " decided to exercise, which would make her sweaty. Apparently, you weren’t as absorbent of a sweat rag as she hoped, and after being used as such ended up in her absolutely stench-ridden locker, where you suffocated.",
-		`While making armpit farts ${name} forgot you were in her hand. At least her pits smelled like deodorant.`,
-		`You were used as a toy for ${name} during one of her live camshows`,
-		`Your life as a human dildo was cut short when ${name} decided you would be better suited to be her new butt-plug.`,
-		`After minutes of trying ${name} couldn't fish you out of her vagina. She decided to wait until you starved and then just wiggle her hips until you fell out.`,
-		`You danced a jig on ${name}'s expanded clitoris. The thing was too slippery however, and you tumbled down and fell to your death.`,
+		"While making armpit farts " + name + " forgot you were in her hand. At least her pits smelled like deodorant.",
+		"You were used as a toy for " + name + " during one of her live camshows",
+		"Your life as a human dildo was cut short when " + name + " decided you would be better suited to be her new butt-plug.",
+		"After minutes of trying " + name + " couldn't fish you out of her vagina. She decided to wait until you starved and then just wiggle her hips until you fell out.",
+		"You danced a jig on " + name + "'s expanded clitoris. The thing was too slippery however, and you tumbled down and fell to your death.",
 		name + " was harsh with her human dildos, and they never lasted for more than a month. That was your new job.",
 		"You lived your life inside a tiny city built in " + name + "'s womanhood. Unfortunately she didn't know about this and decided to have some fun with her vibrator."
 		];
@@ -574,43 +567,43 @@ var slength = smush.length
 						var tellem = "**" + smushee + ",** "
 					 }
 
-							if (args1.indexOf("butt") > -1 || args1.indexOf("ass") > -1 || args1.indexOf("bum") > -1 || args1.indexOf("bums") > -1 || args1.indexOf("butts") > -1) {
+							if (args.indexOf("butt") > -1 || args.indexOf("ass") > -1 || args.indexOf("bum") > -1 || args.indexOf("bums") > -1 || args.indexOf("butts") > -1) {
           			Bot.createMessage(m.channel.id, tellem + buttSmush);
 								return;
 							}
-							else if (args1.indexOf("vagina") > -1 || args1.indexOf("pussy") > -1 || args1.indexOf("insertion") > -1 || args1.indexOf("cunt") > -1 || args1.indexOf("cunny") > -1) {
+							else if (args.indexOf("vagina") > -1 || args.indexOf("pussy") > -1 || args.indexOf("insertion") > -1 || args.indexOf("cunt") > -1 || args.indexOf("cunny") > -1) {
 								Bot.createMessage(m.channel.id, tellem + vaginaSmush);
 								return;
 							}
-							else if (args1.indexOf("proposal") > -1 || args1.indexOf("marriage") > -1 || args1.indexOf("marry") > -1 || args1.indexOf("wed") > -1) {
+							else if (args.indexOf("proposal") > -1 || args.indexOf("marriage") > -1 || args.indexOf("marry") > -1 || args.indexOf("wed") > -1) {
 								Bot.createMessage(m.channel.id, tellem + proposalSmush);
 								return;
 							}
-							else if (args1.indexOf("panty") > -1 || args1.indexOf("panties") > -1 || args1.indexOf("underwear") > -1 || args1.indexOf("thong") > -1 || args1.indexOf("thongs") > -1) {
+							else if (args.indexOf("panty") > -1 || args.indexOf("panties") > -1 || args.indexOf("underwear") > -1 || args.indexOf("thong") > -1 || args.indexOf("thongs") > -1) {
           			Bot.createMessage(m.channel.id, tellem + pantySmush);
 								return;
 							}
-							else if (args1.indexOf("foot") > -1 || args1.indexOf("feet") > -1 || args1.indexOf("foote") > -1) {
+							else if (args.indexOf("foot") > -1 || args.indexOf("feet") > -1 || args.indexOf("foote") > -1) {
 								Bot.createMessage(m.channel.id, tellem + footSmush);
 								return;
 							}
-							else if (args1.indexOf("vore") > -1 || args1.indexOf("mouth") > -1)  {
+							else if (args.indexOf("vore") > -1 || args.indexOf("mouth") > -1)  {
 								Bot.createMessage(m.channel.id, tellem + voreSmush);
 								return;
 							}
-							else if (args1.indexOf("hand") > -1 || args1.indexOf("hands") > -1) {
+							else if (args.indexOf("hand") > -1 || args.indexOf("hands") > -1) {
 								Bot.createMessage(m.channel.id, tellem + handSmush);
 								return;
 							}
-							else if (args1.indexOf("legs") > -1 || args1.indexOf("leg") > -1 || args1.indexOf("thighs") > -1)  {
+							else if (args.indexOf("legs") > -1 || args.indexOf("leg") > -1 || args.indexOf("thighs") > -1)  {
 								Bot.createMessage(m.channel.id, tellem + legsSmush);
 								return;
 							}
-							else if (args1.indexOf("boobs") > -1 || args1.indexOf("breasts") > -1 || args1.indexOf("breast") > -1 || args1.indexOf("boob") > -1 || args1.indexOf("tit") > -1 || args1.indexOf("tits") > -1) {
+							else if (args.indexOf("boobs") > -1 || args.indexOf("breasts") > -1 || args.indexOf("breast") > -1 || args.indexOf("boob") > -1 || args.indexOf("tit") > -1 || args.indexOf("tits") > -1) {
 								Bot.createMessage(m.channel.id, tellem + breastSmush);
 								return;
 							}
-							else if (args1.indexOf("misc") > -1 || args1.indexOf("alt") > -1 || args1.indexOf("other") > -1) {
+							else if (args.indexOf("misc") > -1 || args.indexOf("alt") > -1 || args.indexOf("other") > -1) {
 								Bot.createMessage(m.channel.id, tellem + miscSmush);
 								return;
 							}
