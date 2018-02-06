@@ -16,17 +16,23 @@ var Bot = bot(config.tokens.mei);
 var reload = require("require-reload")(require);
 var events = fs.readdirSync("./events/");
 var colors = require("colors");
-var aesthetics = require('aesthetics');
 const _ = require("./data.js");
-var data = _.load();
 const ppl = require("./people.js");
+const servers = require("./servers.js");
 var people = ppl.load();
-var prefix = config.prefix
+var server = servers.load();
+var data = _.load();
+var aesthetics = require('aesthetics');
 var hands = [ ":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
 var hand = hands[Math.floor(Math.random() * hands.length)]
 
-
 Bot.on("messageCreate", (m)=>{
+  var prefix = config.prefix
+  if (server[m.channel.guild.id]) {
+    if (server[m.channel.guild.id].prefix) {
+      var prefix = server[m.channel.guild.id].prefix
+    }
+  }
   if (m.author.id == "309220487957839872") return;
 	if (m.channel.isPrivate) return;
   if (!m.guild) {
@@ -84,7 +90,7 @@ Bot.on("messageCreate", (m)=>{
       })
     }
   }
-  if (m.channel.guild.id == '196027622944145408' && m.content.startsWith("!play")) {
+  if (m.channel.guild.id == '196027622944145408' && m.content.startsWith(`${prefix}play`)) {
     return;
   }
 	var loguser = `${m.author.username}#${m.author.discriminator}`.magenta.bold;
@@ -116,7 +122,7 @@ Bot.on("messageCreate", (m)=>{
 			var logcmd = `${prefix}${command}`.bold;
 			var logargs = `${args}`.bold;
 			try {
-				cmd.main(Bot, m, args);
+				cmd.main(Bot, m, args, prefix);
 				console.log("CMD".black.bgGreen+" "+loguser+logdivs[1]+logserver+logdivs[0]+logchannel+" "+logcmd.blue);
 				if (args) console.log("ARG".black.bgCyan+" "+logargs.blue.bold);
 				console.log('');
@@ -129,46 +135,10 @@ Bot.on("messageCreate", (m)=>{
 			}
 		}
 	}
-  if (m.content.startsWith("?") && m.channel.guild.id == "187694240585744384") {
-    var input = m.content.replace("?", "!")
-    var command = input.split(" ")[0].replace(prefix, "").toLowerCase();
-    if (commands.indexOf(command+".js") > -1) {
-      var data = _.load(); // Track command usage in ../db/data.json
-      data.commands.totalRuns++
-      if (!(data.commands[command])) {
-        data.commands[command]= {};
-        data.commands[command].totalUses = 0
-        data.commands[command].users = {}
-      }
-      if (!(data.commands[command].users[m.author.id])) {
-        data.commands[command].users[m.author.id] = 0
-      }
-      data.commands[command].users[m.author.id]++
-      data.commands[command].totalUses++
-      _.save(data);
-      var cmd = reload("./commands/"+command+".js");
-      var args = m.content.split(" ");
-      args.splice(0, 1);
-      args = args.join(" ");
-      var logcmd = `${prefix}${command}`.bold;
-      var logargs = `${args}`.bold;
-      try {
-        cmd.main(Bot, m, args);
-        console.log("CMD".black.bgGreen+" "+loguser+logdivs[1]+logserver+logdivs[0]+logchannel+" "+logcmd.blue);
-        if (args) console.log("ARG".black.bgCyan+" "+logargs.blue.bold);
-        console.log('');
-      } catch (err) {
-        console.log(err);
-        Bot.createMessage(m.channel.id, "An error has occured.");
-        console.log("CMD".black.bgRed+" "+loguser+logdivs[1]+logserver+logdivs[0]+logchannel+" "+logcmd.red);
-        if (args) console.log("ARG".black.bgCyan+" "+logargs.red.bold);
-        console.log('');
-      }
-    }
-  }
 });
 
 Bot.on("guildMemberAdd",function(guild, member) {
+  var prefix = server[guild.id].prefix || config.prefix
   if (guild.id == "373589430448947200") {
     Bot.addGuildMemberRole(guild.id, member.id, "375633311449481218", "Assined on join")
     var number = member.id
@@ -211,13 +181,13 @@ Bot.on("guildMemberAdd",function(guild, member) {
         		Bot.createMessage("354709664509853712", msgEmbed);
         }
         setTimeout(function() {
-          Bot.createMessage("354709664509853712", "Welcome "+ member.mention+"~\nThere are a list of roles in <#355823130637500417>, use `!role add rolename` in <#363895860276232193> to give yourself roles. You will be unable to send messages in any other channels until you do this. Let a Guardian know if you have any questions.").then((m) => {
+          Bot.createMessage("354709664509853712", "Welcome "+ member.mention+"~\nThere are a list of roles in <#355823130637500417>, use `"+prefix+"role add rolename` in <#363895860276232193> to give yourself roles. You will be unable to send messages in any other channels until you do this. Let a Guardian know if you have any questions.").then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
           })
           return;}, 4000)
   }
   if (guild.id == "326172270370488320") {
-          Bot.createMessage("326172270370488320", "Welcome to Size Haven, "+ member.mention+"!\nWe now have: "+ guild.memberCount + " people!\nThere are a list of roles in <#389949413042290689>, please use `!role add rolename` to give yourself roles, and let a Mod know if you have any questions~").then((m) => {
+          Bot.createMessage("326172270370488320", "Welcome to Size Haven, "+ member.mention+"!\nWe now have: "+ guild.memberCount + " people!\nThere are a list of roles in <#389949413042290689>, please use `"+prefix+"role add rolename` to give yourself roles, and let a Mod know if you have any questions~").then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
           })
   }
