@@ -1,7 +1,7 @@
 const _ = require("../people.js");
 var data = _.load();
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!fetish /i, "")
 
         function capFirstLetter(string) {
@@ -30,6 +30,30 @@ module.exports = {
             data.people[id].fetishes = {}
         }
         if (args.toLowerCase().includes("search ")) {
+          if (args.toLowerCase().includes("dislike ")) {
+            var incomingEntries = name1.replace(/search /i, "").replace(/dislike /i, "").replace(": ", " ").split(" | ")
+            var incoming = [];
+            var iterator = incomingEntries.entries()
+            for (let e of iterator) {
+                incoming.push(capFirstLetter(e[1]))
+            }
+            var matches = Object.keys(data.people).filter(k => [k].fetishes && data.people[k].fetishes[`${incoming[0]}`] == "dislike")
+            if (matches.length < 1) {
+                Bot.createMessage(m.channel.id, "No matches found");
+                return;
+            } else {
+                var usernames = []
+                for (const match of matches) {
+                    if (m.channel.guild.members.get(match)) {
+                        var properName = m.channel.guild.members.get(match).nick || m.channel.guild.members.get(match).username
+                        usernames.push("***" + properName + "***")
+                    }
+                }
+                Bot.createMessage(m.channel.id, "Users that dislike `" + incoming[0] + "`:\n\n" + usernames.join("\n"));
+                return;
+            }
+          }
+          else {
             var incomingEntries = name1.replace(/search /i, "").replace(": ", " ").split(" | ")
             var incoming = [];
             var iterator = incomingEntries.entries()
@@ -51,6 +75,7 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "Users that like `" + incoming[0] + "`:\n\n" + usernames.join("\n"));
                 return;
             }
+          }
         }
         if (args.toLowerCase().includes("remove ")) {
             if (mentioned.id != m.author.id) {
@@ -83,8 +108,9 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "That's already been added, silly~");
                 return;
             } else {
-                if (incoming[0].toLowerCase().includes("dislike ")) {
+                if (incoming[0].toLowerCase().includes("dislike")) {
                     incoming[0] = incoming[0].replace(/dislike /ig, "")
+                    incoming[0] = capFirstLetter(incoming[0])
                     data.people[id].fetishes[incoming[0]] = "dislike"
                     _.save(data)
                     Bot.createMessage(m.channel.id, "Added Dislike: **" + incoming[0] + "** " + hand);
