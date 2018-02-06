@@ -3,15 +3,15 @@ const Sagiri = require('sagiri');
 const handler = new Sagiri(config.tokens.sauce);
 
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         let data;
-        if (m.content.length < 7 && !m.attachments || m.content == "!sauce" && m.attachments.length == 0) {
+        if (m.content.length < 7 && !m.attachments || m.content == `${prefix}sauce` && m.attachments.length == 0) {
             Bot.createMessage(m.channel.id, "Please add an image, or image url");
             return;
         } else if (m.attachments[0]) {
             var link = m.attachments[0].url
         } else {
-            var link = m.cleanContent.replace("!sauce ", "")
+            var link = m.cleanContent.replace(`${prefix}sauce `, "")
         }
         handler.getSauce(link).then(res => {
             data = res[0];

@@ -1,6 +1,6 @@
 module.exports = {
-    main: function(Bot, m, args) {
-        var name1 = m.cleanContent.replace("!avy ", "");
+    main: function(Bot, m, args, prefix) {
+        var name1 = m.cleanContent.replace(`${prefix}avy `, "");
         var isThisUsernameThatUsername = function(member) {
             var memberName = member.nick || member.username
             if (memberName.toLowerCase() == name1.toLowerCase()) {

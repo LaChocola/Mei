@@ -5,16 +5,16 @@ function promiseTimeout(time) {
     return new Promise(resolve => setTimeout(() => resolve(), time));
 }
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         return new Promise((resolve, reject) => {
             var time = 0.5
-            var base = m.cleanContent.replace("!giveaway ", "").split(" | ");
+            var base = m.cleanContent.replace(`${prefix}giveaway `, "").split(" | ");
             if (!isNaN(+base[1])) {
                 var time = +base[1]
                 base.pop();
             }
             var msg = base[0]
-            if (m.content == "!giveaway") {
+            if (m.content == `${prefix}giveaway`) {
                 return resolve(Bot.createMessage(m.channel.id, "Please add something to giveaway. \n\ni.e. `!giveaway Dragon Dildos` for giving away 'Dragon Dildos'\nor `!giveaway Dragon Dildos | 1` for giving away 'Dragon Dildos' in 1 hour (time defaults to 0.5 hours)"));
             } else {
                 var author = m.author.id;

@@ -1,6 +1,6 @@
 const Jimp = require('jimp');
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         var isThisUsernameThatUsername = function(member) {
             var memberName = member.nick || member.username
             if (memberName.toLowerCase() == m.author.username.toLowerCase()) {

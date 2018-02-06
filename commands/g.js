@@ -2,14 +2,13 @@
 const _ = require("../people.js");
 var data = _.load();
 module.exports = {
-	main: function(Bot, m, args) {
+	main: function(Bot, m, args, prefix) {
 		var args1 = args.toLowerCase()
 		function capFirstLetter(string) {
-		return string.charAt(0).toUpperCase() + string.slice(1);
-}
-    var prefix = '!'
+			return string.charAt(0).toUpperCase() + string.slice(1);
+		}
 		if (m.channel.guild.id == "187694240585744384") {
-			var prefix = "?"
+			prefix = "?"
 		}
 		var male = false
 		var names = ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Baiken", "Ryuko", "Sombra", "Wolfer", "Gwen", "Mercy", "Gwynevere", "Tracer",
@@ -132,7 +131,7 @@ name + " was simply so nice. She held open her vaginal lips to ensure you had en
 "You kayaked through the juices inside of " + name,
 name + " was teased as you sat on her pubic hair and kicked your legs against her vulva.",
 "You danced upon " + name + "'s slippery clitoris.",
-"When you moved in with " + name + " you said 'we have no room for me!'. She just winked and pulled out her shrink ray.",
+"When you moved in with "+name+" you said 'we have no room for me!'. She just winked at you, pulled down her pants, and flicked on her shrink ray.",
 name + " shrunk you and your girlfriend, and as you made love to her " + name + " forced both of you inside her womanhood, delighted at the adorableness of two tiny people having sex inside her.",
 "You participated in an orgy on top of " + name + ". Of all the people she plucked you from her body and had you personally finish her off.",
 name + " licked off all the juice she left on you after love making. It was so adorable and sweet how you always pleased her, even while being so small.",
@@ -406,7 +405,6 @@ if (male ==  true) {
 }
 
 var glength = gentle.length
-
 	if (m.content.toLowerCase() === `${prefix}g length`) {
 		var total = glength
 		var cleanishNames = names.join(', ')
@@ -433,17 +431,14 @@ var glength = gentle.length
 		 Bot.createMessage(m.channel.id, "<@" + person + ">, " + gentle1)
 	}
 
-
 	if (m.content.toLowerCase().startsWith(`${prefix}g`) && m.content.toLowerCase() != `${prefix}g length`) {
 		var tellem = "<@" + m.author.id + '>, '
 		 switch (m.author.id) {
 			 default: {
-
 				 if (m.mentions.length > 0) {
 					 var smushee = m.channel.guild.members.get(m.mentions[0].id).nick || m.mentions[0].username
 					 var tellem = "**" + smushee + ",** "
 						}
-
 						 if (args1.indexOf("butt") > -1 || args1.indexOf("ass") > -1 || args1.indexOf("bum") > -1 || args1.indexOf("bums") > -1 || args1.indexOf("butts") > -1) {
 							 Bot.createMessage(m.channel.id, tellem + buttGentle);
 							 return;

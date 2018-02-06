@@ -4,16 +4,19 @@ var Dictionary = require('mw-dictionary'),
         key: config.tokens.webster
     });
 
-
 module.exports = {
-    main: function(Bot, m, args) {
-        var word = (m.content.replace("!define ", ""));
+    main: function(Bot, m, args, prefix) {
+        var word = (m.content.replace(`${prefix}define `, ""));
+        console.log("start");
         dict.define(word, function(error, result) {
+          console.log("begin");
             if (error == null) {
                 var results = []
+                console.log(0);
                 for (var i = 0; i < (result.length * 0.5); i++) {
                     results.push('Definition ' + (i + 1) + '.' + '\nPart of speech: ' + result[i].partOfSpeech + '\nDefinitions: ' + result[i].definition.replace(" :", "").split(":").join("\n"));
                 }
+                console.log(1);
                 Bot.createMessage(m.channel.id, {
                     content: "Definition of **" + word + "**:\n",
                     embed: {
@@ -21,7 +24,8 @@ module.exports = {
                         description: results.join("\n")
                     }
                 });
-            } else if (error === "suggestions") {
+                console.log(2);
+            } else if (error === "suggestions" || !results) {
                 var msg = "**" + word + '** not found in dictionary. Possible suggestions: \n ```'
                 suggestions = []
                 for (var i = 0; i < (result.length * 0.5); i++) {

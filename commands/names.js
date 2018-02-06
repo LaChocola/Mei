@@ -1,7 +1,7 @@
 const _ = require("../people.js");
 var data = _.load();
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!names /i, "")
 
         function capFirstLetter(string) {

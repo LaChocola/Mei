@@ -1,8 +1,8 @@
 module.exports = {
-    main: function(Bot, m, args) {
-        var msg = m.cleanContent.replace("!suggest ", "");
+    main: function(Bot, m, args, prefix) {
+        var msg = m.cleanContent.replace(`${prefix}suggest `, "");
         var person = m.author
-        if (m.content == "!suggest") {
+        if (m.content == `${prefix}suggest`) {
             Bot.createMessage(m.channel.id, "Please add your suggestion. i.e. ``!suggest 'you were smushed by XXX when she forgot to check her seat before sitting down'``")
         } else {
             Bot.getDMChannel('161027274764713984').then(function(DMchannel) {

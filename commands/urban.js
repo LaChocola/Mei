@@ -1,8 +1,8 @@
 const request = require('request');
 
 module.exports = {
-    main: function(Bot, m, args) {
-        var word = (m.content.replace("!urban ", ""));
+    main: function(Bot, m, args, prefix) {
+        var word = (m.content.replace(`${prefix}urban `, ""));
         var urbanJsonURL = "http://api.urbandictionary.com/v0/define?term=" + word;
         var urbanJson = request.get({
             url: urbanJsonURL,

@@ -1,9 +1,9 @@
 const fs = require("fs");
 
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         function format(file, help) {
-            var line = "`!" + file.replace(".js", "") + "` " + help + ".";
+            var line = "`"+ prefix + file.replace(".js", "") + "` " + help + ".";
             return line;
         }
         var files = fs.readdirSync("./commands/");

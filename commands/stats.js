@@ -1,8 +1,8 @@
 const _ = require("../data.js");
 var data = _.load();
 module.exports = {
-    main: function(Bot, m, args) {
-        var name1 = m.cleanContent.replace("!stats ", "")
+    main: function(Bot, m, args, prefix) {
+        var name1 = m.cleanContent.replace(`${prefix}stats `, "")
         var isThisUsernameThatUsername = function(member) {
             var memberName = member.nick || member.username
             if (memberName.toLowerCase() == name1.toLowerCase()) {

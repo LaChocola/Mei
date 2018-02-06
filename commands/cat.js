@@ -1,7 +1,7 @@
 var request = require('request');
 
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         request('http://random.cat/meow', (err, res, body) => {
             var catURL = JSON.parse(body)
             const data = {

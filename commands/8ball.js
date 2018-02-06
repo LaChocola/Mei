@@ -1,9 +1,9 @@
 const eightball = require('8ball')()
 
 module.exports = {
-    main: function(Bot, m, args) {
-        var msg = m.cleanContent.replace("!8ball ", "");
-        if (m.content == "!8ball") {
+    main: function(Bot, m, args, prefix) {
+        var msg = m.cleanContent.replace(`${prefix}8ball `, "");
+        if (m.content == `${prefix}8ball`) {
             Bot.createMessage(m.channel.id, "Please add something")
         } else {
             Bot.createMessage(m.channel.id, `***` + msg + `***\n:8ball: ${eightball}`);

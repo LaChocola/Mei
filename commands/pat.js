@@ -1,5 +1,5 @@
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         if (m.mentions.length > 2) {
             Bot.createMessage(m.channel.id, "Thats too many pats to give :angry:")
             return;

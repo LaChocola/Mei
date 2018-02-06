@@ -1,7 +1,7 @@
 const _ = require("../people.js");
 var data = _.load();
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!hoard /i, "")
         var isThisUsernameThatUsername = function(member) {
             var memberName = member.nick || member.username
@@ -69,5 +69,5 @@ module.exports = {
             return;
         }
     },
-    help: "Add custom names for !v and !g"
+    help: "View items in your hoard. React to things with :heart_eyes: to add items"
 }

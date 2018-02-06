@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         var prefix = "!";
         var args = m.content.slice(prefix.length).split(" ");
         args.shift();

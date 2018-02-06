@@ -1,7 +1,7 @@
 const Jimp = require('jimp');
 
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         if (m.mentions.length == 1 && m.author.id == m.mentions[0].id) { // If the user mentions only themself
             Bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; *hugs you*`)
             return;

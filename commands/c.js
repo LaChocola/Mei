@@ -3,9 +3,9 @@ var config = require("../etc/config.json");
 var app = apiai(config.tokens.apiai);
 
 module.exports = {
-    main: function(Bot, m, args) {
-        var msg = m.cleanContent.replace("!c ", "");
-        if (m.content == "!c") {
+    main: function(Bot, m, args, prefix) {
+        var msg = m.cleanContent.replace(`${prefix}c `, "");
+        if (m.content == `${prefix}c`) {
             Bot.createMessage(m.channel.id, "Please add something i.e. ``!c How are you?``")
         } else {
             var request = app.textRequest(msg, {

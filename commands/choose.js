@@ -1,6 +1,6 @@
 module.exports = {
-    main: function(Bot, m, args) {
-        var list = m.cleanContent.replace("!choose ", "");;
+    main: function(Bot, m, args, prefix) {
+        var list = m.cleanContent.replace(`${prefix}choose `, "");;
 
         var choiceList = list.split("|");
 

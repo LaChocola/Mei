@@ -1,7 +1,7 @@
 module.exports = {
-    main: function(Bot, m, args) {
-        var msg = m.cleanContent.replace("!say ", "");
-        if (m.content == "!say") {
+    main: function(Bot, m, args, prefix) {
+        var msg = m.cleanContent.replace(`${prefix}say `, "");
+        if (m.content == `${prefix}say`) {
             Bot.createMessage(m.channel.id, "Please add something to say. i.e. ``!say <whatever>``")
             return
         } else {

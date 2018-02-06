@@ -1,12 +1,12 @@
 const fs = require("fs");
 
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         if (args != "") {
             var commands = fs.readdirSync("./commands/");
             if (commands.indexOf(args + ".js") > -1) {
                 var cmd = require("./" + args + ".js");
-                Bot.createMessage(m.channel.id, "`!" + args + "`, " + cmd.help);
+                Bot.createMessage(m.channel.id, "`"+ prefix + args + "`, " + cmd.help);
             } else {
                 Bot.createMessage(m.channel.id, "That command doesn't exist.");
             }

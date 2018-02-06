@@ -1,7 +1,7 @@
 const Jimp = require('jimp');
 var time = new Date().toDateString().slice(4).replace(` ${new Date().getFullYear()}`, `, ${new Date().getFullYear()}`)
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         var isThisUsernameThatUsername = function(member) {
             var memberName = member.nick || member.username
             if (memberName.toLowerCase() == m.author.username.toLowerCase()) {
@@ -15,7 +15,10 @@ module.exports = {
             var name = name.slice(0, 11) + ".."
         }
         var pic = `https://images.discordapp.net/avatars/${m.author.id}/${m.author.avatar}.png?size=1024`
-
+        if (pic.includes("null")) {
+          Bot.createMessage(m.channel.id, "You need an avatar to use this command");
+          return;
+        }
         if (m.mentions.length == 1) {
             var pic = `https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`
         } else if (m.mentions.length > 1) {

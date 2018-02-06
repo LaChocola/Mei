@@ -1,5 +1,5 @@
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         var time = process.hrtime();
         Bot.createMessage(m.channel.id, "Pong!").then(msg => {
             var ms = Math.round(process.hrtime(time)[1] / 1000000);

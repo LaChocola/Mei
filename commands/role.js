@@ -1,20 +1,20 @@
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
         var hand = hands[Math.floor(Math.random() * hands.length)]
         var downs = [":thumbsdown::skin-tone-1:", ":thumbsdown::skin-tone-2:", ":thumbsdown::skin-tone-3:", ":thumbsdown::skin-tone-4:", ":thumbsdown::skin-tone-5:", ":thumbsdown:"]
         var down = downs[Math.floor(Math.random() * downs.length)]
         var guild = m.channel.guild
         m.content = m.content.toLowerCase()
-        if (m.content == "!role" || m.content == "!role ") {
+        if (m.content == `${prefix}role` || m.content == `${prefix}role `) {
             Bot.createMessage(m.channel.id, "What do you want to do? | `!role add <role name>` | `!role remove <role name>`");
             return;
         }
-        if (m.content.includes("!role  ")) {
+        if (m.content.includes(`${prefix}role  `)) {
             Bot.createMessage(m.channel.id, "One space Please");
             return;
         }
-        if (m.content.includes("!role   ")) {
+        if (m.content.includes(`${prefix}role   `)) {
             Bot.createMessage(m.channel.id, "***One*** space Please");
             return;
         }
@@ -94,7 +94,7 @@ module.exports = {
         }
         if (m.content.includes("add")) {
             if (!m.content.includes(" | ")) {
-                var content = m.cleanContent.toLowerCase().replace("!role add ", "")
+                var content = m.cleanContent.toLowerCase().replace(`${prefix}role add `, "")
                 if (roles[content]) {
                     var roleID = roles[content]
                     Bot.addGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
@@ -118,7 +118,7 @@ module.exports = {
                     return;
                 }
             } else if (m.content.includes(" | ")) {
-                var content = m.cleanContent.toLowerCase().replace("!role add ", "").split(" | ")
+                var content = m.cleanContent.toLowerCase().replace(`${prefix}role add `, "").split(" | ")
                 var iterator = content.entries()
                 var found = []
                 var notFound = []
@@ -155,7 +155,7 @@ module.exports = {
         }
         if (m.content.includes("remove")) {
             if (!m.content.includes(" | ")) {
-                var content = m.cleanContent.toLowerCase().replace("!role remove ", "")
+                var content = m.cleanContent.toLowerCase().replace(`${prefix}role remove `, "")
                 if (roles[content]) {
                     var roleID = roles[content]
                     Bot.removeGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
@@ -179,7 +179,7 @@ module.exports = {
                     return;
                 }
             } else if (m.content.includes(" | ")) {
-                var content = m.cleanContent.toLowerCase().replace("!role remove ", "").split(" | ")
+                var content = m.cleanContent.toLowerCase().replace(`${prefix}role remove `, "").split(" | ")
                 var iterator = content.entries()
                 var found = []
                 var notFound = []

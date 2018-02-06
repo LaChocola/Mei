@@ -1,7 +1,7 @@
 const request = require("request");
 
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         var base = "http://emoji.getdango.com/api/emoji?q=";
         var query = args.replace(/ /g, "+");
         request.get({

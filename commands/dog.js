@@ -1,7 +1,7 @@
 const randomPuppy = require('random-puppy');
 
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         randomPuppy()
             .then(url => {
                 const data = {

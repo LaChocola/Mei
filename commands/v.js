@@ -2,14 +2,10 @@
 const _ = require("../people.js");
 var data = _.load();
 module.exports = {
-	main: function(Bot, m, args) {
+	main: function(Bot, m, args, prefix) {
 		var args = args.toLowerCase()
 		function capFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-    var prefix = '!'
-		if (m.channel.guild.id == "187694240585744384") {
-			var prefix = "?"
+			return string.charAt(0).toUpperCase() + string.slice(1);
 		}
 		var male = false
 		var names = ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Baiken", "Ryuko", "Sombra", "Wolfer", "Gwen", "Mercy", "Gwynevere", "Tracer",
@@ -100,6 +96,7 @@ module.exports = {
 
 		var butt = [
 		"You were smushed under " + name + "'s butt while she played games",
+		name + " unknowingly sat on you, her ass engulfing your vision. You struggled, but ended up getting stuck in her butt until the next day.",
 		"You were sitting in " + name + "'s spot at the wrong time",
 		"You were flattened by " + name + "'s round ass as she sat on the couch",
 		"You were unwittingly crushed on the stool as " + name + " sat down at the bar.",

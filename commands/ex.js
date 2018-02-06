@@ -10,9 +10,9 @@ var config = require("../etc/config.json");
 
 
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         var name = m.author.nick || m.author.username
-        var args = m.cleanContent.replace("!ex ", "").toLowerCase().split(", ")
+        var args = m.cleanContent.replace(`${prefix}ex `, "").toLowerCase().split(", ")
         var base1 = "https://exhentai.org/?f_doujinshi=0&f_manga=0&f_artistcg=0&f_gamecg=0&f_western=0&f_non-h=0&f_imageset=0&f_cosplay=0&f_asianporn=0&f_misc=0&f_search=%22" + args.join("%22+%22") + "%22&f_apply=Apply+Filter"
         var baseMore = "https://exhentai.org/?f_doujinshi=0&f_manga=0&f_artistcg=0&f_gamecg=0&f_western=0&f_non-h=0&f_imageset=0&f_cosplay=0&f_asianporn=0&f_misc=0&f_search=%22" + args.join("%22+%22") + "%22&f_apply=Apply+Filter"
         var pageToVisit = base1

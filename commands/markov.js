@@ -2,8 +2,8 @@ const MarkovGen = require('markov-generator');
 var time = new Date().toISOString();
 
 module.exports = {
-    main: async function(Bot, m, args) {
-        var name1 = m.cleanContent.replace("!markov ", "")
+    main: async function(Bot, m, args, prefix) {
+        var name1 = m.cleanContent.replace(`${prefix}markov `, "")
         if (m.content.length < 8) {
             name1 = m.author.username
         }
@@ -38,7 +38,7 @@ module.exports = {
             let messages = await Bot.getMessages(channel, amount);
 
 
-            messages = messages.filter(msg => msg.author.id === mentioned.id && !msg.content.includes("!") && !msg.content.includes("<@") && !msg.content.includes(".com")).map(msg => msg.content);
+            messages = messages.filter(msg => msg.author.id === mentioned.id && !msg.content.startsWith(prefix) && !msg.content.includes("<@") && !msg.content.includes(".com")).map(msg => msg.content);
             let markov = new MarkovGen({
                 input: messages,
                 minLength: 6
@@ -47,6 +47,10 @@ module.exports = {
             if (!(messages) || !(sentence)) {
                 Bot.createMessage(m.channel.id, "Sorry, I couldn't find any messages from **" + mentioned.username + "** in `" + m.channel.name + "`")
                 return;
+            }
+            if (m.channel.guild.id == "187694240585744384" && m.mentions[0].id == "143906582235840512") {
+              Bot.createMessage(m.channel.id, `"${sentence}"\n    -${name} 2018`);
+              return;
             }
             Bot.createMessage(m.channel.id, {
                 embed: {

@@ -7,16 +7,16 @@ var URL = require('url-parse');
 var Jimp = require('jimp');
 
 module.exports = {
-	main: function(Bot, m, args) {
+	main: function(Bot, m, args, prefix) {
     function isNumeric(num){
         return !isNaN(+num)
     }
 
     var name = m.author.nick || m.author.username
-		if (m.content.toLowerCase() == "!booru") {
-			m.content = "!booru giantess"
+		if (m.content.toLowerCase() == `${prefix}booru`) {
+			m.content = `${prefix}booru giantess`
 		}
-    var args = m.cleanContent.toLowerCase().replace("!booru ", "").split(", ")
+    var args = m.cleanContent.toLowerCase().replace(`${prefix}booru `, "").split(", ")
     var site = "giantessbooru.com"
 		var imageURL = [];
 		var tags = [];

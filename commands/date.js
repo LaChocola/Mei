@@ -1,7 +1,7 @@
 var timeago = require("timeago.js");
 var timediff = require('timediff');
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         var number = m.author.id
         if (m.mentions.length > 0) {
             var number = m.mentions[0].id

@@ -1,5 +1,5 @@
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         args = args.replace(/(\w|\d|\*|\?|!| )/g, "$1");
         args = args.toLowerCase();
         args = args.split("");
