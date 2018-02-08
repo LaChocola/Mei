@@ -20,7 +20,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
     }
 
     static getSomeone(m){
-        var members = m.channel.guild.members;
+        var members = m.channel.guild.members.filter(m => !m.bot);
 			var people = []
 				 members.forEach(function(member){
 								 if ((member.status != "offline") && (member.user.id != '309220487957839872')) {
@@ -88,10 +88,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
 
     static generateLewdMessage(smallid,big,guildid,maintype,subtype){
 
-        console.log("mehmeh");
         
-
-
         //=============get names==================
         var bigname = big;
         if(big == false){
@@ -111,7 +108,6 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
         
         var smallname = "<@"+smallid+">, ";
 
-        console.log("Phase 1");
         //=========panty info============
 
         var sides = ["front", "back"];
@@ -194,7 +190,6 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
         //==========select from pool
         var candidates = [];
         var pool = Misc.getLewdPool();
-        //console.log("AMESSAGE"+pool.violent.foot[0]);
         for (const primarytypename in pool) {
             if (pool.hasOwnProperty(primarytypename)) {
                 const primarytype = pool[primarytypename];
@@ -203,7 +198,6 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
                     for (const secondarytypename in primarytype) {
                         if (primarytype.hasOwnProperty(secondarytypename)) {
                             const typepool = primarytype[secondarytypename];
-                            //console.log("poolmessage: "+poolmessage+"\n\n\n");
                             if(subtype == false || secondarytypename == subtype)
                             {
                                 for(var i = 0;i<typepool.length;i++)
@@ -220,10 +214,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
 
         var lewdmessage = Misc.randomelement(candidates);
 
-        //console.log("Lewdmessage: "+lewdmessage);
-        //return;
-        //console.log("MESSAGE: "+candidates[6]);
-
+        
         //==================perform replacements==============
 
         lewdmessage = lewdmessage.replace(/\[name]/g,bigname).replace(/\[side]/g,side).replace(/\[type1]/g,type1).replace(/\[type2]/g,type2);
@@ -290,7 +281,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
         
         //console.log("Name found: "+names[1]);
         console.log("NAMES: "+names);
-        return {"names":names,"cleannames":cleanNames};
+        return {"names":names,"cleannames":cleanNames,"totalnames":names.length};
 
     }
 
@@ -311,6 +302,26 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
 			}
         }
         return customName;
+    }
+
+    static getLewdCounts(type){
+        var resultstring = "";
+        var total = 0;
+        var pool = Misc.getLewdPool();
+        for (const key in pool[type]) {
+            if (pool[type].hasOwnProperty(key)) {
+                const element = pool[type][key];
+                total+=element.length;
+                resultstring+= "**"+Misc.capitaliseFirstLetter(key)+" "+Misc.capitaliseFirstLetter(type)+"s:** "+element.length+"\n \n";
+            }
+        }
+        resultstring = "**Total "+Misc.capitaliseFirstLetter(type)+"s:** "+total+"\n \n"+resultstring;
+        return resultstring;
+
+    }
+
+    static capitaliseFirstLetter(string){
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
     static getLewdPool(){
