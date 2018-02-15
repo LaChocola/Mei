@@ -1,9 +1,9 @@
 const yt = require("ytdl-core");
 const fs = require("fs");
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(Bot, m, args, prefix) {
         var code = args.replace(/<?(https?:\/\/)?(www\.)?(youtu(be\.com\/|.be\/))?(watch\?v=)?([^>]*)>?/, "$6");
-        var args = m.cleanContent.replace("!play ", "").toLowerCase()
+        var args = m.cleanContent.replace(`${prefix}play `, "").toLowerCase()
         var hands = [":wave::skin-tone-1:", ":wave::skin-tone-2:", ":wave::skin-tone-3:", ":wave::skin-tone-4:", ":wave::skin-tone-5:", ":wave:"]
         var hand = hands[Math.floor(Math.random() * hands.length)]
         if (m.channel.nsfw == false) {
