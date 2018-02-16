@@ -5,6 +5,8 @@ var data = _.load();
 module.exports = {
 	main: function(Bot, m, args, prefix) {
 		var args = args.toLowerCase()
+
+		
 		if(args.indexOf("length") >= 0){
 			var names = miscl.getDefaultGTSNames(m.channel.guild.id);
 			var resultstring = "";
@@ -12,7 +14,7 @@ module.exports = {
 			Bot.createMessage(m.channel.id, {
 				embed: {
 						"color": 0xA260F6,
-						"description": resultstring
+						"description": resultstring.replace(/Violents/g,"Smushes")
 				}
 			});
 			return;
@@ -26,12 +28,26 @@ module.exports = {
 		}
 		var smallid = id;
 		var big = false;
+
+
+		var names = miscl.getDefaultGTSNames(m.channel.guild.id).names;
+		var cname = miscl.getcustomGTSNames(smallid);
+		names = names.concat(cname);
+		for(var i = 0;i<names.length;i++){
+			if(args.includes(names[i].toLowerCase()))
+			big = names[i];
+		}
+
+
+		
 		var maintype = "violent";
 		var subtype = miscl.searchForLewd(args);
-		if(args.indexOf("invert") >= 0){
+		if(args.indexOf("invert") >= 0 || args.indexOf("inverse") >=0){
 			big = miscl.getTrueName(m.author.id,m);
 		}
 		var guildid = m.channel.guild.id;
+
+		
 
 		var lewdmessage = miscl.generateLewdMessage(smallid,big,guildid,maintype,subtype)
 

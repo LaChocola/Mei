@@ -92,7 +92,14 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
         //=============get names==================
         var bigname = big;
         if(big == false){
-            var names = Misc.getDefaultGTSNames(guildid).names.concat(Misc.getcustomGTSNames(smallid));
+            var cname = Misc.getcustomGTSNames(smallid);
+            var names;
+            if(cname.length == 0)
+            {
+                names = Misc.getDefaultGTSNames(guildid).names;
+            }else{
+                names = cname;
+            }
             var bigname = Misc.randomelement(names);
         }
 
@@ -235,8 +242,8 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
     }
 
     static getDefaultGTSNames(guildid){
-        var names = ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Baiken", "Ryuko", "Sombra", "Wolfer", "Gwen", "Mercy", "Gwynevere", "Tracer",
-		"Aqua", "Megumin", "Cortana", "Yuna", "Lulu", "Rikku", "Rosalina", "Samus", "Princess Peach", "Palutena", "Shin", "Kimmy", "Zoey", "Camilla", "Lillian", "Narumi", "D.va"];
+        var names =["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Baiken", "Ryuko", "Sombra", "Wolfer", "Gwen", "Mercy", "Gwynevere", "Tracer",
+        "Aqua", "Megumin", "Cortana", "Yuna", "Lulu", "Rikku", "Rosalina", "Samus", "Princess Peach", "Palutena", "Shin", "Kimmy", "Zoey", "Camilla", "Lillian", "Narumi", "D.va"];
 		var cleanishNames = names.join(', ')
 		var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n").replace("Baiken,", "Baiken,\n").replace("Gwen,", "Gwen,\n").replace("Aqua,", "Aqua,\n").replace("Lulu,", "Lulu,\n").replace("Samus,", "Samus,\n")
 		
@@ -279,8 +286,6 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
 			var cleanNames = cleanishNames.replace("Duni,", "Duni,\n")
         }
         
-        //console.log("Name found: "+names[1]);
-        console.log("NAMES: "+names);
         return {"names":names,"cleannames":cleanNames,"totalnames":names.length};
 
     }
@@ -291,10 +296,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
         if (data.people[uid]) {
             if (data.people[uid].names) {
                 var namesObj = data.people[uid].names
-               // var names = [];
-                //console.log("cnames: "+namesObj)
                 Object.keys(namesObj).forEach(function(key){
-                    console.log("akey");
                     customName.push(key);
                      
                      
