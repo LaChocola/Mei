@@ -3,7 +3,7 @@ var data = _.load();
 const fs = require("fs");
 
 class Misc {//Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
-    
+
 
     static isThisUsernameThatUsername(member) {
         var memberName = member.nick || member.username
@@ -13,10 +13,10 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
     }
 
     static getTrueName(id,m){
-       
+
         var name = m.channel.guild.members.get(id).nick ||m.channel.guild.members.get(id).username
         return name;
-        
+
     }
 
     static getSomeone(m){
@@ -59,7 +59,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
                     {
                         return key;
                     }
-                } 
+                }
             }
         }
         return false;
@@ -76,7 +76,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
                     {
                         return key;
                     }
-                } 
+                }
             }
         }
         return false;
@@ -88,7 +88,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
 
     static generateLewdMessage(smallid,big,guildid,maintype,subtype){
 
-        
+
         //=============get names==================
         var bigname = big;
         if(big == false){
@@ -105,25 +105,33 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
 
 
         var male = false;
+        var futa = false;
         if (data.people[smallid]) {
-			if (data.people[smallid].names) {
-				if (data.people[smallid].names[bigname] == "male") {
-					var male = true
-				}
-			}
-		}
-        
+  			if (data.people[smallid].names) {
+  				if (data.people[smallid].names[bigname] == "male") {
+  					var male = true
+  				}
+          if (data.people[smallid].names[bigname] == "futa") {
+            var futa = true
+          }
+  			}
+  		}
+
         var smallname = "<@"+smallid+">, ";
 
         //=========panty info============
 
         var sides = ["front", "back"];
-		var types1 = ["panties", "underwear", "thongs"];
+		    var types1 = ["panties", "underwear", "thongs"];
         var types2 = ["panty", "thong", "underwear"];
         if (male) {
-			var types1 = ["underwear", "boxers", "briefs"]
-			var types2 = ["underwear", "underwear"]
-		}
+    			var types1 = ["underwear", "boxers", "briefs"]
+    			var types2 = ["underwear", "underwear"]
+    		}
+        if (futa) {
+          var types1 = types1.concat(["underwear", "boxers", "briefs"])
+          var types2 = types2.concat(["underwear", "underwear"])
+        }
 
 		var type1 = Misc.randomelement(types1);
 		var side = Misc.randomelement(sides);
@@ -162,38 +170,40 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
 					var adjectiveFootwear = adjectiveFootwear1 + ", " + adjectiveFootwear2 + " "
 					}
 			}
-        
-        
-        var nakedFeetPlurals = ["bare feet", "heels", "arches", "big toes", "toes", "soles"]
-		var nakedFeetSingulars = ["bare foot", "arch", "arches", "big toe", "toe", "sole"]
-		var footwearPlurals = ["shoes", "boots", "sandals", "flip flops", "sneakers", "pumps", "heels", "socks", "stockings", "nylons", "fishnets", "hose"]
-		var nakedFeetPlural = adjectiveFeet + Misc.randomelement(nakedFeetPlurals)
-        var footwearSingulars = ["shoe", "boot", "sandal", "flip flop", "sneaker", "pump", "heel", "sock", "stocking", "nylons", "fishnets", "hose"]	
-		if (male) {
-			var footwearPlurals = ["shoes", "boots", "sandals", "flip flops", "sneakers", "boots", "socks"]
-			var footwearSingulars = ["shoe", "boot", "sandal", "flip flop", "sneaker", "boot", "sock"]
-        }
-
-        var nakedFeetSingular = adjectiveFeet + Misc.randomelement(nakedFeetSingulars)
-		var footwearPlural = adjectiveFootwear + Misc.randomelement(footwearPlurals)
-		var footwearSingular = adjectiveFootwear + Misc.randomelement(footwearSingulars)
-        
-        var plurals = Array.from(new Set([].concat(nakedFeetPlural, footwearPlural)))
-		var singulars =  Array.from(new Set([].concat(nakedFeetSingular, footwearSingular)))
-		var nakedFoots = Array.from(new Set([].concat(nakedFeetSingular, nakedFeetPlural)))
-		var footwears = Array.from(new Set([].concat(footwearSingular, footwearPlural)))
-		var feets =  Array.from(new Set([].concat(nakedFeetPlural, nakedFeetSingular, footwearPlural, footwearSingular)))
-       
-
-        var plural = Misc.randomelement(plurals)
-		var singular = Misc.randomelement(singulars)
-		var nakedFoot = Misc.randomelement(nakedFoots)
-		var footwear = Misc.randomelement(footwears)
-		var feet = Misc.randomelement(feets)
-        
 
 
-        
+      var nakedFeetPlurals = ["bare feet", "heels", "arches", "big toes", "toes", "soles"]
+  		var nakedFeetSingulars = ["bare foot", "arch", "arches", "big toe", "toe", "sole"]
+  		var footwearPlurals = ["shoes", "boots", "sandals", "flip flops", "sneakers", "pumps", "heels", "socks", "stockings", "nylons", "fishnets", "hose"]
+  		var nakedFeetPlural = adjectiveFeet + Misc.randomelement(nakedFeetPlurals)
+      var footwearSingulars = ["shoe", "boot", "sandal", "flip flop", "sneaker", "pump", "heel", "sock", "stocking", "nylons", "fishnets", "hose"]
+  		if (male) {
+  			var footwearPlurals = ["shoes", "boots", "sandals", "flip flops", "sneakers", "boots", "socks"]
+  			var footwearSingulars = ["shoe", "boot", "sandal", "flip flop", "sneaker", "boot", "sock"]
+      }
+      if (futa) {
+  			var footwearPlurals = Array.from(new Set([].concat(footwearPlurals, ["shoes", "boots", "sandals", "flip flops", "sneakers", "boots", "socks"])))
+  			var footwearSingulars = Array.from(new Set([].concat(footwearSingulars, ["shoe", "boot", "sandal", "flip flop", "sneaker", "boot", "sock"])))
+      }
+      var nakedFeetSingular = adjectiveFeet + Misc.randomelement(nakedFeetSingulars)
+  		var footwearPlural = adjectiveFootwear + Misc.randomelement(footwearPlurals)
+  		var footwearSingular = adjectiveFootwear + Misc.randomelement(footwearSingulars)
+
+      var plurals = Array.from(new Set([].concat(nakedFeetPlural, footwearPlural)))
+  		var singulars =  Array.from(new Set([].concat(nakedFeetSingular, footwearSingular)))
+  		var nakedFoots = Array.from(new Set([].concat(nakedFeetSingular, nakedFeetPlural)))
+  		var footwears = Array.from(new Set([].concat(footwearSingular, footwearPlural)))
+  		var feets =  Array.from(new Set([].concat(nakedFeetPlural, nakedFeetSingular, footwearPlural, footwearSingular)))
+
+      var plural = Misc.randomelement(plurals)
+  		var singular = Misc.randomelement(singulars)
+  		var nakedFoot = Misc.randomelement(nakedFoots)
+  		var footwear = Misc.randomelement(footwears)
+  		var feet = Misc.randomelement(feets)
+
+
+
+
         //==========select from pool
         var candidates = [];
         var pool = Misc.getLewdPool();
@@ -221,20 +231,22 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
 
         var lewdmessage = Misc.randomelement(candidates);
 
-        
         //==================perform replacements==============
 
         lewdmessage = lewdmessage.replace(/\[name]/g,bigname).replace(/\[side]/g,side).replace(/\[type1]/g,type1).replace(/\[type2]/g,type2);
         lewdmessage = lewdmessage.replace(/\[feet]/g,feet).replace(/\[nakedfoot]/g,nakedFoot).replace(/\[nakedfeetplural]/g,nakedFeetPlural).replace(/\[nakedfeetsingular]/g,nakedFeetSingular).replace(/\[plural]/g,plural).replace(/\[footwearsingular]/g,footwearSingular).replace(/\[footwearplural]/g,footwearPlural)
-        
-        if(male){
+
+        if(male) {
            lewdmessage =  lewdmessage.replace(/ her /ig, " his ").replace(/ she /ig, " he ").replace(/ GTS /ig, " GT ").replace(/ breasts /ig, " chest ").replace(/ pussy /ig, " dick ")
-            
         }
-
-
+        if(futa) {
+           var roll = Math.floor(Math.random() * 10) + 1
+           if (roll != 1) {
+             lewdmessage =  lewdmessage.replace(/ pussy /ig, " dick ").replace(/ vagina /ig, " dick ").replace(/ cunt /ig, " dick ")
+           }
+        }
         lewdmessage = smallname+lewdmessage;
-        
+
         //====================return message=============
 
         return lewdmessage;
@@ -246,7 +258,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
         "Aqua", "Megumin", "Cortana", "Yuna", "Lulu", "Rikku", "Rosalina", "Samus", "Princess Peach", "Palutena", "Shin", "Kimmy", "Zoey", "Camilla", "Lillian", "Narumi", "D.va"];
 		var cleanishNames = names.join(', ')
 		var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n").replace("Baiken,", "Baiken,\n").replace("Gwen,", "Gwen,\n").replace("Aqua,", "Aqua,\n").replace("Lulu,", "Lulu,\n").replace("Samus,", "Samus,\n")
-		
+
 
 		if (guildid === "261599167695159298") { // Krumbly's ant farm only
 			var names = ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Lucy", "Ryuko", "Krumbly"];
@@ -285,21 +297,21 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
 			var cleanishNames = names.join(', ')
 			var cleanNames = cleanishNames.replace("Duni,", "Duni,\n")
         }
-        
+
         return {"names":names,"cleannames":cleanNames,"totalnames":names.length};
 
     }
 
     static getcustomGTSNames(uid){
-        
+
         var customName = [];
         if (data.people[uid]) {
             if (data.people[uid].names) {
                 var namesObj = data.people[uid].names
                 Object.keys(namesObj).forEach(function(key){
                     customName.push(key);
-                     
-                     
+
+
 				});
 			}
         }

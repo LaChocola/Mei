@@ -8,7 +8,7 @@ module.exports = {
 
 		if (m.channel.guild.id == "187694240585744384") {
 			prefix = "?"
-		}	
+		}
 		if(m.content.indexOf(prefix+"v") < 0) {
 			return false;
 		}
@@ -44,7 +44,7 @@ module.exports = {
 		}
 
 
-		
+
 		var maintype = "violent";
 		var subtype = miscl.searchForLewd(args);
 		if(args.indexOf("invert") >= 0 || args.indexOf("inverse") >=0){
@@ -52,7 +52,7 @@ module.exports = {
 		}
 		var guildid = m.channel.guild.id;
 
-		
+
 
 		var lewdmessage = miscl.generateLewdMessage(smallid,big,guildid,maintype,subtype)
 

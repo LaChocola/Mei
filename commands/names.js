@@ -74,6 +74,17 @@ module.exports = {
                             }, 10000)
                         })
                         continue;
+                    }
+                    if (e[1].search(/ futa/i) !== -1 || e[1].search(/ futanari/i) !== -1) {
+                        var cleanName = e[1].replace(/ futa/i, "").replace(/ futanari/i, "")
+                        data.people[id].names[cleanName] = "futa"
+                        _.save(data)
+                        Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then((m) => {
+                            return setTimeout(function() {
+                                Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                            }, 10000)
+                        })
+                        continue;
                     } else {
                         data.people[id].names[e[1]] = "female"
                         _.save(data)
