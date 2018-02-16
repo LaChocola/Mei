@@ -9,8 +9,7 @@ module.exports = {
 		if (m.channel.guild.id == "187694240585744384") {
 			prefix = "?"
 		}	
-		if(m.content.indexOf(prefix+"g") < 0)
-		{
+		if(m.content.indexOf(prefix+"v") < 0) {
 			return false;
 		}
 		if(args.indexOf("length") >= 0){
