@@ -1,6 +1,6 @@
 'use strict';
 const _ = require("../people.js");
-const miscl = require('./../misc');
+var miscl = require('./../misc.js');
 var data = _.load();
 module.exports = {
 	main: function(Bot, m, args, prefix) {
@@ -8,9 +8,6 @@ module.exports = {
 
 		if (m.channel.guild.id == "187694240585744384") {
 			prefix = "?"
-		}
-		if(m.content.indexOf(prefix+"v") < 0) {
-			return false;
 		}
 		if(args.indexOf("length") >= 0){
 			var names = miscl.getDefaultGTSNames(m.channel.guild.id);
