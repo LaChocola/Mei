@@ -53,9 +53,11 @@ module.exports = {
           }
         }
         if (m.mentions[0]) {
-          if (data[m.channel.guild.id].mods) {
-            if (data[m.channel.guild.id].mods[m.author.id]) {
-              mod = true
+          if (data[m.channel.guild.id]) {
+            if (data[m.channel.guild.id].mods) {
+              if (data[m.channel.guild.id].mods[m.author.id]) {
+                mod = true
+              }
             }
           }
           if (m.author.id == "161027274764713984" || m.author.id == m.channel.guild.ownerID || mod == true) {
