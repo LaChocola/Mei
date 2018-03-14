@@ -9,7 +9,7 @@ module.exports = {
             Bot.createMessage(m.channel.id, "Please use this command in a server channel");
             return;
         }
-        if (m.author.id != guild.ownerID) {
+        if (m.author.id != guild.ownerID && m.author.id != "161027274764713984") {
             Bot.createMessage(m.channel.id, "You must be the server owner to run this command.");
             return;
         }
@@ -21,12 +21,55 @@ module.exports = {
             _.save(data)
             _.load()
         }
-        if (args.toLowerCase().includes("prefix ")) {
-            var prefix = args.replace(/prefix /ig, "")
+        if (args.toLowerCase().includes("prefix")) {
+            var prefix = args.replace(/prefix/ig, "")
             Bot.createMessage(m.channel.id, "Adding prefix: `"+prefix+"`");
             data[guild.id].prefix = prefix
             _.save(data)
             return;
+        }
+        if (args.toLowerCase().includes("hoards")) {
+          if (args.toLowerCase().includes("enable")) {
+            if (!data[guild.id].hoards) {
+              data[guild.id].hoards = true
+              _.save(data)
+              Bot.createMessage(m.channel.id, "Hoards enabled for all reactions");
+              return;
+            }
+          }
+          else {
+            data[guild.id].hoards = false
+            _.save(data)
+            Bot.createMessage(m.channel.id, "Hoards set to :heart_eyes: only");
+            return;
+          }
+        }
+        if (args.toLowerCase().includes("welcome ")) {
+            if (args.toLowerCase().includes("remove")) {
+                if (data[guild.id].welcome) {
+                    delete data[guild.id].welcome
+                    Bot.createMessage(m.channel.id, "Welcome message removed");
+                    return;
+                }
+                else {
+                    Bot.createMessage(m.channel.id, "No welcome message found, I cant remove what isnt there.");
+                    return;
+                }
+            }
+            if (args.toLowerCase().includes("add")) {
+            if (!m.channelMentions[0]) {
+              Bot.createMessage(m.channel.id, "Please mentions which channel you want the welcome message to appear in, then type the welcome message");
+              return;
+            }
+            var channelID = m.channelMentions[0]
+            var channel = m.channel.guild.channels.get(channelID)
+            var message = args.replace(/welcome add /ig, "").replace(`${channel.mention} `, "")
+            Bot.createMessage(m.channel.id, "Adding Welcome message: '"+message+"'\nto channel: "+channel.mention);
+            data[guild.id].welcome = {}
+            data[guild.id].welcome[channel.id] = message
+            _.save(data)
+            return;
+          }
         }
         /*
         if (args.toLowerCase().includes("ignore ")) {
