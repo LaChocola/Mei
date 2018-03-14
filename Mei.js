@@ -155,6 +155,19 @@ Bot.on("guildMemberAdd",function(guild, member) {
       Bot.createMessage("393839796822343681", ":warning: **"+name+"** Joined less than 24 hours after creating account");
     }
   }
+  if (guild.id == "416487280237215744") {
+      Bot.createMessage("419650178417426433", {
+        embed: {
+            color: 0xA260F6,
+            title:  member.username + " (" + member.id + ") joined TF \nWe now have: "+ guild.memberCount + " people! :smiley:",
+            timestamp: new Date().toISOString(),
+            author: {
+              name: member.username,
+              icon_url: member.avatarURL
+            }
+        }
+      });
+  }
   if (guild.id == "354709664509853708") {
           Bot.createMessage("358797182876385280", {
             embed: {
@@ -187,7 +200,7 @@ Bot.on("guildMemberAdd",function(guild, member) {
           return;}, 4000)
   }
   if (guild.id == "326172270370488320") {
-          Bot.createMessage("326172270370488320", "Welcome to Size Haven, "+ member.mention+"!\nWe now have: "+ guild.memberCount + " people!\nThere are a list of roles in <#389949413042290689>, please use `"+prefix+"role add rolename` to give yourself roles, and let a Mod know if you have any questions~").then((m) => {
+          Bot.createMessage("326172270370488320", "Welcome to Size Haven, "+ member.mention+"!\nWe now have: "+ guild.memberCount + " people!\nThere are a list of roles in <#375798104500207616>, please use `"+prefix+"role add rolename` to give yourself roles, and let a Mod know if you have any questions~").then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
           })
   }
@@ -211,6 +224,22 @@ Bot.on("guildMemberRemove",function(guild, member) {
                 }
             }
           });
+  }
+  if (guild.id == "416487280237215744") {
+          Bot.createMessage("419650178417426433", {
+            embed: {
+                color: 0xA260F6,
+                title:  member.username + " (" + member.id + ") left TF \nWe now have: "+ guild.memberCount + " people! :frowning2:",
+                timestamp: new Date().toISOString(),
+                author: {
+                  name: member.username,
+                  icon_url: member.avatarURL
+                }
+            }
+          });
+  }
+  if (guild.id == "406579725792968705") {
+          Bot.createMessage("406741954030731264", member.username + " left SNG. \nWe now have: "+ guild.members.filter(m => !m.bot).length + " people :frowning2:")
   }
   if (guild.id == "326172270370488320") {
           Bot.createMessage("326172270370488320", member.username + " left Size Haven. \nWe now have: "+ guild.members.filter(m => !m.bot).length + " people :frowning2:").then((m) => {
@@ -252,6 +281,7 @@ Bot.on("guildDelete",function(guild) {
 });
 
 Bot.on("messageReactionAdd",function(m, emoji, userID) {
+  var id = userID
   if (emoji.name == "😍") {
     var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
       if (m.attachments.length == 0) {
@@ -260,7 +290,6 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
       else if (m.attachments[0]) {
         var link = m.attachments[0].url
       }
-      var id = userID
       if (link) {
         var people = ppl.load();
         if (!(people.people[id])) {
@@ -274,11 +303,76 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
         var people = ppl.load();
         var hoard = people.people[id].hoard
         if (!hoard[link]) {
-          hoard[link] = m.author.id
-          ppl.save(people);
+            hoard[link] = m.author.id
+            ppl.save(people);
+            if (!people.people[m.author.id]) {
+                people.people[m.author.id] = {}
+                ppl.save(people);
+                people = ppl.load();
+            }
+            if (!people.people[m.author.id].adds) {
+                people.people[m.author.id].adds = 0
+                ppl.save(people);
+                people = ppl.load();
+            }
+            if (m.author.id != id) {
+              people.people[m.author.id].adds++
+              ppl.save(people);
+              if (+people.people[m.author.id].adds == 10) {
+                var user = Bot.users.filter(u => u.id == m.author.id)[0]
+                Bot.getDMChannel('161027274764713984').then(function(DMchannel) {
+                    Bot.createMessage(DMchannel.id, `${user.username} (${user.id}) was the first person to reach 10 hoard adds (since the counter was added).`);
+                });
+              }
+            }
+            return;
         }
       }
-    })
+  })
+}
+  if (server[m.channel.guild.id]) {
+    var people = ppl.load();
+    if (server[m.channel.guild.id].hoards && emoji.name != "😍") {
+      if (people.people[id].hoard[emoji.name]) {
+        var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
+          if (m.attachments.length == 0) {
+            var link = m.cleanContent
+          }
+          else if (m.attachments[0]) {
+            var link = m.attachments[0].url
+          }
+          if (link) {
+            var people = ppl.load();
+            var hoard = people.people[id].hoard[emoji.name]
+            if (!hoard[link]) {
+              hoard[link] = m.author.id
+              ppl.save(people);
+              if (!people.people[m.author.id]) {
+                  people.people[m.author.id] = {}
+                  ppl.save(people);
+                  people = ppl.load();
+              }
+              if (!people.people[m.author.id].adds) {
+                  people.people[m.author.id].adds = 0
+                  ppl.save(people);
+                  people = ppl.load();
+              }
+              if (m.author.id != id) {
+                people.people[m.author.id].adds++
+                ppl.save(people);
+                if (+people.people[m.author.id].adds == 10) {
+                  var user = Bot.users.filter(u => u.id == m.author.id)[0]
+                  Bot.getDMChannel('161027274764713984').then(function(DMchannel) {
+                      Bot.createMessage(DMchannel.id, `${user.username} (${user.id}) was the first person to reach 10 hoard adds (since the counter was added).`);
+                  });
+                }
+              }
+              return;
+            }
+          }
+        })
+      }
+    }
   }
   if (data.giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != data.giveaways.creator) {
     if (m.id == data.giveaways.mID) {
@@ -290,9 +384,10 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
 });
 
 Bot.on("messageReactionRemove",function(m, emoji, userID)  {
-  var data = _.load();
-  var people = ppl.load();
   var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
+    var id = userID
+    var data = _.load();
+    var people = ppl.load();
     if (emoji.name == "😍") {
       if (m.attachments.length == 0) {
         var link = m.cleanContent
@@ -300,13 +395,67 @@ Bot.on("messageReactionRemove",function(m, emoji, userID)  {
       else if (m.attachments[0]) {
         var link = m.attachments[0].url
       }
-      var id = userID
+
       var hoard = people.people[id].hoard
       if (hoard[link]) {
         delete hoard[link]
         ppl.save(people);
+        people = ppl.load();
+        if (people.people[m.author.id]) {
+          if (!people.people[m.author.id].adds) {
+            people.people[m.author.id].adds = 0
+          }
+          ppl.save(people);
+          people = ppl.load();
+        }
+        if (m.author.id != id) {
+          people.people[m.author.id].adds--
+          ppl.save(people);
+        }
+      }
+      return;
+    }
+  if (server[m.channel.guild.id]) {
+    var people = ppl.load();
+    if (server[m.channel.guild.id].hoards && emoji.name != "😍") {
+      if (!people.people[id]) {
         return;
       }
+      if (!people.people[id].hoard) {
+        return;
+      }
+      if (people.people[id].hoard[emoji.name]) {
+        var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
+          if (m.attachments.length == 0) {
+            var link = m.cleanContent
+          }
+          else if (m.attachments[0]) {
+            var link = m.attachments[0].url
+          }
+          if (link) {
+            var people = ppl.load();
+            var hoard = people.people[id].hoard[emoji.name]
+            if (hoard[link]) {
+              delete hoard[link]
+              ppl.save(people);
+              people = ppl.load();
+              if (people.people[m.author.id]) {
+                if (!people.people[m.author.id].adds) {
+                  people.people[m.author.id].adds = 0
+                }
+                ppl.save(people);
+                people = ppl.load();
+              }
+              if (m.author.id != id) {
+                people.people[m.author.id].adds--
+                ppl.save(people);
+                return;
+              }
+            }
+          }
+        })
+      }
+    }
   }
     if (data.giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != data.giveaways.creator) {
       if (m.id == data.giveaways.mID) {
