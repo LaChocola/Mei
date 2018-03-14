@@ -1,15 +1,14 @@
 'use strict';
 const _ = require("../people.js");
-const miscl = require('./../misc');
+var reload = require("require-reload")(require);
+var miscl = reload('../misc.js');
 var data = _.load();
 
 module.exports = {
 	main: function(Bot, m, args, prefix) {
-
-
 		if (m.channel.guild.id == "187694240585744384") {
 			prefix = "?"
-		}	
+		}
 		if(m.content.indexOf(prefix+"g") < 0)
 		{
 			return false;
@@ -17,7 +16,7 @@ module.exports = {
 		//-----------------args parsing -------------------
 		var args = args.toLowerCase()
 
-		
+
 		if(args.indexOf("length") >= 0){
 			var names = miscl.getDefaultGTSNames(m.channel.guild.id);
 			var resultstring = "";
@@ -50,7 +49,7 @@ module.exports = {
 		}
 
 
-		
+
 		var maintype = "gentle";
 		var subtype = miscl.searchForLewd(args);
 		if(args.indexOf("invert") >= 0 || args.indexOf("inverse") >=0){
@@ -58,14 +57,14 @@ module.exports = {
 		}
 		var guildid = m.channel.guild.id;
 
-		
+
 
 		var lewdmessage = miscl.generateLewdMessage(smallid,big,guildid,maintype,subtype)
 
 		Bot.createMessage(m.channel.id,lewdmessage);
 		return;
-		
-	 
+
+
  },
 	help: "A Gentle smush"
 }
