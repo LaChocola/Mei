@@ -1,10 +1,17 @@
 const _ = require("./people.js");
 var data = _.load();
 const fs = require("fs");
-
 class Misc {//Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
-
-
+/*
+    static getCommand(m) {
+      if (m.content.startsWith(prefix)) {
+        var command = m.content.split(" ")[0].replace(prefix, "").toLowerCase();
+        if (commands.indexOf(command+".js") > -1) {
+          return command;
+        }
+      }
+    }
+*/
     static isThisUsernameThatUsername(member) {
         var memberName = member.nick || member.username
         if (memberName.toLowerCase() == name1.toLowerCase()) {
@@ -43,6 +50,8 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
             "hand":[ "hand","hands"],
             "leg":[ "leg","legs","thighs" ,"thigh"],
             "proposal":["proposal","mary","wed","marriage"],
+            "cloth":["panties", "panty", "cloth", "clothes", "clothing","bra","pants","panty","panties","pantie","underwear","thong","thongs"],
+            "toy":["dildo", "beads", "toy", "object", "plug"],
             "misc":[ "misc","alt","other"]
         }
         return obj;
@@ -103,16 +112,18 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
             var bigname = Misc.randomelement(names);
         }
 
-
+        var female = true
         var male = false;
         var futa = false;
         if (data.people[smallid]) {
   			if (data.people[smallid].names) {
   				if (data.people[smallid].names[bigname] == "male") {
   					var male = true
+            var female = false
   				}
           if (data.people[smallid].names[bigname] == "futa") {
             var futa = true
+            var female = false
           }
   			}
   		}
@@ -202,23 +213,18 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
   		var feet = Misc.randomelement(feets)
 
 
-
-
         //==========select from pool
         var candidates = [];
         var pool = Misc.getLewdPool();
         for (const primarytypename in pool) {
             if (pool.hasOwnProperty(primarytypename)) {
                 const primarytype = pool[primarytypename];
-                if(maintype == false || primarytypename == maintype)
-                {
+                if(maintype == false || primarytypename == maintype) {
                     for (const secondarytypename in primarytype) {
                         if (primarytype.hasOwnProperty(secondarytypename)) {
                             const typepool = primarytype[secondarytypename];
-                            if(subtype == false || secondarytypename == subtype)
-                            {
-                                for(var i = 0;i<typepool.length;i++)
-                                {
+                            if(subtype == false || secondarytypename == subtype) {
+                                for(var i = 0;i<typepool.length;i++) {
                                     candidates.push(typepool[i]);
                                 }
                             }
@@ -227,22 +233,27 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
                 }
             }
         }
+        if (candidates.length == 0) {
 
-
+        }
         var lewdmessage = Misc.randomelement(candidates);
 
         //==================perform replacements==============
 
         lewdmessage = lewdmessage.replace(/\[name]/g,bigname).replace(/\[side]/g,side).replace(/\[type1]/g,type1).replace(/\[type2]/g,type2);
-        lewdmessage = lewdmessage.replace(/\[feet]/g,feet).replace(/\[nakedfoot]/g,nakedFoot).replace(/\[nakedfeetplural]/g,nakedFeetPlural).replace(/\[nakedfeetsingular]/g,nakedFeetSingular).replace(/\[plural]/g,plural).replace(/\[footwearsingular]/g,footwearSingular).replace(/\[footwearplural]/g,footwearPlural)
-
+        lewdmessage = lewdmessage.replace(/\[feet]/g,feet).replace(/\[nakedfoot]/g,nakedFoot).replace(/\[nakedfeetplural]/g,nakedFeetPlural)
+        lewdmessage = lewdmessage.replace(/\[nakedfeetsingular]/g,nakedFeetSingular).replace(/\[plural]/g,plural).replace(/\[footwearsingular]/g,footwearSingular)
+        lewdmessage = lewdmessage.replace(/\[footwearplural]/g,footwearPlural).replace(/\[footwear]/g,footwear).replace(/\[singular]/g,singular)
         if(male) {
-           lewdmessage =  lewdmessage.replace(/ her /ig, " his ").replace(/ she /ig, " he ").replace(/ GTS /ig, " GT ").replace(/ breasts /ig, " chest ").replace(/ pussy /ig, " dick ")
+           lewdmessage =  lewdmessage.replace(/\bher\b/ig, "his").replace(/\bshe\b/ig, "he").replace(/\bGTS\b/ig, "GT").replace(/\bbreasts\b/ig, "chest").replace(/\bpussy\b/ig, "dick").replace(/\bboyfriend\b/ig, "girlfriend")
+        }
+        if(female) {
+           lewdmessage =  lewdmessage.replace(/\bhis\b/ig, "her").replace(/\bhe\b/ig, "she").replace(/\bchest\b/ig, "breasts").replace(/\bdick\b/ig, "pussy").replace(/\bboyfriend\b/ig, "girlfriend").replace(/\bdick\b/ig, "pussy")
         }
         if(futa) {
            var roll = Math.floor(Math.random() * 10) + 1
            if (roll != 1) {
-             lewdmessage =  lewdmessage.replace(/ pussy /ig, " dick ").replace(/ vagina /ig, " dick ").replace(/ cunt /ig, " dick ")
+             lewdmessage =  lewdmessage.replace(/\bpussy\b/ig, "dick").replace(/\bvagina\b/ig, "dick").replace(/\bcunt\b/ig, "dick")
            }
         }
         lewdmessage = smallname+lewdmessage;
@@ -310,10 +321,8 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
                 var namesObj = data.people[uid].names
                 Object.keys(namesObj).forEach(function(key){
                     customName.push(key);
-
-
-				});
-			}
+    				});
+    			}
         }
         return customName;
     }
@@ -339,7 +348,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
     }
 
     static getLewdPool(){
-        return JSON.parse(fs.readFileSync("./staticdata/lewds.json"));
+        return JSON.parse(fs.readFileSync("./db/lewds.json"));
     }
 }
 module.exports = Misc;
