@@ -30,8 +30,8 @@ module.exports = {
             data.people[id].fetishes = {}
         }
         if (args.toLowerCase().includes("search ")) {
-          if (args.toLowerCase().includes("dislike ")) {
-            var incomingEntries = name1.replace(/search /i, "").replace(/dislike /i, "").replace(": ", " ").split(" | ")
+          if (args.toLowerCase().includes("dislike")) {
+            var incomingEntries = name1.replace(/search /i, "").replace(/dislike/i, "").replace(": ", " ").split(" | ")
             var incoming = [];
             var iterator = incomingEntries.entries()
             for (let e of iterator) {
