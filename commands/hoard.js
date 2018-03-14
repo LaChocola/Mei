@@ -16,20 +16,79 @@ module.exports = {
         var nameArray = []
         var id = mentioned.id
         var url = m.channel.guild.members.get(id).avatarURL
+        if (args) {
+          if (args.toLowerCase().includes("add")) {
+            args = args.replace(/add/i, "").replace(/\s/g, "")
+            console.log(args.split(""));
+            args = args.split(" ")
+            if (args.length > 1) {
+              Bot.createMessage(m.channel.id, "Sorry, you can only make a hoard by using 1 emoji");
+              return;
+            }
+            args = args.join("")
+            if (/<:([a-zA-Z0-9]+):[0-9]+>/.exec(args)) {
+              args = /<:([a-zA-Z0-9]+):[0-9]+>/.exec(args)[1]
+            }
+            console.log(args);
+            if (data.people[id].hoard) {
+              var hoard = Object.keys(data.people[id].hoard)
+              if (hoard[args]) {
+                Bot.createMessage(m.channel.id, args+" is already one of your hoards");
+                return;
+              }
+            }
+            if (!data.people[id].hoard) {
+              data.people[id].hoard = {}
+              _.save(data)
+              _.load()
+            }
+            if (!data.people[id].hoard[args]) {
+              data.people[id].hoard[args] = {}
+              _.save(data)
+              _.load()
+              Bot.createMessage(m.channel.id, "Successfully added hoard: "+args);
+              return;
+            }
+          }
+        }
         if (!(data.people[id]) || !(data.people[id].hoard)) {
             Bot.createMessage(m.channel.id, `Could not find any hoard for **${name}**`);
             return;
         }
         var hoard = Object.keys(data.people[id].hoard)
         var rando = hoard[Math.floor(Math.random() * hoard.length)]
+        if (hoard.indexOf(args) > -1) {
+          rando = hoard[hoard.indexOf(args)]
+        }
         var origID = data.people[id].hoard[rando]
+        var index = `Item ${hoard.indexOf(rando)+1} of ${hoard.length} from :heart_eyes: hoard`
+        if (!origID.length) {
+          var hoardInnder = Object.keys(origID)
+          var hoardName = rando
+          rando = hoardInnder[Math.floor(Math.random() * hoardInnder.length)]
+          index = `Item ${hoardInnder.indexOf(rando)+1} of ${hoardInnder.length} from the ${hoardName} hoard`
+          origID = origID[rando]
+        }
         var user = Bot.users.filter(m => m.id == origID)[0]
+        if (!user) {
+          user = m.author
+          origID = user.id
+        }
         var hash = user.avatar
         var og = `https://cdn.discordapp.com/avatars/${origID}/${hash}.jpg?size=128`
-        var index = `${hoard.indexOf(rando)+1} of ${hoard.length}`
+        if (!rando) {
+          if (hoard[hoard.indexOf(args)]) {
+            Bot.createMessage(m.channel.id, "Please react to messages with "+hoard[hoard.indexOf(args)]+" to pull them up in their own hoard");
+            return;
+          }
+          else {
+            Bot.createMessage(m.channel.id, "Please react to messages with your hoard emoji's to pull them up in their own hoard");
+            return;
+          }
+        }
         if (rando.includes("https://cdn.discordapp.com")) {
             const data = {
-                "content": `A Random piece, from the hoard of **${name}**`,
+                "content": `A Random piece, from **${name}**'s hoard`,
                 "embed": {
                     "description": index,
                     "color": 0xA260F6,
@@ -50,11 +109,11 @@ module.exports = {
             return;
         } else {
             const data = {
-                "content": `A Random piece, from the hoard of **${name}**`,
+                "content": `A Random piece, from **${name}**'s hoard`,
                 "embed": {
-                    "description": index,
+                    "description": rando,
                     "color": 0xA260F6,
-                    "title": rando,
+                    "title": index,
                     "author": {
                         "name": name,
                         "icon_url": url
