@@ -1,11 +1,12 @@
 'use strict';
 const _ = require("../people.js");
-var miscl = require('./../misc.js');
+var reload = require("require-reload")(require);
+var miscl = reload('../misc.js');
 var data = _.load();
+
 module.exports = {
 	main: function(Bot, m, args, prefix) {
 		var args = args.toLowerCase()
-
 		if (m.channel.guild.id == "187694240585744384") {
 			prefix = "?"
 		}
