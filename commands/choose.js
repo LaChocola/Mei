@@ -1,6 +1,11 @@
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var list = m.cleanContent.replace(`${prefix}choose `, "");;
+        var list = m.cleanContent.replace(prefix, "").replace(/choose/i, "");
+
+        if (!list) {
+          Bot.createMessage(m.channel.id, "You need to add your choices, seperated by ` | `");
+          return;
+        }
 
         var choiceList = list.split("|");
 
