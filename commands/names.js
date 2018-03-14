@@ -16,7 +16,6 @@ module.exports = {
         var member = m.guild.members.find(isThisUsernameThatUsername)
         var mentioned = m.mentions[0] || member || m.author
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username
-        var artists = data.people
         var nameArray = []
         var id = mentioned.id
         var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
@@ -32,20 +31,24 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "Okay....but that isnt you");
                 return;
             }
-            var incoming = name1.replace(/remove /i, "").split(" | ")
-            if (data.people[id].names[incoming[0]]) {
-                delete data.people[id].names[incoming[0]]
+            var incomingEntries = name1.replace(/remove /i, "").replace(": ", " ").split(" | ")
+            var incoming = [];
+            var iterator = incomingEntries.entries()
+            for (let e of iterator) {
+            e[1] = capFirstLetter(e[1])
+            if (data.people[id].names[e[1]]) {
+                delete data.people[id].names[e[1]]
                 _.save(data)
-                Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your names list" + hand).then((m) => {
+                Bot.createMessage(m.channel.id, "Removed: **" + e[1] + "** from your names list" + hand).then((m) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                     }, 10000)
                 })
-                return;
             } else {
-                Bot.createMessage(m.channel.id, "Sorry, I couldnt find**" + incoming[0] + " in your names list");
-                return;
+                Bot.createMessage(m.channel.id, "Sorry, I couldnt find **" + e[1] + "** in your names list");
             }
+          }
+          return;
         }
         if (args.search(/add /i) !== -1) {
             if (mentioned.id != m.author.id) {
@@ -56,6 +59,7 @@ module.exports = {
             var incoming = [];
             var iterator = incomingEntries.entries()
             for (let e of iterator) {
+                e[1] = capFirstLetter(e[1])
                 if (data.people[id].names[e[1]]) {
                     Bot.createMessage(m.channel.id, e[1] + "'s already been added, silly~").then((m) => {
                         return setTimeout(function() {
@@ -103,8 +107,8 @@ module.exports = {
             return;
         } else {
             var names = data.people[id].names
-            Object.keys(names).forEach(function(key) {
-                nameArray.push(key);
+            Object.entries(names).forEach(function(key) {
+                nameArray.push(`${key[0]}: ${key[1]}`);
             });
             Bot.createMessage(m.channel.id, {
                 content: "",
