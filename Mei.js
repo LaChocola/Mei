@@ -318,11 +318,9 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
             if (m.author.id != id) {
               people.people[m.author.id].adds++
               ppl.save(people);
-              if (+people.people[m.author.id].adds == 10) {
+              if (+people.people[m.author.id].adds % 10 == 0 && m.author.id !== "309220487957839872") {
                 var user = Bot.users.filter(u => u.id == m.author.id)[0]
-                Bot.getDMChannel('161027274764713984').then(function(DMchannel) {
-                    Bot.createMessage(DMchannel.id, `${user.username} (${user.id}) was the first person to reach 10 hoard adds (since the counter was added).`);
-                });
+                Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${+people.people[m.author.id].adds} hoard adds (since the counter was added).`);
               }
             }
             return;
@@ -360,11 +358,9 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
               if (m.author.id != id) {
                 people.people[m.author.id].adds++
                 ppl.save(people);
-                if (+people.people[m.author.id].adds == 10) {
+                if (+people.people[m.author.id].adds % 10 == 0 && m.author.id !== "309220487957839872") {
                   var user = Bot.users.filter(u => u.id == m.author.id)[0]
-                  Bot.getDMChannel('161027274764713984').then(function(DMchannel) {
-                      Bot.createMessage(DMchannel.id, `${user.username} (${user.id}) was the first person to reach 10 hoard adds (since the counter was added).`);
-                  });
+                  Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${+people.people[m.author.id].adds} hoard adds (since the counter was added).`);
                 }
               }
               return;
