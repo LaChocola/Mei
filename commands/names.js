@@ -39,10 +39,11 @@ module.exports = {
             if (data.people[id].names[e[1]]) {
                 delete data.people[id].names[e[1]]
                 _.save(data)
-                Bot.createMessage(m.channel.id, "Removed: **" + e[1] + "** from your names list" + hand).then((m) => {
+                Bot.createMessage(m.channel.id, "Removed: **" + e[1] + "** from your names list" + hand).then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                    }, 10000)
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    }, 5000)
                 })
             } else {
                 Bot.createMessage(m.channel.id, "Sorry, I couldnt find **" + e[1] + "** in your names list");
@@ -52,6 +53,7 @@ module.exports = {
         }
         if (args.search(/add /i) !== -1) {
             if (mentioned.id != m.author.id) {
+                Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                 Bot.createMessage(m.channel.id, "Okay....but that isnt you");
                 return;
             }
@@ -61,10 +63,11 @@ module.exports = {
             for (let e of iterator) {
                 e[1] = capFirstLetter(e[1])
                 if (data.people[id].names[e[1]]) {
-                    Bot.createMessage(m.channel.id, e[1] + "'s already been added, silly~").then((m) => {
+                    Bot.createMessage(m.channel.id, e[1] + "'s already been added, silly~").then((msg) => {
                         return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                        }, 10000)
+                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                        }, 5000)
                     })
                     continue;
                 } else {
@@ -72,10 +75,11 @@ module.exports = {
                         var cleanName = e[1].replace(/ male/i, "")
                         data.people[id].names[cleanName] = "male"
                         _.save(data)
-                        Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then((m) => {
+                        Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then((msgsg) => {
                             return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                            }, 10000)
+                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                            }, 5000)
                         })
                         continue;
                     }
@@ -83,19 +87,21 @@ module.exports = {
                         var cleanName = e[1].replace(/ futa/i, "").replace(/ futanari/i, "")
                         data.people[id].names[cleanName] = "futa"
                         _.save(data)
-                        Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then((m) => {
+                        Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then((msg) => {
                             return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                            }, 10000)
+                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                            }, 5000)
                         })
                         continue;
                     } else {
                         data.people[id].names[e[1]] = "female"
                         _.save(data)
-                        Bot.createMessage(m.channel.id, "Added **" + e[1] + "** " + hand).then((m) => {
+                        Bot.createMessage(m.channel.id, "Added **" + e[1] + "** " + hand).then((msg) => {
                             return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                            }, 10000)
+                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                            }, 5000)
                         })
                     }
                 }

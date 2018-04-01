@@ -98,14 +98,19 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "Okay....but that isnt you");
                 return;
             }
-            var incomingEntries = name1.replace(/add /i, "").split(" | ")
+            var incomingEntries = name1.replace(/add /i, "").replace(/^[ \t]+/,"").replace(/[ \t]+$/,"").split(" | ")
             var incoming = [];
             var iterator = incomingEntries.entries()
             for (let e of iterator) {
                 incoming.push(capFirstLetter(e[1]))
             }
             if (data.people[id].fetishes[incoming[0]]) {
-                Bot.createMessage(m.channel.id, "That's already been added, silly~");
+                Bot.createMessage(m.channel.id, "That's already been added, silly~").then((msg) => {
+                  return setTimeout(function() {
+                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                  }, 5000)
+                })
                 return;
             } else {
                 if (incoming[0].toLowerCase().includes("dislike")) {
@@ -113,12 +118,22 @@ module.exports = {
                     incoming[0] = capFirstLetter(incoming[0])
                     data.people[id].fetishes[incoming[0]] = "dislike"
                     _.save(data)
-                    Bot.createMessage(m.channel.id, "Added Dislike: **" + incoming[0] + "** " + hand);
+                    Bot.createMessage(m.channel.id, "Added Dislike: **" + incoming[0] + "** " + hand).then((msg) => {
+                      setTimeout(function() {
+                          Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                          Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                      }, 5000)
+                    })
                     return;
                 } else {
                     data.people[id].fetishes[incoming[0]] = "like"
                     _.save(data)
-                    Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand);
+                    Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand).then((msg) => {
+                      return setTimeout(function() {
+                          Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                          Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                      }, 5000)
+                    })
                     return;
                 }
             }
