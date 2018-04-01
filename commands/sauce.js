@@ -42,13 +42,18 @@ module.exports = {
                 embed: msg
             });
         }).catch((err) => {
-          console.log(err);
+          console.log(err.message);
           var err = err.toString()
-          if (err.indexOf("You need an image") > -1 || err.indexOf("Supplied URL is not usable") || err.indexOf("Error: Got HTML response while expecting JSON") > -1) {
+          if (err.includes("You need an image") || err.includes("Supplied URL is not usable") || err.includes("Error: Got HTML response while expecting JSON")) {
             Bot.createMessage(m.channel.id, "No sauce found, please try uploading an image");
             return;
           }
+          if (err.includes("No Results")) {
+            Bot.createMessage(m.channel.id, "No Results found, sorry :sob:");
+            return
+          }
           Bot.createMessage(m.channel.id, "An error has occured, please try using an actual image and trying again");
+          return;
         });
     },
     help: "sauce"
