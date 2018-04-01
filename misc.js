@@ -81,8 +81,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
                 const element = lewdtree[key];
                 for(var i = 0;i<element.length;i++)
                 {
-                    if(string.indexOf(lewdtree[key][i]) != -1)
-                    {
+                    if(string.indexOf(lewdtree[key][i]) != -1) {
                         return key;
                     }
                 }
@@ -95,9 +94,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
         return arr[Math.floor(Math.random()*arr.length)];
     }
 
-    static generateLewdMessage(smallid,big,guildid,maintype,subtype){
-
-
+    static generateLewdMessage(smallid,big,guildid,maintype,subtype) {
         //=============get names==================
         var bigname = big;
         if(big == false){
@@ -220,6 +217,9 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
             if (pool.hasOwnProperty(primarytypename)) {
                 const primarytype = pool[primarytypename];
                 if(maintype == false || primarytypename == maintype) {
+                    if (!primarytype[subtype]) {
+                      var subtype = false
+                    }
                     for (const secondarytypename in primarytype) {
                         if (primarytype.hasOwnProperty(secondarytypename)) {
                             const typepool = primarytype[secondarytypename];
@@ -232,9 +232,6 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
                     }
                 }
             }
-        }
-        if (candidates.length == 0) {
-
         }
         var lewdmessage = Misc.randomelement(candidates);
 
@@ -327,7 +324,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
         return customName;
     }
 
-    static getLewdCounts(type){
+    static getLewdCounts(type) {
         var resultstring = "";
         var total = 0;
         var pool = Misc.getLewdPool();
