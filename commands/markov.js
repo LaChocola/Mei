@@ -36,9 +36,11 @@ module.exports = {
         });
         Bot.sendChannelTyping(m.channel.id).then(async () => {
             let messages = await Bot.getMessages(channel, amount);
-
-
-            messages = messages.filter(msg => msg.author.id === mentioned.id && !msg.content.startsWith(prefix) && !msg.content.includes("<@") && !msg.content.includes(".com")).map(msg => msg.content);
+            messages = messages.filter(msg => msg.author.id === mentioned.id && !msg.content.startsWith(prefix) && !msg.content.includes("<@") && !msg.content.includes("http")).map(msg => msg.content);
+            if (messages.length < 5) {
+              Bot.createMessage(m.channel.id, "That user does not have enough messages to make a markov");
+              return;
+            }
             let markov = new MarkovGen({
                 input: messages,
                 minLength: 6
