@@ -38,11 +38,18 @@ module.exports = {
                     icon_url: data.original.header.thumbnail
                 }
             }
-            console.log(data);
             Bot.createMessage(m.channel.id, {
                 embed: msg
             });
-        })
+        }).catch((err) => {
+          console.log(err);
+          var err = err.toString()
+          if (err.indexOf("You need an image") > -1 || err.indexOf("Supplied URL is not usable") || err.indexOf("Error: Got HTML response while expecting JSON") > -1) {
+            Bot.createMessage(m.channel.id, "No sauce found, please try uploading an image");
+            return;
+          }
+          Bot.createMessage(m.channel.id, "An error has occured, please try using an actual image and trying again");
+        });
     },
     help: "sauce"
 }
