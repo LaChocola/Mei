@@ -1,6 +1,8 @@
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var msg = m.cleanContent.replace(`${prefix}suggest `, "");
+        var msg = msg.replace(/\bXXX\b/ig,`[name]`).replace(/"/ig, `'`).replace(/\b“\b/ig, `'`).replace(/\b”\b/ig, `'`).replace(`  `, ` `)
+        var msg = `"`+msg.replace(/\bfeet\b/ig, `[feet]`)+`"`
         var person = m.author
         if (m.content == `${prefix}suggest`) {
             Bot.createMessage(m.channel.id, "Please add your suggestion. i.e. ``!suggest 'you were smushed by XXX when she forgot to check her seat before sitting down'``")

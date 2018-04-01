@@ -1,6 +1,6 @@
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        if (m.content == `${prefix}spray`) {
+        if (m.content == `${prefix}spray` || !m.mentions[0]) {
             Bot.createMessage(m.channel.id, "Please add someone to spray. i.e. ``!spray @Chocola``")
         } else {
             var message1 = [", and only made them wetter.", ", causing them to melt.", ", and only managed to iritate them.", ", it wasnt very effective.", ", I dont know why tho."]

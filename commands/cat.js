@@ -2,7 +2,7 @@ var request = require('request');
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        request('http://random.cat/meow', (err, res, body) => {
+        request('http://aws.random.cat/meow', (err, res, body) => {
             var catURL = JSON.parse(body)
             const data = {
                 "embed": {

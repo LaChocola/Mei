@@ -11,7 +11,9 @@ module.exports = {
     function isNumeric(num){
         return !isNaN(+num)
     }
-
+		if (m.author.id == "187368906493526017") {
+			return;
+		}
     var name = m.author.nick || m.author.username
 		if (m.content.toLowerCase() == `${prefix}booru`) {
 			m.content = `${prefix}booru giantess`

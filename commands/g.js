@@ -9,13 +9,11 @@ module.exports = {
 		if (m.channel.guild.id == "187694240585744384") {
 			prefix = "?"
 		}
-		if(m.content.indexOf(prefix+"g") < 0)
-		{
+		if(m.content.indexOf(prefix+"g") < 0)	{
 			return false;
 		}
 		//-----------------args parsing -------------------
 		var args = args.toLowerCase()
-
 
 		if(args.indexOf("length") >= 0){
 			var names = miscl.getDefaultGTSNames(m.channel.guild.id);
