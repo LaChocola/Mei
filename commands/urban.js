@@ -1,9 +1,10 @@
 const request = require('request');
+const esc = require('url-escape-tag');
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var word = (m.content.replace(`${prefix}urban `, ""));
-        var urbanJsonURL = "http://api.urbandictionary.com/v0/define?term=" + word;
+        var urbanJsonURL = "http://api.urbandictionary.com/v0/define?term=" + esc`${word}`
         var urbanJson = request.get({
             url: urbanJsonURL,
             json: true,
