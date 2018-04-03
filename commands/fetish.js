@@ -31,7 +31,7 @@ module.exports = {
         }
         if (args.toLowerCase().includes("search ")) {
           if (args.toLowerCase().includes("dislike")) {
-            var incomingEntries = name1.replace(/search /i, "").replace(/dislike/i, "").replace(": ", " ").split(" | ")
+            var incomingEntries = name1.replace(/\bsearch\b/i, "").replace(/\bdislike\b/i, "").replace(": ", " ").split(" | ")
             var incoming = [];
             var iterator = incomingEntries.entries()
             for (let e of iterator) {
@@ -54,7 +54,7 @@ module.exports = {
             }
           }
           else {
-            var incomingEntries = name1.replace(/search /i, "").replace(": ", " ").split(" | ")
+            var incomingEntries = name1.replace(/\bsearch\b/i, "").replace(": ", " ").split(" | ")
             var incoming = [];
             var iterator = incomingEntries.entries()
             for (let e of iterator) {
@@ -82,7 +82,7 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "Okay....but that isnt you");
                 return;
             }
-            var incoming = name1.replace(/remove /i, "").split(" | ")
+            var incoming = name1.replace(/\bremove\b/i, "").replace(" ", "").split("|")
             if (data.people[id].fetishes[capFirstLetter(incoming[0])]) {
                 delete data.people[id].fetishes[capFirstLetter(incoming[0])]
                 _.save(data)
@@ -93,12 +93,12 @@ module.exports = {
                 return;
             }
         }
-        if (args.toLowerCase().includes("add ")) {
+        if (args.toLowerCase().includes("add")) {
             if (mentioned.id != m.author.id) {
                 Bot.createMessage(m.channel.id, "Okay....but that isnt you");
                 return;
             }
-            var incomingEntries = name1.replace(/add /i, "").replace(/^[ \t]+/,"").replace(/[ \t]+$/,"").split(" | ")
+            var incomingEntries = name1.replace(/\badd\b/i, "").replace(/^[ \t]+/,"").replace(/[ \t]+$/,"").split("|")
             var incoming = [];
             var iterator = incomingEntries.entries()
             for (let e of iterator) {
