@@ -25,16 +25,16 @@ module.exports = {
           var user = Bot.users.filter(m => m.id == person["key"])[0]
           if (user && user.id != "309220487957839872") {
               if (person.value > 1) {
-                leaders.push(`${i}.  ${user.username}#${user.discriminator}: ${person.value} adds`)
+                leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} adds`)
                 i++
               }
               if (person.value == 1) {
-                leaders.push(`${i}.  ${user.username}#${user.discriminator}: ${person.value} add`)
+                leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} add`)
                 i++
               }
           }
         }
-        Bot.createMessage(m.channel.id, "Current Global Leaderboard:\n\n"+leaders.join("\n"));
+        Bot.createMessage(m.channel.id, "Current *Global* Leaderboard:\n\n"+leaders.join("\n"));
         return;
       }
       var leaders = []
@@ -44,11 +44,11 @@ module.exports = {
         var user = m.channel.guild.members.filter(m => m.id == person["key"])[0]
         if (user && user.id != "309220487957839872") {
             if (person.value > 1) {
-              leaders.push(`${i}.  ${user.username}#${user.discriminator}: ${person.value} adds`)
+              leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} adds`)
               i++
             }
             if (person.value == 1) {
-              leaders.push(`${i}.  ${user.username}#${user.discriminator}: ${person.value} add`)
+              leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} add`)
               i++
             }
         }

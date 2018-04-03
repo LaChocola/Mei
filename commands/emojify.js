@@ -21,8 +21,6 @@ module.exports = {
                 emojis.push(":regional_indicator_" + char + ":");
             } else if ("1234567890".indexOf(char) > -1) {
                 emojis.push(":" + numbers[char] + ":");
-            } else if ("b".indexOf(char) > -1) {
-                emojis.push(":b:");
             } else if (char == "?") {
                 emojis.push(":question:");
             } else if (char == "!") {
