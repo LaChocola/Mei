@@ -54,7 +54,7 @@ module.exports = {
             }
           }
           else {
-            var incomingEntries = name1.replace(/\bsearch\b/i, "").replace(": ", " ").split(" | ")
+            var incomingEntries = name1.replace(/\bsearch\b\s/i, "").replace(": ", " ").split("|")
             var incoming = [];
             var iterator = incomingEntries.entries()
             for (let e of iterator) {
