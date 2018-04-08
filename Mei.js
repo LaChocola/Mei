@@ -182,16 +182,16 @@ Bot.on("guildMemberAdd",function(guild, member) {
           });
           if (guild.memberCount % 50 === 0) {
             const msgEmbed = {
-        			"content": "We have just reached "+guild.memberCount+" members! :tada: :tada: :tada: :tada: :tada: :tada:",
-        			"embed": {
-        				"title": "To celebrate, Snippy drew this for us: https://buttsare.sexy/6d853b.png",
-        				"color": 0xA260F6,
-        				"image": {
-        					"url": "https://buttsare.sexy/8ccdb9.png"
-        				}
-        			}
-        		};
-        		Bot.createMessage("354709664509853712", msgEmbed);
+              "content": "We have just reached "+guild.memberCount+" members! :tada: :tada: :tada: :tada: :tada: :tada:",
+              "embed": {
+                "title": "To celebrate, Tina drew this for us:",
+                "color": 0xA260F6,
+                "image": {
+                  "url": "https://buttsare.sexy/7f69bb.png"
+                }
+              }
+            };
+            Bot.createMessage("354709664509853712", msgEmbed);
         }
         setTimeout(function() {
           Bot.createMessage("354709664509853712", "Welcome "+ member.mention+"~\nThere are a list of roles in <#355823130637500417>, use `"+prefix+"role add rolename` in <#363895860276232193> to give yourself roles. You will be unable to send messages in any other channels until you do this. Let a Guardian know if you have any questions.").then((m) => {
