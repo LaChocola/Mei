@@ -1,5 +1,6 @@
 const _ = require("../people.js");
 var data = _.load();
+var unidecode = require("unidecode")
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!fetish /i, "")
@@ -46,7 +47,7 @@ module.exports = {
                 for (const match of matches) {
                     if (m.channel.guild.members.get(match)) {
                         var properName = m.channel.guild.members.get(match).nick || m.channel.guild.members.get(match).username
-                        usernames.push("***" + properName + "***")
+                        usernames.push("***" + unidecode(properName) + "***")
                     }
                 }
                 Bot.createMessage(m.channel.id, "Users that dislike `" + incoming[0] + "`:\n\n" + usernames.join("\n"));
@@ -69,7 +70,7 @@ module.exports = {
                 for (const match of matches) {
                     if (m.channel.guild.members.get(match)) {
                         var properName = m.channel.guild.members.get(match).nick || m.channel.guild.members.get(match).username
-                        usernames.push("***" + properName + "***")
+                        usernames.push("***" + unidecode(properName) + "***")
                     }
                 }
                 Bot.createMessage(m.channel.id, "Users that like `" + incoming[0] + "`:\n\n" + usernames.join("\n"));
@@ -86,10 +87,20 @@ module.exports = {
             if (data.people[id].fetishes[capFirstLetter(incoming[0])]) {
                 delete data.people[id].fetishes[capFirstLetter(incoming[0])]
                 _.save(data)
-                Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your fetish list" + hand);
+                Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your fetish list" + hand).then((msg) => {
+                  setTimeout(function() {
+                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                  }, 5000)
+                })
                 return;
             } else {
-                Bot.createMessage(m.channel.id, "Sorry, I couldnt find **" + incoming[0] + "** in your fetish list");
+                Bot.createMessage(m.channel.id, "Sorry, I couldnt find **" + incoming[0] + "** in your fetish list").then((msg) => {
+                  setTimeout(function() {
+                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                  }, 5000)
+                })
                 return;
             }
         }
@@ -139,7 +150,7 @@ module.exports = {
             }
         }
         if (Object.keys(data.people[id].fetishes).length < 1) {
-            Bot.createMessage(m.channel.id, "I could find any fetish list for **" + name + "** :(");
+            Bot.createMessage(m.channel.id, "I could find any fetish list for **" + unidecode(name) + "** :(");
             return;
         } else {
             var fetishes = data.people[id].fetishes
@@ -181,12 +192,32 @@ module.exports = {
             if (dislikes.length < 1) {
                 dislikes.push("None")
             }
+            var limit = false
+            if (likes.join("\n").length > 1020) {
+              Bot.createMessage(m.channel.id, `You have reached the character limit for Likes, please remove ${likes.join("\n").length-1020} characters from your list to display the fetish list`);
+              var limit = true
+            }
+            if (dislikes.join("\n").length > 1020) {
+              Bot.createMessage(m.channel.id, `You have reached the character limit for Dislikes, please remove ${dislikes.join("\n").length-1020} characters from your list to display the fetish list`);
+              var limit = true
+            }
+            if (commonLikes.join("\n").length > 1020) {
+              Bot.createMessage(m.channel.id, `You have reached the character limit for CommonLikes, please remove ${CommonLikes.join("\n").length-1020} characters from your list to display the fetish list`);
+              var limit = true
+            }
+            if (commonDislikes.join("\n").length > 1020) {
+              Bot.createMessage(m.channel.id, `You have reached the character limit for CommonDislikes, please remove ${commonDislikes.join("\n").length-1020} characters from your list to display the fetish list`);
+              var limit = true
+            }
+            if (limit) {
+              return;
+            }
             if (mentioned.id == m.author.id) {
                 Bot.createMessage(m.channel.id, {
                     content: "",
                     embed: {
                         color: 0xA260F6,
-                        title: Object.keys(data.people[id].fetishes).length + " fetishes for **" + name + "**",
+                        title: Object.keys(data.people[id].fetishes).length + " fetishes for **" + unidecode(name) + "**",
                         fields: [{
                                 name: ':green_heart: Likes: ' + likes.length,
                                 value: likes.join("\n"),
@@ -199,7 +230,7 @@ module.exports = {
                             }
                         ],
                         author: {
-                            name: name,
+                            name: unidecode(name),
                             icon_url: mentioned.avatarURL
                         }
                     }
@@ -248,7 +279,7 @@ module.exports = {
                             }
                         ],
                         author: {
-                            name: name,
+                            name: unidecode(name),
                             icon_url: mentioned.avatarURL
                         }
                     }

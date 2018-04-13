@@ -23,6 +23,7 @@ var people = ppl.load();
 var server = servers.load();
 var data = _.load();
 var aesthetics = require('aesthetics');
+var unidecode = require("unidecode")
 var hands = [ ":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
 var hand = hands[Math.floor(Math.random() * hands.length)]
 
@@ -116,7 +117,7 @@ Bot.on("messageCreate", (m)=>{
       data.commands[command].totalUses++
       _.save(data);
 			var cmd = reload("./commands/"+command+".js");
-			var args = m.content.split(" ");
+			var args = unidecode(m.content).replace(/\[\?\]/ig,"").split(" ");
 			args.splice(0, 1);
 			args = args.join(" ");
 			var logcmd = `${prefix}${command}`.bold;
