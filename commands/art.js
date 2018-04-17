@@ -20,7 +20,7 @@ module.exports = {
                 var time = new Date(chosen[1][1]).toISOString()
                 if (chosen[0].includes("pastebin.com")) {
                     const data = {
-                        "content": "A Random piece from <#356133586686181377>~",
+                        "content": "A random piece from <#356133586686181377>~",
                         "embed": {
                             "color": 0xA260F6,
                             "title": chosen[0],
@@ -39,7 +39,7 @@ module.exports = {
                     return;
                 } else {
                     const data = {
-                        "content": "A Random piece from <#356133586686181377>~",
+                        "content": "A random piece from <#356133586686181377>~",
                         "embed": {
                             "color": 0xA260F6,
                             "timestamp": time,
