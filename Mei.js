@@ -117,7 +117,7 @@ Bot.on("messageCreate", (m)=>{
       data.commands[command].totalUses++
       _.save(data);
 			var cmd = reload("./commands/"+command+".js");
-			var args = unidecode(m.content).replace(/\[\?\]/ig,"").split(" ");
+			var args = m.content.replace(/\[\?\]/ig,"").split(" ");
 			args.splice(0, 1);
 			args = args.join(" ");
 			var logcmd = `${prefix}${command}`.bold;
