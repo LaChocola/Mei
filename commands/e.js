@@ -1,7 +1,8 @@
 const request = require("request");
-
+const unidecode = require("unidecode")
 module.exports = {
     main: function(Bot, m, args, prefix) {
+        var args = unidecode(args)
         var base = "http://emoji.getdango.com/api/emoji?q=";
         var query = args.replace(/ /g, "+");
         request.get({
