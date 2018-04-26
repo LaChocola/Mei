@@ -88,7 +88,7 @@ module.exports = {
           var hoardInnder = Object.keys(origID)
           var hoardName = rando
           rando = hoardInnder[Math.floor(Math.random() * hoardInnder.length)]
-          if (!isNaN(+args[1]) && 0 < +args[1] && +args[1] < hoardInnder.length) {
+          if (!isNaN(+args[1]) && 0 < +args[1] && +args[1] < hoardInnder.length+1) {
             var pass = true
             rando = hoardInnder[+args[1]-1]
           }
