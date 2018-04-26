@@ -16,7 +16,7 @@ module.exports = {
                     } catch (err) {
                         request('https://www.google.com/search?safe=' + safe + '&q=' + encodeURI(args), function(err, res, body) {
                             if (res.statusCode !== 200) {
-                                Bot.error('STATUS:', res.statusCode, 'BODY:', body);
+                                console.error('STATUS:', res.statusCode, 'BODY:', body);
                                 message.edit("`No results found!`");
                             } else {
                                 var $ = cheerio.load(body);
