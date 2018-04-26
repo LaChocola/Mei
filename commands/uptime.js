@@ -6,5 +6,5 @@ module.exports = {
         })
         Bot.createMessage(m.channel.id, ":alarm_clock: " + prettyUptime + " :alarm_clock:")
     },
-    help: "Makes me say something"
+    help: "Shows bot uptime"
 }
