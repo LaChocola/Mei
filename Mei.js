@@ -98,7 +98,6 @@ Bot.on("messageCreate", (m)=>{
 	var logserver = `${m.channel.guild.name}`.cyan.bold || "Direct Message".cyan.bold
 	var logchannel = `#${m.channel.name}`.green.bold;
 	var logdivs = [" > ".blue.bold, " - ".blue.bold];
-
 	var commands = fs.readdirSync("./commands/");
 	if (m.content.startsWith(prefix)) {
 		var command = m.content.split(" ")[0].replace(prefix, "").toLowerCase();
@@ -169,6 +168,22 @@ Bot.on("guildMemberAdd",function(guild, member) {
         }
       });
   }
+  if (guild.id == "433471999184994304") {
+      Bot.createMessage("433472523116478465", {
+            title:  "someone#6969 joined Macrophilia Reborn \nWe now have: `a bunch of` people! :smiley:",
+
+        embed: {
+            color: 0xA260F6,
+            title:  member.username + "#" + member.discriminator + " joined Macrophilia Reborn \nWe now have: "+ guild.memberCount + " people! :smiley:",
+            description: "Please remember to go to <#434448543709921310> to set up your size, kinks, and other roles! Use the ?ranks command for a list of the current available roles!",
+            timestamp: new Date().toISOString(),
+            author: {
+              name: member.username,
+              icon_url: member.avatarURL
+            }
+        }
+      });
+  }
   if (guild.id == "354709664509853708") {
           Bot.createMessage("358797182876385280", {
             embed: {
@@ -195,7 +210,7 @@ Bot.on("guildMemberAdd",function(guild, member) {
             Bot.createMessage("354709664509853712", msgEmbed);
         }
         setTimeout(function() {
-          Bot.createMessage("354709664509853712", "Welcome "+ member.mention+"~\nThere are a list of roles in <#355823130637500417>, use `"+prefix+"role add rolename` in <#363895860276232193> to give yourself roles. You will be unable to send messages in any other channels until you do this. Let a Guardian know if you have any questions.").then((m) => {
+          Bot.createMessage("436757042753961987", "Welcome "+ member.mention+"~\nThere are a list of roles in <#355823130637500417>, use `"+prefix+"role add rolename` to give yourself roles. You will be unable to send messages in any other channels until you do this. Let a Guardian know if you have any questions.").then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
           })
           return;}, 4000)
