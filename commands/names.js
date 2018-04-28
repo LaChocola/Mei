@@ -75,7 +75,7 @@ module.exports = {
                         var cleanName = e[1].replace(/ male/i, "")
                         data.people[id].names[cleanName] = "male"
                         _.save(data)
-                        Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then((msgsg) => {
+                        Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then((msg) => {
                             return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
