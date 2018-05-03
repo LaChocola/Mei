@@ -18,6 +18,7 @@ module.exports = {
                             if (res.statusCode !== 200) {
                                 console.error('STATUS:', res.statusCode, 'BODY:', body);
                                 message.edit("`No results found!`");
+                                return;
                             } else {
                                 var $ = cheerio.load(body);
                                 try {
@@ -29,19 +30,23 @@ module.exports = {
                                     var res = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
                                     if (res == '?q') {
                                         message.edit('`No results found`');
+                                        return;
                                     } else {
                                         message.edit(res);
                                     }
                                 } catch (err) {
                                     console.error(err)
                                     message.edit('`No results found`');
+                                    return;
                                 }
                             }
                         });
                     }
                 });
             } catch (err) {
+                console.log(err);
                 message.edit('`No results found`');
+                return;
             }
         });
     },
