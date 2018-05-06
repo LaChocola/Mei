@@ -1,0 +1,6 @@
+node_modules/
+db/data.json
+db/people.json
+db/servers.json
+etc/
+package-lock.json

@@ -11,6 +11,10 @@ Object.defineProperty(bot.Message.prototype, "guild", {
 var fs = require("fs");
 var timeago = require("timeago.js");
 var timediff = require('timediff');
+
+var log = require('./logging.js');
+
+// Load config
 var config = require("./etc/config.json");
 var Bot = bot(config.tokens.mei);
 var reload = require("require-reload")(require);
@@ -27,24 +31,50 @@ var unidecode = require("unidecode")
 var hands = [ ":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
 var hand = hands[Math.floor(Math.random() * hands.length)]
 
+///////////////
+// Constants //
+///////////////
+
+const SIZE_HAVEN_GID = "326172270370488320"
+const CHOCOLA_UID = '161027274764713984'
+
+log.log("Mei starting up...", log.LOG_INFO)
+
+// Event handler fires whenever a message appears that Mei can see...
 Bot.on("messageCreate", (m)=>{
+
+  log.log("Received message: " + m.content, log.LOG_EVERYTHING);
+
   var prefix = config.prefix
   if (server[m.channel.guild.id]) {
     if (server[m.channel.guild.id].prefix) {
+      // TODO: redeclatation of vriable may shadow the parent-context variable.
       var prefix = server[m.channel.guild.id].prefix
     }
   }
-  if (m.author.id == "309220487957839872") return;
+
+  // TODO: Who is 309220487957839872? Is that Mei herself?
+  if (m.author.id == config.mei_uid) return;
+
+  // Do not read or react to private channels
 	if (m.channel.isPrivate) return;
+
+  // If it's a DM you log the message or something?
   if (!m.guild) {
     console.log(m);
   }
+
+  // Which server is this?
   if (m.guild.id == "373589430448947200") {
+    // Is this a reaction to another bot saying "welcome", which grants access to everyone?
     if (m.content.includes("you joined") == true && m.author.id == "155149108183695360") { // If shit bot says "you joined" in #welcome
       Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "375633311449481218", "Removed from role assign") // remove the No channel access role
     }
   }
-  if (m.author.id == "161027274764713984" && m.content.includes("pls")) {
+
+  // Chocola has special powers over Mei if she uses the keyword "pls"
+  if (m.author.id == CHOCOLA_UID && m.content.includes("pls")) {
+    // Mei shutdown command
     if (m.content.includes("stop")) {
       Bot.createMessage(m.channel.id, "give me just a second").then((m) => {
         data.reboot.mID == m.id
@@ -52,7 +82,10 @@ Bot.on("messageCreate", (m)=>{
       })
       process.exit(0)
     }
+
+    // Muting / unmuting users
     if (m.content.includes(" mute") && m.mentions.length > 0) {
+      // Wierd loop exception, could be merged perhaps...
       if (m.mentions.length > 1) {
         var muteArray = []
         var mentions = m.mentions
@@ -71,6 +104,8 @@ Bot.on("messageCreate", (m)=>{
           })
       })
     }
+
+    // Unmute users, same here...
     if (m.content.includes(" unmute") && m.mentions.length > 0) {
       if (m.mentions.length > 1) {
         var unmuteArray = []
@@ -91,49 +126,103 @@ Bot.on("messageCreate", (m)=>{
       })
     }
   }
+
+  // Cannot play stuff apparently in a specific guild.
   if (m.channel.guild.id == '196027622944145408' && m.content.startsWith(`${prefix}play`)) {
     return;
   }
+
 	var loguser = `${m.author.username}#${m.author.discriminator}`.magenta.bold;
 	var logserver = `${m.channel.guild.name}`.cyan.bold || "Direct Message".cyan.bold
 	var logchannel = `#${m.channel.name}`.green.bold;
 	var logdivs = [" > ".blue.bold, " - ".blue.bold];
 	var commands = fs.readdirSync("./commands/");
 	if (m.content.startsWith(prefix)) {
+
+    log.log('Received command: ' + m.content, log.LOG_DEBUG);
+
+    // Extract the command name by taking the first token and removing the prefix.
 		var command = m.content.split(" ")[0].replace(prefix, "").toLowerCase();
+
+    // Check the command module files for something that matches...
 		if (commands.indexOf(command+".js") > -1) {
+
+      console.log('h');
+
+      // TODO: Don't use an underscore as a name!
+      // FIXME: _ is loaded both here and at the start of the file! Risk saving an old version!
   		var data = _.load(); // Track command usage in ../db/data.json
-      data.commands.totalRuns++
+      // Save statistics... This possibly has a minor race condition
+      // if two commands are run concurrently, but it's not that terrifyingly important...
+
+      if (!data.commands) {
+        data.commands = {'totalRuns': 0}
+      }
+
+      data.commands.totalRuns++ // Increment number of issued commands.
+
+      // Create a new statistics block if not present for this command
   		if (!(data.commands[command])) {
   			data.commands[command]= {};
         data.commands[command].totalUses = 0
         data.commands[command].users = {}
   		}
+      data.commands[command].totalUses++
+
+      // Track statistics on who issued which commands how many times.
       if (!(data.commands[command].users[m.author.id])) {
+        // Make a new counter and set to 0 by default.
   			data.commands[command].users[m.author.id] = 0
   		}
       data.commands[command].users[m.author.id]++
-      data.commands[command].totalUses++
+
+      // Save to the file.
       _.save(data);
+
+      log.log('Command: ' + command + ' ( By user: ' +  + data.commands[command].users[m.author.id]
+               + ' / Total: ' + data.commands[command].totalUses + ' )', log.LOG_EVERYTHING)
+
+      // Load the file pertaining to the command. No path injection
+      // vulnerability here since command is checked against a predefined list.
 			var cmd = reload("./commands/"+command+".js");
+
+      // What does this do?
 			var args = m.content.replace(/\[\?\]/ig,"").split(" ");
 			args.splice(0, 1);
 			args = args.join(" ");
+
+      // Log the command usage, prepare strings for pretty-printing.
 			var logcmd = `${prefix}${command}`.bold;
 			var logargs = `${args}`.bold;
+
 			try {
+        // Delegate actual command execution to the specific module.
 				cmd.main(Bot, m, args, prefix);
+
 				console.log("CMD".black.bgGreen+" "+loguser+logdivs[1]+logserver+logdivs[0]+logchannel+" "+logcmd.blue);
-				if (args) console.log("ARG".black.bgCyan+" "+logargs.blue.bold);
+
+				if (args) {
+          console.log("ARG".black.bgCyan+" "+logargs.blue.bold);
+        }
+        // Empty line...
 				console.log('');
 			} catch (err) {
+        // Something went wrong! Report the error.
 				console.log(err);
+        // Tell the user in the same channel
 				Bot.createMessage(m.channel.id, "An error has occured.");
+        // Log to console.
 				console.log("CMD".black.bgRed+" "+loguser+logdivs[1]+logserver+logdivs[0]+logchannel+" "+logcmd.red);
-				if (args) console.log("ARG".black.bgCyan+" "+logargs.red.bold);
+
+				if (args) {
+          console.log("ARG".black.bgCyan+" "+logargs.red.bold);
+        }
+        // Empty line...
 				console.log('');
 			}
-		}
+		} else {
+      log.log('Unknown command: ' + command, log.LOG_WARN)
+    }
 	}
 });
 
@@ -215,8 +304,9 @@ Bot.on("guildMemberAdd",function(guild, member) {
           })
           return;}, 4000)
   }
-  if (guild.id == "326172270370488320") {
-          Bot.createMessage("326172270370488320", "Welcome to Size Haven, "+ member.mention+"!\nWe now have: "+ guild.memberCount + " people!\nThere are a list of roles in <#375798104500207616>, please use `"+prefix+"role add rolename` to give yourself roles, and let a Mod know if you have any questions~").then((m) => {
+
+  if (guild.id == SIZE_HAVEN_GID) {
+          Bot.createMessage(SIZE_HAVEN_GID, "Welcome to Size Haven, "+ member.mention+"!\nWe now have: "+ guild.memberCount + " people!\nThere are a list of roles in <#375798104500207616>, please use `"+prefix+"role add rolename` to give yourself roles, and let a Mod know if you have any questions~").then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
           })
   }
@@ -257,15 +347,15 @@ Bot.on("guildMemberRemove",function(guild, member) {
   if (guild.id == "406579725792968705") {
           Bot.createMessage("406741954030731264", member.username + " left SNG. \nWe now have: "+ guild.members.filter(m => !m.bot).length + " people :frowning2:")
   }
-  if (guild.id == "326172270370488320") {
-          Bot.createMessage("326172270370488320", member.username + " left Size Haven. \nWe now have: "+ guild.members.filter(m => !m.bot).length + " people :frowning2:").then((m) => {
+  if (guild.id == SIZE_HAVEN_GID) {
+          Bot.createMessage(SIZE_HAVEN_GID, member.username + " left Size Haven. \nWe now have: "+ guild.members.filter(m => !m.bot).length + " people :frowning2:").then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
           })
   }
 });
 
 Bot.on("guildCreate",function(guild) {
-    Bot.getDMChannel('161027274764713984').then(function(DMchannel) {
+    Bot.getDMChannel(CHOCOLA_UID).then(function(DMchannel) {
           Bot.createMessage(DMchannel.id, {
             embed: {
                 color: 0xA260F6,
@@ -281,7 +371,7 @@ Bot.on("guildCreate",function(guild) {
 });
 
 Bot.on("guildDelete",function(guild) {
-    Bot.getDMChannel('161027274764713984').then(function(DMchannel) {
+    Bot.getDMChannel(CHOCOLA_UID).then(function(DMchannel) {
           Bot.createMessage(DMchannel.id, {
             embed: {
                 color: 0xA260F6,

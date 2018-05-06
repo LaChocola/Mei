@@ -3,7 +3,8 @@ var request = require('request');
 module.exports = {
     main: function(Bot, m, args, prefix) {
         request('http://aws.random.cat/meow', (err, res, body) => {
-            var catURL = JSON.parse(body)
+          if (res.statusCode == 200) {
+            var catURL = JSON.parse(body);
             const data = {
                 "embed": {
                     "color": 0xA260F6,
@@ -18,6 +19,10 @@ module.exports = {
             };
 
             Bot.createMessage(m.channel.id, data);
+          } else {
+            // Random 403 error that sometimes occurs...
+            Bot.createMessage(m.channel.id, "Sorry, no kitties at the moment. :frowning2: Please try again later.");
+          }
 
         });
     },

@@ -1,3 +1,5 @@
+log = require('logging.js')
+
 const colors = require("colors");
 
 module.exports = {
@@ -16,5 +18,7 @@ module.exports = {
         console.log("INF".bgBlue.magenta + " Currently seeing: " + `${i}`.green.bold + " channels");
         console.log("INF".bgBlue.magenta + " Currently seeing: " + `${Bot.users.size}`.green.bold + " users");
         console.log('');
+
+        log.log('Mei is online and ready!', log.LOG_INFO)
     }
 }
