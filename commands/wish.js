@@ -36,12 +36,9 @@ module.exports = {
                 const bg = await Jimp.read("https://buttsare.sexy/c3b78e.jpg");
                 const avy = await Jimp.read(pic);
                 console.log(Object.keys(Jimp))
-                // const nameFont = await Jimp.loadFont(Jimp.FONT_TREBUCHET);
-                // const timeFont = await Jimp.loadFont(Jimp.FONT_TIMEFONT);
+                const nameFont = await Jimp.loadFont('./fonts/trebuchetms/TrebuchetMS.fnt');
+                const timeFont = await Jimp.loadFont('./fonts/timefont/timeFont.fnt');
 
-                const nameFont = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-                const timeFont = await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK);
-                
                 avy.resize(141, 116);
                 bg.clone()
                     .blit(avy, 15, 5)
