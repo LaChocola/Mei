@@ -14,6 +14,7 @@ module.exports = {
                 description: embed
             }
         });
+        return;
     },
     help: "Vaporwave Text"
 }
