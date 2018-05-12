@@ -300,11 +300,14 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
   var id = userID
   if (emoji.name == "😍") {
     var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
-      if (m.attachments.length == 0) {
+      if (m.attachments.length == 0 && m.embeds.length == 0) {
         var link = m.cleanContent
       }
       else if (m.attachments[0]) {
         var link = m.attachments[0].url
+      }
+      else if (m.embeds[0]) {
+        var link = m.embeds[0].image.url
       }
       if (link) {
         var people = ppl.load();
@@ -349,11 +352,14 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
     if (server[m.channel.guild.id].hoards && emoji.name != "😍") {
       if (people.people[id].hoard[emoji.name]) {
         var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
-          if (m.attachments.length == 0) {
+          if (m.attachments.length == 0 && m.embeds.length == 0) {
             var link = m.cleanContent
           }
           else if (m.attachments[0]) {
             var link = m.attachments[0].url
+          }
+          else if (m.embeds[0]) {
+            var link = m.embeds[0].image.url
           }
           if (link) {
             var people = ppl.load();
@@ -401,13 +407,15 @@ Bot.on("messageReactionRemove",function(m, emoji, userID)  {
     var data = _.load();
     var people = ppl.load();
     if (emoji.name == "😍") {
-      if (m.attachments.length == 0) {
+      if (m.attachments.length == 0 && m.embeds.length == 0) {
         var link = m.cleanContent
       }
       else if (m.attachments[0]) {
         var link = m.attachments[0].url
       }
-
+      else if (m.embeds[0]) {
+        var link = m.embeds[0].image.url
+      }
       var hoard = people.people[id].hoard
       if (hoard[link]) {
         delete hoard[link]
@@ -438,11 +446,14 @@ Bot.on("messageReactionRemove",function(m, emoji, userID)  {
       }
       if (people.people[id].hoard[emoji.name]) {
         var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
-          if (m.attachments.length == 0) {
+          if (m.attachments.length == 0 && m.embeds.length == 0) {
             var link = m.cleanContent
           }
           else if (m.attachments[0]) {
             var link = m.attachments[0].url
+          }
+          else if (m.embeds[0]) {
+            var link = m.embeds[0].image.url
           }
           if (link) {
             var people = ppl.load();
