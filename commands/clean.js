@@ -24,6 +24,11 @@ module.exports = {
           Bot.createMessage(m.channel.id, "Please mention who you want to clean or say 'all', and optionally, a number of messages to delete from them");
           return;
         }
+        var perms = m.channel.guild.members.get(m.author.id).permission.json
+        var pArray = ["kickMembers", "banMembers", "administrator", "manageChannels", "manageGuild", "manageMessages"]
+        if (perms[pArray[0]] || perms[pArray[1]] || perms[pArray[2]] || perms[pArray[3]] || perms[pArray[4]] || perms[pArray[5]]) {
+          mod = true
+        }
         if (m.cleanContent.includes(" all")) {
           if (m.author.id == "161027274764713984" || m.author.id == m.channel.guild.ownerID || mod == true) {
             m.delete()
