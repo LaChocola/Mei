@@ -339,7 +339,9 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
               ppl.save(people);
               if (+people.people[m.author.id].adds % 10 == 0 && m.author.id !== "309220487957839872") {
                 var user = Bot.users.filter(u => u.id == m.author.id)[0]
-                Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${+people.people[m.author.id].adds} hoard adds (since the counter was added).`);
+                Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${+people.people[m.author.id].adds} hoard adds (since the counter was added).`).then((m) => {
+                    return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 60000)
+                })
               }
             }
             return;
@@ -382,7 +384,9 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
                 ppl.save(people);
                 if (+people.people[m.author.id].adds % 10 == 0 && m.author.id !== "309220487957839872") {
                   var user = Bot.users.filter(u => u.id == m.author.id)[0]
-                  Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${+people.people[m.author.id].adds} hoard adds (since the counter was added).`);
+                  Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${+people.people[m.author.id].adds} hoard adds (since the counter was added).`).then((m) => {
+                      return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 60000)
+                  })
                 }
               }
               return;
