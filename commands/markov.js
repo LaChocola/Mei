@@ -28,7 +28,7 @@ module.exports = {
             Bot.createMessage(m.channel.id, "I cant read that channel, please try a different one.")
             return;
         }
-        var amount = 6000
+        var amount = 7000
         Bot.createMessage(m.channel.id, 'Indexing ' + amount + ' messages from **' + name + '** in *' + m.channel.guild.channels.get(channel).name + '*, Please wait.').then(a => {
             setTimeout(function() {
                 a.delete()
