@@ -19,5 +19,5 @@ module.exports = {
             Bot.createMessage(m.channel.id, emojis.join(" "));
         });
     },
-    help: "Emojis"
+    help: "Emojify text"
 }
