@@ -19,40 +19,129 @@ module.exports = {
       var sorted = rank(data.people)
       if (args.toLowerCase().includes("global")) {
         var i = 1
-        leaders = []
+        var leaders = []
+        var leader = []
+        var y = 0
+        var personalRank = []
         for (person of sorted) {
-          console.log(person);
           var user = Bot.users.filter(m => m.id == person["key"])[0]
-          if (user && user.id != "309220487957839872") {
-              if (person.value > 1) {
+          if (user && user.id != "309220487957839872" && user.id != "444791634966740993") {
+              y++
+              if (i == 1) {
+                leader.push(user.id)
+              }
+              if (person.value > 1 && i < 26) {
                 leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} adds`)
                 i++
               }
-              if (person.value == 1) {
+              if (person.value == 1 && i < 26) {
                 leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} add`)
                 i++
               }
+              if (user.id == m.author.id) {
+                if (person.value > 1) {
+                  personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} adds`)
+                }
+                if (person.value == 1) {
+                  personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} add`)
+                }
+              }
           }
         }
-        Bot.createMessage(m.channel.id, "Current *Global* Leaderboard:\n\n"+leaders.join("\n"));
-        return;
+        if (personalRank[0]) {
+          Bot.createMessage(m.channel.id, {
+              embed: {
+                  author: {
+                    name: "Current *Global* Leaderboard:",
+                    icon_url: m.channel.guild.iconURL
+                  },
+                  thumbnail: {
+                    url: Bot.users.filter(m => m.id == leader[0])[0].avatarURL
+                  },
+                  color: 0xA260F6,
+                  description: leaders.join("\n")+"\n\nYour Current Global Rank:\n\n"+personalRank[0]
+              }
+          });
+          return;
+        }
+        else {
+          Bot.createMessage(m.channel.id, {
+              embed: {
+                  author: {
+                    name: "Current *Global* Leaderboard:",
+                    icon_url: m.channel.guild.iconURL
+                  },
+                  thumbnail: {
+                    url: Bot.users.filter(m => m.id == leader[0])[0].avatarURL
+                  },
+                  color: 0xA260F6,
+                  description: leaders.join("\n")
+              }
+          });
+          return;
+        }
       }
       var leaders = []
+      var leader = []
       var i = 1
+      var y = 0
+      var personalRank = []
       for (person of sorted) {
         var user = m.channel.guild.members.filter(m => m.id == person["key"])[0]
-        if (user && user.id != "309220487957839872") {
-            if (person.value > 1) {
+        if (user && user.id != "309220487957839872" && user.id != "444791634966740993") {
+            y++
+            if (i == 1) {
+              leader.push(user.id)
+            }
+            if (person.value > 1 && i < 11) {
               leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} adds`)
               i++
             }
-            if (person.value == 1) {
+            if (person.value == 1 && i < 11) {
               leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} add`)
               i++
             }
+            if (user.id == m.author.id) {
+              if (person.value > 1) {
+                personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} adds`)
+              }
+              if (person.value == 1) {
+                personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} add`)
+              }
+            }
         }
       }
-      Bot.createMessage(m.channel.id, "Current Guild Leaderboard:\n\n"+leaders.join("\n"));
+      if (personalRank[0]) {
+        Bot.createMessage(m.channel.id, {
+            embed: {
+                author: {
+                  name: "Current Guild Leaderboard:",
+                  icon_url: m.channel.guild.iconURL
+                },
+                thumbnail: {
+                  url: m.channel.guild.members.filter(m => m.id == leader[0])[0].avatarURL
+                },
+                color: 0xA260F6,
+                description: leaders.join("\n")+"\n\nYour Current Guild Rank:\n\n"+personalRank[0]
+            }
+        });
+        return;
+      }
+      else {
+        Bot.createMessage(m.channel.id, {
+            embed: {
+                author: {
+                  name: "Current Guild Leaderboard:",
+                  icon_url: m.channel.guild.iconURL
+                },
+                thumbnail: {
+                  url: m.channel.guild.members.filter(m => m.id == leader[0])[0].avatarURL
+                },
+                color: 0xA260F6,
+                description: leaders.join("\n")
+            }
+        });
+      }
     },
     help: "Member counts"
 }
