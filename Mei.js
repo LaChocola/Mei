@@ -196,19 +196,6 @@ Bot.on("guildMemberAdd",function(guild, member) {
                 }
             }
           });
-          if (guild.memberCount % 50 === 0) {
-            const msgEmbed = {
-              "content": "We have just reached "+guild.memberCount+" members! :tada: :tada: :tada: :tada: :tada: :tada:",
-              "embed": {
-                "title": "To celebrate, Tina drew this for us:",
-                "color": 0xA260F6,
-                "image": {
-                  "url": "https://buttsare.sexy/7f69bb.png"
-                }
-              }
-            };
-            Bot.createMessage("354709664509853712", msgEmbed);
-        }
         setTimeout(function() {
           Bot.createMessage("436757042753961987", "Welcome "+ member.mention+"~\nThere are a list of roles in <#355823130637500417>, use `"+prefix+"role add rolename` to give yourself roles. You will be unable to send messages in any other channels until you do this. Let a Guardian know if you have any questions.").then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
@@ -255,10 +242,10 @@ Bot.on("guildMemberRemove",function(guild, member) {
           });
   }
   if (guild.id == "406579725792968705") {
-          Bot.createMessage("406741954030731264", member.username + " left SNG. \nWe now have: "+ guild.members.filter(m => !m.bot).length + " people :frowning2:")
+          Bot.createMessage("406741954030731264", member.username + " left SNG. \nWe now have: "+ guild.memberCount + " people :frowning2:")
   }
   if (guild.id == "326172270370488320") {
-          Bot.createMessage("326172270370488320", member.username + " left Size Haven. \nWe now have: "+ guild.members.filter(m => !m.bot).length + " people :frowning2:").then((m) => {
+          Bot.createMessage("326172270370488320", member.username + " left Size Haven. \nWe now have: "+ guild.memberCount + " people :frowning2:").then((m) => {
               return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
           })
   }
