@@ -2,16 +2,6 @@ const _ = require("./people.js");
 var data = _.load();
 const fs = require("fs");
 class Misc {//Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
-/*
-    static getCommand(m) {
-      if (m.content.startsWith(prefix)) {
-        var command = m.content.split(" ")[0].replace(prefix, "").toLowerCase();
-        if (commands.indexOf(command+".js") > -1) {
-          return command;
-        }
-      }
-    }
-*/
     static isThisUsernameThatUsername(member) {
         var memberName = member.nick || member.username
         if (memberName.toLowerCase() == name1.toLowerCase()) {
