@@ -44,15 +44,20 @@ module.exports = {
         Bot.createMessage(m.channel.id, "`Searching...`").then(function(message) {
             var safe = 'off'
             var key = config.tokens.google;
-            var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=013652921652433515166:cnlmax0k6mu" + "&q=" + encodeURI(args);
+            var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=013652921652433515166:cnlmax0k6mu&q=" + encodeURI(args);
             try {
                 request(url, function(error, response, body) {
 
                     try {
-                        message.edit(JSON.parse(body)['items'][0]['link']);
+                        var jBody = JSON.parse(body)
+                        if (jBody['items'][0]) {
+                          message.edit(JSON.parse(body)['items'][0]['link']);
+                        }
+                        else if (!message.edit(JSON.parse(body)['items'][0]['link'])) {
+                          fallbackHTMLScraper(args, safe, message);
+                        }
                     } catch (err) {
                         console.log(err);
-                        fallbackHTMLScraper(args, safe, message);
                     }
                 });
             } catch (err) {
