@@ -2,12 +2,56 @@ const Jimp = require('jimp');
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
+        var names = m.cleanContent.replace(/^[ !ship\t]+[^a-zA-Z]+|[!ship \t]+[^a-zA-Z]$|!ship/i, "").split(" | ")
+        if (names[0] != undefined) {
+          if (names[0].startsWith("@")) {
+            names[0] = names[0].slice(1)
+          }
+          var name1 = names[0]
+          var isThisUsernameThatUsername = function(member) {
+              var memberName = member.nick || member.username
+              if (memberName.toLowerCase() == name1.toLowerCase()) {
+                  return true;
+              }
+          }
+          var member = m.guild.members.find(isThisUsernameThatUsername)
+
+          if (member != undefined) {
+            if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) { return user.id == member.id})) {
+              m.mentions.push(member.user)
+            }
+          }
+
+          if (names[1] != undefined) {
+            if (names[1].startsWith("@")) {
+              names[1] = names[1].slice(1)
+            }
+            var name2 = names[1]
+
+            var isThisUsernameThatUsername2 = function(member) {
+                var memberName = member.nick || member.username
+                if (memberName.toLowerCase() == name2.toLowerCase()) {
+                    return true;
+                }
+            }
+            var member2 = m.guild.members.find(isThisUsernameThatUsername2)
+
+            if (member2 != undefined) {
+              if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) { return user.id == member2.id})) {
+                m.mentions.push(member2.user)
+              }
+            }
+
+          }
+        }
+
+        var mentioned = m.mentions[0] || member || m.author
         if (m.mentions.length == 1 && m.author.id == m.mentions[0].id) { // If the user mentions only themself
-            Bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; *hugs you*`)
+            Bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; *hugs you*\n~~only one user was detected~~`)
             return;
         }
         if (m.mentions.length !== 2) { // If there are not 2 people mentioned,
-            Bot.createMessage(m.channel.id, "Ship someone together~ <@user1> <@user2>")
+            Bot.createMessage(m.channel.id, "Ship someone together~\n\nUse `!ship <@user1> <@user2>` or `!ship username1 | username2`")
             return;
         }
 
@@ -17,7 +61,7 @@ module.exports = {
                 var firstName = m.channel.guild.members.get(m.mentions[0].id).nick || m.mentions[0].username
                 var lastName = m.channel.guild.members.get(m.mentions[1].id).nick || m.mentions[1].username
                 if (firstName == lastName) {
-                    Bot.createMessage(m.channel.id, "Lovely shi...Uhm, can you two stop being weird?")
+                    Bot.createMessage(m.channel.id, "Lovely shi...Uhm, can you two stop being weird?\n~~both names are the same~~")
                     return;
                 }
                 var firstPart = firstName.substring(0, firstName.length / 2);
