@@ -28,13 +28,14 @@ module.exports = {
             return guild.roles.get(roleID).name;
         }
         var arrayOfRoleNames = arrayOfRoleIDs.map(getRoleNameFromRoleID);
-        console.log(arrayOfRoleObjects);
         for (let role of arrayOfRoleObjects) {
-            console.log("\n" + role.name + " (" + role.id + ")");
+            console.log("\n" + role.name.toLowerCase() + " (" + role.id + ")");
         }
-
         var msg = JSON.stringify(mentioned.permission.json).replace("{", "").replace("}", "")
+        if (arrayOfRoleNames.length < 1) {
+          Bot.createMessage(m.channel.id, "You do not currently have any assigned roles in this server.");
+        };
         Bot.createMessage(m.channel.id, "Roles for: **" + mentioned.username + "#" + mentioned.discriminator + "**\n \n*" + arrayOfRoleNames.join("*, *") + "*\n \nPermissions: ```js\n" + msg + "```")
     },
-    help: "Shows role info on mentioned person"
+    help: "Shows role info on mentioned person, use !role to assign roles"
 }
