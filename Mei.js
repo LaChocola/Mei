@@ -9,25 +9,32 @@ Object.defineProperty(bot.Message.prototype, "guild", {
     }
 });
 var fs = require("fs");
+
+var reload = require("require-reload")(require);
 var timeago = require("timeago.js");
 var timediff = require('timediff');
-var config = require("./etc/config.json");
-var Bot = bot(config.tokens.mei);
-var reload = require("require-reload")(require);
+var config = reload("./etc/config.json");
 var events = fs.readdirSync("./events/");
 var colors = require("colors");
-const _ = require("./data.js");
-const ppl = require("./people.js");
-const servers = require("./servers.js");
+var _ = require("./data.js");
+var ppl = require("./people.js");
+var servers = reload("./servers.js");
 var people = ppl.load();
 var server = servers.load();
 var data = _.load();
 var aesthetics = require('aesthetics');
+var Bot = new bot.CommandClient(config.tokens.mei, {}, {
+    description: "Mei bot",
+    owner: "Chocola",
+    prefix: config.prefix
+});
 var unidecode = require("unidecode")
 var hands = [ ":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
 var hand = hands[Math.floor(Math.random() * hands.length)]
 
 Bot.on("messageCreate", (m)=>{
+  var config = reload("./etc/config.json")
+  var server = servers.load()
   var prefix = config.prefix
   if (server[m.channel.guild.id]) {
     if (server[m.channel.guild.id].prefix) {
@@ -294,7 +301,9 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
         var link = m.attachments[0].url
       }
       else if (m.embeds[0]) {
-        var link = m.embeds[0].image.url
+        if (m.embeds[0].image) {
+          var link = m.embeds[0].image.url
+        }
       }
       if (link) {
         var people = ppl.load();
