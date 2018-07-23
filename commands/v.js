@@ -7,13 +7,27 @@ var data = _.load();
 module.exports = {
 	main: function(Bot, m, args, prefix) {
 		var args = args.toLowerCase()
+		var mentioned = m.mentions[0] || m.author
+		var id = mentioned.id
 		if (m.channel.guild.id == "187694240585744384") {
 			prefix = "?"
 		}
 		if(args.indexOf("length") >= 0){
-			var names = miscl.getDefaultGTSNames(m.channel.guild.id);
+			var names = miscl.getcustomGTSNames(id)
 			var resultstring = "";
-			resultstring+= "**Names avaible: **"+names.totalnames+"\n "+names.cleannames+"\n \n"+miscl.getLewdCounts("violent");
+			var cleanishNames = names.join(", ")
+			for (var i=0; i < names.length; i++) {
+			    if (i%5 === 0) {
+						cleanishNames.replace(names[i], `${names[i]}\n`)
+					}
+			}
+			var cleanNames = cleanishNames
+			resultstring+= "**Names avaible: **"+names.length+"\n "+cleanishNames+"\n \n"+miscl.getLewdCounts("violent");
+			if (names.length < 1) {
+				names = miscl.getDefaultGTSNames(m.channel.guild.id)
+				var resultstring = "";
+				resultstring+= "**Names avaible: **"+names.totalnames+"\n "+names.cleannames+"\n \n"+miscl.getLewdCounts("violent");
+			}
 			Bot.createMessage(m.channel.id, {
 				embed: {
 						"color": 0xA260F6,
@@ -23,8 +37,6 @@ module.exports = {
 			return;
 		}
 
-		var mentioned = m.mentions[0] || m.author
-		var id = mentioned.id
 		if(args.indexOf("someone") >= 0)
 		{
 			id = miscl.getSomeone(m);
