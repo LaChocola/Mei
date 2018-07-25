@@ -13,12 +13,11 @@ module.exports = {
         if (m.member.voiceState.channelID) { // User is in Voice Channel
             Bot.joinVoiceChannel(m.member.voiceState.channelID).then(function(voiceConnection) { // Join user voice channel
                 var BotVoiceState = m.channel.guild.members.get(Bot.user.id).voiceState;
-
                 if (BotVoiceState.channelID) { // Bot is in Voice Channel
                     var voiceConnection = Bot.voiceConnections.get(m.channel.guild.id);
                     if (BotVoiceState.channelID == m.member.voiceState.channelID) { // User is in same Voice Channel
                         if (voiceConnection.playing) {
-                            if (args.includes("pause") || args.includes("stop") || args.includes("cease")) {
+                            if (args.includes("pause") || args.includes("stop") || args.includes("cancel")) {
                                 Bot.createMessage(m.channel.id, "Stopping music.");
                                 Bot.leaveVoiceChannel(m.member.voiceState.channelID)
                                 return;

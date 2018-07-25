@@ -34,6 +34,7 @@ module.exports = {
         var msg = JSON.stringify(mentioned.permission.json).replace("{", "").replace("}", "")
         if (arrayOfRoleNames.length < 1) {
           Bot.createMessage(m.channel.id, "You do not currently have any assigned roles in this server.");
+          return;
         };
         Bot.createMessage(m.channel.id, "Roles for: **" + mentioned.username + "#" + mentioned.discriminator + "**\n \n*" + arrayOfRoleNames.join("*, *") + "*\n \nPermissions: ```js\n" + msg + "```")
     },
