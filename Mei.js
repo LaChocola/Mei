@@ -14,7 +14,6 @@ var reload = require("require-reload")(require);
 var timeago = require("timeago.js");
 var timediff = require('timediff');
 var config = reload("./etc/config.json");
-var events = fs.readdirSync("./events/");
 var colors = require("colors");
 var _ = require("./data.js");
 var ppl = require("./people.js");
@@ -343,8 +342,8 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
             return;
         }
       }
-  })
-}
+    })
+  }
   if (server[m.channel.guild.id]) {
     var people = ppl.load();
     if (server[m.channel.guild.id].hoards && emoji.name != "😍") {
@@ -490,17 +489,6 @@ Bot.on("messageReactionRemove",function(m, emoji, userID)  {
       }
     }
   })
-});
-
-events.forEach(function(event) {
-	Bot.on(event, function(m) {
-		var eventjs = reload("./events/"+event+"/main.js");
-		try {
-			eventjs.main(Bot, m, config);
-		} catch (err) {
-			console.log(err);
-		}
-	});
 });
 
 Bot.connect();
