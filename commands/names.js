@@ -5,7 +5,7 @@ module.exports = {
         var name1 = m.cleanContent.replace(/!names /i, "")
 
         function capFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
+            return string.trim().charAt(0).toUpperCase() + string.slice(1);
         }
         var isThisUsernameThatUsername = function(member) {
             var memberName = member.nick || member.username
@@ -131,5 +131,5 @@ module.exports = {
         }
 
     },
-    help: "Add custom names for !v and !g"
+    help: "Add custom names for !v, !g and !tf"
 }

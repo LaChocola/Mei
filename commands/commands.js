@@ -11,7 +11,9 @@ module.exports = {
         files.forEach(function(file) {
             if (lines.length < 1800) {
                 var cmd = require("./" + file)
-                lines.push(format(file, cmd.help));
+                if (!cmd.hidden) {
+                  lines.push(format(file, cmd.help));
+                }
             }
         });
         var message = lines.join("\n");

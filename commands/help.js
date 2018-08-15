@@ -7,7 +7,9 @@ module.exports = {
             var commands = fs.readdirSync("./commands/");
             if (commands.indexOf(args + ".js") > -1) {
                 var cmd = require("./" + args + ".js");
-                Bot.createMessage(m.channel.id, "`"+ prefix + args + "`, " + cmd.help);
+                if (!cmd.hidden) {
+                  Bot.createMessage(m.channel.id, "`"+ prefix + args + "`, " + cmd.help);
+                }
             } else {
                 Bot.createMessage(m.channel.id, "That command doesn't exist.");
             }

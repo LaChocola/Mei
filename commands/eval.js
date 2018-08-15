@@ -23,5 +23,6 @@ module.exports = {
             Bot.createMessage(m.channel.id, "No, dont touch that");
         }
     },
-    help: "Just dont"
+    help: "Just dont",
+    hidden: true
 };
