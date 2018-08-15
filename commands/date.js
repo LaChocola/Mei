@@ -7,7 +7,15 @@ module.exports = {
             var number = m.mentions[0].id
         }
         var guild = m.channel.guild
-        var member = guild.members.get(number);
+        var name1 = m.cleanContent.replace(/!date /i, "")
+        var isThisUsernameThatUsername = function(member) {
+            var memberName = member.nick || member.username
+            if (memberName.toLowerCase() == name1.toLowerCase()) {
+                return true;
+            }
+        }
+        var mentioned = m.guild.members.find(isThisUsernameThatUsername)
+        var member = m.mentions[0] || mentioned || m.author
         var date = member.joinedAt;
         var date2 = member.createdAt;
         var name = member.nick || member.username
