@@ -14,6 +14,10 @@ module.exports = {
 		if (m.author.id == "187368906493526017") {
 			return;
 		}
+		if (m.channel.nsfw == false) {
+				Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
+				return;
+		}
     var name = m.author.nick || m.author.username
 		if (m.content.toLowerCase() == `${prefix}booru`) {
 			m.content = `${prefix}booru giantess`
@@ -125,63 +129,26 @@ module.exports = {
 							 }
 							 if (imageURL.length < 2) {
 								 var random = Math.floor(Math.random() * 420)
-								 if (random == 69 || m.author.id == "187742074412466176") {
-										 Bot.sendChannelTyping(m.channel.id).then(async () => {
-												try {
-													 var funkurl = "http://i0.kym-cdn.com/photos/images/newsfeed/001/331/566/c97.png";
-													 var bg = await Jimp.read(imageURL.toString());
-							             var avy = await Jimp.read(funkurl);
-							             var bgx = bg.bitmap.width;
-							             var nsize = Math.floor(Math.min(bg.bitmap.width/2,bg.bitmap.height/2));
-							             avy.resize(nsize, nsize*(115/140));//140 115
-							             bg.clone()
-							                 .composite(avy, bgx-nsize, 0)
-							                 .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
-																 m.channel.createMessage({
-																	 "content": "Results on **" + site + "**",
-																	 "embed": {
-																		 "color": 0xA260F6,
-																		 "footer": {
-																			 "icon_url": m.channel.guild.members.get(m.author.id).avatarURL.replace(".jpg", ".webp?size=1024"),
-																			 "text": "Searched by: " + name + ". Image " + maths + " of " + link_array.length
-																		 },
-																		 "image": {"url": 'attachment://examplefile.png'},
-																		 "author": {
-																			 "name": cleanTags,
-																			 "url": "http://giantessbooru.com"+response.request.uri.path
-																		 }
-																	 }
-																 }, {file: buffer, name: 'examplefile.png'});
-															 });
-												} catch (error) {
-						                 console.log(error);
-						                 return Bot.createMessage(m.channel.id, "Something went wrong...");
-						           	}
-											});
-											return;
-									 } else {
-										 var number = maths + 1
-										 const data = {
-											 "content": "Results on **" + site + "**",
-											 "embed": {
-												 "color": 0xA260F6,
-												 "footer": {
-													 "icon_url": m.channel.guild.members.get(m.author.id).avatarURL.replace(".jpg", ".webp?size=1024"),
-													 "text": "Searched by: " + name + ". Image " + number + " of " + link_array.length
-												 },
-												 "image": {
-													 "url": imageURL.toString()
-												 },
-												 "author": {
-													 "name": cleanTags,
-													 "url": "http://giantessbooru.com"+response.request.uri.path
-												 }
+								 var number = maths + 1
+									 const data = {
+										 "content": "Results on **" + site + "**",
+										 "embed": {
+											 "color": 0xA260F6,
+											 "footer": {
+												 "icon_url": m.channel.guild.members.get(m.author.id).avatarURL.replace(".jpg", ".webp?size=1024"),
+												 "text": "Searched by: " + name + ". Image " + number + " of " + link_array.length
+											 },
+											 "image": {
+												 "url": imageURL.toString()
+											 },
+											 "author": {
+												 "name": cleanTags,
+												 "url": "http://giantessbooru.com"+response.request.uri.path
 											 }
-										 };
-
-										 Bot.createMessage(m.channel.id, data);
-										 return;
-									 }
+										 }
+									 };
+									 Bot.createMessage(m.channel.id, data);
+									 return;
 								} else if (imageURL.length > 1) {
 								 const data = {
 									 "content": "Results on **" + site + "**",
@@ -235,13 +202,18 @@ module.exports = {
       }
     })
     .catch(err => {
-      if (err.name === 'booruError') {
+      if (err.name === 'BooruError') {
         //It's a custom error thrown by the package
+				if (err.message == "You didn\'t give any images") {
+					Bot.createMessage(m.channel.id, "No images were found for: "+tag1);
+					return;
+				}
         console.log(err.message)
 				Bot.createMessage(m.channel.id, err.message);
       } else {
         //This means I messed up. Whoops.
         console.log(err)
+				Bot.createMessage(m.channel.id, "An unknown error has occured");
       }
     })
     return;
@@ -316,17 +288,23 @@ module.exports = {
   }
 
     })
-    .catch(err => {
-      if (err.name === 'booruError') {
+		.catch(err => {
+      if (err.name === 'BooruError') {
         //It's a custom error thrown by the package
+				if (err.message == "You didn\'t give any images") {
+					Bot.createMessage(m.channel.id, "No images were found for: "+tag1);
+					return;
+				}
         console.log(err.message)
 				Bot.createMessage(m.channel.id, err.message);
+				return;
       } else {
         //This means I messed up. Whoops.
         console.log(err)
+				Bot.createMessage(m.channel.id, "An unknown error has occured, please try again later");
+				return;
       }
     })
-
 	},
 	help: "Search Boorus for images."
 }
