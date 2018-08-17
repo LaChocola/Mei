@@ -32,6 +32,11 @@ var hands = [ ":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::ski
 var hand = hands[Math.floor(Math.random() * hands.length)]
 
 Bot.on("messageCreate", (m)=>{
+  if (m.author.id == "161027274764713984" && m.content.includes("pls")) {
+    if (m.content.includes("stop")) {
+      process.exit(0)
+    }
+  }
   var config = reload("./etc/config.json")
   var server = servers.load()
   var prefix = config.prefix
@@ -50,14 +55,8 @@ Bot.on("messageCreate", (m)=>{
       Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "375633311449481218", "Removed from role assign") // remove the No channel access role
     }
   }
+
   if (m.author.id == "161027274764713984" && m.content.includes("pls")) {
-    if (m.content.includes("stop")) {
-      Bot.createMessage(m.channel.id, "give me just a second").then((m) => {
-        data.reboot.mID == m.id
-        data.reboot.cID == m.channel.id
-      })
-      process.exit(0)
-    }
     if (m.content.includes(" mute") && m.mentions.length > 0) {
       if (m.mentions.length > 1) {
         var muteArray = []
@@ -174,20 +173,29 @@ Bot.on("guildMemberAdd",function(guild, member) {
         }
       });
   }
+  if (guild.id == "472180293621776388") {
+    console.log("I see Macro Sanctum");
+    Bot.createMessage("472180293621776392", {
+      embed: {
+          color: 0xA260F6,
+          title: "Hello, welcome to Macro Sanctum! Please answer these 5 questions very quickly and then send it to one of our staff members.",
+          description: "1. What is your size? (Giantess, Tiny, Micro, or Switch.)\n2. What servers besides Macro Sanctum are you currently active in?\n3. Where did you hear about Macro Sanctum?\n4. What is your reasoning for wanting to join Macro Sanctum?\n5. Have you read the rules?\n\n***When done, send this in the DM's to a staff member, please, do not spam the gate or spam our staff. Once again, welcome, and have fun in Macro Sanctum***"
+      }
+    });
+    console.log("Should have sent the message");
+  }
   if (guild.id == "433471999184994304") {
       Bot.createMessage("433472523116478465", {
-            title:  "someone#6969 joined Macrophilia Reborn \nWe now have: `a bunch of` people! :smiley:",
-
-        embed: {
-            color: 0xA260F6,
-            title:  member.username + "#" + member.discriminator + " joined Macrophilia Reborn \nWe now have: "+ guild.memberCount + " people! :smiley:",
-            description: "Please remember to go to <#434448543709921310> to set up your size, kinks, and other roles! Use the ?ranks command for a list of the current available roles!",
-            timestamp: new Date().toISOString(),
-            author: {
-              name: member.username,
-              icon_url: member.avatarURL
+            embed: {
+                color: 0xA260F6,
+                title:  member.username + "#" + member.discriminator + " joined Macrophilia Reborn \nWe now have: "+ guild.memberCount + " people! :smiley:",
+                description: "Please remember to go to <#434448543709921310> to set up your size, kinks, and other roles! Use the ?ranks command for a list of the current available roles!",
+                timestamp: new Date().toISOString(),
+                author: {
+                  name: member.username,
+                  icon_url: member.avatarURL
+                }
             }
-        }
       });
   }
   if (guild.id == "354709664509853708") {
