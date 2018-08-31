@@ -39,7 +39,7 @@ module.exports = {
             })
         } else if (m.mentions || name != guardian) {
             Bot.banGuildMember(m.channel.guild.id, mentioned.id, 0, "Banned by: " + guardian).then(() => {
-                return Bot.createMessage(m.channel.id, hand + " Successful banned: " + name + " (" + mentioned.id + ")") && Bot.createMessage("354709664509853712", "A member has been banned following a majority vote from the Guardians");
+                return Bot.createMessage(m.channel.id, hand + " Successful banned: " + name + " (" + mentioned.id + ")");
             })
             return;
         } else {
