@@ -32,28 +32,25 @@ module.exports = {
         if (m.cleanContent.includes(" all")) {
           if (m.author.id == "161027274764713984" || m.author.id == m.channel.guild.ownerID || mod == true) {
             m.delete()
-            Bot.createMessage(m.channel.id, 'Time to clean up').then(a => {
-              return setTimeout(function() {
-                  a.delete()
-              }, 5000)
-            })
-            Bot.getMessages(m.channel.id, parseInt(number)).then(async function(msgs) {
-                var i = 0
-                var count = 0
-                while (i < int) {
-                  Bot.deleteMessage(msgs[count].channel.id, msgs[count].id)
-                  i++
-                  if (i == int || count == msgs.length) {
-                        Bot.createMessage(m.channel.id, "All Done~").then(die => {
-                          return setTimeout(function() {
-                              die.delete()
-                          }, 5000)
-                        })
-                        return;
+            var i = 0
+            var count = 0
+            Bot.createMessage(m.channel.id, 'Time to clean up').then(async function(a) {
+              Bot.getMessages(m.channel.id, parseInt(number)).then(async function(msgs) {
+                  while (i < int+1) {
+                    Bot.deleteMessage(msgs[count].channel.id, msgs[count].id)
+                    i++
+                    count++
+                    if (i == int+1 || count == msgs.length) {
+                      Bot.createMessage(m.channel.id, "All Done~").then(die => {
+                        return setTimeout(function() {
+                            die.delete()
+                        }, 5000)
+                      })
+                    }
                   }
-                  count++
-                }
-            });
+              });
+            })
+
           return;
           }
         }
