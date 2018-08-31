@@ -173,6 +173,19 @@ Bot.on("guildMemberAdd",function(guild, member) {
         }
       });
   }
+  if (guild.id == "444784255566872587") {
+      Bot.createMessage("445423605032157185", {
+        embed: {
+            color: 0xA260F6,
+            title:  member.username + " (" + member.id + ") joined The Web \nWe now have: "+ guild.memberCount + " people! :smiley:",
+            timestamp: new Date().toISOString(),
+            author: {
+              name: member.username,
+              icon_url: member.avatarURL
+            }
+        }
+      });
+  }
   if (guild.id == "472180293621776388") {
     console.log("I see Macro Sanctum");
     Bot.createMessage("472180293621776392", {
@@ -247,6 +260,19 @@ Bot.on("guildMemberRemove",function(guild, member) {
             embed: {
                 color: 0xA260F6,
                 title:  member.username + " (" + member.id + ") left TF \nWe now have: "+ guild.memberCount + " people! :frowning2:",
+                timestamp: new Date().toISOString(),
+                author: {
+                  name: member.username,
+                  icon_url: member.avatarURL
+                }
+            }
+          });
+  }
+  if (guild.id == "444784255566872587") {
+          Bot.createMessage("445423605032157185", {
+            embed: {
+                color: 0xA260F6,
+                title:  member.username + " (" + member.id + ") left The Web \nWe now have: "+ guild.memberCount + " people! :frowning2:",
                 timestamp: new Date().toISOString(),
                 author: {
                   name: member.username,
