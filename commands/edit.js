@@ -4,21 +4,34 @@ module.exports = {
       main: function(Bot, m, args, prefix) {
         var isMod = function(member, guild) {
           if (data[guild.id]) {
-            if (data[guild.id].mods) {
-              if (data[guild.id].mods[member.id]) {
-                return true;
-              }
-            }
-            if (data[guild.id].modRoles) {
-              var memberRoles = member.roles
-              var mod = false
-              for (let role of memberRoles) {
-                if (data[guild.id].modRoles[role]) {
-                  mod = true
+            if (data[guild.id].owner != guild.ownerID) {
+                Bot.createMessage(m.channel.id, "New server owner detected, updating database.").then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    }, 5000)
+                });
+                data[guild.id].owner = guild.ownerID
+                _.save(data)
+                _.load()
+              if (data[guild.id].mods) {
+                if (data[guild.id].mods[member.id]) {
+                  return true;
                 }
               }
-              if (mod) {
+              if (m.author.id == data[guild.id].owner || m.author.id == guild.ownerID) {
                 return true;
+              }
+              if (data[guild.id].modRoles) {
+                var memberRoles = member.roles
+                var mod = false
+                for (let role of memberRoles) {
+                  if (data[guild.id].modRoles[role]) {
+                    mod = true
+                  }
+                }
+                if (mod) {
+                  return true;
+                }
               }
             }
           }
@@ -46,7 +59,8 @@ module.exports = {
         if (!guild) {
             return;
         }
-        if (m.author.id != guild.ownerID && m.author.id != "161027274764713984" && !isMod(m.channel.guild.members.get(m.author.id), guild)) {
+        var modCheck = !isMod(m.channel.guild.members.get(m.author.id), guild)
+        if (m.author.id != guild.ownerID && m.author.id != "161027274764713984" && modCheck == false) {
             Bot.createMessage(m.channel.id, "You must be the server owner, or have moderator permissions to run this command. Have the server owner use `!edit mod add @you` or `!edit mod add @modRole`").then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout")
@@ -95,6 +109,17 @@ module.exports = {
                   }, 5000)
               })
               return;
+            }
+            else {
+              if (data[guild.id].hoards) {
+                Bot.createMessage(m.channel.id, "Hoards have already been enabled in this server").then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    }, 5000)
+                })
+                return;
+              }
             }
           }
           else {
@@ -169,6 +194,7 @@ module.exports = {
           }
         }
         /*
+        // soon tm
         if (args.toLowerCase().includes("ignore ")) {
             if (!m.channelMentions[0]) {
               Bot.createMessage(m.channel.id, "Please mention a channel to be ignored");
