@@ -112,6 +112,7 @@ module.exports = {
             return;
           }
         }
+        var imgURL = /([a-z\-_0-9\/\:\.]*\.(?:png|jpg|gif|svg|jpeg)[:orig]*)/i.exec(rando)
         if (rando.includes("https://cdn.discordapp.com")) {
             var msg = {
                 "content": `A Random piece, from **${name}**'s hoard`,
@@ -131,6 +132,28 @@ module.exports = {
                     }
                 }
             }
+        }
+        if (imgURL) {
+          if (imgURL[0]) {
+            var msg = {
+                "content": `A Random piece, from **${name}**'s hoard`,
+                "embed": {
+                    "description": index,
+                    "color": 0xA260F6,
+                    "image": {
+                        "url": imgURL[0]
+                    },
+                    "author": {
+                        "name": name,
+                        "icon_url": url
+                    },
+                    "footer": {
+                        "icon_url": og,
+                        "text": `Original post by ${user.username}`
+                    }
+                }
+            }
+          }
         } else {
             var msg = {
                 "content": `A Random piece, from **${name}**'s hoard`,
