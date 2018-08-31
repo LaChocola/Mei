@@ -117,7 +117,6 @@ module.exports = {
                 nameArray.push(`${key[0]}: ${key[1]}`);
             });
             Bot.createMessage(m.channel.id, {
-                content: "",
                 embed: {
                     color: 0xA260F6,
                     title: Object.keys(data.people[id].names).length + " names used by **" + name + "**",
