@@ -137,7 +137,7 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
 
 
         //============feet info================
-        var adjectivesFeet = ["stinky", "smelly", "sweaty", "damp", "pungent", "odorous", "sweet-scented", "huge", "powerful", "godly", "beautiful", "dirty", "filthy","disgusting",
+    var adjectivesFeet = ["stinky", "smelly", "sweaty", "damp", "pungent", "odorous", "sweet-scented", "huge", "powerful", "godly", "beautiful", "dirty", "filthy","disgusting",
 		"rancid", "giant", "massive", "moist", "sweat-soaked", "victim-covered", "soft", "lotion-scented"]
 
 		var adjectivesFootwear = ["stinky", "smelly", "sweaty", "damp", "pungent", "odorous", "sweet-scented", "huge", "stinky, sweaty", "dirty", "filthy","disgusting", "rancid", "giant", "massive", "moist",
@@ -173,16 +173,13 @@ class Misc {//Declaring export as a class because cbf to make other way work pro
       var nakedFeetPlurals = ["bare feet", "heels", "arches", "big toes", "toes", "soles"]
   		var nakedFeetSingulars = ["bare foot", "arch", "arches", "big toe", "toe", "sole"]
   		var footwearPlurals = ["shoes", "boots", "sandals", "flip flops", "sneakers", "pumps", "heels", "socks", "stockings", "nylons", "fishnets", "hose"]
-  		var nakedFeetPlural = adjectiveFeet + Misc.randomelement(nakedFeetPlurals)
       var footwearSingulars = ["shoe", "boot", "sandal", "flip flop", "sneaker", "pump", "heel", "sock", "stocking", "nylons", "fishnets", "hose"]
+  		var nakedFeetPlural = adjectiveFeet + Misc.randomelement(nakedFeetPlurals)
   		if (male) {
-  			var footwearPlurals = ["shoes", "boots", "sandals", "flip flops", "sneakers", "boots", "socks"]
-  			var footwearSingulars = ["shoe", "boot", "sandal", "flip flop", "sneaker", "boot", "sock"]
-      }
-      if (futa) {
-  			var footwearPlurals = Array.from(new Set([].concat(footwearPlurals, ["shoes", "boots", "sandals", "flip flops", "sneakers", "boots", "socks"])))
+        var footwearPlurals = Array.from(new Set([].concat(footwearPlurals, ["shoes", "boots", "sandals", "flip flops", "sneakers", "boots", "socks"])))
   			var footwearSingulars = Array.from(new Set([].concat(footwearSingulars, ["shoe", "boot", "sandal", "flip flop", "sneaker", "boot", "sock"])))
       }
+
       var nakedFeetSingular = adjectiveFeet + Misc.randomelement(nakedFeetSingulars)
   		var footwearPlural = adjectiveFootwear + Misc.randomelement(footwearPlurals)
   		var footwearSingular = adjectiveFootwear + Misc.randomelement(footwearSingulars)
