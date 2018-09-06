@@ -1,7 +1,7 @@
 const _ = require("../servers.js");
 var data = _.load();
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         function isNumeric(num) {
             return !isNaN(num)
         }
@@ -34,23 +34,42 @@ module.exports = {
             m.delete()
             var i = 0
             var count = 0
-            Bot.createMessage(m.channel.id, 'Time to clean up').then(async function(a) {
-              Bot.getMessages(m.channel.id, parseInt(number)).then(async function(msgs) {
-                  while (i < int+1) {
-                    Bot.deleteMessage(msgs[count].channel.id, msgs[count].id)
-                    i++
-                    count++
-                    if (i == int+1 || count == msgs.length) {
-                      Bot.createMessage(m.channel.id, "All Done~").then(die => {
+            var ids = []
+            Bot.getMessages(m.channel.id, parseInt(int)).then(async function(msgs) {
+                var method = 1
+                var oldestAllowed = (Date.now() - 1421280000000) * 4194304;
+                for (msg of msgs) {
+                  ids.push(msg.id)
+                }
+                var invalid = ids.find((messageID) => messageID < oldestAllowed);
+                if (invalid) {
+                  method = 2
+                }
+                if (method == 1) {
+                  Bot.createMessage(m.channel.id, `Cleaning ${ids.length} messages`).then(a => {
+                    Bot.deleteMessages(m.channel.id, ids, `${ids.length} messages cleaned. Approved by ${m.author.username}#${m.author.discriminator}`).then(() => {
+                      a.delete()
+                      Bot.createMessage(m.channel.id, `Cleaned ${ids.length} messages`).then(b => {
                         return setTimeout(function() {
-                            die.delete()
-                        }, 5000)
+                            b.delete()
+                        }, 3000)
                       })
-                    }
-                  }
-              });
-            })
+                    })
+                  })
+                  return;
+                }
 
+                if (method == 2) {
+                    for (id of ids) {
+                      Bot.deleteMessage(m.channel.id, id, `${ids.length} messages cleaned. Approved by ${m.author.username}#${m.author.discriminator}`)
+                    }
+                    Bot.createMessage(m.channel.id, `Cleaning ${ids.length} messages`).then(a => {
+                      return setTimeout(function() {
+                          a.delete()
+                      }, 3000)
+                    })
+                }
+            });
           return;
           }
         }
