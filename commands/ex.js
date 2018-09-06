@@ -21,6 +21,10 @@ const defaultQuery = {
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
+      if (m.channel.nsfw == false) {
+          Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
+          return;
+      }
       var name = m.author.nick || m.author.username
       var args = m.cleanContent.replace(`${prefix}ex`, "").replace(`${prefix}ex `, "").toLowerCase().split(", ")
       var search = args.join(' ')
