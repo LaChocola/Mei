@@ -50,6 +50,10 @@ module.exports = {
 
                     try {
                         var jBody = JSON.parse(body)
+                        if (!jBody) {
+                          message.edit('`No results found`');
+                          return;
+                        }
                         if (jBody['items'][0]) {
                           message.edit(JSON.parse(body)['items'][0]['link']);
                         }
