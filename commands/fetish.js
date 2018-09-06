@@ -125,8 +125,8 @@ module.exports = {
                 return;
             } else {
                 if (incoming[0].toLowerCase().includes("dislike")) {
-                    incoming[0] = incoming[0].replace(/dislike /ig, "")
-                    incoming[0] = capFirstLetter(incoming[0])
+                    incoming[0] = incoming[0].replace(/\bdislike\b/ig, "")
+                    incoming[0] = capFirstLetter(incoming[0].trim())
                     data.people[id].fetishes[incoming[0]] = "dislike"
                     _.save(data)
                     Bot.createMessage(m.channel.id, "Added Dislike: **" + incoming[0] + "** " + hand).then((msg) => {
