@@ -9,7 +9,7 @@ module.exports = {
         var guild = m.channel.guild
         m.content = m.content.toLowerCase()
         if (m.content == `${prefix}role` || m.content == `${prefix}role `) {
-            Bot.createMessage(m.channel.id, "What do you want to do? | `!role add <role name>` | `!role remove <role name>`");
+            Bot.createMessage(m.channel.id, "What do you want to do? | `!role add <role name>` | `!role remove <role name>` | `!role list`");
             return;
         }
         if (m.content.includes(`${prefix}role  `)) {
