@@ -1,7 +1,7 @@
 var config = require("../etc/config.json");
 const Sagiri = require('sagiri');
 const handler = new Sagiri(config.tokens.sauce);
-
+const qs = require('querystring')
 module.exports = {
     main: function(Bot, m, args, prefix) {
         let data;
@@ -30,12 +30,12 @@ module.exports = {
                     }
                 ],
                 image: {
-                    url: data.original.header.thumbnail
+                    url: qs.encode(data.original.header.thumbnail)
                 },
                 description: "[" + desc + "](" + data.url + ")",
                 author: {
                     name: "Sauce Found:",
-                    icon_url: data.original.header.thumbnail
+                    icon_url: qs.encode(data.original.header.thumbnail)
                 }
             }
             Bot.createMessage(m.channel.id, {
