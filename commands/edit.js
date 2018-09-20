@@ -1,7 +1,7 @@
 const _ = require("../servers.js");
 var data = _.load();
 module.exports = {
-      main: function(Bot, m, args, prefix) {
+      main: async function(Bot, m, args, prefix) {
         var isMod = function(member, guild) {
           if (data[guild.id]) {
             if (data[guild.id].owner != guild.ownerID) {
@@ -82,21 +82,6 @@ module.exports = {
             _.save(data)
             _.load()
         }
-        if (args.toLowerCase().includes("prefix")) {
-            var prefix = args.replace(/\bprefix\b/i, "")
-            if (prefix.startsWith(" ")) {
-              prefix = prefix.slice(1)
-            }
-            Bot.createMessage(m.channel.id, "Adding prefix: `"+prefix+"`").then((msg) => {
-                return setTimeout(function() {
-                    Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                }, 5000)
-            })
-            data[guild.id].prefix = prefix
-            _.save(data)
-            return;
-        }
         if (args.toLowerCase().includes("hoards")) {
           if (args.toLowerCase().includes("enable")) {
             if (!data[guild.id].hoards) {
@@ -134,65 +119,147 @@ module.exports = {
             return;
           }
         }
-        if (args.toLowerCase().includes("welcome")) {
-            if (args.toLowerCase().includes("remove")) {
-                if (data[guild.id].welcome) {
-                    delete data[guild.id].welcome
-                    Bot.createMessage(m.channel.id, "Welcome message removed").then((msg) => {
-                        return setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                        }, 5000)
-                    })
-                    _.save(data)
-                    return;
-                }
-                else {
-                    Bot.createMessage(m.channel.id, "No welcome message found, I cant remove what isnt there.").then((msg) => {
-                        return setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                        }, 5000)
-                    })
-                    return;
-                }
-            }
-            if (args.toLowerCase().includes("add")) {
-              if (!m.channelMentions[0]) {
-                Bot.createMessage(m.channel.id, "Please mention which channel you want the welcome message to appear in, then type the welcome message");
-                return;
+        if (args.toLowerCase().includes("notifications")) {
+          if (args.toLowerCase().includes("banlog")) {
+              if (args.toLowerCase().includes("disable")) {
+                  if (data[guild.id].notifications.notifications.banLog) {
+                      delete data[guild.id].notifications.notifications.banLog
+                      Bot.createMessage(m.channel.id, "Ban Logs disabled").then((msg) => {
+                          return setTimeout(function() {
+                              Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                              Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                          }, 5000)
+                      })
+                      _.save(data)
+                      return;
+                  }
+                  else {
+                      Bot.createMessage(m.channel.id, "No ban log is currently set, I cant disable what isnt there.").then((msg) => {
+                          return setTimeout(function() {
+                              Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                              Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                          }, 5000)
+                      })
+                      return;
+                  }
               }
-              var channelID = m.channelMentions[0]
-              var channel = m.channel.guild.channels.get(channelID)
-              var message = args.replace(/welcome add /ig, "").replace(`${channel.mention} `, "")
-              Bot.createMessage(m.channel.id, "Adding Welcome message: '"+message+"'\nto channel: "+channel.mention).then((msg) => {
-                  return setTimeout(function() {
-                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                  }, 5000)
-              })
-              data[guild.id].welcome = {}
-              data[guild.id].welcome[channel.id] = message
-              _.save(data)
-              return;
-          }
-          else {
-            if (data[guild.id].welcome) {
-              var msg = Object.values(data[guild.id].welcome)[0]
-              Bot.createMessage(m.channel.id, "The current welcome message is set as:\n\n"+msg);
-              return;
+              if (args.toLowerCase().includes("enable")) {
+                if (!m.channelMentions[0]) {
+                  Bot.createMessage(m.channel.id, "Please mention which channel you want the ban log to appear in");
+                  return;
+                }
+                var channelID = m.channelMentions[0]
+                var channel = Bot.getChannel(channelID)
+                if (channel.permissionsOf("309220487957839872").json.sendMessages != true) {
+                    Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.")
+                    return;
+                }
+                if (!(data[guild.id].notifications)) {
+                  data[guild.id].notifications = {}
+                }
+                data[guild.id].notifications.banLog = channel.id
+                _.save(data)
+                Bot.createMessage(m.channel.id, "Added Ban Log to channel: "+channel.mention).then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    }, 5000)
+                })
+                return;
             }
             else {
-              Bot.createMessage(m.channel.id, "No welcome message has been set yet.").then((msg) => {
-                  return setTimeout(function() {
-                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                  }, 5000)
-              })
-              return;
+              if (data[guild.id].notifications.notifications.banLog) {
+                var banLog = data[guild.id].notifications.notifications.banLog
+                Bot.createMessage(m.channel.id, `The current ban log is in:\n${data[guild.id].notifications.notifications.banLog}`);
+                return;
+              }
+              else {
+                Bot.createMessage(m.channel.id, "No ban log channel has been set yet. Use `!edit notifications banlog enable <@channel>` to add logs to that channel").then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    }, 5000)
+                })
+                return;
+              }
+            }
+          }
+          if (args.toLowerCase().includes("welcome")) {
+              if (args.toLowerCase().includes("remove")) {
+                  if (data[guild.id].notifications.welcome) {
+                      delete data[guild.id].notifications.welcome
+                      Bot.createMessage(m.channel.id, "Welcome message removed").then((msg) => {
+                          return setTimeout(function() {
+                              Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                              Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                          }, 5000)
+                      })
+                      _.save(data)
+                      return;
+                  }
+                  else {
+                      Bot.createMessage(m.channel.id, "No welcome message found, I cant remove what isnt there.").then((msg) => {
+                          return setTimeout(function() {
+                              Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                              Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                          }, 5000)
+                      })
+                      return;
+                  }
+              }
+              if (args.toLowerCase().includes("add")) {
+                if (!m.channelMentions[0]) {
+                  Bot.createMessage(m.channel.id, "Please mention which channel you want the welcome message to appear in, then type the welcome message");
+                  return;
+                }
+                var channelID = m.channelMentions[0]
+                var channel = m.channel.guild.channels.get(channelID)
+                var message = args.replace(/\bnotifications\b/ig, "").replace(/\bwelcome\b/ig, "").replace(/\badd\b/ig, "").replace(`${channel.mention}`, "")
+                Bot.createMessage(m.channel.id, "Adding Welcome message: '"+message+"'\nto channel: "+channel.mention).then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    }, 5000)
+                })
+                data[guild.id].notifications.welcome = {}
+                data[guild.id].notifications.welcome[channel.id] = message
+                _.save(data)
+                return;
+            }
+            else {
+              if (data[guild.id].notifications.welcome) {
+                var msg = Object.values(data[guild.id].notifications.welcome)[0]
+                Bot.createMessage(m.channel.id, "The current welcome message is set as:\n\n"+msg);
+                return;
+              }
+              else {
+                Bot.createMessage(m.channel.id, "No welcome message has been set yet.").then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    }, 5000)
+                })
+                return;
+              }
             }
           }
         }
+        if (args.toLowerCase().includes("prefix")) {
+            var prefix = args.replace(/\bprefix\b/i, "")
+            if (prefix.startsWith(" ")) {
+              prefix = prefix.slice(1)
+            }
+            Bot.createMessage(m.channel.id, "Adding prefix: `"+prefix+"`").then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                }, 5000)
+            })
+            data[guild.id].prefix = prefix
+            _.save(data)
+            return;
+        }
+
         /*
         // soon tm
         if (args.toLowerCase().includes("ignore ")) {
@@ -202,7 +269,6 @@ module.exports = {
             }
             var channel = m.channelMentions[0]
             Bot.createMessage(m.channel.id, "Ignoring channel: `"+channel.name+"`");
-            data[guild.id].prefix = prefix
             _.save(data)
             return;
         }
