@@ -14,6 +14,10 @@ module.exports = {
           }
         }
         var args = m.cleanContent.replace(`${prefix}play `, "")
+        if (m.content == `${prefix}play`) {
+          Bot.createMessage(m.channel.id, `Please say what you want to do. e.g. \`${prefix}play <youtube link>\`, \`${prefix}play queue\`, \`${prefix}play current\`, or \`${prefix}play stop\``);
+          return;
+        }
         var hands = [":wave::skin-tone-1:", ":wave::skin-tone-2:", ":wave::skin-tone-3:", ":wave::skin-tone-4:", ":wave::skin-tone-5:", ":wave:"]
         var hand = hands[Math.floor(Math.random() * hands.length)]
         var close = false
@@ -28,10 +32,10 @@ module.exports = {
             // 4- Keep only seconds not extracted to minutes:
             seconds = seconds % 60;
             if (hours>0) {
-              return(Math.round(hours)+":"+Math.round(minutes)+":"+Math.round(seconds));
+              return(Math.round(hours).toFixed(2)+":"+Math.round(minutes).toFixed(2)+":"+Math.round(seconds).toFixed(2));
             }
             else {
-              return(Math.round(minutes)+":"+Math.round(seconds));
+              return(Math.round(minutes).toFixed(2)+":"+Math.round(seconds).toFixed(2));
             }
         }
         var guild = m.channel.guild
@@ -76,7 +80,12 @@ module.exports = {
                         }
                         if (voiceConnection.playing) { // Bot is actively playing something
                             if (args.toLowerCase().includes("stop") || args.toLowerCase().includes("cancel")) {
-                                Bot.createMessage(m.channel.id, "Stopping song.");
+                                Bot.createMessage(m.channel.id, "Stopping song.").then((msg) => {
+                                    return setTimeout(function() {
+                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                                    }, 5000)
+                                })
                                 voiceConnection.stopPlaying()
                                 return;
                             }
@@ -133,7 +142,12 @@ module.exports = {
                               return;
                             }
                             if (args.toLowerCase().includes("pause")) { // someone asks to pause the song
-                              Bot.createMessage(m.channel.id, "Pausing music.");
+                              Bot.createMessage(m.channel.id, "Pausing music.").then((msg) => {
+                                  return setTimeout(function() {
+                                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                                  }, 5000)
+                              })
                               voiceConnection.pause()
                               return;
                             }
@@ -143,7 +157,6 @@ module.exports = {
 
                               // Display queue of songs if it exists
                               await Bot.sendChannelTyping(m.channel.id);
-
                               try {
                                 console.log(data[guild.id].music.queue);
                                 for (const [id, queuer] of Object.entries(data[guild.id].music.queue)) {
@@ -162,7 +175,10 @@ module.exports = {
                                     },
                                   });
                                 }
-                              } catch (e) { console.log(e); }
+                              } catch (e) {
+                                console.log(e);
+                                Bot.createMessage(m.channel.id, "An error has occured.");
+                              }
                               return;
                             }
                             if (args.toLowerCase().includes("volume") || args.toLowerCase().includes("turn it") || args.toLowerCase().includes("turn")) { // someone asks to change the volume to a specific percentage
@@ -170,10 +186,20 @@ module.exports = {
                                   var volume = /\b[0-9]+\b/.exec(args)[0]
                                   volume = +volume/100
                                   if (volume > 1.5) { // no ear rape
-                                    Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume*100).toFixed(0)}%`);
+                                    Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume*100).toFixed(0)}%`).then((msg) => {
+                                        return setTimeout(function() {
+                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                                        }, 5000)
+                                    })
                                     return;
                                   }
-                                  Bot.createMessage(m.channel.id, `Setting Volume to ${(volume*100).toFixed(0)}%`);
+                                  Bot.createMessage(m.channel.id, `Setting Volume to ${(volume*100).toFixed(0)}%`).then((msg) => {
+                                      return setTimeout(function() {
+                                          Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                                          Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                                      }, 5000)
+                                  })
                                   voiceConnection.setVolume(volume)
                                   return;
                               }
@@ -182,10 +208,20 @@ module.exports = {
                                 volume = +voiceConnection.volume-0.1
                                 volume = Math.round(volume*100)/100
                                 if (volume < 0) {
-                                  Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume*100).toFixed(0)}%`);
+                                  Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume*100).toFixed(0)}%`).then((msg) => {
+                                      return setTimeout(function() {
+                                          Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                                          Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                                      }, 5000)
+                                  })
                                   return;
                                 }
-                                Bot.createMessage(m.channel.id, `Setting Volume to ${(volume*100).toFixed(0)}%`);
+                                Bot.createMessage(m.channel.id, `Setting Volume to ${(volume*100).toFixed(0)}%`).then((msg) => {
+                                    return setTimeout(function() {
+                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                                    }, 5000)
+                                })
                                 voiceConnection.setVolume(volume)
                                 return;
                               }
@@ -194,16 +230,30 @@ module.exports = {
                                 volume = +voiceConnection.volume+0.1
                                 volume = Math.round(volume*100)/100
                                 if (volume > 1.5) {
-                                  Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume*100).toFixed(0)}%`);
+                                  Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume*100).toFixed(0)}%`).then((msg) => {
+                                      return setTimeout(function() {
+                                          Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                                          Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                                      }, 5000)
+                                  })
                                   return;
                                 }
-                                Bot.createMessage(m.channel.id, `Setting Volume to ${(volume*100).toFixed(0)}%`);
+                                Bot.createMessage(m.channel.id, `Setting Volume to ${(volume*100).toFixed(0)}%`).then((msg) => {
+                                    return setTimeout(function() {
+                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                                    }, 5000)
+                                })
                                 voiceConnection.setVolume(volume)
                                 return;
                               }
                               else { // show current volume level
-                                Bot.createMessage(m.channel.id, `Volume is set to ${voiceConnection.volume*100}%`);
-                                return;
+                                Bot.createMessage(m.channel.id, `Volume is set to ${voiceConnection.volume*100}%`).then((msg) => {
+                                    return setTimeout(function() {
+                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                                    }, 5000)
+                                })
                               }
                             }
                             else { // add the song to the queue since there is currently something playing
