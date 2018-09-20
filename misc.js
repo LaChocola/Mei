@@ -1,12 +1,53 @@
 const _ = require("./people.js");
 var data = _.load();
+const servers = require("./servers.js");
+var server = servers.load();
 const fs = require("fs");
 class Misc {//Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
-    static isThisUsernameThatUsername(member) {
+    static isThisUsernameThatUsername(member, name1) {
         var memberName = member.nick || member.username
         if (memberName.toLowerCase() == name1.toLowerCase()) {
             return true;
         }
+    }
+
+    static isMod(Bot, m, member, guild) {
+      if (server[guild.id]) {
+        if (server[guild.id].owner != guild.ownerID || server[guild.id].name != guild.name) {
+            Bot.createMessage(m.channel.id, "New server info detected, updating database.").then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                }, 5000)
+            });
+            server[guild.id].owner = guild.ownerID
+            server[guild.id].name = guild.name
+            servers.save(server)
+            server = servers.load()
+          if (server[guild.id].mods) {
+            if (server[guild.id].mods[member.id]) {
+              return true;
+            }
+          }
+          if (m.author.id == server[guild.id].owner || m.author.id == guild.ownerID) {
+            return true;
+          }
+          if (server[guild.id].modRoles) {
+            var memberRoles = member.roles
+            var mod = false
+            for (let role of memberRoles) {
+              if (server[guild.id].modRoles[role]) {
+                mod = true
+              }
+            }
+            if (mod) {
+              return true;
+            }
+          }
+        }
+      }
+      else {
+        return false;
+      }
     }
 
     static getTrueName(id,m){
