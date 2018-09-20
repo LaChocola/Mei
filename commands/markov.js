@@ -17,15 +17,13 @@ module.exports = {
                 return true;
             }
         }
-
-
         var member = m.guild.members.find(isThisUsernameThatUsername)
         var mentioned = m.mentions[0] || member || m.author
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username
         var channel = m.channelMentions[0] || m.channel.id
-
-        if (channel == "253371452189966336" || channel == "252636853616902156") {
-            Bot.createMessage(m.channel.id, "I cant read that channel, please try a different one.")
+        var channelFull = Bot.getChannel(channel)
+        if (channelFull.permissionsOf(m.author.id).json.readMessages != true) {
+            Bot.createMessage(m.channel.id, "You do not have permission to read that channel, please try a different one.")
             return;
         }
         var amount = 7000
