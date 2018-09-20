@@ -31,6 +31,66 @@ var unidecode = require("unidecode")
 var hands = [ ":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
 var hand = hands[Math.floor(Math.random() * hands.length)]
 
+Bot.on("guildBanAdd", function(guild, user) {
+  var server = servers.load()
+  if (server[guild.id]) {
+    if (server[guild.id].notifications) {
+      if (server[guild.id].notifications.banLog) {
+        var userFull = Bot.users.filter(m => m.id == user.id)[0]
+        var origID = userFull.id || null
+        var hash = userFull.avatar || null
+        var avy = `https://cdn.discordapp.com/avatars/${origID}/${hash}.jpg?size=128`
+        var name = userFull.nick || user.username
+        var msg = {
+          "embed": {
+            "description": `${name}#${user.discriminator} (${user.id}) was banned from ${Bot.guilds.get(guild.id).name}\n\nWe are now at ${Bot.guilds.get(guild.id).memberCount} users`,
+            "color": 13632027,
+            "timestamp": new Date().toISOString(),
+            "thumbnail": {
+              "url": avy
+            },
+            "author": {
+              "name": "User Banned"
+            }
+          }
+        };
+        var channel = server[guild.id].notifications.banLog
+        Bot.createMessage(channel, msg);
+      }
+    }
+  }
+});
+
+Bot.on("guildBanRemove", function(guild, user) {
+  var server = servers.load()
+  if (server[guild.id]) {
+    if (server[guild.id].notifications) {
+      if (server[guild.id].notifications.banLog) {
+        var userFull = Bot.users.filter(m => m.id == user.id)[0]
+        var origID = userFull.id || null
+        var hash = userFull.avatar || null
+        var avy = `https://cdn.discordapp.com/avatars/${origID}/${hash}.jpg?size=128`
+        var name = userFull.nick || user.username
+        var msg = {
+          "embed": {
+            "description": `${name}#${user.discriminator} (${user.id}) was unbanned from ${Bot.guilds.get(guild.id).name}\n\nWe are now at ${Bot.guilds.get(guild.id).memberCount} users`,
+            "color": 8311585,
+            "timestamp": new Date().toISOString(),
+            "thumbnail": {
+              "url": avy
+            },
+            "author": {
+              "name": "User UnBanned"
+            }
+          }
+        };
+        var channel = server[guild.id].notifications.banLog
+        Bot.createMessage(channel, msg);
+      }
+    }
+  }
+});
+
 Bot.on("messageCreate", (m)=>{
   if (m.author.id == "161027274764713984" && m.content.includes("pls")) {
     if (m.content.includes("stop")) {
@@ -55,7 +115,6 @@ Bot.on("messageCreate", (m)=>{
       Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "375633311449481218", "Removed from role assign") // remove the No channel access role
     }
   }
-
   if (m.author.id == "161027274764713984" && m.content.includes("pls")) {
     if (m.content.includes(" mute") && m.mentions.length > 0) {
       if (m.mentions.length > 1) {
@@ -127,10 +186,10 @@ Bot.on("messageCreate", (m)=>{
 			var logcmd = `${prefix}${command}`.bold;
 			var logargs = `${args}`.bold;
 			try {
-				cmd.main(Bot, m, args, prefix);
 				console.log("CMD".black.bgGreen+" "+loguser+logdivs[1]+logserver+logdivs[0]+logchannel+" "+logcmd.blue);
 				if (args) console.log("ARG".black.bgCyan+" "+logargs.blue.bold);
 				console.log('');
+				cmd.main(Bot, m, args, prefix);
 			} catch (err) {
 				console.log(err);
 				Bot.createMessage(m.channel.id, "An error has occured.");
@@ -187,7 +246,6 @@ Bot.on("guildMemberAdd",function(guild, member) {
       });
   }
   if (guild.id == "472180293621776388") {
-    console.log("I see Macro Sanctum");
     Bot.createMessage("472180293621776392", {
       embed: {
           color: 0xA260F6,
@@ -195,14 +253,13 @@ Bot.on("guildMemberAdd",function(guild, member) {
           description: "1. What is your size? (Giantess, Tiny, Micro, or Switch.)\n2. What servers besides Macro Sanctum are you currently active in?\n3. Where did you hear about Macro Sanctum?\n4. What is your reasoning for wanting to join Macro Sanctum?\n5. Have you read the rules?\n\n***When done, send this in the DM's to a staff member, please, do not spam the gate or spam our staff. Once again, welcome, and have fun in Macro Sanctum***"
       }
     });
-    console.log("Should have sent the message");
   }
-  if (guild.id == "433471999184994304") {
-      Bot.createMessage("433472523116478465", {
+  if (guild.id == "489585425606901760") {
+      Bot.createMessage("489585425606901762", {
             embed: {
                 color: 0xA260F6,
                 title:  member.username + "#" + member.discriminator + " joined Macrophilia Reborn \nWe now have: "+ guild.memberCount + " people! :smiley:",
-                description: "Please remember to go to <#434448543709921310> to set up your size, kinks, and other roles! Use the ?ranks command for a list of the current available roles!",
+                description: "Please remember to go to <#489596179500236820> to set up your size, kinks, and other roles! Use the ?ranks command for a list of the current available roles!",
                 timestamp: new Date().toISOString(),
                 author: {
                   name: member.username,
@@ -324,6 +381,7 @@ Bot.on("guildDelete",function(guild) {
 });
 
 Bot.on("messageReactionAdd",function(m, emoji, userID) {
+  var server = servers.load();
   var id = userID
   if (emoji.name == "😍") {
     var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
@@ -425,16 +483,22 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
       }
     }
   }
-  if (data.giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != data.giveaways.creator) {
-    if (m.id == data.giveaways.mID) {
-      data.giveaways.current.contestants[userID] = "entered"
-      _.save(data);
-      return;
+    Bot.getMessage(m.channel.id, m.id).then((m) => {
+    var guild = m.channel.guild
+    if (server[m.channel.guild.id].giveaways) {
+      if (server[guild.id].giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != server[guild.id].giveaways.creator) {
+        if (m.id == server[guild.id].giveaways.mID) {
+          server[guild.id].giveaways.current.contestants[userID] = "entered"
+          servers.save(server);
+          return;
+        }
+      }
     }
-  }
+  });
 });
 
 Bot.on("messageReactionRemove",function(m, emoji, userID)  {
+  var server = servers.load();
   var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
     var id = userID
     var data = _.load();
@@ -468,57 +532,59 @@ Bot.on("messageReactionRemove",function(m, emoji, userID)  {
       }
       return;
     }
-  if (server[m.channel.guild.id]) {
-    var people = ppl.load();
-    if (server[m.channel.guild.id].hoards && emoji.name != "😍") {
-      if (!people.people[id]) {
-        return;
-      }
-      if (!people.people[id].hoard) {
-        return;
-      }
-      if (people.people[id].hoard[emoji.name]) {
-        var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
-          if (m.attachments.length == 0 && m.embeds.length == 0) {
-            var link = m.cleanContent
-          }
-          else if (m.attachments[0]) {
-            var link = m.attachments[0].url
-          }
-          else if (m.embeds[0]) {
-            var link = m.embeds[0].image.url
-          }
-          if (link) {
-            var people = ppl.load();
-            var hoard = people.people[id].hoard[emoji.name]
-            if (hoard[link]) {
-              delete hoard[link]
-              ppl.save(people);
-              people = ppl.load();
-              if (people.people[m.author.id]) {
-                if (!people.people[m.author.id].adds) {
-                  people.people[m.author.id].adds = 0
-                }
+    if (server[m.channel.guild.id]) {
+      var people = ppl.load();
+      if (server[m.channel.guild.id].hoards && emoji.name != "😍") {
+        if (!people.people[id]) {
+          return;
+        }
+        if (!people.people[id].hoard) {
+          return;
+        }
+        if (people.people[id].hoard[emoji.name]) {
+          var m = Bot.getMessage(m.channel.id, m.id).then((m) => {
+            if (m.attachments.length == 0 && m.embeds.length == 0) {
+              var link = m.cleanContent
+            }
+            else if (m.attachments[0]) {
+              var link = m.attachments[0].url
+            }
+            else if (m.embeds[0]) {
+              var link = m.embeds[0].image.url
+            }
+            if (link) {
+              var people = ppl.load();
+              var hoard = people.people[id].hoard[emoji.name]
+              if (hoard[link]) {
+                delete hoard[link]
                 ppl.save(people);
                 people = ppl.load();
-              }
-              if (m.author.id != id) {
-                people.people[m.author.id].adds--
-                ppl.save(people);
-                return;
+                if (people.people[m.author.id]) {
+                  if (!people.people[m.author.id].adds) {
+                    people.people[m.author.id].adds = 0
+                  }
+                  ppl.save(people);
+                  people = ppl.load();
+                }
+                if (m.author.id != id) {
+                  people.people[m.author.id].adds--
+                  ppl.save(people);
+                  return;
+                }
               }
             }
-          }
-        })
+          })
+        }
       }
     }
-  }
-    if (data.giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != data.giveaways.creator) {
-      if (m.id == data.giveaways.mID) {
-        if (data.giveaways.current.contestants[userID]) {
-          delete data.giveaways.current.contestants[userID]
-          _.save(data);
-          return;
+    if (server[m.channel.guild.id].giveaways) {
+      if (server[m.channel.guild.id].giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != server[m.channel.guild.id].giveaways.creator) {
+        if (m.id == server[m.channel.guild.id].giveaways.mID) {
+          if (server[m.channel.guild.id].giveaways.current.contestants[userID]) {
+            delete server[m.channel.guild.id].giveaways.current.contestants[userID]
+            servers.save(server);
+            return;
+          }
         }
       }
     }
