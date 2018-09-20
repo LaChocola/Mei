@@ -16,6 +16,7 @@ module.exports = {
         }
         var mentioned = m.guild.members.find(isThisUsernameThatUsername)
         var member = m.mentions[0] || mentioned || m.author
+        member = m.channel.guild.members.get(member.id)
         var date = member.joinedAt;
         var date2 = member.createdAt;
         var name = member.nick || member.username
