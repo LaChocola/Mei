@@ -42,6 +42,19 @@ module.exports = {
             Bot.createMessage(m.channel.id, "There are no roles set up in this server, to add roles, please use `!edit roles add <rolename>`");
             return;
           }
+          var roles = Object.keys(data[m.channel.guild.id].roles)
+          for (var role of roles) {
+            var exists = m.channel.guild.roles.find(r => r.id == data[m.channel.guild.id].roles[role])
+            if (!exists) {
+              delete data[guild.id].roles[role]
+              _.save(data)
+              Bot.createMessage(m.channel.id, role+" updated successfully").then((msg) => {
+                  return setTimeout(function() {
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                  }, 1000)
+              })
+            }
+          }
           var roles = Object.keys(data[guild.id].roles)
           Bot.createMessage(m.channel.id, {
               content: "",
