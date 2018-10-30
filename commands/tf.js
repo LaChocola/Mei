@@ -11,6 +11,10 @@ module.exports = {
 		if (m.channel.guild.id == "187694240585744384") {
 			prefix = "?"
 		}
+		if (m.channel.nsfw == false) {
+				Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
+				return;
+		}
 		var mentioned = m.mentions[0] || m.author
 		var id = mentioned.id
 
