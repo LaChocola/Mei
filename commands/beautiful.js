@@ -33,7 +33,7 @@ module.exports = {
                     .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
                         Bot.createMessage(m.channel.id, "", {
                             "file": buffer,
-                            "name": "beautiful" + name + ".png"
+                            "name": name + "beautiful.png"
                         })
                     });
             } catch (error) {
