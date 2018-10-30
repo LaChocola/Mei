@@ -4,7 +4,7 @@ module.exports = {
         var roleSearch = function(role) {
             var roleName = role.name
             if (roleName != "undefined") {
-                console.log(`"${roleName.toLowerCase()}": "${role.id}",`);
+                console.log(`"${roleName}": "${role.id}",`);
                 return roleName;
             }
         }
