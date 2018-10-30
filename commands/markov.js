@@ -23,7 +23,19 @@ module.exports = {
         var channel = m.channelMentions[0] || m.channel.id
         var channelFull = Bot.getChannel(channel)
         if (channelFull.permissionsOf(m.author.id).json.readMessages != true) {
-            Bot.createMessage(m.channel.id, "You do not have permission to read that channel, please try a different one.")
+            Bot.createMessage(m.channel.id, "You do not have permission to read that channel, please try a different one.").then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                }, 5000)
+            });
+            return;
+        }
+        if (channelFull.permissionsOf("309220487957839872").json.readMessages != true) {
+            Bot.createMessage(m.channel.id, "I do not have permission to read that channel, please try a different one.").then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                }, 5000)
+            });
             return;
         }
         var amount = 7000
@@ -36,7 +48,11 @@ module.exports = {
             let messages = await Bot.getMessages(channel, amount);
             messages = messages.filter(msg => msg.author.id === mentioned.id && !msg.content.startsWith(prefix) && !msg.content.includes("<@") && !msg.content.includes("http")).map(msg => msg.content);
             if (messages.length < 5) {
-              Bot.createMessage(m.channel.id, "That user does not have enough messages to make a markov");
+              Bot.createMessage(m.channel.id, "That user does not have enough messages to make a markov").then((msg) => {
+                  return setTimeout(function() {
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                  }, 5000)
+              });
               return;
             }
             let markov = new MarkovGen({
@@ -45,7 +61,11 @@ module.exports = {
             });
             var sentence = markov.makeChain();
             if (!(messages) || !(sentence)) {
-                Bot.createMessage(m.channel.id, "Sorry, I couldn't find any messages from **" + mentioned.username + "** in `" + m.channel.name + "`")
+                Bot.createMessage(m.channel.id, "Sorry, I couldn't find any messages from **" + mentioned.username + "** in `" + m.channel.name + "`").then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    }, 5000)
+                });
                 return;
             }
             if (m.channel.guild.id == "187694240585744384" && m.mentions[0].id == "143906582235840512") {
