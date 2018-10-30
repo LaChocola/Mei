@@ -16,7 +16,27 @@ module.exports = {
         }
         var mentioned = m.guild.members.find(isThisUsernameThatUsername)
         var member = m.mentions[0] || mentioned || m.author
-        member = m.channel.guild.members.get(member.id)
+        var args2 = m.content.replace("!date ","").replace("<@", "").replace(">", "").trim()
+        if (args2.length > 1) {
+          var id = member.id
+        }
+        console.log(id);
+        if (id != undefined) {
+          member = m.channel.guild.members.get(id)
+        }
+        else if (!id) {
+          member = m.channel.guild.members.get(member.id)
+        }
+        console.log(member);
+        if (!member) {
+          Bot.createMessage(m.channel.id, "I could not find that member or id in this server").then((msg) => {
+              return setTimeout(function() {
+                  Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                  Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+              }, 5000)
+          })
+          return;
+        }
         var date = member.joinedAt;
         var date2 = member.createdAt;
         var name = member.nick || member.username
