@@ -1,16 +1,57 @@
 const _ = require("../servers.js");
 var data = _.load();
 var reload = require("require-reload")(require);
-var miscl = reload('../misc.js');
 module.exports = {
-      main: function(Bot, m, args, prefix) {
+      main: async function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!names /i, "")
         var args = args.split(" ")
+        var isMod = function(member, guild) {
+          if (data[guild.id]) {
+            if (data[guild.id].owner != guild.ownerID) {
+              Bot.createMessage(m.channel.id, "New server owner detected, updating database.").then((msg) => {
+                  return setTimeout(function() {
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                  }, 5000)
+              });
+              data[guild.id].owner = guild.ownerID
+              _.save(data)
+              _.load()
+            }
+            if (data[guild.id].mods) {
+              if (data[guild.id].mods[member.id]) {
+                return true;
+              }
+            }
+            if (m.author.id == data[guild.id].owner || m.author.id == guild.ownerID) {
+              return true;
+            }
+            if (data[guild.id].modRoles) {
+              var memberRoles = member.roles
+              var mod = false
+              for (let role of memberRoles) {
+                if (data[guild.id].modRoles[role]) {
+                  mod = true
+                }
+              }
+              if (mod) {
+                return true;
+              }
+            }
+          }
+          else {
+            var perms = guild.members.get(member.id).permission.json
+            var pArray = ["banMembers", "administrator", "manageGuild"]
+            if (perms[pArray[0]] || perms[pArray[1]] || perms[pArray[2]] || perms[pArray[3]] || perms[pArray[4]]) {
+              return true;
+            }
+            return false;
+          }
+        }
+        var modCheck = isMod(m.channel.guild.members.get(m.author.id), m.channel.guild)
         var responses = ["Are you a real villan?", "Have you ever caught a good guy? \nLike a real super hero?", "Have you ever tried a disguise?", "What are you doing?!?!?!", "*NO!*, Don't touch that!", "Fuck Off", "Roses are red\nfuck me ;) "]
         var response = responses[Math.floor(Math.random() * responses.length)]
         var authorRoles = m.channel.guild.members.get(m.author.id).roles
-        var modCheck = miscl.isMod(Bot, m, m.channel.guild.members.get(m.author.id), m.channel.guild)
-        if (modCheck == false && m.author.id != "161027274764713984") {
+        if (modCheck != true && m.author.id != "161027274764713984") {
             Bot.createMessage(m.channel.id, response);
             return;
         }
@@ -46,27 +87,86 @@ module.exports = {
         if (args.indexOf("undo") > -1) {
             args.splice(args.indexOf("undo"), 1)
             var arg = args[0]
-            Bot.unbanGuildMember(m.channel.guild.id, id, "Unbanned by: " + guardian).then(() => {
-                Bot.createMessage(m.channel.id, hand + " Successful Unbanned").then((msg) => {
-                    return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                    }, 5000)
-                })
+            Bot.unbanGuildMember(m.channel.guild.id, id, "Unbanned by: " + guardian)
+            .then(() => {
+              Bot.createMessage(m.channel.id, hand + " Successful Unbanned: " + name + " (" + id + ")").then((msg) => {
+                  return setTimeout(function() {
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                  }, 5000)
+              })
             })
-        } else if (id || name != guardian) {
-            Bot.banGuildMember(m.channel.guild.id, id, 0, "Banned by: " + guardian).then(() => {
-                Bot.createMessage(m.channel.id, hand + " Successful banned: " + name + " (" + id + ")").then((msg) => {
+            .catch((err) => {
+                if (err.code == 50013) {
+                  if (id == m.channel.guild.ownerID) {
+                    Bot.createMessage(m.channel.id, "Uhm, think about what you just tried to do...").then((msg) => {
+                        return setTimeout(function() {
+                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                            Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                        }, 5000)
+                    })
+                    return;
+                  }
+                  Bot.createMessage(m.channel.id, "I do not have permisson to unban that user. Please make sure I have the `Ban Member` permission").then((msg) => {
+                      return setTimeout(function() {
+                          Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                          Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                      }, 5000)
+                  })
+                  return;
+                }
+                console.log(err);
+                Bot.createMessage(m.channel.id, "Something went wrong while trying to unban that member").then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                     }, 5000)
                 })
+                return;
+            })
+        }
+        else if (id || name != guardian) {
+            Bot.banGuildMember(m.channel.guild.id, id, 0, "Banned by: " + guardian)
+            .then(() => {
+              Bot.createMessage(m.channel.id, hand + " Successful banned: " + name + " (" + id + ")").then((msg) => {
+                  return setTimeout(function() {
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                  }, 5000)
+              })
+            })
+            .catch((err) => {
+                if (err.code == 50013) {
+                  if (id == m.channel.guild.ownerID) {
+                    Bot.createMessage(m.channel.id, "I can not ban the owner of the server, sorry.").then((msg) => {
+                        return setTimeout(function() {
+                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                            Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                        }, 5000)
+                    })
+                    return;
+                  }
+                  Bot.createMessage(m.channel.id, "I do not have permisson to ban that user. Please make sure I have the `Ban Member` permission, and that my highest role is above theirs").then((msg) => {
+                      return setTimeout(function() {
+                          Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                          Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                      }, 5000)
+                  })
+                  return;
+                }
+                console.log(err);
+                Bot.createMessage(m.channel.id, "Something went wrong while trying to ban that member").then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                    }, 5000)
+                })
+                return;
             })
             return;
         } else {
             Bot.createMessage(m.channel.id, "I tried...");
         }
     },
-    help: "Get Role Info"
+    help: "Ban someone..."
 }
