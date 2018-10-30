@@ -22,11 +22,7 @@ var people = ppl.load();
 var server = servers.load();
 var data = _.load();
 var aesthetics = require('aesthetics');
-var Bot = new bot.CommandClient(config.tokens.mei, {}, {
-    description: "Mei bot",
-    owner: "Chocola",
-    prefix: config.prefix
-});
+var Bot = bot(config.tokens.mei);
 var unidecode = require("unidecode")
 var hands = [ ":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
 var hand = hands[Math.floor(Math.random() * hands.length)]
@@ -202,149 +198,71 @@ Bot.on("messageCreate", (m)=>{
 });
 
 Bot.on("guildMemberAdd",function(guild, member) {
+  var server = servers.load();
   var prefix = server[guild.id].prefix || config.prefix
-  if (guild.id == "373589430448947200") {
-    Bot.addGuildMemberRole(guild.id, member.id, "375633311449481218", "Assined on join")
-    var number = member.id
-    var date = member.joinedAt;
-    var date2 = member.createdAt;
-    var name = member.nick || member.username
-    var length = new Date(date).toDateString();
-    var length2 = new Date(date2).toDateString();
-    var ago = timeago().format(date);
-    var ago2 = timeago().format(date2);
-    var diff = timediff(date2, date, "D")
-    Bot.createMessage("393839796822343681", "**" +name+"**\nJoined: "+length+" | "+ago+"\nCreated: "+length2+" | "+ago2)
-    if (diff.days < 2) {
-      Bot.createMessage("393839796822343681", ":warning: **"+name+"** Joined less than 24 hours after creating account");
-    }
-  }
-  if (guild.id == "416487280237215744") {
-      Bot.createMessage("419650178417426433", {
-        embed: {
-            color: 0xA260F6,
-            title:  member.username + " (" + member.id + ") joined TF \nWe now have: "+ guild.memberCount + " people! :smiley:",
-            timestamp: new Date().toISOString(),
-            author: {
-              name: member.username,
-              icon_url: member.avatarURL
-            }
+  var name = guild.name
+  var count = guild.memberCount-guild.members.filter(m => m.bot).length
+  var number = member.id
+  var date = member.joinedAt;
+  var date2 = member.createdAt;
+  var name = member.nick || member.username
+  var length = new Date(date).toDateString();
+  var length2 = new Date(date2).toDateString();
+  var ago = timeago().format(date);
+  var ago2 = timeago().format(date2);
+  var diff = timediff(date2, date, "D")
+  if (server[guild.id]) {
+    if (server[guild.id].notifications) {
+      if (server[guild.id].notifications.updates) {
+        var channel = server[guild.id].notifications.updates
+        Bot.createMessage(channel, {
+          embed: {
+              color: 0xA260F6,
+              title:  `${member.username} (${member.id}) joined ${guild.name}\nWe now have: ${count} people! :smiley:`,
+              timestamp: new Date().toISOString(),
+              author: {
+                name: member.username,
+                icon_url: member.avatarURL
+              }
+          }
+        });
+        if (diff.days < 2) {
+          Bot.createMessage(channel, `:warning: **${name}** Joined less than 24 hours after creating their account`);
         }
-      });
-  }
-  if (guild.id == "444784255566872587") {
-      Bot.createMessage("445423605032157185", {
-        embed: {
-            color: 0xA260F6,
-            title:  member.username + " (" + member.id + ") joined The Web \nWe now have: "+ guild.memberCount + " people! :smiley:",
-            timestamp: new Date().toISOString(),
-            author: {
-              name: member.username,
-              icon_url: member.avatarURL
-            }
-        }
-      });
-  }
-  if (guild.id == "472180293621776388") {
-    Bot.createMessage("472180293621776392", {
-      embed: {
-          color: 0xA260F6,
-          title: "Hello, welcome to Macro Sanctum! Please answer these 5 questions very quickly and then send it to one of our staff members.",
-          description: "1. What is your size? (Giantess, Tiny, Micro, or Switch.)\n2. What servers besides Macro Sanctum are you currently active in?\n3. Where did you hear about Macro Sanctum?\n4. What is your reasoning for wanting to join Macro Sanctum?\n5. Have you read the rules?\n\n***When done, send this in the DM's to a staff member, please, do not spam the gate or spam our staff. Once again, welcome, and have fun in Macro Sanctum***"
       }
-    });
-  }
-  if (guild.id == "489585425606901760") {
-      Bot.createMessage("489585425606901762", {
-            embed: {
-                color: 0xA260F6,
-                title:  member.username + "#" + member.discriminator + " joined Macrophilia Reborn \nWe now have: "+ guild.memberCount + " people! :smiley:",
-                description: "Please remember to go to <#489596179500236820> to set up your size, kinks, and other roles! Use the ?ranks command for a list of the current available roles!",
-                timestamp: new Date().toISOString(),
-                author: {
-                  name: member.username,
-                  icon_url: member.avatarURL
-                }
-            }
-      });
-  }
-  if (guild.id == "354709664509853708") {
-          Bot.createMessage("358797182876385280", {
-            embed: {
-                color: 0xA260F6,
-                title:  member.username + " (" + member.id + ") joined Small World \nWe now have: "+ guild.memberCount + " people! :smiley:",
-                timestamp: new Date().toISOString(),
-                author: {
-                  name: member.username,
-                  icon_url: member.avatarURL
-                }
-            }
-          });
-        setTimeout(function() {
-          Bot.createMessage("436757042753961987", "Welcome "+ member.mention+"~\nThere are a list of roles in <#355823130637500417>, use `"+prefix+"role add rolename` to give yourself roles. You will be unable to send messages in any other channels until you do this. Let a Guardian know if you have any questions.").then((m) => {
-              return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
-          })
-          return;}, 4000)
-  }
-  if (guild.id == "326172270370488320") {
-          Bot.createMessage("326172270370488320", "Welcome to Size Haven, "+ member.mention+"!\nWe now have: "+ guild.memberCount + " people!\nThere are a list of roles in <#375798104500207616>, please use `"+prefix+"role add rolename` to give yourself roles, and let a Mod know if you have any questions~").then((m) => {
-              return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
-          })
-  }
-  if (guild.id == "396122792531197952") {
-          Bot.createMessage("396122792531197954", "Hi and welcome to Size Politics "+member.mention+"~\n Before you begin, first read <#397120033907802112> as it contains the server rules. Once you're done, tag an <@251629183552323584> so he can assign you the citizen role. Once you've gotten the citizen role, check <#397239213147422721> and <#397123029345501188> for all the current active roles. Thank you for joining and I hope you enjoy your stay!\nWe now have "+guild.memberCount+" members").then((m) => {
-              return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
-          })
+      if (server[guild.id].notifications.welcome) {
+        var channel = Object.keys(server[guild.id].notifications.welcome)[0]
+        var message = server[guild.id].notifications.welcome[channel]
+        message = message.replace("[name]", `${member.username}`).replace("[user]", `${member.username}#${member.discriminator}`).replace("[server]", `${guild.name}`).replace("[mention]", `${member.mention}`)
+        console.log(message);
+        Bot.createMessage(channel, message)
+      }
+    }
   }
 });
 
 Bot.on("guildMemberRemove",function(guild, member) {
-  if (guild.id == "354709664509853708") {
-          Bot.createMessage("358797182876385280", {
-            embed: {
-                color: 0xA260F6,
-                title:  member.username + " (" + member.id + ") left Small World \nWe now have: "+ guild.memberCount + " people! :frowning2:",
-                timestamp: new Date().toISOString(),
-                author: {
-                  name: member.username,
-                  icon_url: member.avatarURL
-                }
-            }
-          });
-  }
-  if (guild.id == "416487280237215744") {
-          Bot.createMessage("419650178417426433", {
-            embed: {
-                color: 0xA260F6,
-                title:  member.username + " (" + member.id + ") left TF \nWe now have: "+ guild.memberCount + " people! :frowning2:",
-                timestamp: new Date().toISOString(),
-                author: {
-                  name: member.username,
-                  icon_url: member.avatarURL
-                }
-            }
-          });
-  }
-  if (guild.id == "444784255566872587") {
-          Bot.createMessage("445423605032157185", {
-            embed: {
-                color: 0xA260F6,
-                title:  member.username + " (" + member.id + ") left The Web \nWe now have: "+ guild.memberCount + " people! :frowning2:",
-                timestamp: new Date().toISOString(),
-                author: {
-                  name: member.username,
-                  icon_url: member.avatarURL
-                }
-            }
-          });
-  }
-  if (guild.id == "406579725792968705") {
-          Bot.createMessage("406741954030731264", member.username + " left SNG. \nWe now have: "+ guild.memberCount + " people :frowning2:")
-  }
-  if (guild.id == "326172270370488320") {
-          Bot.createMessage("326172270370488320", member.username + " left Size Haven. \nWe now have: "+ guild.memberCount + " people :frowning2:").then((m) => {
-              return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 3600000)
-          })
+  var server = servers.load();
+  var prefix = server[guild.id].prefix || config.prefix
+  var name = guild.name
+  var count = guild.memberCount-guild.members.filter(m => m.bot).length
+  if (server[guild.id]) {
+    if (server[guild.id].notifications) {
+      if (server[guild.id].notifications.updates) {
+        var channel = server[guild.id].notifications.updates
+        Bot.createMessage(channel, {
+          embed: {
+              color: 0xA260F6,
+              title:  `${member.username} (${member.id}) left ${guild.name}\nWe now have: ${count} people! :frowning2:`,
+              timestamp: new Date().toISOString(),
+              author: {
+                name: member.username,
+                icon_url: member.avatarURL
+              }
+          }
+        });
+      }
+    }
   }
 });
 
@@ -399,39 +317,42 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
       if (link) {
         var people = ppl.load();
         if (!(people.people[id])) {
-    			people.people[id]= {};
+    			people.people[id] = {};
           ppl.save(people);
     		}
         if (!(people.people[id].hoard)) {
     			people.people[id].hoard = {}
+          people.people[id].hoard["😍"] = {}
           ppl.save(people);
         }
         var people = ppl.load();
-        var hoard = people.people[id].hoard
-        if (!hoard[link]) {
-            hoard[link] = m.author.id
-            ppl.save(people);
-            if (!people.people[m.author.id]) {
-                people.people[m.author.id] = {}
-                ppl.save(people);
-                people = ppl.load();
-            }
-            if (!people.people[m.author.id].adds) {
-                people.people[m.author.id].adds = 0
-                ppl.save(people);
-                people = ppl.load();
-            }
-            if (m.author.id != id) {
-              people.people[m.author.id].adds++
+        var hoard = people.people[id].hoard["😍"]
+        if (hoard) {
+          if (!hoard[link]) {
+              hoard[link] = m.author.id
               ppl.save(people);
-              if (+people.people[m.author.id].adds % 10 == 0 && m.author.id !== "309220487957839872") {
-                var user = Bot.users.filter(u => u.id == m.author.id)[0]
-                Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${+people.people[m.author.id].adds} hoard adds (since the counter was added).`).then((m) => {
-                    return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 60000)
-                })
+              if (!people.people[m.author.id]) {
+                  people.people[m.author.id] = {}
+                  ppl.save(people);
+                  people = ppl.load();
               }
-            }
-            return;
+              if (!people.people[m.author.id].adds) {
+                  people.people[m.author.id].adds = 0
+                  ppl.save(people);
+                  people = ppl.load();
+              }
+              if (m.author.id != id) {
+                people.people[m.author.id].adds++
+                ppl.save(people);
+                if (+people.people[m.author.id].adds % 10 == 0 && m.author.id !== "309220487957839872") {
+                  var user = Bot.users.filter(u => u.id == m.author.id)[0]
+                  Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${+people.people[m.author.id].adds} hoard adds (since the counter was added).`).then((m) => {
+                      return setTimeout(function() {Bot.deleteMessage(m.channel.id, m.id, "Timeout")}, 60000)
+                  })
+                }
+              }
+              return;
+          }
         }
       }
     })
@@ -485,12 +406,14 @@ Bot.on("messageReactionAdd",function(m, emoji, userID) {
   }
     Bot.getMessage(m.channel.id, m.id).then((m) => {
     var guild = m.channel.guild
-    if (server[m.channel.guild.id].giveaways) {
-      if (server[guild.id].giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != server[guild.id].giveaways.creator) {
-        if (m.id == server[guild.id].giveaways.mID) {
-          server[guild.id].giveaways.current.contestants[userID] = "entered"
-          servers.save(server);
-          return;
+    if (server[m.channel.guild.id]) {
+      if (server[m.channel.guild.id].giveaways) {
+        if (server[guild.id].giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != server[guild.id].giveaways.creator) {
+          if (m.id == server[guild.id].giveaways.mID) {
+            server[guild.id].giveaways.current.contestants[userID] = "entered"
+            servers.save(server);
+            return;
+          }
         }
       }
     }
@@ -511,9 +434,15 @@ Bot.on("messageReactionRemove",function(m, emoji, userID)  {
         var link = m.attachments[0].url
       }
       else if (m.embeds[0]) {
-        var link = m.embeds[0].image.url
+        if (m.embeds[0].image) {
+          var link = m.embeds[0].image.url
+        }
       }
-      var hoard = people.people[id].hoard
+      if (people.people[id]) {
+        if (people.people[id].hoard) {
+          var hoard = people.people[id].hoard["😍"]
+        }
+      }
       if (hoard[link]) {
         delete hoard[link]
         ppl.save(people);
@@ -577,13 +506,15 @@ Bot.on("messageReactionRemove",function(m, emoji, userID)  {
         }
       }
     }
-    if (server[m.channel.guild.id].giveaways) {
-      if (server[m.channel.guild.id].giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != server[m.channel.guild.id].giveaways.creator) {
-        if (m.id == server[m.channel.guild.id].giveaways.mID) {
-          if (server[m.channel.guild.id].giveaways.current.contestants[userID]) {
-            delete server[m.channel.guild.id].giveaways.current.contestants[userID]
-            servers.save(server);
-            return;
+    if (server[m.channel.guild.id]) {
+      if (server[m.channel.guild.id].giveaways) {
+        if (server[m.channel.guild.id].giveaways.running && emoji.id == "367892951780818946" && userID != "309220487957839872" && userID != server[m.channel.guild.id].giveaways.creator) {
+          if (m.id == server[m.channel.guild.id].giveaways.mID) {
+            if (server[m.channel.guild.id].giveaways.current.contestants[userID]) {
+              delete server[m.channel.guild.id].giveaways.current.contestants[userID]
+              servers.save(server);
+              return;
+            }
           }
         }
       }
