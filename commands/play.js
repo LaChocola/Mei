@@ -14,6 +14,7 @@ module.exports = {
           }
         }
         var args = m.cleanContent.replace(`${prefix}play `, "")
+        console.log(args);
         if (m.content == `${prefix}play`) {
           Bot.createMessage(m.channel.id, `Please say what you want to do. e.g. \`${prefix}play <youtube link>\`, \`${prefix}play queue\`, \`${prefix}play current\`, or \`${prefix}play stop\``);
           return;
@@ -21,22 +22,18 @@ module.exports = {
         var hands = [":wave::skin-tone-1:", ":wave::skin-tone-2:", ":wave::skin-tone-3:", ":wave::skin-tone-4:", ":wave::skin-tone-5:", ":wave:"]
         var hand = hands[Math.floor(Math.random() * hands.length)]
         var close = false
-        function msToHMS( ms ) {
-            // 1- Convert to seconds:
-            var seconds = ms / 1000;
-            // 2- Extract hours:
-            var hours = parseInt( seconds / 3600 ); // 3,600 seconds in 1 hour
-            seconds = seconds % 3600; // seconds remaining after extracting hours
-            // 3- Extract minutes:
-            var minutes = parseInt( seconds / 60 ); // 60 seconds in 1 minute
-            // 4- Keep only seconds not extracted to minutes:
-            seconds = seconds % 60;
-            if (hours>0) {
-              return(Math.round(hours).toFixed(2)+":"+Math.round(minutes).toFixed(2)+":"+Math.round(seconds).toFixed(2));
-            }
-            else {
-              return(Math.round(minutes).toFixed(2)+":"+Math.round(seconds).toFixed(2));
-            }
+        function msToHMS (ms) {
+          // Get hours
+          let h = Math.floor(ms / (1000 * 60 * 60))
+          // Get minutes
+          let m = Math.floor(ms / (1000 * 60)) - h * 60
+          // Get seconds
+          let s = Math.floor(ms / 1000) - m * 60 - h * 60 * 60
+          let time = [m, s]
+          // Use hours if there are hours
+          if (h)
+            time.unshift(h)
+          return time.map(n => n.toString().padStart(2, '0')).join(':')
         }
         var guild = m.channel.guild
         if (!(data[guild.id])) {
@@ -97,7 +94,7 @@ module.exports = {
                                 var bar = progress({
                                   total: end,
                                   style: function (complete, incomplete) {
-                                    return '+'.repeat(complete.length) + '**|' + incomplete
+                                    return '+'.repeat(complete.length) + '' + incomplete
                                   }
                                 })
                                 if (data[guild.id].music.current.code) {
@@ -110,6 +107,8 @@ module.exports = {
                                   Bot.createMessage(m.channel.id, "Nothing is currently playing");
                                   return;
                                 }
+                                console.log("start: "+start);
+                                console.log(msToHMS(start));
                                 var msg = {
                                   "embed": {
                                     "title": `:musical_note:  ${info.title} :musical_note:`,
@@ -127,7 +126,7 @@ module.exports = {
                                     "fields": [
                                       {
                                         "name": `${msToHMS(start)}/${msToHMS(end)}`,
-                                        "value": `[**${bar(start)}]`,
+                                        "value": `[${bar(start)}]`,
                                         "inline": true
                                       }
                                     ]
