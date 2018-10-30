@@ -12,7 +12,11 @@ module.exports = {
 		if (m.channel.guild.id == "187694240585744384") {
 			prefix = "?"
 		}
-		if(args.indexOf("length") >= 0){
+		if (m.channel.nsfw == false) {
+				Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
+				return;
+		}
+		if (args.indexOf("length") >= 0){
 			var names = miscl.getcustomGTSNames(id)
 			var resultstring = "";
 			var cleanishNames = names.join(", ")
