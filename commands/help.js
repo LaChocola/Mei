@@ -9,12 +9,16 @@ module.exports = {
                 var cmd = require("./" + args + ".js");
                 if (!cmd.hidden) {
                   Bot.createMessage(m.channel.id, "`"+ prefix + args + "`, " + cmd.help);
+                  return;
                 }
+                return;
             } else {
                 Bot.createMessage(m.channel.id, "That command doesn't exist.");
+                return;
             }
         } else {
             Bot.createMessage(m.channel.id, "To show a help for a certain command, say `!help <command>`.\nIf you want a list of commands, say `!commands`.");
+            return;
         }
     },
     help: "Displays descriptions of commands."
