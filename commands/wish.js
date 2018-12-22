@@ -13,7 +13,7 @@ module.exports = {
         var member = m.guild.members.find(isThisUsernameThatUsername)
         var mentioned = m.mentions[0] || member || m.author
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username
-        if (name.length > 11) {
+        if (name.length > 13) {
             var name = name.slice(0, 11) + ".."
         }
         var pic = `https://images.discordapp.net/avatars/${m.author.id}/${m.author.avatar}.png?size=1024`
@@ -31,8 +31,8 @@ module.exports = {
             try {
                 const bg = await Jimp.read("https://buttsare.sexy/c3b78e.jpg");
                 const avy = await Jimp.read(pic);
-                const nameFont = await Jimp.loadFont(Jimp.FONT_TREBUCHET);
-                const timeFont = await Jimp.loadFont(Jimp.FONT_TIMEFONT);
+                const nameFont = await Jimp.loadFont('https://raw.githubusercontent.com/LaChocola/Mei/master/db/fonts/trebuchetms/TrebuchetMS.fnt');
+                const timeFont = await Jimp.loadFont('https://raw.githubusercontent.com/LaChocola/Mei/master/db/fonts/timefont/timeFont.fnt');
                 avy.resize(141, 116);
                 bg.clone()
                     .blit(avy, 15, 5)
