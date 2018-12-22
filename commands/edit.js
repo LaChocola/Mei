@@ -493,7 +493,7 @@ module.exports = {
 				return;
 			}
 			if (args.toLowerCase().includes('remove')) {
-				let args = args.replace(/roles /i, '').replace(/remove/i, '').toLowerCase();
+				args = args.replace(/roles /i, '').replace(/remove/i, '').toLowerCase();
 				if (args.startsWith(' ')) {
 					args = args.slice(1);
 				}
