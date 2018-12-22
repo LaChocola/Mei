@@ -88,9 +88,48 @@ Bot.on("guildBanRemove", function(guild, user) {
 });
 
 Bot.on("messageCreate", (m)=>{
+  if (m.author.id == "309220487957839872") return;
+  if (!m.channel.guild) {
+      Bot.getDMChannel(m.author.id).then(function(DMchannel) {
+          Bot.createMessage(DMchannel.id, "Your messages do not serve me here, bug.");
+      });
+      console.log(m);
+      return;
+  }
+  if (m.content.toLowerCase().match(/\bchocola\b/i) || m.content.toLowerCase().match(/\bchoco\b/i) || m.content.toLowerCase().match(/\bchoc\b/i)) {
+    var member = m.channel.guild.members.get('161027274764713984');
+    var present = member.id || false;
+    if (present !== '161027274764713984') {
+      return;
+    }
+    Bot.getDMChannel('161027274764713984').then(function(DMchannel) {
+        Bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`).then((msg) => {
+            return setTimeout(function() {
+                Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+            }, 14400000)
+        })
+    });
+  }
   if (m.author.id == "161027274764713984" && m.content.includes("pls")) {
     if (m.content.includes("stop")) {
-      process.exit(0)
+      Bot.createMessage(m.channel.id, `Let me rest my eyes for a moment`).then((msg) => {
+          return setTimeout(function() {
+              Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+              Bot.deleteMessage(m.channel.id, msg.id, "Timeout").then(() => {
+                  process.exit(0)
+              })
+          }, 1500)
+      })
+    }
+    if (m.content.includes("override")) {
+      Bot.createMessage(m.channel.id, `Chocola Recognized. Permission overrides engaged. I am at your service~`).then((msg) => {
+          return setTimeout(function() {
+              Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+              Bot.deleteMessage(m.channel.id, msg.id, "Timeout").then(() => {
+                  process.exit(0)
+              })
+          }, 2000)
+      })
     }
   }
   var config = reload("./etc/config.json")
@@ -100,11 +139,6 @@ Bot.on("messageCreate", (m)=>{
     if (server[m.channel.guild.id].prefix) {
       var prefix = server[m.channel.guild.id].prefix
     }
-  }
-  if (m.author.id == "309220487957839872") return;
-	if (m.channel.isPrivate) return;
-  if (!m.guild) {
-    console.log(m);
   }
   if (m.guild.id == "373589430448947200") {
     if (m.content.includes("you joined") == true && m.author.id == "155149108183695360") { // If shit bot says "you joined" in #welcome
