@@ -36,9 +36,9 @@ module.exports = {
             var incoming = [];
             var iterator = incomingEntries.entries()
             for (let e of iterator) {
-                incoming.push(capFirstLetter(e[1]))
+                incoming.push(capFirstLetter(e[1].trim()))
             }
-            var matches = Object.keys(data.people).filter(k => [k].fetishes && data.people[k].fetishes[`${incoming[0]}`] == "dislike")
+            var matches = Object.keys(data.people).filter(k => data.people[k].fetishes && data.people[k].fetishes[`${incoming[0]}`] == "dislike")
             if (matches.length < 1) {
                 Bot.createMessage(m.channel.id, "No matches found");
                 return;
@@ -50,6 +50,10 @@ module.exports = {
                         usernames.push("***" + unidecode(properName) + "***")
                     }
                 }
+                if (usernames.length < 1) {
+                  Bot.createMessage(m.channel.id, "No matches found");
+                  return;
+                }
                 Bot.createMessage(m.channel.id, "Users that dislike `" + incoming[0] + "`:\n\n" + usernames.join("\n"));
                 return;
             }
@@ -59,7 +63,7 @@ module.exports = {
             var incoming = [];
             var iterator = incomingEntries.entries()
             for (let e of iterator) {
-                incoming.push(capFirstLetter(e[1]))
+                incoming.push(capFirstLetter(e[1].trim()))
             }
             var matches = Object.keys(data.people).filter(k => data.people[k].fetishes && data.people[k].fetishes[`${incoming[0]}`] == "like")
             if (matches.length < 1) {
