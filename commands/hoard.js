@@ -149,7 +149,7 @@ module.exports = {
         }
         var origID = data.people[id].hoard[rando]
         var index = `Item ${hoard.indexOf(rando)+1} of ${hoard.length} from :heart_eyes: hoard`
-        if (!origID.length) {
+        if (!origID || !origID.length) {
           var hoardInnder = Object.keys(origID)
           var hoardName = rando
           var randomNum = Math.floor(Math.random() * hoardInnder.length)
