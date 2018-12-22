@@ -3,7 +3,10 @@ const _ = require("../people.js");
 var reload = require("require-reload")(require);
 var miscl = reload('../misc.js');
 var data = _.load();
-
+const use = require("../data.js");
+var stats = use.load();
+var time = new Date().toISOString();
+var ordinal = require('ordinal')
 module.exports = {
 	main: function(Bot, m, args, prefix) {
 		var args = args.toLowerCase()
@@ -17,7 +20,21 @@ module.exports = {
 		}
 		var mentioned = m.mentions[0] || m.author
 		var id = mentioned.id
-
+		var name1 = args
+		var isThisUsernameThatUsername = function(member) {
+				var memberName = member.nick || member.username
+				if (memberName.toLowerCase() == name1.toLowerCase()) {
+						return true;
+				}
+		}
+		var member = m.guild.members.find(isThisUsernameThatUsername)
+		var mentioned = m.mentions[0] || member || m.author
+		var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username
+		var commands = stats.commands["tf"].users
+		var usage = 0
+		if (commands[mentioned.id]) {
+			usage = commands[mentioned.id]
+		}
 		if(args.indexOf("length") >= 0){
 			var names = miscl.getcustomGTSNames(id)
 			var resultstring = "";
@@ -67,7 +84,22 @@ module.exports = {
 		var guildid = m.channel.guild.id;
 
 		var lewdmessage = miscl.generateLewdMessage(smallid,big,guildid,maintype,subtype)
-		Bot.createMessage(m.channel.id,lewdmessage);
+		if (usage !== 0) {
+			usage = ordinal(+usage)
+		}
+		var data = {
+				embed: {
+						color: 0x00FF8F,
+						title: `${lewdmessage[1]} ${lewdmessage[2]}`,
+						description: lewdmessage[0],
+						timestamp: time,
+						footer: {
+								text: `${usage} response`,
+								icon_url: mentioned.avatarURL
+						}
+				}
+		}
+		Bot.createMessage(m.channel.id, data);
 		return;
 	},
 	help: "A TF responses"
