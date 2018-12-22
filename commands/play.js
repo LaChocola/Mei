@@ -488,8 +488,7 @@ module.exports = {
                               _.load()
                               return;
                           }
-                          else if (queue.length < 1 && !voiceConnection.playing && close != true) {
-                            close = true
+                          else if (queue.length < 1 && !voiceConnection.playing && close !== true) {
                             setTimeout(function() {
                               if (queue.length == 0 && !voiceConnection.playing) { // if there is no other song in the queue, leave the voice channel and have a wonderful day
                                 if (BotVoiceState.channelID) {
@@ -498,6 +497,7 @@ module.exports = {
                                     _.save(data)
                                     _.load()
                                     Bot.createMessage(m.channel.id, "Thanks for Listening " + hand).then((msg) => {
+                                        close = true
                                         return setTimeout(function() {
                                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                                         }, 20000)
