@@ -67,7 +67,12 @@ module.exports = {
                         art[msg.attachments[0].url] = [msg.author.id, msg.timestamp]
                     }
                     if (msg.embeds[0]) {
-                      art[msg.embeds[0].image.url] = [msg.author.id, msg.timestamp]
+                      if (msg.embeds[0].image) {
+                        art[msg.embeds[0].image.url] = [msg.author.id, msg.timestamp]
+                      }
+                      if (!msg.embeds[0].image) {
+                        art[msg.embeds[0].url] = [msg.author.id, msg.timestamp]
+                      }
                     }
                 }
                 var number = Math.floor(Math.random() * Object.entries(art).length);
