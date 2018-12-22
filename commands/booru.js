@@ -24,6 +24,10 @@ module.exports = {
 		if (m.content.toLowerCase() == `${prefix}booru`) {
 			m.content = `${prefix}booru giantess`;
 		}
+		if (m.content.toLowerCase() == `${prefix}booru list`) {
+			Bot.createMessage(m.channel.id, '**Total Boorus Availible:** 16\n**Default Booru:** giantessbooru.com \n\n**Other Availbe Boorus | Aliases:**\n***giantessbooru*** | gtsbooru, gbooru\n***e621*** | e6, e621, e9, e926\n***hypnohub*** | hh, hypno\n***danbooru*** | db\n***konachan*** | kc, konan\n***yande.re*** | yd, yand\n***gelbooru*** | gb, gel\n***rule34*** | r34\n***safebooru*** | sb\n***thebigimagebooru*** | tb, tbib\n***xbooru*** | xb\n***youhate*** | yh\n***dollbooru***\n***derpibooru*** | dp, derpi\n***furrybooru*** | fb \n***realbooru***');
+			return;
+		}
 		var args = m.cleanContent.toLowerCase().replace(`${prefix}booru `, '').split(', ');
 		let site = 'giantessbooru.com';
 		const imageURL = [];
@@ -1221,6 +1225,11 @@ module.exports = {
 			if (people.people[id].fetishes.Scat == 'like') {
 				scat = true;
 			}
+			if (people.people[id].fetishes.Booru == 'like') {
+				scat = true;
+				male = true;
+				furry = true;
+			}
 		}
 		const fetishes = people.people[id].fetishes;
 		const lowerOther = Object.entries(fetishes).map(v => [v[0].toLowerCase(), v[1]]).reduce((map, val) => {
@@ -1418,7 +1427,7 @@ module.exports = {
 	  }
 
 		if (tags.length < 0) {
-			Bot.createMessage(m.channel.id, 'Please input your search tags and/or booru. A list is availible by doing ``!boorus``');
+			Bot.createMessage(m.channel.id, `Please input your search tags and/or booru. A list is availible by doing \`\`${prefix}booru list\`\``);
 			return;
 		}
 		booru.search(site, tags.join(' | ').split(' | '), {limit, random: true})
@@ -1499,5 +1508,5 @@ module.exports = {
 				}
 			});
 	},
-	help: 'Search Boorus for images.'
+	help: `Search Boorus for images. \`!booru list\` for list`
 };
