@@ -1,5 +1,5 @@
 const _ = require("./people.js");
-var data = _.load();
+let data = _.load();
 const servers = require("./servers.js");
 var server = servers.load();
 const fs = require("fs");
@@ -50,11 +50,9 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         }
     }
 
-    static getTrueName(id,m){
-
-        var name = m.channel.guild.members.get(id).nick ||m.channel.guild.members.get(id).username
+    static getTrueName(id, m) {
+        var name = m.channel.guild.members.get(id).nick || m.channel.guild.members.get(id).username
         return name;
-
     }
 
     static getSomeone(m){
@@ -68,7 +66,6 @@ class Misc { // Declaring export as a class because cbf to make other way work p
          var person = people[Math.floor(Math.random() * people.length)];
          return person;
     }
-
 
     static lewdAliasTree(){
         var obj = {//TODO: convert this to json when have time
@@ -113,7 +110,11 @@ class Misc { // Declaring export as a class because cbf to make other way work p
                 for(var i = 0;i<element.length;i++)
                 {
                     if(string.indexOf(lewdtree[key][i]) != -1) {
-                        return key;
+                        var reg = new RegExp('\\b' + lewdtree[key][i] + '\\b');
+                        var match = reg.exec(string)
+                        if (match != null && match[0]) {
+                          return key;
+                        }
                     }
                 }
             }
@@ -212,7 +213,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
 
 
       var nakedFeetPlurals = ["bare feet", "heels", "arches", "big toes", "toes", "soles"]
-  		var nakedFeetSingulars = ["bare foot", "arch", "arches", "big toe", "toe", "sole"]
+  		var nakedFeetSingulars = ["bare foot", "heel", "arch", "big toe", "toe", "sole"]
   		var footwearPlurals = ["shoes", "boots", "sandals", "flip flops", "sneakers", "pumps", "heels", "socks", "stockings", "nylons", "fishnets", "hose"]
       var footwearSingulars = ["shoe", "boot", "sandal", "flip flop", "sneaker", "pump", "heel", "sock", "stocking", "nylons", "fishnets", "hose"]
   		var nakedFeetPlural = adjectiveFeet + Misc.randomelement(nakedFeetPlurals)
@@ -270,7 +271,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         lewdmessage = lewdmessage.replace(/\[nakedfeetsingular]/g,nakedFeetSingular).replace(/\[plural]/g,plural).replace(/\[footwearsingular]/g,footwearSingular)
         lewdmessage = lewdmessage.replace(/\[footwearplural]/g,footwearPlural).replace(/\[footwear]/g,footwear).replace(/\[singular]/g,singular)
         if(male) {
-           lewdmessage =  lewdmessage.replace(/\bher\b/ig, "his").replace(/\bshe\b/ig, "he").replace(/\bGTS\b/ig, "GT").replace(/\bbreasts\b/ig, "chest").replace(/\bpussy\b/ig, "dick").replace(/\bboyfriend\b/ig, "girlfriend")
+           lewdmessage =  lewdmessage.replace(/\bher\b/ig, "his").replace(/\bshe\b/ig, "he").replace(/\bGTS\b/ig, "GT").replace(/\bbreasts\b/ig, "chest").replace(/\bpussy\b/ig, "dick").replace(/\bgirlfriend\b/ig, "boyfriend").replace(/\bvagina\b/ig, "dick").replace(/\bcunt\b/ig, "dick").replace(/\bclit\b/ig, "urethra").replace(/\bwomanhood\b/ig, "manhood").replace(/\blabia\b/ig, "foreskin")
         }
         if(female) {
            lewdmessage =  lewdmessage.replace(/\bhis\b/ig, "her").replace(/\bhe\b/ig, "she").replace(/\bchest\b/ig, "breasts").replace(/\bdick\b/ig, "pussy").replace(/\bboyfriend\b/ig, "girlfriend").replace(/\bdick\b/ig, "pussy")
@@ -278,13 +279,33 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         if(futa) {
            var roll = Math.floor(Math.random() * 10) + 1
            if (roll != 1) {
-             lewdmessage =  lewdmessage.replace(/\bpussy\b/ig, "dick").replace(/\bvagina\b/ig, "dick").replace(/\bcunt\b/ig, "dick")
+             lewdmessage =  lewdmessage.replace(/\bpussy\b/ig, "dick").replace(/\bvagina\b/ig, "dick").replace(/\bcunt\b/ig, "dick").replace(/\bclit\b/ig, "urethra").replace(/\blabia\b/ig, "foreskin")
            }
         }
         lewdmessage = smallname+lewdmessage;
 
         //====================return message=============
 
+        var emojis = {
+          "boob": ":melon:",
+          "butt": ":peach:",
+          "vagina": ":sweat_drops:",
+          "foot": ":footprints:",
+          "panty": ":bikini:",
+          "vore": ":lips:",
+          "hand": ":raised_back_of_hand:",
+          "leg": ":dancer:",
+          "proposal": ":ring:",
+          "cloth": ":shirt:",
+          "toy": ":battery:",
+          "misc": ":question:",
+          false: ":question:"
+        }
+        var emoji = emojis[subtype]
+        if (subtype === false) {
+          subtype = "Random"
+        }
+        lewdmessage = [lewdmessage, emoji, subtype]
         return lewdmessage;
 
     }
