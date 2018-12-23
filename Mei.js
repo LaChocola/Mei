@@ -92,8 +92,8 @@ Bot.on("messageCreate", (m)=>{
   if (!m.channel.guild) {
       Bot.getDMChannel(m.author.id).then(function(DMchannel) {
           Bot.createMessage(DMchannel.id, "Your messages do not serve me here, bug.");
+          return;
       });
-      console.log(m);
       return;
   }
   if (m.content.toLowerCase().match(/\bchocola\b/i) || m.content.toLowerCase().match(/\bchoco\b/i) || m.content.toLowerCase().match(/\bchoc\b/i)) {
@@ -268,7 +268,6 @@ Bot.on("guildMemberAdd",function(guild, member) {
         var channel = Object.keys(server[guild.id].notifications.welcome)[0]
         var message = server[guild.id].notifications.welcome[channel]
         message = message.replace("[name]", `${member.username}`).replace("[user]", `${member.username}#${member.discriminator}`).replace("[server]", `${guild.name}`).replace("[mention]", `${member.mention}`)
-        console.log(message);
         Bot.createMessage(channel, message)
       }
     }
