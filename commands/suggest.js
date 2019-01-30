@@ -12,7 +12,7 @@ module.exports = {
                 }, 5000)
             })
         }
-        if (msg.length < 175) {
+        if (msg.length < 175 && m.content.toLowerCase().includes("response")) {
             Bot.createMessage(m.channel.id, "Sorry, but that message is too short to be a reply. Please add some more length or detail, and try again.").then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
@@ -22,10 +22,12 @@ module.exports = {
         }
         else {
             Bot.createMessage("446548104704032768", {
-                content: `A new suggestion from: **` + person.username + "** (" + person.id + ") in the Guild: **" + m.guild.name + "**",
                 embed: {
                     color: 0x5A459C,
-                    description: msg
+                    description: msg,
+                    footer: {
+                      text: `A new suggestion from: ${person.username} (${person.id}) in the Guild: ${m.guild.name}`
+                    }
                 }
             })
             var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
