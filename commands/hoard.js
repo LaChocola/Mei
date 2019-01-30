@@ -17,12 +17,10 @@ module.exports = {
         var nameArray = []
         var id = mentioned.id
         var url = m.channel.guild.members.get(id).avatarURL
-        console.log(args);
         if (args[0]) {
           if (args[0].toLowerCase().includes("add")) {
             args[0] = args[0].replace(/add/i, "").replace(/\s/g, "")
             args[0] = args[0].split(" ")
-            console.log("1. "+args[0]);
             if (args[0].length > 1) {
               Bot.createMessage(m.channel.id, "Sorry, you can only make a hoard by using 1 emoji").then((msg) => {
                   return setTimeout(function() {
@@ -39,7 +37,6 @@ module.exports = {
             if (/<a:([a-zA-Z0-9]+):[0-9]+>/.exec(args[0])) {
               args[0] = /<a:([a-zA-Z0-9]+):[0-9]+>/.exec(args[0])[1]
             }
-            console.log(args[0]);
             if (data.people[id].hoard) {
               var hoard = Object.keys(data.people[id].hoard)
               if (hoard[args[0]]) {
@@ -168,8 +165,6 @@ module.exports = {
         }
         var hash = user.avatar
         var og = `https://cdn.discordapp.com/avatars/${origID}/${hash}.jpg?size=128`
-        console.log("rando: "+rando);
-        console.log("number: "+randomNum);
         if (!args) {
           if (rando == undefined) {
             var i = 0
@@ -177,9 +172,6 @@ module.exports = {
             while (!rando.length && i < 4 && randomNum == newNumber) {
               newNumber = Math.floor(Math.random() * hoard.length)
               rando = hoard[newNumber]
-              console.log("No rando found, retrying");
-              console.log("old num: "+randomNum);
-              console.log("new num: "+newNumber);
               i++
             }
           }
