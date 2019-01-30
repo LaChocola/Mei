@@ -327,6 +327,12 @@ class Misc { // Declaring export as a class because cbf to make other way work p
 			var names = ["Miau"]
 			var cleanNames = names[0]
 		}
+    if (guildid === "420402860027805696") { // Giantess Archive
+      var names = ["Brittany","Bethany","Alicia","Katie","Cali","Asuna","Cat","Brianna","Emily","Alice","Yuri","Monica","Brie","Sierra"]
+      var cleanishNames = names.join(', ')
+      var cleanNames = cleanishNames.replace("Cali,", "Cali,\n")
+      var cleanNames = cleanNames.replace("Yuri,", "Yuri,\n")
+    }
 		if (guildid === "319534510318551041") { // The Big House Only
 			var names = names.concat(["Zem", "Ardy", "Vas"])
 			var cleanishNames = names.join(', ')
