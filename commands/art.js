@@ -1,5 +1,8 @@
 const _ = require("../servers.js");
 var data = _.load();
+const hands = [':ok_hand::skin-tone-1:', ':ok_hand::skin-tone-2:', ':ok_hand::skin-tone-3:', ':ok_hand::skin-tone-4:', ':ok_hand::skin-tone-5:', ':ok_hand:'];
+const hand = hands[Math.floor(Math.random() * hands.length)];
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var guild = m.channel.guild
