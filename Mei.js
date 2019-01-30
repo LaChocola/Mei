@@ -89,7 +89,12 @@ Bot.on("guildBanRemove", function(guild, user) {
 
 Bot.on("messageCreate", (m)=>{
   if (m.author.id == "309220487957839872") return;
+  var data = _.load();
+  if (data.banned.global[m.author.id]) {
+    return;
+  }
   if (!m.channel.guild) {
+      console.log(m);
       Bot.getDMChannel(m.author.id).then(function(DMchannel) {
           Bot.createMessage(DMchannel.id, "Your messages do not serve me here, bug.");
           return;
@@ -102,11 +107,12 @@ Bot.on("messageCreate", (m)=>{
     if (present !== '161027274764713984') {
       return;
     }
+    if (m.author.id == "161027274764713984") {
+      return;
+    }
     Bot.getDMChannel('161027274764713984').then(function(DMchannel) {
         Bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`).then((msg) => {
-            return setTimeout(function() {
-                Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-            }, 14400000)
+          Bot.createMessage(DMchannel.id, m.content);
         })
     });
   }
