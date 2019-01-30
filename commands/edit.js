@@ -641,7 +641,21 @@ module.exports = {
 				}
 				return;
 			}
-
+			if (args.toLowerCase().includes('update')) {
+				var roles = Object.keys(data[m.channel.guild.id].roles);
+				for (var role of roles) {
+					const exists = m.channel.guild.roles.find((r) => {r.id == data[m.channel.guild.id].roles[role]});
+					if (!exists) {
+						delete data[guild.id].roles[role];
+						_.save(data);
+						Bot.createMessage(m.channel.id, role + ' updated successfully').then(msg => {
+							return setTimeout(() => {
+								Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+							}, 1000);
+						});
+					}
+				}
+			}
 			Bot.createMessage(m.channel.id, 'You can edit the roles, and do things like adding and removing roles that Mei can give to people, and creating and deleting roles.\n Simply say things like `!edit roles create tiny` to *create* a role called "tiny" or `!edit roles add giantess` to let users get the "giantess" role from Mei when they use the `!roles` command').then(msg => {
 				return setTimeout(() => {
 					Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
