@@ -138,7 +138,7 @@ module.exports = {
                   var i = 0
                   var count = 0
                   while (i < int) {
-                    if (msgs[count].author.id == m.mentions[0].id) {
+                    if (msgs[count] !== undefined && msgs[count].author.id === m.mentions[0].id) {
                         Bot.deleteMessage(msgs[count].channel.id, msgs[count].id)
                         i++
                     }
@@ -159,5 +159,5 @@ module.exports = {
             Bot.createMessage(m.channel.id, response);
         }
     },
-    help: "Clean stuff. `!clean @Chocola X` to delete the last X messages. Defaults to 10"
+    help: "Clean stuff. `!clean @Chocola X` to delete the last X messages. Defaults to 100"
 }
