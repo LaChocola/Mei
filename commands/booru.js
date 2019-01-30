@@ -1,7 +1,8 @@
 const booru = require('booru');
+const Humanoid = require("humanoid-js");
 
+let humanoid = new Humanoid();
 let request = require('request');
-
 request = request.defaults({jar: true});
 const cheerio = require('cheerio');
 const _ = require('../people.js');
@@ -9,7 +10,7 @@ const _ = require('../people.js');
 let people = _.load();
 
 module.exports = {
-	main(Bot, m, args, prefix) {
+	main: async function(Bot, m, args, prefix) {
 		function isNumeric(num) {
 			return !isNaN(Number(num));
 		}
@@ -29,10 +30,9 @@ module.exports = {
 			return;
 		}
 		var args = m.cleanContent.toLowerCase().replace(`${prefix}booru `, '').split(', ');
-		let site = 'giantessbooru.com';
+		let site = 'gelbooru';
 		const imageURL = [];
 		let tags = [];
-  	const things = [];
 		var limit = 1;
 		const aliases = [
 			'e6',
@@ -1297,9 +1297,11 @@ module.exports = {
 				 if (error) {
 					 console.log('Error: ' + error);
 				 }
+				 console.log("status code: "+response.statusCode);
 				 if (response.statusCode === 200) {
 					 // Parse the document body
 					 const $ = cheerio.load(body);
+					 console.log("response: "+response.request.uri.href);
 					 if (response.request.uri.href.startsWith('http://giantessbooru.com/post/view/') || response.request.uri.href.startsWith('https://giantessbooru.com/post/view/')) { // gtsbooru redirects to the result pic page immediately if only 1 result exists, so we have to handle that specifically
 							 link_array.push(response.request.uri.path);
 					 } else {
@@ -1327,74 +1329,74 @@ module.exports = {
 					 j.setCookie(cookie1, pageToVisit);
 					 j.setCookie(cookie2, pageToVisit);
 					 j.setCookie(cookie3, pageToVisit);
-				request({url: pageToVisit, jar: j}, (error, response, body) => {
-					if (response.statusCode === 200) {
-						// Parse the document body
-						const $ = cheerio.load(body);
-						const imgURL = $('#main_image')[0].attribs.src;
-						imageURL.push('http://giantessbooru.com' + imgURL.toLowerCase());
-					}
-					if (imageURL.length < 2) {
-							 const random = Math.floor(Math.random() * 420);
-							 const number = maths + 1;
-								 const data = {
-									 content: 'Results on **' + site + '**',
-									 embed: {
-										 color: 0xA260F6,
-										 footer: {
-											 icon_url: m.channel.guild.members.get(m.author.id).avatarURL.replace('.jpg', '.webp?size=1024'),
-											 text: 'Searched by: ' + name + '. Image ' + number + ' of ' + link_array.length
-										 },
-										 image: {
-											 url: imageURL.toString()
-										 },
-										 author: {
-											 name: cleanTags,
-											 url: 'http://giantessbooru.com' + response.request.uri.path
-										 }
-									 }
-								 };
-								 Bot.createMessage(m.channel.id, data);
-								 return;
-					}
-					if (imageURL.length > 1) {
-								 const data = {
-									 content: 'Results on **' + site + '**',
-									 embed: {
-										 color: 0xA260F6,
-										 footer: {
-											 icon_url: m.channel.guild.members.get(m.author.id).avatarURL.replace('.jpg', '.webp?size=1024'),
-											 text: 'Searched by: ' + name + '. Image ' + maths + ' of ' + link_array.length
-										 },
-										 image: {
-											 url: imageURL[0].toString()
-										 },
-										 author: {
-											 name: cleanTags,
-											 url: 'http://giantessbooru.com' + response.request.uri.path
-										 }
-									 }
-								 };
-								 Bot.createMessage(m.channel.id, data);
-								 imageURL.splice(0, 1);
-								 const iterator = imageURL.entries();
-								 for (const e of iterator) {
-									 Bot.createMessage(m.channel.id, {
-											 embed: {
-													 color: 0xA260F6,
-													 image: {
-														 url: e[1]
-													 }
+					request({url: pageToVisit, jar: j}, (error, response, body) => {
+						if (response.statusCode === 200) {
+							// Parse the document body
+							const $ = cheerio.load(body);
+							const imgURL = $('#main_image')[0].attribs.src;
+							imageURL.push('http://giantessbooru.com' + imgURL.toLowerCase());
+						}
+						if (imageURL.length < 2) {
+								 const random = Math.floor(Math.random() * 420);
+								 const number = maths + 1;
+									 const data = {
+										 content: 'Results on **' + site + '**',
+										 embed: {
+											 color: 0xA260F6,
+											 footer: {
+												 icon_url: m.channel.guild.members.get(m.author.id).avatarURL.replace('.jpg', '.webp?size=1024'),
+												 text: 'Searched by: ' + name + '. Image ' + number + ' of ' + link_array.length
+											 },
+											 image: {
+												 url: imageURL.toString()
+											 },
+											 author: {
+												 name: cleanTags,
+												 url: 'http://giantessbooru.com' + response.request.uri.path
 											 }
-									 });
-								 }
-					}
-				});
+										 }
+									 };
+									 Bot.createMessage(m.channel.id, data);
+									 return;
+						}
+						if (imageURL.length > 1) {
+									 const data = {
+										 content: 'Results on **' + site + '**',
+										 embed: {
+											 color: 0xA260F6,
+											 footer: {
+												 icon_url: m.channel.guild.members.get(m.author.id).avatarURL.replace('.jpg', '.webp?size=1024'),
+												 text: 'Searched by: ' + name + '. Image ' + maths + ' of ' + link_array.length
+											 },
+											 image: {
+												 url: imageURL[0].toString()
+											 },
+											 author: {
+												 name: cleanTags,
+												 url: 'http://giantessbooru.com' + response.request.uri.path
+											 }
+										 }
+									 };
+									 Bot.createMessage(m.channel.id, data);
+									 imageURL.splice(0, 1);
+									 const iterator = imageURL.entries();
+									 for (const e of iterator) {
+										 Bot.createMessage(m.channel.id, {
+												 embed: {
+														 color: 0xA260F6,
+														 image: {
+															 url: e[1]
+														 }
+												 }
+										 });
+									 }
+						}
+					});
 			});
 			return;
 		}
 
-		if (site == 'danbooru' || site == 'dan' || site == 'db' && tags.length > 2) {
+		if (site == 'danbooru' || site == 'dan' || site == 'db' && tags.length > 3) {
 			Bot.createMessage(m.channel.id, 'Danbooru doesnt support searching with multiple tags this way. Only the first tag was used');
 		}
 
