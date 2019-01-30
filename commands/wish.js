@@ -1,10 +1,10 @@
 const Jimp = require('jimp');
 // This version of Jimp has an alphabet I created to emulated the DeviantArt username font "Trebuchet" and timestamp font
 // They are both availible in a zip on http://www.filedropper.com/deviantfonts and need to be added to jimp via node_modules>jimp>fonts
-var time = new Date().toDateString().slice(4).replace(` ${new Date().getFullYear()}`, `, ${new Date().getFullYear()}`)
+var time = new Date().toDateString().slice(4).replace(` ${new Date().getFullYear()}`, `, ${new Date().getFullYear()}`);
 module.exports = {
-    main: function(Bot, m, args, prefix) {
-        var isThisUsernameThatUsername = function(member) {
+    main: function (Bot, m, args, prefix) {
+        var isThisUsernameThatUsername = function (member) {
             var memberName = member.nick || member.username
             if (memberName.toLowerCase() == m.author.username.toLowerCase()) {
                 return true;
