@@ -79,10 +79,12 @@ module.exports = {
         }
         var guardian = m.channel.guild.members.get(m.author.id).nick || m.author.username
         if (!name) {
-          var user = Bot.users.get(id)
+          var user = await Bot.users.get(id);
           if (!user || !user.username) {
-            var name = "Unknown User"
+            var name = 'Unknown User';
+            return;
           }
+          var name = user.username;
         }
         if (args.indexOf("undo") > -1) {
             args.splice(args.indexOf("undo"), 1)
