@@ -1,8 +1,8 @@
-const _ = require("./people.js");
+const _ = require('./people.js');
 let data = _.load();
-const servers = require("./servers.js");
+const servers = require('./servers.js');
 var server = servers.load();
-const fs = require("fs");
+const fs = require('fs');
 class Misc { // Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
     static isThisUsernameThatUsername(member, name1) {
         var memberName = member.nick || member.username
@@ -14,9 +14,9 @@ class Misc { // Declaring export as a class because cbf to make other way work p
     static isMod(Bot, m, member, guild) {
         if (server[guild.id]) {
             if (server[guild.id].owner != guild.ownerID || server[guild.id].name != guild.name) {
-                Bot.createMessage(m.channel.id, "New server info detected, updating database.").then((msg) => {
+                Bot.createMessage(m.channel.id, 'New server info detected, updating database.').then((msg) => {
                     return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                        Bot.deleteMessage(m.channel.id, msg.id, 'Timeout')
                     }, 5000)
                 })
                 server[guild.id].owner = guild.ownerID
@@ -59,7 +59,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var members = m.channel.guild.members.filter(m => !m.bot);
 			var people = []
 				 members.forEach(function(member){
-								 if ((member.status != "offline") && (member.user.id != '309220487957839872')) {
+								 if ((member.status != 'offline') && (member.user.id != '309220487957839872')) {
 										people.push(member.id)
 								 }
 				 });
@@ -69,18 +69,18 @@ class Misc { // Declaring export as a class because cbf to make other way work p
 
     static lewdAliasTree(){
         var obj = {//TODO: convert this to json when have time
-            "boob":["boob","boobs","tit","tits","breast","breasts"],
-            "butt":["bum" ,"bums" ,"butt","butts","ass"],
-            "vagina":["vagina","pussy","insertion","cunt","cunny"],
-            "foot":[ "foot","foote","feet"],
-            "panty":["panty","panties","pantie","underwear","thong","thongs"],
-            "vore":["vore","mouth"],
-            "hand":[ "hand","hands"],
-            "leg":[ "leg","legs","thighs" ,"thigh"],
-            "proposal":["proposal","mary","wed","marriage"],
-            "cloth":["panties", "panty", "cloth", "clothes", "clothing","bra","pants","panty","panties","pantie","underwear","thong","thongs"],
-            "toy":["dildo", "beads", "toy", "object", "plug"],
-            "misc":[ "misc","alt","other"]
+            'boob':['boob','boobs','tit','tits','breast','breasts'],
+            'butt':['bum' ,'bums' ,'butt','butts','ass'],
+            'vagina':['vagina','pussy','insertion','cunt','cunny'],
+            'foot':[ 'foot','foote','feet'],
+            'panty':['panty','panties','pantie','underwear','thong','thongs'],
+            'vore':['vore','mouth'],
+            'hand':[ 'hand','hands'],
+            'leg':[ 'leg','legs','thighs' ,'thigh'],
+            'proposal':['proposal','mary','wed','marriage'],
+            'cloth':['panties', 'panty', 'cloth', 'clothes', 'clothing','bra','pants','panty','panties','pantie','underwear','thong','thongs'],
+            'toy':['dildo', 'beads', 'toy', 'object', 'plug'],
+            'misc':[ 'misc','alt','other']
         }
         return obj;
     }
@@ -146,31 +146,31 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var futa = false;
         if (data.people[smallid]) {
   			if (data.people[smallid].names) {
-  				if (data.people[smallid].names[bigname] == "male") {
+  				if (data.people[smallid].names[bigname] == 'male') {
   					var male = true
             var female = false
   				}
-          if (data.people[smallid].names[bigname] == "futa") {
+          if (data.people[smallid].names[bigname] == 'futa') {
             var futa = true
             var female = false
           }
   			}
   		}
 
-        var smallname = "<@"+smallid+">, ";
+        var smallname = '<@'+smallid+'>, ';
 
         //=========panty info============
 
-        var sides = ["front", "back"];
-		    var types1 = ["panties", "underwear", "thongs"];
-        var types2 = ["panty", "thong", "underwear"];
+        var sides = ['front', 'back'];
+		    var types1 = ['panties', 'underwear', 'thongs'];
+        var types2 = ['panty', 'thong', 'underwear'];
         if (male) {
-    			var types1 = ["underwear", "boxers", "briefs"]
-    			var types2 = ["underwear", "underwear"]
+    			var types1 = ['underwear', 'boxers', 'briefs']
+    			var types2 = ['underwear', 'underwear']
     		}
         if (futa) {
-          var types1 = types1.concat(["underwear", "boxers", "briefs"])
-          var types2 = types2.concat(["underwear", "underwear"])
+          var types1 = types1.concat(['underwear', 'boxers', 'briefs'])
+          var types2 = types2.concat(['underwear', 'underwear'])
         }
 
 		var type1 = Misc.randomelement(types1);
@@ -179,11 +179,11 @@ class Misc { // Declaring export as a class because cbf to make other way work p
 
 
         //============feet info================
-    var adjectivesFeet = ["stinky", "smelly", "sweaty", "damp", "pungent", "odorous", "sweet-scented", "huge", "powerful", "godly", "beautiful", "dirty", "filthy","disgusting",
-		"rancid", "giant", "massive", "moist", "sweat-soaked", "victim-covered", "soft", "lotion-scented"]
+    var adjectivesFeet = ['stinky', 'smelly', 'sweaty', 'damp', 'pungent', 'odorous', 'sweet-scented', 'huge', 'powerful', 'godly', 'beautiful', 'dirty', 'filthy','disgusting',
+		'rancid', 'giant', 'massive', 'moist', 'sweat-soaked', 'victim-covered', 'soft', 'lotion-scented']
 
-		var adjectivesFootwear = ["stinky", "smelly", "sweaty", "damp", "pungent", "odorous", "sweet-scented", "huge", "stinky, sweaty", "dirty", "filthy","disgusting", "rancid", "giant", "massive", "moist",
-		"sweat-soaked","victim-covered", "old", "worn out", "grimy"]
+		var adjectivesFootwear = ['stinky', 'smelly', 'sweaty', 'damp', 'pungent', 'odorous', 'sweet-scented', 'huge', 'stinky, sweaty', 'dirty', 'filthy','disgusting', 'rancid', 'giant', 'massive', 'moist',
+		'sweat-soaked','victim-covered', 'old', 'worn out', 'grimy']
 
 		var adjectives = Array.from(new Set([].concat(adjectivesFeet, adjectivesFootwear)))
 
@@ -192,34 +192,34 @@ class Misc { // Declaring export as a class because cbf to make other way work p
 
 		var roll = Math.floor(Math.random() * 20) + 1 // roll from 1-20
 		if (roll > 0 && roll < 16) { // If the roll is between 1-5
-			var adjectiveFeet = Misc.randomelement(adjectivesFeet) + " "
-			var adjectiveFootwear = Misc.randomelement(adjectivesFootwear) + " "
+			var adjectiveFeet = Misc.randomelement(adjectivesFeet) + ' '
+			var adjectiveFootwear = Misc.randomelement(adjectivesFootwear) + ' '
 				if (roll > 0 && roll < 7) {
 					var adjectiveFeet1 = Misc.randomelement(adjectivesFeet)
 					var adjectiveFeet2 = Misc.randomelement(adjectivesFeet)
 					if (adjectiveFeet1 == adjectiveFeet2) {
 						var adjectiveFeet2 = Misc.randomelement(adjectivesFeet)
 					}
-					var adjectiveFeet = adjectiveFeet1 + ", " + adjectiveFeet2 + " "
+					var adjectiveFeet = adjectiveFeet1 + ', ' + adjectiveFeet2 + ' '
 
 					var adjectiveFootwear1 = Misc.randomelement(adjectivesFootwear)
 					var adjectiveFootwear2 = Misc.randomelement(adjectivesFootwear)
 					if (adjectiveFootwear1 == adjectiveFootwear2) {
 						var adjectiveFootwear2 = Misc.randomelement(adjectivesFootwear)
 					}
-					var adjectiveFootwear = adjectiveFootwear1 + ", " + adjectiveFootwear2 + " "
+					var adjectiveFootwear = adjectiveFootwear1 + ', ' + adjectiveFootwear2 + ' '
 					}
 			}
 
 
-      var nakedFeetPlurals = ["bare feet", "heels", "arches", "big toes", "toes", "soles"]
-  		var nakedFeetSingulars = ["bare foot", "heel", "arch", "big toe", "toe", "sole"]
-  		var footwearPlurals = ["shoes", "boots", "sandals", "flip flops", "sneakers", "pumps", "heels", "socks", "stockings", "nylons", "fishnets", "hose"]
-      var footwearSingulars = ["shoe", "boot", "sandal", "flip flop", "sneaker", "pump", "heel", "sock", "stocking", "nylons", "fishnets", "hose"]
+      var nakedFeetPlurals = ['bare feet', 'heels', 'arches', 'big toes', 'toes', 'soles']
+  		var nakedFeetSingulars = ['bare foot', 'heel', 'arch', 'big toe', 'toe', 'sole']
+  		var footwearPlurals = ['shoes', 'boots', 'sandals', 'flip flops', 'sneakers', 'pumps', 'heels', 'socks', 'stockings', 'nylons', 'fishnets', 'hose']
+      var footwearSingulars = ['shoe', 'boot', 'sandal', 'flip flop', 'sneaker', 'pump', 'heel', 'sock', 'stocking', 'nylons', 'fishnets', 'hose']
   		var nakedFeetPlural = adjectiveFeet + Misc.randomelement(nakedFeetPlurals)
   		if (male) {
-        var footwearPlurals = Array.from(new Set([].concat(footwearPlurals, ["shoes", "boots", "sandals", "flip flops", "sneakers", "boots", "socks"])))
-  			var footwearSingulars = Array.from(new Set([].concat(footwearSingulars, ["shoe", "boot", "sandal", "flip flop", "sneaker", "boot", "sock"])))
+        var footwearPlurals = Array.from(new Set([].concat(footwearPlurals, ['shoes', 'boots', 'sandals', 'flip flops', 'sneakers', 'boots', 'socks'])))
+  			var footwearSingulars = Array.from(new Set([].concat(footwearSingulars, ['shoe', 'boot', 'sandal', 'flip flop', 'sneaker', 'boot', 'sock'])))
       }
 
       var nakedFeetSingular = adjectiveFeet + Misc.randomelement(nakedFeetSingulars)
@@ -271,15 +271,15 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         lewdmessage = lewdmessage.replace(/\[nakedfeetsingular]/g,nakedFeetSingular).replace(/\[plural]/g,plural).replace(/\[footwearsingular]/g,footwearSingular)
         lewdmessage = lewdmessage.replace(/\[footwearplural]/g,footwearPlural).replace(/\[footwear]/g,footwear).replace(/\[singular]/g,singular)
         if(male) {
-           lewdmessage =  lewdmessage.replace(/\bher\b/ig, "his").replace(/\bshe\b/ig, "he").replace(/\bGTS\b/ig, "GT").replace(/\bbreasts\b/ig, "chest").replace(/\bpussy\b/ig, "dick").replace(/\bgirlfriend\b/ig, "boyfriend").replace(/\bvagina\b/ig, "dick").replace(/\bcunt\b/ig, "dick").replace(/\bclit\b/ig, "urethra").replace(/\bwomanhood\b/ig, "manhood").replace(/\blabia\b/ig, "foreskin")
+           lewdmessage =  lewdmessage.replace(/\bher\b/ig, 'his').replace(/\bshe\b/ig, 'he').replace(/\bGTS\b/ig, 'GT').replace(/\bbreasts\b/ig, 'chest').replace(/\bpussy\b/ig, 'dick').replace(/\bgirlfriend\b/ig, 'boyfriend').replace(/\bvagina\b/ig, 'dick').replace(/\bcunt\b/ig, 'dick').replace(/\bclit\b/ig, 'urethra').replace(/\bwomanhood\b/ig, 'manhood').replace(/\blabia\b/ig, 'foreskin')
         }
         if(female) {
-           lewdmessage =  lewdmessage.replace(/\bhis\b/ig, "her").replace(/\bhe\b/ig, "she").replace(/\bchest\b/ig, "breasts").replace(/\bdick\b/ig, "pussy").replace(/\bboyfriend\b/ig, "girlfriend").replace(/\bdick\b/ig, "pussy")
+           lewdmessage =  lewdmessage.replace(/\bhis\b/ig, 'her').replace(/\bhe\b/ig, 'she').replace(/\bchest\b/ig, 'breasts').replace(/\bdick\b/ig, 'pussy').replace(/\bboyfriend\b/ig, 'girlfriend').replace(/\bdick\b/ig, 'pussy')
         }
         if(futa) {
            var roll = Math.floor(Math.random() * 10) + 1
            if (roll != 1) {
-             lewdmessage =  lewdmessage.replace(/\bpussy\b/ig, "dick").replace(/\bvagina\b/ig, "dick").replace(/\bcunt\b/ig, "dick").replace(/\bclit\b/ig, "urethra").replace(/\blabia\b/ig, "foreskin")
+             lewdmessage =  lewdmessage.replace(/\bpussy\b/ig, 'dick').replace(/\bvagina\b/ig, 'dick').replace(/\bcunt\b/ig, 'dick').replace(/\bclit\b/ig, 'urethra').replace(/\blabia\b/ig, 'foreskin')
            }
         }
         lewdmessage = smallname+lewdmessage;
@@ -287,23 +287,23 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         //====================return message=============
 
         var emojis = {
-          "boob": ":melon:",
-          "butt": ":peach:",
-          "vagina": ":sweat_drops:",
-          "foot": ":footprints:",
-          "panty": ":bikini:",
-          "vore": ":lips:",
-          "hand": ":raised_back_of_hand:",
-          "leg": ":dancer:",
-          "proposal": ":ring:",
-          "cloth": ":shirt:",
-          "toy": ":battery:",
-          "misc": ":question:",
-          false: ":question:"
+          'boob': ':melon:',
+          'butt': ':peach:',
+          'vagina': ':sweat_drops:',
+          'foot': ':footprints:',
+          'panty': ':bikini:',
+          'vore': ':lips:',
+          'hand': ':raised_back_of_hand:',
+          'leg': ':dancer:',
+          'proposal': ':ring:',
+          'cloth': ':shirt:',
+          'toy': ':battery:',
+          'misc': ':question:',
+          false: ':question:'
         }
         var emoji = emojis[subtype]
         if (subtype === false) {
-          subtype = "Random"
+          subtype = 'Random'
         }
         lewdmessage = [lewdmessage, emoji, subtype]
         return lewdmessage;
@@ -311,57 +311,52 @@ class Misc { // Declaring export as a class because cbf to make other way work p
     }
 
     static getDefaultGTSNames(guildid){
-        var names =["Mei", "Sucy", "2B", "Mt. Lady", "Vena", "Miku", "Lexi", "Baiken", "Ryuko", "Sombra", "Wolfer", "Gwen", "Mercy", "Gwynevere", "Tracer",
-        "Aqua", "Megumin", "Cortana", "Yuna", "Lulu", "Rikku", "Rosalina", "Samus", "Princess Peach", "Palutena", "Shin", "Kimmy", "Zoey", "Camilla", "Lillian", "Narumi", "D.va"];
+        var names =['Mei', 'Sucy', '2B', 'Mt. Lady', 'Vena', 'Miku', 'Lexi', 'Baiken', 'Ryuko', 'Sombra', 'Wolfer', 'Gwen', 'Mercy', 'Gwynevere', 'Tracer',
+        'Aqua', 'Megumin', 'Cortana', 'Yuna', 'Lulu', 'Rikku', 'Rosalina', 'Samus', 'Princess Peach', 'Palutena', 'Shin', 'Kimmy', 'Zoey', 'Camilla', 'Lillian', 'Narumi', 'D.va'];
 		var cleanishNames = names.join(', ')
-		var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n").replace("Baiken,", "Baiken,\n").replace("Gwen,", "Gwen,\n").replace("Aqua,", "Aqua,\n").replace("Lulu,", "Lulu,\n").replace("Samus,", "Samus,\n")
+		var cleanNames = cleanishNames.replace('Mt. Lady,', 'Mt. Lady,\n').replace('Baiken,', 'Baiken,\n').replace('Gwen,', 'Gwen,\n').replace('Aqua,', 'Aqua,\n').replace('Lulu,', 'Lulu,\n').replace('Samus,', 'Samus,\n')
 
 
-		if (guildid === "261599167695159298") { // Krumbly's ant farm only
-			var names = ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Lucy", "Ryuko", "Krumbly"];
+		if (guildid === '261599167695159298') { // Krumbly's ant farm only
+			var names = ['Mei', 'Sucy', '2B', 'Mt. Lady', 'Rika', 'Miku', 'Lexi', 'Lucy', 'Ryuko', 'Krumbly'];
 			var cleanishNames = names.join(', ')
-			var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n")
-			var cleanNames = cleanNames.replace("Lucy,", "Lucy,\n")
+			var cleanNames = cleanishNames.replace('Mt. Lady,', 'Mt. Lady,\n')
+			var cleanNames = cleanNames.replace('Lucy,', 'Lucy,\n')
 		}
-		if (guildid === "373589430448947200") { // r/Macrophilia Only
-			var names = ["Miau"]
+		if (guildid === '373589430448947200') { // r/Macrophilia Only
+			var names = ['Miau']
 			var cleanNames = names[0]
 		}
-    if (guildid === "420402860027805696") { // Giantess Archive
-      var names = ["Brittany","Bethany","Alicia","Katie","Cali","Asuna","Cat","Brianna","Emily","Alice","Yuri","Monica","Brie","Sierra"]
+    if (guildid === '420402860027805696') { // Giantess Archive
+      var names = ['Brittany','Bethany','Alicia','Katie','Cali','Asuna','Cat','Brianna','Emily','Alice','Yuri','Monica','Brie','Sierra']
       var cleanishNames = names.join(', ')
-      var cleanNames = cleanishNames.replace("Cali,", "Cali,\n")
-      var cleanNames = cleanNames.replace("Yuri,", "Yuri,\n")
+      var cleanNames = cleanishNames.replace('Cali,', 'Cali,\n')
+      var cleanNames = cleanNames.replace('Yuri,', 'Yuri,\n')
     }
-		if (guildid === "319534510318551041") { // The Big House Only
-			var names = names.concat(["Zem", "Ardy", "Vas"])
+		if (guildid === '319534510318551041') { // The Big House Only
+			var names = names.concat(['Zem', 'Ardy', 'Vas'])
 			var cleanishNames = names.join(', ')
-			var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n")
-			var cleanNames = cleanNames.replace("Lucy,", "Lucy,\n")
+			var cleanNames = cleanishNames.replace('Mt. Lady,', 'Mt. Lady,\n')
+			var cleanNames = cleanNames.replace('Lucy,', 'Lucy,\n')
 		}
-		if (guildid === "354709664509853708") { // Small World Only
-			var names = names.concat(["Docop", "Mikki", "Spellgirl"])
+		if (guildid === '354709664509853708') { // Small World Only
+			var names = names.concat(['Docop', 'Mikki', 'Spellgirl'])
 			var cleanishNames = names.join(', ')
-			var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n")
-			var cleanNames = cleanNames.replace("Lucy,", "Lucy,\n")
+			var cleanNames = cleanishNames.replace('Mt. Lady,', 'Mt. Lady,\n')
+			var cleanNames = cleanNames.replace('Lucy,', 'Lucy,\n')
 		}
-		if (guildid === "345390985150201859") { // The Giantess Club Only
-			var names = ["Yami","Mikan","Momo","Nana","Yui","May","Dawn","Hilda","Rosa","Serena","Palutena","Wii Fit Trainer","Lucina","Robin","Corrin","Bayonetta","Zelda","Sheik",
-		"Tifa","Chun-li","R. Mika","Daisy","Misty","Gardevoir","Lyn","Cammy","Angewomon","Liara","Samara","Tali","Miranda","Cus","Marcarita","Vados","Wendy","Sabrina","Cana","Erza",
-		"Levy","Lucy","Wendy Marvell"];
+		if (guildid === '345390985150201859') { // The Giantess Club Only
+			var names = ['Yami','Mikan','Momo','Nana','Yui','May','Dawn','Hilda','Rosa','Serena','Palutena','Wii Fit Trainer','Lucina','Robin','Corrin','Bayonetta','Zelda','Sheik',
+		'Tifa','Chun-li','R. Mika','Daisy','Misty','Gardevoir','Lyn','Cammy','Angewomon','Liara','Samara','Tali','Miranda','Cus','Marcarita','Vados','Wendy','Sabrina','Cana','Erza',
+		'Levy','Lucy','Wendy Marvell'];
 			var cleanishNames = names.join(', ')
-			var cleanNames = cleanishNames.replace("Hilda,", "Hilda,\n")
-			var cleanNames = cleanNames.replace("Lucina,", "Lucina,\n")
-			var cleanNames = cleanNames.replace("Chun-li,", "Chun-li,\n")
-			var cleanNames = cleanNames.replace("Cammy,", "Cammy,\n")
+			var cleanNames = cleanishNames.replace('Hilda,', 'Hilda,\n')
+			var cleanNames = cleanNames.replace('Lucina,', 'Lucina,\n')
+			var cleanNames = cleanNames.replace('Chun-li,', 'Chun-li,\n')
+			var cleanNames = cleanNames.replace('Cammy,', 'Cammy,\n')
 		}
-		if (guildid === "296104080957505546") { // The Bean Empire Only
-			var names = ["Terra", "Lexi", "Kiri", "Rosa", "Duni", "Lucy", "Kyla", "Pauline"];
-			var cleanishNames = names.join(', ')
-			var cleanNames = cleanishNames.replace("Duni,", "Duni,\n")
-        }
 
-        return {"names":names,"cleannames":cleanNames,"totalnames":names.length};
+        return {'names':names,'cleannames':cleanNames,'totalnames':names.length};
 
     }
 
@@ -380,17 +375,17 @@ class Misc { // Declaring export as a class because cbf to make other way work p
     }
 
     static getLewdCounts(type) {
-        var resultstring = "";
+        var resultstring = '';
         var total = 0;
         var pool = Misc.getLewdPool();
         for (const key in pool[type]) {
             if (pool[type].hasOwnProperty(key)) {
                 const element = pool[type][key];
                 total+=element.length;
-                resultstring+= "**"+Misc.capitaliseFirstLetter(key)+" "+Misc.capitaliseFirstLetter(type)+"s:** "+element.length+"\n \n";
+                resultstring+= '**'+Misc.capitaliseFirstLetter(key)+' '+Misc.capitaliseFirstLetter(type)+'s:** '+element.length+'\n \n';
             }
         }
-        resultstring = "**Total "+Misc.capitaliseFirstLetter(type)+"s:** "+total+"\n \n"+resultstring;
+        resultstring = '**Total '+Misc.capitaliseFirstLetter(type)+'s:** '+total+'\n \n'+resultstring;
         return resultstring;
 
     }
@@ -400,7 +395,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
     }
 
     static getLewdPool(){
-        return JSON.parse(fs.readFileSync("./db/lewds.json"));
+        return JSON.parse(fs.readFileSync('./db/lewds.json'));
     }
 }
 module.exports = Misc;

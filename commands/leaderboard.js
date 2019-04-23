@@ -143,5 +143,5 @@ module.exports = {
         });
       }
     },
-    help: "Member counts"
+    help: "Shows hoard leaderboards"
 }

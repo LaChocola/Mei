@@ -9,7 +9,7 @@ module.exports = {
 		const down = downs[Math.floor(Math.random() * downs.length)];
 		const guild = m.channel.guild;
 		m.content = m.content.toLowerCase();
-		if (m.content == `${prefix}role` || m.content == `${prefix}role `) {
+		if (m.content.trim() === `${prefix}role` || m.content.trim() === `${prefix}role `) {
 			Bot.createMessage(m.channel.id, 'What do you want to do? | `!role add <role name>` | `!role remove <role name>` | `!role list`');
 			return;
 		}
@@ -21,7 +21,7 @@ module.exports = {
 			Bot.createMessage(m.channel.id, '***One*** space Please');
 			return;
 		}
-		var roles = undefined;
+		var roles;
 		if (data[guild.id]) {
 			if (data[guild.id].roles) {
 				if (Object.keys(data[guild.id].roles)[0]) {
@@ -68,7 +68,7 @@ module.exports = {
 		}
 		if (m.content.includes('add')) {
 			if (!m.content.includes(' | ')) {
-				var content = m.cleanContent.toLowerCase().replace(`${prefix}role add `, '');
+				var content = m.cleanContent.toLowerCase().replace(`${prefix}role add `, '').trim();
 				if (roles[content]) {
 					var roleID = roles[content];
 					Bot.addGuildMemberRole(m.channel.guild.id, m.author.id, roleID, 'They...asked for it?').then(() => {
@@ -79,6 +79,15 @@ module.exports = {
 								Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
 							}, 7000);
 						});
+					}).catch((err) => {
+						if (err.code == 50013) {
+							Bot.createMessage(m.channel.id, 'I dont have permission to give assign that role to you. Please make sure I have `Manage Roles` permissions, and that the role you are trying to assign is under my highest role').then(msg => {
+								return setTimeout(() => {
+									Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+									Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+								}, 10000);
+							});
+						}
 					});
 					return;
 				}

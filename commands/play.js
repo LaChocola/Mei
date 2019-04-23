@@ -513,5 +513,5 @@ module.exports = {
             Bot.createMessage(m.channel.id, "You must be in a Voice Channel to play a song");
         }
     },
-    help: "Plays music"
+    help: "Plays music. `!play <youtube URL>` or `!play <youtube search term>` to play a song | `!play stop` to stop song"
 }

@@ -2,7 +2,7 @@ const _ = require('../servers.js');
 
 const data = _.load();
 module.exports = {
-	main(Bot, m, args) {
+	async main(Bot, m, args) {
 		const isMod = function (member, guild) {
 			if (data[guild.id]) {
 				if (data[guild.id].owner !== guild.ownerID) {
@@ -61,7 +61,7 @@ module.exports = {
 			}
 		};
 		const findRole = function (role) {
-			if (role.name !== 'undefined' && args.toLowerCase().includes(role.name.toLowerCase())) {
+			if (role.name !== 'undefined' && args.toLowerCase().trim() === role.name.toLowerCase().trim()) {
 				const role2 = role.id;
 				return role2;
 			}
@@ -331,6 +331,79 @@ module.exports = {
 				});
 				return;
 			}
+			if (args.toLowerCase().includes('leave')) {
+				if (args.toLowerCase().includes('remove')) {
+					if (data[guild.id].notifications.welcome) {
+						delete data[guild.id].notifications.leave;
+						Bot.createMessage(m.channel.id, 'Leave message removed').then(msg => {
+							return setTimeout(() => {
+								Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+								Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+							}, 5000);
+						});
+						_.save(data);
+						return;
+					}
+					Bot.createMessage(m.channel.id, 'No leave message was found, I cant remove what isnt there.').then(msg => {
+						return setTimeout(() => {
+							Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+							Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+						}, 5000);
+					});
+					return;
+				}
+				if (args.toLowerCase().includes('add')) {
+					if (!(data[guild.id].notifications)) {
+						data[guild.id].notifications = {};
+					}
+					if (!m.channelMentions[0]) {
+						Bot.createMessage(m.channel.id, 'Please mention which channel you want the leave message to appear in, then type the welcome message');
+						return;
+					}
+					const channelID = m.channelMentions[0];
+					const channel = m.channel.guild.channels.get(channelID);
+					if (channel.permissionsOf('309220487957839872').json.sendMessages !== true) {
+						Bot.createMessage(m.channel.id, 'I need permission to send messages and read messages in that channel. Please modify my permissions and try again.');
+						return;
+					}
+					let message = args.replace(/\bnotifications leave add\b/ig, '').replace(`${channel.mention}`, '').trim();
+					if (message.startsWith(' ') || message.endsWith(' ')) {
+						message = message.trim();
+					}
+					if (message.length === 0) {
+						Bot.createMessage(m.channel.id, `Please type a leave message to be added to ${channel.mention}`).then(msg => {
+							return setTimeout(() => {
+								Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+								Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+							}, 5000);
+						});
+					}
+					Bot.createMessage(m.channel.id, 'Adding Leave message: \'' + message + '\'\nto channel: ' + channel.mention).then(msg => {
+						return setTimeout(() => {
+							Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+							Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+						}, 5000);
+					});
+					data[guild.id].notifications.leave = {};
+					data[guild.id].notifications.leave[channel.id] = message;
+					_.save(data);
+					return;
+				}
+
+				if (data[guild.id].notifications.leave) {
+					const msg = Object.values(data[guild.id].notifications.welcome)[0];
+					Bot.createMessage(m.channel.id, 'The current leave message is set as:\n\n' + msg);
+					return;
+				}
+
+				Bot.createMessage(m.channel.id, 'No leave message has been set yet.').then(msg => {
+					return setTimeout(() => {
+						Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+						Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+					}, 5000);
+				});
+				return;
+			}
 		}
 		if (args.toLowerCase().includes('prefix')) {
 			let prefix = args.replace(/\bprefix\b/i, '');
@@ -439,8 +512,22 @@ module.exports = {
 				}
 				const serverRoles = m.guild.roles.map(roleSearch);
 				const selectedRole = args.toLowerCase();
+				console.log('selectedRole: ' + selectedRole);
 				if (serverRoles.indexOf(selectedRole) > -1) {
-					const role = m.guild.roles.find(findRole);
+					var role = await m.guild.roles.filter(findRole);
+					console.log('length: ' + role.length);
+					console.log('reults:');
+					console.log(role);
+					if (hasDuplicates(selectedRole) || role.length > 1) {
+						Bot.createMessage(m.channel.id, 'There is more than one role with that name. I am not sure which you want me to add').then(msg => {
+							return setTimeout(() => {
+								Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+								Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+							}, 5000);
+						});
+						return;
+					}
+					role = role[0];
 					if (!role.id) {
 						Bot.createMessage(m.channel.id, 'I couldnt find the role you were looking for').then(msg => {
 							return setTimeout(() => {
@@ -450,16 +537,6 @@ module.exports = {
 						});
 						return;
 					}
-					if (hasDuplicates(selectedRole)) {
-						Bot.createMessage(m.channel.id, 'There is more than one role with that name. I am not sure which you want me to add').then(msg => {
-							return setTimeout(() => {
-								Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
-								Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
-							}, 5000);
-						});
-						return;
-					}
-
 					const perms = m.channel.guild.members.get('309220487957839872').permission.json;
 					if (!perms.manageRoles) {
 						Bot.createMessage(m.channel.id, 'I need permissions to be able to add roles, please add the \'Manage Roles\' permission to me');
@@ -532,7 +609,7 @@ module.exports = {
 					Bot.createMessage(m.channel.id, 'I need permissions to be able to create roles, please add the \'Manage Roles\' permission to me');
 					return;
 				}
-				let args = args.replace(/roles /i, '').replace(/create/i, '').toLowerCase();
+				args = args.replace(/roles /i, '').replace(/create/i, '').toLowerCase();
 				if (args.startsWith(' ')) {
 					args = args.slice(1);
 				}

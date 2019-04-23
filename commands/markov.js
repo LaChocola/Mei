@@ -88,5 +88,5 @@ module.exports = {
             });
         });
     },
-    help: "Markov and Watson"
+    help: "Markov maker"
 }

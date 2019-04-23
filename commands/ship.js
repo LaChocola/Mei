@@ -67,7 +67,7 @@ module.exports = {
                 var firstPart = firstName.substring(0, firstName.length / 2);
                 var lastPart = lastName.substring(lastName.length / 2);
 
-                const bg = await Jimp.read("https://i.alexflipnote.xyz/b3e61a.png");
+                const bg = await Jimp.read("https://cdn.discordapp.com/attachments/356012822016163841/560222284606865450/b3e61a.png");
                 const user1 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`);
                 const user2 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[1].id}/${m.mentions[1].avatar}.png?size=1024`);
                 bg.resize(384, 128)

@@ -2,6 +2,7 @@ var config = require("../etc/config.json");
 const Sagiri = require('sagiri');
 const handler = new Sagiri(config.tokens.sauce);
 const qs = require('querystring')
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         let data;

@@ -5,9 +5,9 @@ module.exports = {
       main: async function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!names /i, "")
         var args = args.split(" ")
-        var isMod = function(member, guild) {
+        var isMod = async function(member, guild) {
           if (data[guild.id]) {
-            if (data[guild.id].owner != guild.ownerID) {
+            if (data[guild.id].owner !== guild.ownerID) {
               Bot.createMessage(m.channel.id, "New server owner detected, updating database.").then((msg) => {
                   return setTimeout(function() {
                       Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
@@ -22,7 +22,7 @@ module.exports = {
                 return true;
               }
             }
-            if (m.author.id == data[guild.id].owner || m.author.id == guild.ownerID) {
+            if (m.author.id === data[guild.id].owner || m.author.id === guild.ownerID) {
               return true;
             }
             if (data[guild.id].modRoles) {
@@ -39,7 +39,7 @@ module.exports = {
             }
           }
           else {
-            var perms = guild.members.get(member.id).permission.json
+            var perms = await guild.members.get(member.id).permission.json
             var pArray = ["banMembers", "administrator", "manageGuild"]
             if (perms[pArray[0]] || perms[pArray[1]] || perms[pArray[2]] || perms[pArray[3]] || perms[pArray[4]]) {
               return true;
@@ -47,7 +47,7 @@ module.exports = {
             return false;
           }
         }
-        var modCheck = isMod(m.channel.guild.members.get(m.author.id), m.channel.guild)
+        var modCheck = await isMod(m.channel.guild.members.get(m.author.id), m.channel.guild)
         var responses = ["Are you a real villan?", "Have you ever caught a good guy? \nLike a real super hero?", "Have you ever tried a disguise?", "What are you doing?!?!?!", "*NO!*, Don't touch that!", "Fuck Off", "Roses are red\nfuck me ;) "]
         var response = responses[Math.floor(Math.random() * responses.length)]
         var authorRoles = m.channel.guild.members.get(m.author.id).roles

@@ -117,7 +117,19 @@ module.exports = {
             var incoming = [];
             var iterator = incomingEntries.entries()
             for (let e of iterator) {
+                if (!e[1]) {
+                  break;
+                }
                 incoming.push(capFirstLetter(e[1]))
+            }
+            if (incoming.length == 0) {
+              Bot.createMessage(m.channel.id, 'Please say which fetish you would like to add, for example `!fetish add Butts`').then((msg) => {
+                setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                }, 5000)
+              });
+              return;
             }
             if (data.people[id].fetishes[incoming[0]]) {
                 Bot.createMessage(m.channel.id, "That's already been added, silly~").then((msg) => {
@@ -127,31 +139,39 @@ module.exports = {
                   }, 5000)
                 })
                 return;
-            } else {
-                if (incoming[0].toLowerCase().includes("dislike")) {
-                    incoming[0] = incoming[0].replace(/\bdislike\b/ig, "")
-                    incoming[0] = capFirstLetter(incoming[0].trim())
-                    data.people[id].fetishes[incoming[0]] = "dislike"
-                    _.save(data)
-                    Bot.createMessage(m.channel.id, "Added Dislike: **" + incoming[0] + "** " + hand).then((msg) => {
-                      setTimeout(function() {
-                          Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                          Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                      }, 5000)
-                    })
-                    return;
-                } else {
-                    data.people[id].fetishes[incoming[0]] = "like"
-                    _.save(data)
-                    Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand).then((msg) => {
-                      return setTimeout(function() {
-                          Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                          Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                      }, 5000)
-                    })
-                    return;
-                }
             }
+            else if (incoming[0].toLowerCase().includes("dislike")) {
+              incoming[0] = incoming[0].replace(/\bdislike\b/ig, "")
+              incoming[0] = capFirstLetter(incoming[0].trim())
+              if (!incoming[0]) {
+                Bot.createMessage(m.channel.id, 'Please say which fetish you would like to dislike, for example `!fetish add Death dislike`').then((msg) => {
+                  setTimeout(function () {
+                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                  }, 5000)
+                });
+                return;
+              }
+              data.people[id].fetishes[incoming[0]] = "dislike"
+              _.save(data)
+              Bot.createMessage(m.channel.id, "Added Dislike: **" + incoming[0] + "** " + hand).then((msg) => {
+                setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                }, 5000)
+              })
+              return;
+          } else {
+              data.people[id].fetishes[incoming[0]] = "like"
+              _.save(data)
+              Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand).then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                }, 5000)
+              })
+              return;
+          }
         }
         if (Object.keys(data.people[id].fetishes).length < 1) {
             Bot.createMessage(m.channel.id, "I could find any fetish list for **" + unidecode(name) + "** :(");
