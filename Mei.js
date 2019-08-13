@@ -1,5 +1,6 @@
 'use strict';
 process.on('unhandledRejection', (err, promise) => {
+  console.error("== Node detected an unhandled rejection! ==");
   console.error(err ? err.stack : promise);
 });
 var bot = require('eris');
@@ -11,35 +12,43 @@ Object.defineProperty(bot.Message.prototype, 'guild', {
 var fs = require('fs');
 
 var reload = require('require-reload')(require);
-var timeago = require('timeago.js');
 var timediff = require('timediff');
 var config = reload('./etc/config.json');
 var colors = require('colors');
 var _ = require('./data.js');
 var ppl = require('./people.js');
 var servers = reload('./servers.js');
-var people = ppl.load();
-var server = servers.load();
-var data = _.load();
-var aesthetics = require('aesthetics');
 var Bot = bot(config.tokens.mei);
-var unidecode = require('unidecode')
 var hands = [ ':ok_hand::skin-tone-1:', ':ok_hand::skin-tone-2:', ':ok_hand::skin-tone-3:', ':ok_hand::skin-tone-4:', ':ok_hand::skin-tone-5:', ':ok_hand:']
 var hand = hands[Math.floor(Math.random() * hands.length)]
+var commandContentsMap = {}
 
-Bot.on('guildBanAdd', function (guild, user) {
+var send = function (channel, text, timeout) {
+	Bot.createMessage(channel, text).then((msg) => {
+		return setTimeout(function () {
+			Bot.deleteMessage(m.channel.id, m.id, 'Timeout')
+			Bot.deleteMessage(m.channel.id, msg.id, 'Timeout')
+		}, timeout)
+	})
+	.catch((err) => {
+		console.log(`\nError Occured while sending message\n`)
+		console.log(err)
+	})
+}
+
+Bot.on('guildBanAdd', async function (guild, user) {
   var server = servers.load()
   if (server[guild.id]) {
     if (server[guild.id].notifications) {
       if (server[guild.id].notifications.banLog) {
-        var userFull = Bot.users.filter(m => m.id === user.id)[0]
+        var banned = await Bot.getGuildBan(guild.id, user.id)
+        var userFull = await Bot.users.filter(m => m.id === user.id)[0]
         var origID = userFull.id || null
         var hash = userFull.avatar || null
         var avy = `https://cdn.discordapp.com/avatars/${origID}/${hash}.jpg?size=128`
         var name = userFull.nick || user.username
         var msg = {
           'embed': {
-            'description': `${name}#${user.discriminator} (${user.id}) was banned from ${Bot.guilds.get(guild.id).name}\n\nWe are now at ${Bot.guilds.get(guild.id).memberCount} users`,
             'color': 13632027,
             'timestamp': new Date().toISOString(),
             'thumbnail': {
@@ -47,9 +56,41 @@ Bot.on('guildBanAdd', function (guild, user) {
             },
             'author': {
               'name': 'User Banned'
-            }
+            },
+            "fields": [
+              {
+                "name": "User:",
+                "value": `${name}#${user.discriminator}`,
+                "inline": true
+              },
+              {
+                "name": "ID:",
+                "value": banned.user.id,
+                "inline": true
+              },
+              {
+                "name": "\nBot:",
+                "value": banned.user.bot,
+                "inline": true
+              },
+              {
+                "name": "\nRemaining:",
+                "value": `${await Bot.guilds.get(guild.id).memberCount} members`,
+                "inline": true
+              }
+            ]
           }
         };
+        if (banned.reason) {
+          if (banned.reason.toLowerCase().startsWith("banned by: ")) {
+            banned.reason = banned.reason+" (Automated ban through Mei)"
+          }
+          msg.embed.fields.push({
+            "name": "\nReason:",
+            "value": banned.reason,
+            "inline": true
+          })
+        }
         var channel = server[guild.id].notifications.banLog
         Bot.createMessage(channel, msg);
       }
@@ -57,19 +98,18 @@ Bot.on('guildBanAdd', function (guild, user) {
   }
 });
 
-Bot.on('guildBanRemove', function (guild, user) {
+Bot.on('guildBanRemove', async function (guild, user) {
   var server = servers.load()
   if (server[guild.id]) {
     if (server[guild.id].notifications) {
       if (server[guild.id].notifications.banLog) {
-        var userFull = Bot.users.filter(m => m.id === user.id)[0]
+        var userFull = await Bot.users.filter(m => m.id === user.id)[0]
         var origID = userFull.id || null
         var hash = userFull.avatar || null
         var avy = `https://cdn.discordapp.com/avatars/${origID}/${hash}.jpg?size=128`
         var name = userFull.nick || user.username
         var msg = {
           'embed': {
-            'description': `${name}#${user.discriminator} (${user.id}) was unbanned from ${Bot.guilds.get(guild.id).name}\n\nWe are now at ${Bot.guilds.get(guild.id).memberCount} users`,
             'color': 8311585,
             'timestamp': new Date().toISOString(),
             'thumbnail': {
@@ -77,7 +117,29 @@ Bot.on('guildBanRemove', function (guild, user) {
             },
             'author': {
               'name': 'User UnBanned'
-            }
+            },
+            "fields": [
+              {
+                "name": "User:",
+                "value": `${name}#${user.discriminator}`,
+                "inline": true
+              },
+              {
+                "name": "ID:",
+                "value": user.id,
+                "inline": true
+              },
+              {
+                "name": "\nBot:",
+                "value": user.bot,
+                "inline": true
+              },
+              {
+                "name": "\nRemaining:",
+                "value": `${await Bot.guilds.get(guild.id).memberCount} members`,
+                "inline": true
+              }
+            ]
           }
         };
         var channel = server[guild.id].notifications.banLog
@@ -87,33 +149,79 @@ Bot.on('guildBanRemove', function (guild, user) {
   }
 });
 
-Bot.on('messageCreate', (m)=>{
-  if (m.author.id === '309220487957839872') return;
+Bot.on('messageCreate', async function (m) {
+  const timestamps = [ Date.now() ]
+  const updateTimestamps = () => {
+    const latest = timestamps[timestamps.length - 1]
+    const now = Date.now()
+    timestamps[timestamps.length - 1] = now - latest
+    timestamps.push(now)
+  }
   var data = _.load();
   if (data.banned.global[m.author.id]) {
     return;
   }
+  updateTimestamps()
   if (!m.channel.guild) {
-      console.log(m);
+      console.log(`${m.author.username}#${m.author.discriminator} (${m.author.id}): ${m.content}`);
       Bot.getDMChannel(m.author.id).then(function (DMchannel) {
           Bot.createMessage(DMchannel.id, 'Your messages do not serve me here, bug.');
           return;
-      });
+      }).catch((err) => {
+        if (err.code == 50007) {
+          return;
+        }
+        console.log(err)
+      })
+      if (m.author.id !== "161027274764713984") {
+        console.log("Guild 1:",m.channel.guild)
+              var roles = new Collection(bot.Role)
+              var members = new Collection(bot.User)
+              var channels = new Collection(bot.Channel)
+              members.add(m.author, bot.User, true)
+              channels.add(m.channel, bot.Channel, true)
+              roles.add({"name": "fakeRole", "id": "00001"}, bot.Role, true)
+              var fakeGuild = {
+                name: m.author.username,
+                ownerid: m.author.id,
+                id: m.channel.id,
+                iconURL: m.author.iconURL,
+                roles: roles,
+                members: members,
+                channels: channels
+              }
+        console.log(`Guild 2: ${m.channel.guild}`)
+      };
       return;
   }
+  updateTimestamps()
+  var config = reload('./etc/config.json')
+  var server = servers.load()
+  var prefix = config.prefix
+  if (server[m.channel.guild.id] && server[m.channel.guild.id].game && server[m.channel.guild.id].game.channel == m.channel.id && server[m.channel.guild.id].game.player == m.author.id) {
+    if (server[m.channel.guild.id].game.active && server[m.channel.guild.id].game.choices.includes(m.content)) {
+    m.content = prefix+'t ' + m.content
+    }
+  }
+
   if (m.content.toLowerCase().match(/\bchocola\b/i) || m.content.toLowerCase().match(/\bchoco\b/i) || m.content.toLowerCase().match(/\bchoc\b/i)) {
     var member = m.channel.guild.members.get('161027274764713984');
     var present = member.id || false;
     if (present !== '161027274764713984') {
       return;
     }
-    if (m.author.id === '161027274764713984') {
+    if (m.author.id === '161027274764713984' || m.author.id === '309220487957839872') {
       return;
     }
     Bot.getDMChannel('161027274764713984').then(function (DMchannel) {
         Bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`).then((msg) => {
           Bot.createMessage(DMchannel.id, m.content);
-        })
+        }).catch((err) => {
+          if (err.code == 50007) {
+            return;
+          }
+          console.log(err)
+		    })
     });
   }
   if (m.author.id === '161027274764713984' && m.content.includes('pls')) {
@@ -128,19 +236,10 @@ Bot.on('messageCreate', (m)=>{
       })
     }
     if (m.content.includes('override')) {
-      Bot.createMessage(m.channel.id, `Chocola Recognized. Permission overrides engaged. I am at your service~`).then((msg) => {
-          return setTimeout(function () {
-              Bot.deleteMessage(m.channel.id, m.id, 'Timeout')
-              Bot.deleteMessage(m.channel.id, msg.id, 'Timeout').then(() => {
-                  process.exit(0)
-              })
-          }, 2000)
-      })
+		send(m.channel.id, 'Chocola Recognized. Permission overrides engaged. I am at your service~', 2000)
     }
   }
-  var config = reload('./etc/config.json')
-  var server = servers.load()
-  var prefix = config.prefix
+  updateTimestamps()
   if (server[m.channel.guild.id]) {
     if (server[m.channel.guild.id].prefix) {
       var prefix = server[m.channel.guild.id].prefix
@@ -194,15 +293,23 @@ Bot.on('messageCreate', (m)=>{
   if (m.channel.guild.id === '196027622944145408' && m.content.startsWith(`${prefix}play`)) {
     return;
   }
+  updateTimestamps()
 	var loguser = `${m.author.username}#${m.author.discriminator}`.magenta.bold;
 	var logserver = `${m.channel.guild.name}`.cyan.bold || 'Direct Message'.cyan.bold
 	var logchannel = `#${m.channel.name}`.green.bold;
 	var logdivs = [' > '.blue.bold, ' - '.blue.bold];
 	var commands = fs.readdirSync('./commands/');
-	if (m.content.startsWith(prefix)) {
-		var command = m.content.split(' ')[0].replace(prefix, '').toLowerCase();
+  updateTimestamps()
+  if (m.content.startsWith("<@309220487957839872>")) {
+    console.log(m.content);
+    m.content = prefix+m.content.replace("<@309220487957839872>", "").trim()
+    console.log(m.content);
+  }
+	if (m.content.startsWith(prefix) || m.content.toLowerCase().startsWith(prefix)) {
+    var command = m.content.replace(prefix, '').trim().split(' ')[0].toLowerCase();
 		if (commands.indexOf(command+'.js') > -1) {
   		var data = _.load(); // Track command usage in ../db/data.json
+      updateTimestamps()
       data.commands.totalRuns++
   		if (!(data.commands[command])) {
   			data.commands[command]= {};
@@ -214,17 +321,28 @@ Bot.on('messageCreate', (m)=>{
   		}
       data.commands[command].users[m.author.id]++
       data.commands[command].totalUses++
+      updateTimestamps()
       _.save(data);
-			var cmd = reload('./commands/'+command+'.js');
+      updateTimestamps()
+      const commandContents = fs.readFileSync('./commands/'+command+'.js')
+      if (commandContentsMap[command] !== commandContents) {
+        var cmd = reload('./commands/'+command+'.js');
+        commandContentsMap[command] = commandContents
+      } else {
+        var cmd = require('./commands/'+command+'.js')
+      }
+      updateTimestamps()
 			var args = m.content.replace(/\[\?\]/ig,'').split(' ');
 			args.splice(0, 1);
 			args = args.join(' ');
 			var logcmd = `${prefix}${command}`.bold;
 			var logargs = `${args}`.bold;
 			try {
+        updateTimestamps()
+        timestamps.pop()
+        fs.appendFileSync('db/timestamps.txt', timestamps.reduce((a, b) => a + b) + 'ms | ' + timestamps.join(', ') + '\n');
 				console.log('CMD'.black.bgGreen+' '+loguser+logdivs[1]+logserver+logdivs[0]+logchannel+' '+logcmd.blue);
 				if (args) console.log('ARG'.black.bgCyan+' '+logargs.blue.bold);
-				console.log('');
 				cmd.main(Bot, m, args, prefix);
 			} catch (err) {
 				console.log(err);
@@ -263,16 +381,24 @@ Bot.on('guildMemberAdd', async function (guild, member) {
                 icon_url: member.avatarURL
               }
           }
+        }).catch((err) => {
+          console.log(err)
         });
         if (diff.days < 2) {
-          Bot.createMessage(channel, `:warning: **${name}** Joined less than 24 hours after creating their account`);
+          Bot.createMessage(channel, `:warning: **${name}** Joined less than 24 hours after creating their account`).catch((err) => {
+            console.log(err)
+          });
         }
       }
       if (server[guild.id].notifications.welcome) {
         var channel = Object.keys(server[guild.id].notifications.welcome)[0];
         var message = server[guild.id].notifications.welcome[channel];
         message = message.replace('[name]', `${member.username}`).replace('[user]', `${member.username}#${member.discriminator}`).replace('[server]', `${guild.name}`).replace('[mention]', `${member.mention}`).replace('[count]', `${guild.memberCount - guild.members.filter(m => m.bot).length}`);
-        Bot.createMessage(channel, message);
+        if (channel && message) {
+          Bot.createMessage(channel, message).catch((err) => {
+            console.log(err)
+          });
+        }
       }
     }
   }
@@ -295,48 +421,62 @@ Bot.on('guildMemberRemove', async function (guild, member) {
                 icon_url: member.avatarURL
               }
           }
+        }).catch((err) => {
+          console.log(err)
         });
       }
       if (server[guild.id].notifications.leave) {
         var channel = Object.keys(server[guild.id].notifications.leave)[0];
         var message = server[guild.id].notifications.leave[channel];
         message = message.replace('[name]', `${member.username}`).replace('[user]', `${member.username}#${member.discriminator}`).replace('[server]', `${guild.name}`).replace('[mention]', `${member.mention}`).replace('[count]', `${guild.memberCount - guild.members.filter(m => m.bot).length}`);
-        Bot.createMessage(channel, message);
+        Bot.createMessage(channel, message).catch((err) => {
+          console.log(err)
+        });
       }
     }
   }
 });
 
 Bot.on('guildCreate', async function (guild) {
-    Bot.getDMChannel('161027274764713984').then(function (DMchannel) {
-          Bot.createMessage(DMchannel.id, {
-            embed: {
-                color: 0xA260F6,
-                title:  'I was invited to the guild: ' + guild.name + '(' + guild.id + ')\nI am now in '+Bot.guilds.size+' guilds',
-                timestamp: new Date().toISOString(),
-                author: {
-                  name: guild.name,
-                  icon_url: guild.iconURL
-                }
-            }
-          });
-      });
+  Bot.getDMChannel('161027274764713984').then(function (DMchannel) {
+        Bot.createMessage(DMchannel.id, {
+          embed: {
+              color: 0xA260F6,
+              title:  'I was invited to the guild: ' + guild.name + '(' + guild.id + ')\nI am now in '+Bot.guilds.size+' guilds',
+              timestamp: new Date().toISOString(),
+              author: {
+                name: guild.name,
+                icon_url: guild.iconURL
+              }
+          }
+        });
+    }).catch((err) => {
+      if (err.code == 50007) {
+        return;
+      }
+      console.log(err)
+    });
 });
 
 Bot.on('guildDelete', async function (guild) {
-    Bot.getDMChannel('161027274764713984').then(function (DMchannel) {
-          Bot.createMessage(DMchannel.id, {
-            embed: {
-                color: 0xA260F6,
-                title:  'I was removed from the guild: ' + guild.name + '(' + guild.id + ')\nI am now in '+Bot.guilds.size+' guilds',
-                timestamp: new Date().toISOString(),
-                author: {
-                  name: guild.name,
-                  icon_url: guild.iconURL
-                }
-            }
-          });
-      });
+  Bot.getDMChannel('161027274764713984').then(function (DMchannel) {
+        Bot.createMessage(DMchannel.id, {
+          embed: {
+              color: 0xA260F6,
+              title:  'I was removed from the guild: ' + guild.name + '(' + guild.id + ')\nI am now in '+Bot.guilds.size+' guilds',
+              timestamp: new Date().toISOString(),
+              author: {
+                name: guild.name,
+                icon_url: guild.iconURL
+              }
+          }
+        });
+    }).catch((err) => {
+      if (err.code == 50007) {
+        return;
+      }
+      console.log(err)
+    });
 });
 
 Bot.on('messageReactionAdd', async function (m, emoji, userID) {
@@ -400,8 +540,10 @@ Bot.on('messageReactionAdd', async function (m, emoji, userID) {
                   ppl.save(people);
                   if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== '309220487957839872') {
                     var user = Bot.users.filter(u => u.id === m.author.id)[0];
-                    Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds (since the counter was added).`).then((m) => {
+                    Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                         return setTimeout(function () {Bot.deleteMessage(m.channel.id, m.id, 'Timeout')}, 60000);
+                    }).catch((err) => {
+                      console.log(err)
                     });
                   }
                 }
@@ -427,8 +569,10 @@ Bot.on('messageReactionAdd', async function (m, emoji, userID) {
                 ppl.save(people);
                 if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== '309220487957839872') {
                   var user = Bot.users.filter(u => u.id === m.author.id)[0];
-                  Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds (since the counter was added).`).then((m) => {
+                  Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                       return setTimeout(function () {Bot.deleteMessage(m.channel.id, m.id, 'Timeout')}, 60000)
+                  }).catch((err) => {
+                    console.log(err)
                   });
                 }
               }
@@ -495,8 +639,10 @@ Bot.on('messageReactionAdd', async function (m, emoji, userID) {
                         ppl.save(people);
                         if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== '309220487957839872') {
                           var user = Bot.users.filter(u => u.id === m.author.id)[0];
-                          Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds (since the counter was added).`).then((m) => {
+                          Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                               return setTimeout(function () {Bot.deleteMessage(m.channel.id, m.id, 'Timeout')}, 60000);
+                          }).catch((err) => {
+                            console.log(err)
                           });
                         }
                       }
@@ -522,8 +668,10 @@ Bot.on('messageReactionAdd', async function (m, emoji, userID) {
                       ppl.save(people);
                       if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== '309220487957839872') {
                         var user = Bot.users.filter(u => u.id === m.author.id)[0];
-                        Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds (since the counter was added).`).then((m) => {
+                        Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                             return setTimeout(function () {Bot.deleteMessage(m.channel.id, m.id, 'Timeout')}, 60000)
+                        }).catch((err) => {
+                          console.log(err)
                         });
                       }
                     }
@@ -535,6 +683,8 @@ Bot.on('messageReactionAdd', async function (m, emoji, userID) {
         }
       }
     }
+  }).catch((err) => {
+    console.log(err)
   });
 });
 
@@ -557,7 +707,6 @@ Bot.on('messageReactionRemove', async function (m, emoji, userID) {
           var links = [];
           for (var attachment of m.attachments) {
             if (attachment.url) {
-              console.log(attachment.url);
               links.push(attachment.url);
             }
           }
@@ -649,7 +798,6 @@ Bot.on('messageReactionRemove', async function (m, emoji, userID) {
                 var links = [];
                 for (var attachment of m.attachments) {
                   if (attachment.url) {
-                    console.log(attachment.url);
                     links.push(attachment.url);
                   }
                 }
@@ -703,7 +851,9 @@ Bot.on('messageReactionRemove', async function (m, emoji, userID) {
         }
       }
     }
-  })
+  }).catch((err) => {
+    console.log(err)
+  });
 });
 
 Bot.connect();
