@@ -17,8 +17,10 @@ module.exports = {
 			}
 		});
 		const message = lines.join('\n');
+		console.log(message.length);
+		console.log(message);
+		
 		Bot.createMessage(m.channel.id, {
-			content: 'Here are the **commands** you can use',
 			embed: {
 				color: 0x5A459C,
 				description: message

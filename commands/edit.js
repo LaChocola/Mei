@@ -190,7 +190,7 @@ module.exports = {
 					return;
 				}
 
-				Bot.createMessage(m.channel.id, 'No ban log channel has been set yet. Use `!edit notifications banlog enable <@channel>` to add logs to that channel').then(msg => {
+				Bot.createMessage(m.channel.id, 'No ban log channel has been set yet. Use `!edit notifications banlog enable #channel` to add logs to that channel').then(msg => {
 					return setTimeout(() => {
 						Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
 						Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
@@ -297,13 +297,14 @@ module.exports = {
 					if (message.startsWith(' ') || message.endsWith(' ')) {
 						message = message.trim();
 					}
-					if (message.length === 0) {
-						Bot.createMessage(m.channel.id, `Please type a welcome message to be added to ${channel.mention}`).then(msg => {
+					if (message.length < 1) {
+						Bot.createMessage(m.channel.id, `Please type a welcome message to be added to ${channel.mention} at the end of this command`).then(msg => {
 							return setTimeout(() => {
 								Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
 								Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
-							}, 5000);
+							}, 10000);
 						});
+						return;
 					}
 					Bot.createMessage(m.channel.id, 'Adding Welcome message: \'' + message + '\'\nto channel: ' + channel.mention).then(msg => {
 						return setTimeout(() => {
@@ -664,7 +665,7 @@ module.exports = {
 					});
 					return;
 				}
-				let args = args.replace(/roles /i, '').replace(/delete/i, '').toLowerCase();
+				args = args.replace(/roles /i, '').replace(/delete/i, '').toLowerCase();
 				if (args.startsWith(' ')) {
 					args = args.slice(1);
 				}
@@ -721,7 +722,7 @@ module.exports = {
 			if (args.toLowerCase().includes('update')) {
 				var roles = Object.keys(data[m.channel.guild.id].roles);
 				for (var role of roles) {
-					const exists = m.channel.guild.roles.find((r) => {r.id == data[m.channel.guild.id].roles[role]});
+					const exists = m.channel.guild.roles.find((r) => {if (r.id == data[m.channel.guild.id].roles[role]) {return true;}});
 					if (!exists) {
 						delete data[guild.id].roles[role];
 						_.save(data);
@@ -731,7 +732,15 @@ module.exports = {
 							}, 1000);
 						});
 					}
+					else {
+						Bot.createMessage(m.channel.id, role + ' is valid, no change needed').then(msg => {
+							return setTimeout(() => {
+								Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+							}, 1000);
+						});
+					}
 				}
+				return;
 			}
 			Bot.createMessage(m.channel.id, 'You can edit the roles, and do things like adding and removing roles that Mei can give to people, and creating and deleting roles.\n Simply say things like `!edit roles create tiny` to *create* a role called "tiny" or `!edit roles add giantess` to let users get the "giantess" role from Mei when they use the `!roles` command').then(msg => {
 				return setTimeout(() => {
@@ -815,5 +824,5 @@ module.exports = {
 			Bot.createMessage(m.channel.id, 'These are the settings you can **edit** (Bold represents the default setting):\n\n\n`hoards`: **disable** | enable, Turn custom hoard reactions on or off in this server, defaults to off (heart eye emoji only)\n\n`prefix`: <prefix>, Change the prefix Mei sues in this server, Default prefix is **`!`**\n\n`mod`: add | remove, <@person> | <@role>. Add a moderator, or a role for moderators to use Mei\'s admin features, and edit settings\n\n`roles`: add <role> | remove <role> | create <role> | delete <role>, Add or remove the roles Mei can give to users, or create and delete roles in the server. (Roles created by Mei will have no power and no color, and will be at the bottom of the role list)\n\n`notifications`: banlog | updates | welcome, enable <@channel> | disable, Allows you to enable, disable, or change channels that certain notifications appear in. Currently supports a log channel for all bans, a log of all users joining and leaving, and editing the welcome message that Mei gives when users join, and what channel each appears in.\n\n`art`: remove | add <#channel>, Adds a channel for Mei to use in the `!art` command');
 		}
 	},
-	help: 'Modify Server Settings (Server Owner only)'
+	help: 'Modify Server Settings (Admin only)'
 };

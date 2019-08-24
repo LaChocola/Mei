@@ -300,13 +300,8 @@ Bot.on('messageCreate', async function (m) {
 	var logdivs = [' > '.blue.bold, ' - '.blue.bold];
 	var commands = fs.readdirSync('./commands/');
   updateTimestamps()
-  if (m.content.startsWith("<@309220487957839872>")) {
-    console.log(m.content);
-    m.content = prefix+m.content.replace("<@309220487957839872>", "").trim()
-    console.log(m.content);
-  }
-	if (m.content.startsWith(prefix) || m.content.toLowerCase().startsWith(prefix)) {
-    var command = m.content.replace(prefix, '').trim().split(' ')[0].toLowerCase();
+	if (m.content.startsWith(prefix)) {
+		var command = m.content.split(' ')[0].replace(prefix, '').toLowerCase();
 		if (commands.indexOf(command+'.js') > -1) {
   		var data = _.load(); // Track command usage in ../db/data.json
       updateTimestamps()

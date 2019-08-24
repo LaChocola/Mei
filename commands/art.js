@@ -20,7 +20,7 @@ module.exports = {
             _.load()
         }
         if (!data[guild.id].art) {
-            Bot.createMessage(m.channel.id, "An art channel has not been set up for this server. Please have a mod add one using the command: `!edit art add #channel`").then((msg) => {
+            Bot.createMessage(m.channel.id, `An art channel has not been set up for this server. Please have a mod add one using the command: \`${prefix}edit art add #channel\``).then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout")
@@ -40,7 +40,7 @@ module.exports = {
         console.log(m.channel.nsfw);
         var cName = channel.name
         var gName = channel.guild.name
-        var icon = channel.guild.iconURL
+        var icon = channel.guild.iconURL || null
         if (channel.nsfw && !m.channel.nsfw) {
           Bot.createMessage(m.channel.id, `The selected art channel, <#${channel.id}>, is an nsfw channel, and this channel is not. Please either use this command in an nsfw channel, or set the art channel to a non-nsfw channel`).then((msg) => {
               return setTimeout(function() {
@@ -141,5 +141,5 @@ module.exports = {
         });
         return;
     },
-    help: "Show random art from the set art channel in the server, can show imagesthat were posted, or pastebin links" // add description
+    help: "Show art from the set art channel" // add description
 }

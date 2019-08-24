@@ -101,6 +101,8 @@ module.exports = {
           data.banned.global[id] = reason;
         }
       }
+      console.log(id, reason, data.banned.global);
+      
       _.save(data);
       Bot.createMessage(m.channel.id, `Goodbye, ${name} (${id}) ${hand}`).then((msg) => {
           return setTimeout(function () {

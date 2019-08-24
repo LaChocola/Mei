@@ -86,11 +86,14 @@ module.exports = {
                                 voiceConnection.stopPlaying()
                                 return;
                             }
-                            if (args.toLowerCase().includes("current")) { // someone asks for current song info
+                            if (args.toLowerCase().includes("current") || ((args.toLowerCase().includes("queue") || args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list=")) && Object.entries(data[guild.id].music.queue).length < 1)) { // someone asks for current song info
                               var playTime = voiceConnection.current.playTime
-                              var endTime = yt.getInfo("https://www.youtube.com/watch?v=" + data[guild.id].music.current.code).then(info => {
+                              var endTime = yt.getInfo("https://www.youtube.com/watch?v=" + data[guild.id].music.current.code).then(async function (info) {
+                                info = await info
                                 var start = playTime
-                                var end = info.length_seconds*1000
+                                var end = +info.length_seconds*1000
+                                console.log(await info.length_seconds)
+                                console.log(end)
                                 var bar = progress({
                                   total: end,
                                   style: function (complete, incomplete) {
@@ -107,8 +110,6 @@ module.exports = {
                                   Bot.createMessage(m.channel.id, "Nothing is currently playing");
                                   return;
                                 }
-                                console.log("start: "+start);
-                                console.log(msToHMS(start));
                                 var msg = {
                                   "embed": {
                                     "title": `:musical_note:  ${info.title} :musical_note:`,
@@ -132,7 +133,17 @@ module.exports = {
                                     ]
                                   }
                                 };
-                                Bot.createMessage(m.channel.id, msg);
+                                if (((args.toLowerCase().includes("queue") || args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list=")) && Object.entries(data[guild.id].music.queue).length < 1)) {
+                                  console.log(msg.embed.author.name)
+                                  msg.embed.author.name = "Nothing Else is Queued.\nCurrently Playing:"
+                                  console.log(msg.embed.author.name)
+                                }                             
+                                Bot.createMessage(m.channel.id, msg).then((mesg) => {
+                                  return setTimeout(function() {
+                                      Bot.deleteMessage(m.channel.id, mesg.id, "Timeout")
+                                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                                  }, end-start)
+                                })
                                 return;
                               }).catch(err => {
                                 console.log(err);
@@ -150,7 +161,7 @@ module.exports = {
                               voiceConnection.pause()
                               return;
                             }
-                            if (args.toLowerCase().includes("queue") || args.toLowerCase().includes("list")) { // display queue of songs if it exists
+                            if (args.toLowerCase().includes("queue") || args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list=")) { // display queue of songs if it exists
                               let index = 1;
                               const songs = [];
 
@@ -158,21 +169,29 @@ module.exports = {
                               await Bot.sendChannelTyping(m.channel.id);
                               try {
                                 console.log(data[guild.id].music.queue);
-                                for (const [id, queuer] of Object.entries(data[guild.id].music.queue)) {
-                                  var info = await yt.getInfo(`https://www.youtube.com/watch?v=${id}`);
-                                  var title = info.title
-                                  console.log(title);
-                                  songs.push(`${index++}. ${title} [${msToHMS(info.length_seconds*1000)}]  |  Requested by: ${queuer}`);
-                                }
-                                console.log(songs);
-                                if (!songs.length) { Bot.createMessage(m.channel.id, 'The queue is empty right now'); } else {
+                                if (!Object.entries(data[guild.id].music.queue)) { Bot.createMessage(m.channel.id, 'The queue is empty right now'); } else {
+                                  for (const [id, queuer] of Object.entries(data[guild.id].music.queue)) {
+                                    var info = await yt.getInfo(`https://www.youtube.com/watch?v=${id}`);
+                                    var title = info.title
+                                    songs.push(`${index++}. [${title}](https://www.youtube.com/watch?v=${id}) [${msToHMS(+info.length_seconds*1000)}]  |  Requested by: ${queuer}`);
+                                  }
                                   Bot.createMessage(m.channel.id, {
                                     embed: {
                                       color: 0xA260F6,
                                       title: `${songs.length} songs currently queued`,
                                       description: " \n\n" + songs.join('\n'),
                                     },
-                                  });
+                                  }).catch((err) => {
+                                    if (err.code == 50013) {
+                                      Bot.createMessage(m.channel.id, "I do not have permisson to embed links in this channel. Please make sure I have the `embed links` permission on my highest role, and that the channel permissions are not overriding it.").then((msg) => {
+                                          return setTimeout(function() {
+                                              Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                                              Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                                          }, 5000)
+                                      })
+                                      return;
+                                    }
+                                  })
                                 }
                               } catch (e) {
                                 console.log(e);
@@ -185,7 +204,7 @@ module.exports = {
                                   var volume = /\b[0-9]+\b/.exec(args)[0]
                                   volume = +volume/100
                                   if (volume > 1.5) { // no ear rape
-                                    Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume*100).toFixed(0)}%`).then((msg) => {
+                                    Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(+volume*100).toFixed(0)}%`).then((msg) => {
                                         return setTimeout(function() {
                                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                                             Bot.deleteMessage(m.channel.id, m.id, "Timeout")
@@ -193,7 +212,7 @@ module.exports = {
                                     })
                                     return;
                                   }
-                                  Bot.createMessage(m.channel.id, `Setting Volume to ${(volume*100).toFixed(0)}%`).then((msg) => {
+                                  Bot.createMessage(m.channel.id, `Setting Volume to ${(+volume*100).toFixed(0)}%`).then((msg) => {
                                       return setTimeout(function() {
                                           Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                                           Bot.deleteMessage(m.channel.id, m.id, "Timeout")
@@ -203,10 +222,10 @@ module.exports = {
                                   return;
                               }
                               if (args.toLowerCase().includes("down")) { // someone asks to turn volume down 10%
-                                var volume = voiceConnection.volume
+                                let volume = voiceConnection.volume
                                 volume = +voiceConnection.volume-0.1
-                                volume = Math.round(volume*100)/100
-                                if (volume < 0) {
+                                volume = Math.round(+volume*100)/100
+                                if (+volume < 0) {
                                   Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume*100).toFixed(0)}%`).then((msg) => {
                                       return setTimeout(function() {
                                           Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
@@ -225,7 +244,7 @@ module.exports = {
                                 return;
                               }
                               if (args.toLowerCase().includes("up")) { // someone asks to turn volume up 10%
-                                var volume = voiceConnection.volume
+                                let volume = voiceConnection.volume
                                 volume = +voiceConnection.volume+0.1
                                 volume = Math.round(volume*100)/100
                                 if (volume > 1.5) {
@@ -346,7 +365,7 @@ module.exports = {
                                     console.log(error);
                                     return;
                                   }
-                                  Bot.createMessage(m.channel.id, "Added: `" + info.title + "` ["+msToHMS(info.length_seconds*1000)+"m] to queue. Requested by **" + m.author.username + "#" + m.author.discriminator + "**").then((msg) => {
+                                  Bot.createMessage(m.channel.id, "Added: `" + info.title + "` ["+msToHMS(+info.length_seconds*1000)+"m] to queue. Requested by **" + m.author.username + "#" + m.author.discriminator + "**").then((msg) => {
                                       return setTimeout(function() {
                                           Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                                           Bot.deleteMessage(m.channel.id, m.id, "Timeout")
@@ -412,7 +431,7 @@ module.exports = {
                             data[guild.id].music.current.player = `${m.author.username + "#" + m.author.discriminator}`
                             _.save(data)
                             _.load()
-                            yt.getInfo("https://www.youtube.com/watch?v=" + code, function(error, info) {
+                            yt.getInfo("https://www.youtube.com/watch?v=" + code, async function(error, info) {
                                 if (error) {
                                     console.log("Erorr: "+error);
                                     Bot.createMessage(m.channel.id, `Sorry, I wasnt able to play a video with the code: ${code}`).then((msg) => {
@@ -429,7 +448,8 @@ module.exports = {
                                     }
                                     return;
                                 }
-                                Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` ["+msToHMS(info.length_seconds*1000)+"m] requested by **" + m.author.username + "#" + m.author.discriminator + "**").then((msg) => {
+                                var info = await info
+                                Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` ["+msToHMS(+info.length_seconds*1000)+"m] requested by **" + m.author.username + "#" + m.author.discriminator + "**").then((msg) => {
                                     return setTimeout(function() {
                                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                                         Bot.deleteMessage(m.channel.id, m.id, "Timeout")
@@ -474,7 +494,7 @@ module.exports = {
                                 if (error) {
                                   console.log("Error: "+error);
                                 }
-                                Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` ["+msToHMS(info.length_seconds*1000)+"m] requested by **" + requester +"**").then((msg) => {
+                                Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` ["+msToHMS(+info.length_seconds*1000)+"m] requested by **" + requester +"**").then((msg) => {
                                     return setTimeout(function() {
                                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                                     }, 5000)
@@ -513,5 +533,5 @@ module.exports = {
             Bot.createMessage(m.channel.id, "You must be in a Voice Channel to play a song");
         }
     },
-    help: "Plays music. `!play <youtube URL>` or `!play <youtube search term>` to play a song | `!play stop` to stop song"
+    help: "`!play <YT URL>` | `!play <search>` to play | `!play stop` to stop"
 }

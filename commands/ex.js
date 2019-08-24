@@ -50,15 +50,13 @@ module.exports = {
             console.log("Error: " + error);
           } else if (response.statusCode === 200) {
             var $ = cheerio.load(body);
-
-            $('.id1').each(function () {
+            $('.itg .gl1t').each(function () {
               link_array.push({
-                name: $('.id2', this).text(),
-                link: $('.id2 a', this).attr('href'),
-                pic: $('.id3 img', this).attr('src')
+                name: $('a .glname', this).text(),
+                link: $('a', this).attr('href'),
+                pic: $('img', this).attr('src')
               })
-            })
-
+            });           
             if (link_array.length < 1) {
               Bot.createMessage(m.channel.id, "No results found :(");
               return;

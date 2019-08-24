@@ -262,5 +262,5 @@ module.exports = {
           Bot.createMessage(m.channel.id, msg);
           return;
     },
-    help: "View items in your hoard. React to things with :heart_eyes: to add items"
+    help: "View hoards. React with :heart_eyes: to add"
 }

@@ -88,5 +88,5 @@ module.exports = {
             }
         });
     },
-    help: "Ship someone together~ <@user1> <@user2>"
+    help: "Shipping~"
 }

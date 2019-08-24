@@ -14,5 +14,5 @@ module.exports = {
             }
         }
     },
-    help: "Makes me spray people"
+    help: "Spray"
 }

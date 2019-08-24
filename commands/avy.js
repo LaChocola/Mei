@@ -14,8 +14,17 @@ module.exports = {
           Bot.createMessage(m.channel.id, "You need an avatar to use this command");
           return;
         }
-        avy = avy.replace(/\.gif\?size=[0-9]+/ig, ".gif").replace(".jpg?size=128", ".webp?size=1024")
-        Bot.createMessage(m.channel.id, avy);
+        avy = avy.replace(/\.gif\?size=[0-9]+/ig, ".gif").replace(".jpg?size=128", ".png?size=1024")
+        Bot.createMessage(m.channel.id, {
+            embed: {
+                color: 0xA260F6,
+                title: `${mentioned.nickname || mentioned.username}#${mentioned.discriminator}`,
+                description: `[Link](`+avy+`)`,
+                image: {
+                    url: avy
+                }
+            }
+        });
     },
     help: "Avatars"
 }

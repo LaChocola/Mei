@@ -2,7 +2,7 @@ const fs = require("fs");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var args = args.replace("!", "")
+        var args = args.replace(prefix, "")
         if (args != "") {
             var commands = fs.readdirSync("./commands/");
             if (commands.indexOf(args + ".js") > -1) {
@@ -17,9 +17,9 @@ module.exports = {
                 return;
             }
         } else {
-            Bot.createMessage(m.channel.id, "To show a help for a certain command, say `!help <command>`.\nIf you want a list of commands, say `!commands`.");
+            Bot.createMessage(m.channel.id, `To show a help for a certain command, say \`${prefix}help <command>\`.\nIf you want a list of commands, say \`${prefix}commands\`.`);
             return;
         }
     },
-    help: "Displays descriptions of commands."
+    help: "Command help"
 }

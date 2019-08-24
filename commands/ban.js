@@ -51,8 +51,13 @@ module.exports = {
         var responses = ["Are you a real villan?", "Have you ever caught a good guy? \nLike a real super hero?", "Have you ever tried a disguise?", "What are you doing?!?!?!", "*NO!*, Don't touch that!", "Fuck Off", "Roses are red\nfuck me ;) "]
         var response = responses[Math.floor(Math.random() * responses.length)]
         var authorRoles = m.channel.guild.members.get(m.author.id).roles
-        if (modCheck != true && m.author.id != "161027274764713984") {
-            Bot.createMessage(m.channel.id, response);
+        if (modCheck !== true && m.author.id !== "161027274764713984") {
+            Bot.createMessage(m.channel.id, response).then((msg) => {
+              return setTimeout(function() {
+                  Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                  Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+              }, 5000)
+            })
             return;
         }
         var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"]
@@ -67,41 +72,58 @@ module.exports = {
         var mentioned = m.mentions[0] || member
         var id = undefined
         var name = undefined
-        if (mentioned) {
+        var undo = false
+        var guardian = m.channel.guild.members.get(m.author.id).nick || m.author.username
+        if (m.mentions[0] && m.mentions.length < 2) {
           id = mentioned.id
           name = mentioned.username
         }
-        if (!id) {
-          var args2 = m.cleanContent.replace("!ban ","").replace(/\bundo\b/,"").replace("<@", "").replace(">", "").trim()
-          if (!isNaN(+args2)) {
-            var id = args2
-          }
-        }
-        var guardian = m.channel.guild.members.get(m.author.id).nick || m.author.username
-        if (!name) {
-          var user = await Bot.users.get(id);
-          if (!user || !user.username) {
-            var name = 'Unknown User';
-            return;
-          }
-          var name = user.username;
-        }
         if (args.indexOf("undo") > -1) {
-            args.splice(args.indexOf("undo"), 1)
-            var arg = args[0]
-            Bot.unbanGuildMember(m.channel.guild.id, id, "Unbanned by: " + guardian)
-            .then(() => {
-              Bot.createMessage(m.channel.id, hand + " Successful Unbanned: " + name + " (" + id + ")").then((msg) => {
-                  return setTimeout(function() {
-                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                  }, 5000)
+          undo = true
+        }
+        var args2 = m.content.replace(prefix+"ban ","").replace(/\bundo\b/,"").split(" | ")
+        var reason = args2[1] || `Banned by: ${guardian}`
+        console.log(args2);
+        
+        if (m.mentions.length > 1) {
+          var ments = []
+          for (var mention of m.mentions) {                
+            ments.push(mention.id)
+          }
+        }
+        var args3 = ments || args2 
+        args3.forEach(async (id) => {
+          id = id.replace("<@", "").replace(">", "").trim()
+          if (!name || m.mentions.length < 2) {
+            var user = await Bot.users.get(id);
+            if (!user || !user.username) {
+              var name = 'Unknown User';
+              return;
+            }
+            var name = user.username;
+          }
+          if (undo) {
+              Bot.unbanGuildMember(m.channel.guild.id, id, "Unbanned by: " + guardian)
+              .then(() => {
+                Bot.createMessage(m.channel.id, hand + " Successful Unbanned: " + name + " (" + id + ")").then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                    }, 5000)
+                })
               })
-            })
-            .catch((err) => {
-                if (err.code == 50013) {
-                  if (id == m.channel.guild.ownerID) {
-                    Bot.createMessage(m.channel.id, "Uhm, think about what you just tried to do...").then((msg) => {
+              .catch((err) => {
+                  if (err.code == 50013) {
+                    if (id == m.channel.guild.ownerID) {
+                      Bot.createMessage(m.channel.id, "Uhm, think about what you just tried to do...").then((msg) => {
+                          return setTimeout(function() {
+                              Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                              Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                          }, 5000)
+                      })
+                      return;
+                    }
+                    Bot.createMessage(m.channel.id, "I do not have permisson to unban that user. Please make sure I have the `Ban Member` permission").then((msg) => {
                         return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout")
@@ -109,31 +131,22 @@ module.exports = {
                     })
                     return;
                   }
-                  Bot.createMessage(m.channel.id, "I do not have permisson to unban that user. Please make sure I have the `Ban Member` permission").then((msg) => {
+                  console.log(err);
+                  Bot.createMessage(m.channel.id, "Something went wrong while trying to unban that member").then((msg) => {
                       return setTimeout(function() {
                           Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                           Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                       }, 5000)
                   })
                   return;
-                }
-                console.log(err);
-                Bot.createMessage(m.channel.id, "Something went wrong while trying to unban that member").then((msg) => {
-                    return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                    }, 5000)
-                })
-                return;
-            })
-        }
-        else if (id || name != guardian) {
-            Bot.banGuildMember(m.channel.guild.id, id, 0, "Banned by: " + guardian)
+              })
+          }
+          else if (id || name != guardian) {                
+            Bot.banGuildMember(m.channel.guild.id, id, 0, reason)
             .then(() => {
               Bot.createMessage(m.channel.id, hand + " Successful banned: " + name + " (" + id + ")").then((msg) => {
                   return setTimeout(function() {
                       Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                   }, 5000)
               })
             })
@@ -143,7 +156,6 @@ module.exports = {
                     Bot.createMessage(m.channel.id, "I can not ban the owner of the server, sorry.").then((msg) => {
                         return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                         }, 5000)
                     })
                     return;
@@ -151,7 +163,6 @@ module.exports = {
                   Bot.createMessage(m.channel.id, "I do not have permisson to ban that user. Please make sure I have the `Ban Member` permission, and that my highest role is above theirs").then((msg) => {
                       return setTimeout(function() {
                           Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                          Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                       }, 5000)
                   })
                   return;
@@ -160,15 +171,19 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "Something went wrong while trying to ban that member").then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                     }, 5000)
                 })
                 return;
             })
-            return;
-        } else {
-            Bot.createMessage(m.channel.id, "I tried...");
-        }
+          } else {
+            Bot.createMessage(m.channel.id, "I tried...").then((msg) => {
+              return setTimeout(function() {
+                  Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+              }, 5000)
+            })
+          }
+        });
+        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
     },
     help: "Ban someone..."
 }

@@ -193,5 +193,5 @@ module.exports = {
 			}
 		}
 	},
-	help: 'Assign your role. `!role add rolename`'
+	help: 'Assign roles. `!role add XXX` seperate with `|` to add multiple'
 };

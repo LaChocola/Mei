@@ -65,5 +65,5 @@ module.exports = {
                 Bot.createMessage(m.channel.id, msgEmbed);
             })
     },
-    help: "Random Pokemon Cards"
+    help: "TCG Cards"
 }

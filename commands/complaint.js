@@ -6,5 +6,5 @@ module.exports = {
             Bot.createMessage(m.channel.id, "Stop Whining");
         }
     },
-    help: "Chocola Only command"
+    help: "No"
 }

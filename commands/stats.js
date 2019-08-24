@@ -36,5 +36,5 @@ module.exports = {
             }
         });
     },
-    help: "User Stats"
+    help: "Stats"
 }

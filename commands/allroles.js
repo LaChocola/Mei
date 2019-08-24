@@ -11,5 +11,5 @@ module.exports = {
         var roles = m.guild.roles.map(roleSearch)
         Bot.createMessage(m.channel.id, roles.join("  |  "));
     },
-    help: "Get your role info"
+    help: "Role list"
 }

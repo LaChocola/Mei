@@ -178,12 +178,12 @@ module.exports = {
             return;
         } else {
             var fetishes = data.people[id].fetishes
-            var fetishes2 = data.people[m.author.id]
-            if (!fetishes2) {
+            var fetishes2 = data.people[m.author.id]            
+            if (!fetishes2.fetishes || !fetishes2) {
               Bot.createMessage(m.channel.id, "You need to have a fetish list in order to compare lists with someone, silly bug");
               return;
             }
-            var fetishes2 = fetishes2.fetishes
+            fetishes2 = fetishes2.fetishes
             if (mentioned.id != m.author.id) {
                 let lowerOther = Object.entries(fetishes).map(v => [v[0].toLowerCase(), v[1]]).reduce((map, val) => {
                     map[val[0]] = val[1];
