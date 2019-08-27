@@ -260,7 +260,9 @@ Bot.on('messageCreate', async function(m) {
                 for (const mention of mentions) {
                     Bot.addGuildMemberRole(m.channel.guild.id, mention.id, '363854631035469825', 'Daddy said shush').then(() => {
                         return Bot.createMessage(m.channel.id, hand).then((m) => {
-                            return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 5000);
+                            return setTimeout(function() {
+                                Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+                            }, 5000);
                         });
                     });
                 }
@@ -268,7 +270,9 @@ Bot.on('messageCreate', async function(m) {
             }
             Bot.addGuildMemberRole(m.channel.guild.id, m.mentions[0].id, '363854631035469825', 'Daddy said shush').then(() => {
                 return Bot.createMessage(m.channel.id, hand).then((m) => {
-                    return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 5000);
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+                    }, 5000);
                 });
             });
         }
@@ -279,7 +283,9 @@ Bot.on('messageCreate', async function(m) {
                 for (const mention of mention) {
                     Bot.removeGuildMemberRole(m.channel.guild.id, mention.id, '363854631035469825', 'Daddy said speak').then(() => {
                         return Bot.createMessage(m.channel.id, hand).then((m) => {
-                            return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 5000);
+                            return setTimeout(function() {
+                                Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+                            }, 5000);
                         });
                     });
                 }
@@ -287,7 +293,9 @@ Bot.on('messageCreate', async function(m) {
             }
             Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, '363854631035469825', 'Daddy said speak').then(() => {
                 return Bot.createMessage(m.channel.id, hand).then((m) => {
-                    return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 5000);
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+                    }, 5000);
                 });
             });
         }
@@ -542,7 +550,9 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
                                     if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== '309220487957839872') {
                                         var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                         Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                            return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 60000);
+                                            return setTimeout(function() {
+                                                Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+                                            }, 60000);
                                         }).catch((err) => {
                                             console.log(err);
                                         });
@@ -571,7 +581,9 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
                             if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== '309220487957839872') {
                                 var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                 Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                    return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 60000);
+                                    return setTimeout(function() {
+                                        Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+                                    }, 60000);
                                 }).catch((err) => {
                                     console.log(err);
                                 });
@@ -641,7 +653,9 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
                                                 if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== '309220487957839872') {
                                                     var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                                     Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                        return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 60000);
+                                                        return setTimeout(function() {
+                                                            Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+                                                        }, 60000);
                                                     }).catch((err) => {
                                                         console.log(err);
                                                     });
@@ -670,7 +684,9 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
                                         if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== '309220487957839872') {
                                             var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                             Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 60000);
+                                                return setTimeout(function() {
+                                                    Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+                                                }, 60000);
                                             }).catch((err) => {
                                                 console.log(err);
                                             });
