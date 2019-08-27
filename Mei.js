@@ -339,13 +339,17 @@ Bot.on('messageCreate', async function(m) {
                 timestamps.pop()
                 fs.appendFileSync('db/timestamps.txt', timestamps.reduce((a, b) => a + b) + 'ms | ' + timestamps.join(', ') + '\n');
                 console.log('CMD'.black.bgGreen + ' ' + loguser + logdivs[1] + logserver + logdivs[0] + logchannel + ' ' + logcmd.blue);
-                if (args) console.log('ARG'.black.bgCyan + ' ' + logargs.blue.bold);
+                if (args) {
+                    console.log('ARG'.black.bgCyan + ' ' + logargs.blue.bold);
+                }
                 cmd.main(Bot, m, args, prefix);
             } catch (err) {
                 console.log(err);
                 Bot.createMessage(m.channel.id, 'An error has occured.');
                 console.log('CMD'.black.bgRed + ' ' + loguser + logdivs[1] + logserver + logdivs[0] + logchannel + ' ' + logcmd.red);
-                if (args) console.log('ARG'.black.bgCyan + ' ' + logargs.red.bold);
+                if (args) {
+                    console.log('ARG'.black.bgCyan + ' ' + logargs.red.bold);
+                }
                 console.log('');
             }
         }
