@@ -1,3 +1,5 @@
+"use strict";
+
 const Jimp = require('jimp');
 
 module.exports = {

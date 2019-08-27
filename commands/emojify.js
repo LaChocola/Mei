@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         args = args.replace(/(\w|\d|\*|\?|!| )/g, "$1");

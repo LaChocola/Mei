@@ -1,3 +1,5 @@
+"use strict";
+
 const yt = require("ytdl-core");
 const fs = require("fs");
 const _ = require("../servers.js");

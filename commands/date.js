@@ -1,3 +1,5 @@
+"use strict";
+
 var timeago = require("timeago.js");
 var timediff = require('timediff');
 

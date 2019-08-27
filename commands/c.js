@@ -1,3 +1,5 @@
+"use strict";
+
 var apiai = require('apiai');
 var config = require("../etc/config.json");
 var app = apiai(config.tokens.apiai);

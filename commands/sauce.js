@@ -1,3 +1,5 @@
+"use strict";
+
 var config = require("../etc/config.json");
 const Sagiri = require('sagiri');
 const handler = new Sagiri(config.tokens.sauce);

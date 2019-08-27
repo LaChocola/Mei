@@ -1,3 +1,5 @@
+"use strict";
+
 const qs = require('querystring')
 const request = require('request').defaults({
     jar: true

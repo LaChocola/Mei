@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('../data.js');
 
 var data = _.load();

@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         if (m.content == `${prefix}spray` || !m.mentions[0]) {

@@ -1,3 +1,5 @@
+"use strict";
+
 const booru = require('booru');
 
 let request = require('request');

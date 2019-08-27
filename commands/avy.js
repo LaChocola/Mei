@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(`${prefix}avy `, "");

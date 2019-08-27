@@ -1,3 +1,5 @@
+"use strict";
+
 const Jimp = require('jimp');
 // This version of Jimp has an alphabet I created to emulated the DeviantArt username font 'Trebuchet' and timestamp font
 // They are both availible at https://github.com/LaChocola/Mei/tree/master/db/fonts

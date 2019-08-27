@@ -1,3 +1,5 @@
+"use strict";
+
 const randomPuppy = require('random-puppy');
 
 module.exports = {

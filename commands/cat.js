@@ -1,3 +1,5 @@
+"use strict";
+
 var request = require('request');
 var randomCat = require('random-cat');
 

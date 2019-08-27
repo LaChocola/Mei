@@ -1,3 +1,5 @@
+"use strict";
+
 const aesthetics = require('aesthetics');
 
 module.exports = {

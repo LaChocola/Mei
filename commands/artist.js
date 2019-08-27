@@ -1,3 +1,5 @@
+"use strict";
+
 const _ = require('../people.js');
 var data = _.load();
 module.exports = {

@@ -1,4 +1,5 @@
-'use strict';
+"use strict";
+
 const _ = require("../people.js");
 var reload = require("require-reload")(require);
 var miscl = reload('../misc.js');

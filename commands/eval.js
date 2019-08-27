@@ -1,3 +1,5 @@
+"use strict";
+
 var safeEval = require('safe-eval')
 
 module.exports = {

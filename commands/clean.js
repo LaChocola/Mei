@@ -1,3 +1,5 @@
+"use strict";
+
 const _ = require("../servers.js");
 var data = _.load();
 module.exports = {

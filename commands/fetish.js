@@ -1,3 +1,5 @@
+"use strict";
+
 const _ = require("../people.js");
 var data = _.load();
 var unidecode = require("unidecode")

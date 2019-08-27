@@ -1,3 +1,5 @@
+"use strict";
+
 const pokemon = require('pokemontcgsdk')
 module.exports = {
     main: function(Bot, m, args, prefix) {

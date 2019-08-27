@@ -1,3 +1,5 @@
+"use strict";
+
 var Haikudos = require('haikudos');
 module.exports = {
     main: function(Bot, m, args, prefix) {
