@@ -18,7 +18,8 @@ module.exports = {
                 if (memberName.toLowerCase() === name1[0].trim().toLowerCase() || memberName.toLowerCase() === name1[1].trim().toLowerCase()) {
                     return true;
                 }
-            } else if (memberName.toLowerCase() === name1[0].trim().toLowerCase()) {
+            }
+            else if (memberName.toLowerCase() === name1[0].trim().toLowerCase()) {
                 return true;
             }
         };

@@ -21,7 +21,8 @@ module.exports = {
             if (data.commands[command].totalUses && data.commands[command].users[mentioned.id]) {
                 if (data.commands[command].totalUses && data.commands[command].users[mentioned.id] == 1) {
                     stats.push("**!" + command + ":** " + data.commands[command].users[mentioned.id] + " run");
-                } else {
+                }
+                else {
                     stats.push("**!" + command + ":** " + data.commands[command].users[mentioned.id] + " runs");
                 }
                 var userUses = userUses + data.commands[command].users[mentioned.id]

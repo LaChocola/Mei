@@ -47,7 +47,8 @@ module.exports = {
                         return true;
                     }
                 }
-            } else {
+            }
+            else {
                 const perms = guild.members.get(member.id).permission.json;
                 const pArray = ["banMembers", "administrator", "manageChannels", "manageGuild"];
                 if (perms[pArray[0]] || perms[pArray[1]] || perms[pArray[2]] || perms[pArray[3]] || perms[pArray[4]]) {
@@ -128,7 +129,8 @@ module.exports = {
                     });
                     return;
                 }
-            } else {
+            }
+            else {
                 data[guild.id].hoards = false;
                 _.save(data);
                 Bot.createMessage(m.channel.id, "Hoards set to :heart_eyes: only").then(msg => {
@@ -562,7 +564,8 @@ module.exports = {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
-                } else {
+                }
+                else {
                     Bot.createMessage(m.channel.id, args + " is not a role that has been made in this server").then(msg => {
                         return setTimeout(() => {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -711,7 +714,8 @@ module.exports = {
                             }, 5000);
                         });
                     });
-                } else {
+                }
+                else {
                     Bot.createMessage(m.channel.id, args + " is not a role that has been made in this server").then(msg => {
                         return setTimeout(() => {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -724,7 +728,11 @@ module.exports = {
             if (args.toLowerCase().includes("update")) {
                 var roles = Object.keys(data[m.channel.guild.id].roles);
                 for (var role of roles) {
-                    const exists = m.channel.guild.roles.find((r) => { if (r.id == data[m.channel.guild.id].roles[role]) { return true; } });
+                    const exists = m.channel.guild.roles.find((r) => {
+                        if (r.id == data[m.channel.guild.id].roles[role]) {
+                            return true;
+                        }
+                    });
                     if (!exists) {
                         delete data[guild.id].roles[role];
                         _.save(data);
@@ -797,7 +805,8 @@ module.exports = {
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
-                    } else {
+                    }
+                    else {
                         Bot.createMessage(m.channel.id, "That role is not currently a registered moderator role, and cant be removed");
                         return;
                     }
@@ -822,7 +831,8 @@ module.exports = {
                     Bot.createMessage(m.channel.id, "That currently is not currently a registered moderator, and cant be removed");
                 }
             }
-        } else {
+        }
+        else {
             Bot.createMessage(m.channel.id, "These are the settings you can **edit** (Bold represents the default setting):\n\n\n`hoards`: **disable** | enable, Turn custom hoard reactions on or off in this server, defaults to off (heart eye emoji only)\n\n`prefix`: <prefix>, Change the prefix Mei sues in this server, Default prefix is **`!`**\n\n`mod`: add | remove, <@person> | <@role>. Add a moderator, or a role for moderators to use Mei's admin features, and edit settings\n\n`roles`: add <role> | remove <role> | create <role> | delete <role>, Add or remove the roles Mei can give to users, or create and delete roles in the server. (Roles created by Mei will have no power and no color, and will be at the bottom of the role list)\n\n`notifications`: banlog | updates | welcome, enable <@channel> | disable, Allows you to enable, disable, or change channels that certain notifications appear in. Currently supports a log channel for all bans, a log of all users joining and leaving, and editing the welcome message that Mei gives when users join, and what channel each appears in.\n\n`art`: remove | add <#channel>, Adds a channel for Mei to use in the `!art` command");
         }
     },

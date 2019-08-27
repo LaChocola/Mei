@@ -21,15 +21,20 @@ module.exports = {
         args.forEach(char => {
             if ("qwertyuiopasdfghjklzxcvbnm".indexOf(char) > -1) {
                 emojis.push(":regional_indicator_" + char + ":");
-            } else if ("1234567890".indexOf(char) > -1) {
+            }
+            else if ("1234567890".indexOf(char) > -1) {
                 emojis.push(":" + numbers[char] + ":");
-            } else if (char == "?") {
+            }
+            else if (char == "?") {
                 emojis.push(":question:");
-            } else if (char == "!") {
+            }
+            else if (char == "!") {
                 emojis.push(":exclamation:");
-            } else if (char == "*") {
+            }
+            else if (char == "*") {
                 emojis.push(":asterisk:");
-            } else {
+            }
+            else {
                 emojis.push("  ");
             }
         });

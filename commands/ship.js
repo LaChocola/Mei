@@ -19,7 +19,9 @@ module.exports = {
             var member = m.guild.members.find(isThisUsernameThatUsername)
 
             if (member != undefined) {
-                if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) { return user.id == member.id })) {
+                if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) {
+                    return user.id == member.id
+                })) {
                     m.mentions.push(member.user)
                 }
             }
@@ -39,7 +41,9 @@ module.exports = {
                 var member2 = m.guild.members.find(isThisUsernameThatUsername2)
 
                 if (member2 != undefined) {
-                    if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) { return user.id == member2.id })) {
+                    if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) {
+                        return user.id == member2.id
+                    })) {
                         m.mentions.push(member2.user)
                     }
                 }
@@ -84,7 +88,8 @@ module.exports = {
                             "name": "ship.png"
                         })
                     });
-            } catch (error) {
+            }
+            catch (error) {
                 console.log(error);
                 return Bot.createMessage(m.channel.id, "Something went wrong...");
             }

@@ -1230,9 +1230,11 @@ module.exports = {
             }
             if (tags.length === 0) {
                 var pageToVisit = "http://giantessbooru.com/post/list";
-            } else if (tags.length == 1) {
+            }
+            else if (tags.length == 1) {
                 var pageToVisit = "http://giantessbooru.com/post/list/" + tags[0] + "%2C-scat/1";
-            } else if (tags.length > 1) {
+            }
+            else if (tags.length > 1) {
                 var pageToVisit = "http://giantessbooru.com/post/list/" + tags.join("%2C") + "%2C-scat/1";
             }
             if (scat) {
@@ -1264,14 +1266,16 @@ module.exports = {
                         if (match && match[0]) {
                             link_array.push(match)
                         }
-                    } else if (!response.request.uri.href.startsWith("http://giantessbooru.com/post/view/") || !response.request.uri.href.startsWith("https://giantessbooru.com/post/view/")) {
+                    }
+                    else if (!response.request.uri.href.startsWith("http://giantessbooru.com/post/view/") || !response.request.uri.href.startsWith("https://giantessbooru.com/post/view/")) {
                         const thing = $(".thumb").children();
                         for (child in thing) {
                             const child_thing = thing[child];
                             if (child_thing.type == "tag") {
                                 link_array.push(child_thing.children[0].attribs.src.replace("/_thumbs/", "_images/").replace("/thumb.jpg", ""));
                                 post_array.push(child_thing.attribs.href)
-                            } else {
+                            }
+                            else {
                                 break;
                             }
                         }
@@ -1334,7 +1338,8 @@ module.exports = {
                         }
                         console.log(err.message);
                         Bot.createMessage(m.channel.id, err.message);
-                    } else {
+                    }
+                    else {
                         // This means I messed up. Whoops.
                         console.log(err);
                         Bot.createMessage(m.channel.id, "An unknown error has occured");
@@ -1371,7 +1376,8 @@ module.exports = {
                     };
 
                     Bot.createMessage(m.channel.id, data);
-                } else if (imageURL.length > 1) {
+                }
+                else if (imageURL.length > 1) {
                     const data = {
                         content: "Results on **" + site + "**",
                         embed: {
@@ -1414,7 +1420,8 @@ module.exports = {
                     }
                     console.log(err.message);
                     Bot.createMessage(m.channel.id, err.message);
-                } else {
+                }
+                else {
                     // This means I messed up. Whoops.
                     console.log(err);
                     Bot.createMessage(m.channel.id, "An unknown error has occured, please try again later");

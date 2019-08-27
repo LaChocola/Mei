@@ -41,7 +41,8 @@ module.exports = {
                 };
                 Bot.createMessage(m.channel.id, data);
                 return;
-            } else {
+            }
+            else {
                 const data = {
                     "embed": {
                         "title": "It's okay to pat yourself too~",

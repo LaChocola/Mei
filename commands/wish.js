@@ -25,7 +25,8 @@ module.exports = {
         }
         if (m.mentions.length == 1) {
             var pic = `https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`
-        } else if (m.mentions.length > 1) {
+        }
+        else if (m.mentions.length > 1) {
             Bot.createMessage(m.channel.id, "This Command cant be used with more than one mention")
             return;
         }
@@ -46,7 +47,8 @@ module.exports = {
                             "name": "wish.png"
                         })
                     });
-            } catch (error) {
+            }
+            catch (error) {
                 console.log(error);
                 return Bot.createMessage(m.channel.id, "Something went wrong...");
             }

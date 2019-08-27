@@ -9,7 +9,8 @@ module.exports = {
         var msg = m.cleanContent.replace(`${prefix}c `, "");
         if (m.content == `${prefix}c`) {
             Bot.createMessage(m.channel.id, "Please add something i.e. ``!c How are you?``")
-        } else {
+        }
+        else {
             var request = app.textRequest(msg, {
                 sessionId: "discordMei"
             });

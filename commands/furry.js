@@ -35,7 +35,8 @@ module.exports = {
                             "name": "furry.png"
                         })
                     });
-            } catch (error) {
+            }
+            catch (error) {
                 console.log(error);
                 return Bot.createMessage(m.channel.id, "Something went wrong...");
             }

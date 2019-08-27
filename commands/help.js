@@ -14,11 +14,13 @@ module.exports = {
                     return;
                 }
                 return;
-            } else {
+            }
+            else {
                 Bot.createMessage(m.channel.id, "That command doesn't exist.");
                 return;
             }
-        } else {
+        }
+        else {
             Bot.createMessage(m.channel.id, `To show a help for a certain command, say \`${prefix}help <command>\`.\nIf you want a list of commands, say \`${prefix}commands\`.`);
             return;
         }

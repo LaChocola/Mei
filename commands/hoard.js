@@ -240,7 +240,8 @@ module.exports = {
                     }
                 }
             }
-        } else {
+        }
+        else {
             var msg = {
                 "content": `A Random piece, from **${name}**'s hoard`,
                 "embed": {

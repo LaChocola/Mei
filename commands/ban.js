@@ -177,7 +177,8 @@ module.exports = {
                         })
                         return;
                     })
-            } else {
+            }
+            else {
                 Bot.createMessage(m.channel.id, "I tried...").then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout")

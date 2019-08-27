@@ -35,7 +35,8 @@ module.exports = {
             if (data.people[id].links[incoming[0]]) {
                 Bot.createMessage(m.channel.id, "That's already been added, silly~");
                 return;
-            } else {
+            }
+            else {
                 if (incoming.length > 2) {
                     Bot.createMessage(m.channel.id, "You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`!artist add Patreon <https://patreon.com/Chocola>`");
                     return;
@@ -58,7 +59,8 @@ module.exports = {
                 _.save(data);
                 Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + ":** from your links " + hand);
                 return;
-            } else {
+            }
+            else {
                 Bot.createMessage(m.channel.id, "Sorry, I couldnt find**" + incoming[0] + ":** `" + incoming[1] + " in your links");
                 return;
             }
@@ -67,7 +69,8 @@ module.exports = {
         if (Object.keys(data.people[id].links).length === 0) {
             Bot.createMessage(m.channel.id, "I could find any links for **" + name + "** :(");
             return;
-        } else {
+        }
+        else {
             var links = data.people[id].links;
             Object.keys(links).forEach(function(key) {
                 linkArray.push(key + ": " + links[key] + "\n");

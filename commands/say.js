@@ -6,7 +6,8 @@ module.exports = {
         if (m.content == `${prefix}say`) {
             Bot.createMessage(m.channel.id, "Please add something to say. i.e. ``!say <whatever>``")
             return
-        } else {
+        }
+        else {
             Bot.createMessage(m.channel.id, msg);
         }
     },

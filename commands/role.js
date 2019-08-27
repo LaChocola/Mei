@@ -111,7 +111,8 @@ module.exports = {
                         var roleID = roles[e[1]];
                         Bot.addGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?");
                         found.push(e[1]);
-                    } else if (!roles[e[1]]) {
+                    }
+                    else if (!roles[e[1]]) {
                         notFound.push(e[1]);
                     }
                 }
@@ -151,7 +152,8 @@ module.exports = {
                             }, 5000);
                         });
                     });
-                } else {
+                }
+                else {
                     Bot.createMessage(m.channel.id, content + ": Not found").then(msg => {
                         return setTimeout(() => {
                             Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
@@ -160,7 +162,8 @@ module.exports = {
                         }, 5000);
                     });
                 }
-            } else if (m.content.includes(" | ")) {
+            }
+            else if (m.content.includes(" | ")) {
                 var content = m.cleanContent.toLowerCase().replace(`${prefix}role remove `, "").split(" | ");
                 var iterator = content.entries();
                 var found = [];
@@ -170,7 +173,8 @@ module.exports = {
                         var roleID = roles[e[1]];
                         Bot.removeGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?");
                         found.push(e[1]);
-                    } else if (!roles[e[1]]) {
+                    }
+                    else if (!roles[e[1]]) {
                         notFound.push(e[1]);
                     }
                 }

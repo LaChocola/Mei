@@ -28,7 +28,8 @@ module.exports = {
                         description: message
                     }
                 });
-            } else {
+            }
+            else {
                 Bot.createMessage(m.channel.id, 'Not found');
             }
         });

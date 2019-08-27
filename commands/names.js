@@ -47,7 +47,8 @@ module.exports = {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                         }, 5000)
                     })
-                } else {
+                }
+                else {
                     Bot.createMessage(m.channel.id, "Sorry, I couldnt find **" + e[1] + "** in your names list");
                 }
             }
@@ -72,7 +73,8 @@ module.exports = {
                         }, 5000)
                     })
                     continue;
-                } else {
+                }
+                else {
                     if (e[1].search(/ male/i) !== -1) {
                         var cleanName = e[1].replace(/ male/i, "")
                         data.people[id].names[cleanName] = "male"
@@ -96,7 +98,8 @@ module.exports = {
                             }, 5000)
                         })
                         continue;
-                    } else {
+                    }
+                    else {
                         data.people[id].names[e[1]] = "female"
                         _.save(data)
                         Bot.createMessage(m.channel.id, "Added **" + e[1] + "** " + hand).then((msg) => {
@@ -113,7 +116,8 @@ module.exports = {
         if (Object.keys(data.people[id].names).length < 1) {
             Bot.createMessage(m.channel.id, "I could find any names list for **" + name + "** :(");
             return;
-        } else {
+        }
+        else {
             var names = data.people[id].names
             Object.entries(names).forEach(function(key) {
                 nameArray.push(`${key[0]}: ${key[1]}`);

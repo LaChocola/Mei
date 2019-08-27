@@ -22,7 +22,8 @@ module.exports = {
                 };
                 Bot.createMessage(m.channel.id, data);
                 return;
-            } else {
+            }
+            else {
                 var catURL2 = randomCat.get();
                 if (catURL2.length > 14) {
                     const data = {

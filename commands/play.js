@@ -171,7 +171,10 @@ module.exports = {
                                 await Bot.sendChannelTyping(m.channel.id);
                                 try {
                                     console.log(data[guild.id].music.queue);
-                                    if (!Object.entries(data[guild.id].music.queue)) { Bot.createMessage(m.channel.id, "The queue is empty right now"); } else {
+                                    if (!Object.entries(data[guild.id].music.queue)) {
+                                        Bot.createMessage(m.channel.id, "The queue is empty right now");
+                                    }
+                                    else {
                                         for (const [id, queuer] of Object.entries(data[guild.id].music.queue)) {
                                             var info = await yt.getInfo(`https://www.youtube.com/watch?v=${id}`);
                                             var title = info.title
@@ -195,7 +198,8 @@ module.exports = {
                                             }
                                         })
                                     }
-                                } catch (e) {
+                                }
+                                catch (e) {
                                     console.log(e);
                                     Bot.createMessage(m.channel.id, "An error has occured.");
                                 }
@@ -310,7 +314,10 @@ module.exports = {
                                             code = await yt.getURLVideoID(target.link)
                                             valid = true
                                         }
-                                    } catch (e) { console.log(e); }
+                                    }
+                                    catch (e) {
+                                        console.log(e);
+                                    }
                                 }
                                 if (!valid) {
                                     Bot.createMessage(m.channel.id, `Sorry, I wasnt able to play a video with the code: ${code}`).then((msg) => {
@@ -403,7 +410,10 @@ module.exports = {
                                         code = await yt.getURLVideoID(target.link)
                                         valid = true
                                     }
-                                } catch (e) { console.log(e); }
+                                }
+                                catch (e) {
+                                    console.log(e);
+                                }
                             }
                             if (!valid && code == undefined) {
                                 Bot.createMessage(m.channel.id, `Sorry, I wasnt able to play a video with the code: ${code}`).then((msg) => {
@@ -531,7 +541,8 @@ module.exports = {
                     })
                 }
             })
-        } else { // User isn't in a Voice Channel
+        }
+        else { // User isn't in a Voice Channel
             Bot.createMessage(m.channel.id, "You must be in a Voice Channel to play a song");
         }
     },

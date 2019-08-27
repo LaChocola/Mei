@@ -50,7 +50,8 @@ module.exports = {
                 var link_array = []
                 if (error) {
                     console.log("Error: " + error);
-                } else if (response.statusCode === 200) {
+                }
+                else if (response.statusCode === 200) {
                     var $ = cheerio.load(body);
                     $(".itg .gl1t").each(function() {
                         link_array.push({

@@ -15,7 +15,9 @@ module.exports = {
                     });
                 }
             }
-            arr.sort(function(a, b) { return a.value - b.value; });
+            arr.sort(function(a, b) {
+                return a.value - b.value;
+            });
             return arr.reverse();
         }
         var sorted = rank(data.people)

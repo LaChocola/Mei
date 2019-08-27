@@ -157,7 +157,8 @@ module.exports = {
                 });
                 return;
             }
-        } else {
+        }
+        else {
             Bot.createMessage(m.channel.id, response);
         }
     },

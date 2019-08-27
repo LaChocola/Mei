@@ -14,7 +14,8 @@ module.exports = {
                 if (chosen.attacks[0]) {
                     if (chosen.attacks[0].text) {
                         var attacks = chosen.attacks[0].name + ": " + chosen.attacks[0].text
-                    } else {
+                    }
+                    else {
                         var attacks = chosen.attacks[0].name
                     }
                 }

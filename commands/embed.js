@@ -16,7 +16,8 @@ module.exports = {
                     description: "**Embeded Text:**\n" + "```" + embed + "```"
                 }
             });
-        } else if (args.indexOf("blank") > -1) {
+        }
+        else if (args.indexOf("blank") > -1) {
             var embed = args.join(" ");
             Bot.createMessage(m.channel.id, {
                 embed: {
@@ -24,7 +25,8 @@ module.exports = {
                     description: embed
                 }
             });
-        } else {
+        }
+        else {
             var embed = args.join(" ");
             Bot.createMessage(m.channel.id, {
                 embed: {

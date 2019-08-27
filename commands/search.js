@@ -15,7 +15,8 @@ function fallbackHTMLScraper(args, safe, message) {
             console.error("STATUS:", res.statusCode, "BODY:", body);
             message.edit("`No results found!`");
             return;
-        } else {
+        }
+        else {
             var $ = cheerio.load(body);
             try {
                 var href = $(".r").first().find("a").first().attr("href");
@@ -27,10 +28,12 @@ function fallbackHTMLScraper(args, safe, message) {
                 if (res == "?q") {
                     message.edit("`No results found`");
                     return;
-                } else {
+                }
+                else {
                     message.edit(res);
                 }
-            } catch (err) {
+            }
+            catch (err) {
                 console.error(err)
                 message.edit("`No results found`");
                 return;
@@ -62,11 +65,13 @@ module.exports = {
                         else if (!message.edit(JSON.parse(body)["items"][0]["link"])) {
                             fallbackHTMLScraper(args, safe, message);
                         }
-                    } catch (err) {
+                    }
+                    catch (err) {
                         console.log(err);
                     }
                 });
-            } catch (err) {
+            }
+            catch (err) {
                 console.log(err);
                 message.edit("`No results found`");
                 return;

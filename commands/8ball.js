@@ -7,7 +7,8 @@ module.exports = {
         var msg = m.cleanContent.replace(`${prefix}8ball `, "");
         if (m.content == `${prefix}8ball`) {
             Bot.createMessage(m.channel.id, "Please add something")
-        } else {
+        }
+        else {
             Bot.createMessage(m.channel.id, "***" + msg + `***\n:8ball: ${eightball}`);
         }
     },
