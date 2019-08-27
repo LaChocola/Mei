@@ -307,12 +307,12 @@ Bot.on("messageCreate", async function(m) {
             var data = _.load(); // Track command usage in ../db/data.json
             updateTimestamps();
             data.commands.totalRuns++;
-            if (!(data.commands[command])) {
+            if (!data.commands[command]) {
                 data.commands[command] = {};
                 data.commands[command].totalUses = 0;
                 data.commands[command].users = {};
             }
-            if (!(data.commands[command].users[m.author.id])) {
+            if (!data.commands[command].users[m.author.id]) {
                 data.commands[command].users[m.author.id] = 0;
             }
             data.commands[command].users[m.author.id]++;
@@ -509,11 +509,11 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
             }
             if (link || (links && links[0])) {
                 var people = ppl.load();
-                if (!(people.people[id])) {
+                if (!people.people[id]) {
                     people.people[id] = {};
                     ppl.save(people);
                 }
-                if (!(people.people[id].hoard)) {
+                if (!people.people[id].hoard) {
                     people.people[id].hoard = {};
                     people.people[id].hoard["😍"] = {};
                     ppl.save(people);
