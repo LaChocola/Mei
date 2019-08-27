@@ -10,8 +10,8 @@ module.exports = {
             for (var entry of entries) {
                 if (entry[1].adds) {
                     arr.push({
-                        'key': entry[0],
-                        'value': entry[1].adds
+                        "key": entry[0],
+                        "value": entry[1].adds
                     });
                 }
             }

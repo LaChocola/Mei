@@ -70,7 +70,7 @@ module.exports = {
                         if (winnerID == undefined) {
                             data[guild.id].giveaways.running = false;
                             _.save(data);
-                            return Bot.editMessage(data[guild.id].giveaways.channelID, data[guild.id].giveaways.mID, `This Giveaway has ended, no one entered. So I guess everyone loses?`);
+                            return Bot.editMessage(data[guild.id].giveaways.channelID, data[guild.id].giveaways.mID, "This Giveaway has ended, no one entered. So I guess everyone loses?");
                         }
                         var winner = m.channel.guild.members.get(winnerID).mention
                         data[guild.id].giveaways.running = false;

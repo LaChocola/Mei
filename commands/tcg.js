@@ -1,10 +1,10 @@
 "use strict";
 
-const pokemon = require('pokemontcgsdk')
+const pokemon = require("pokemontcgsdk")
 module.exports = {
     main: function(Bot, m, args, prefix) {
         pokemon.card.where({
-            supertype: 'pokemon'
+            supertype: "pokemon"
         })
             .then(cards => {
                 var chosen = cards[Math.floor(Math.random() * cards.length)]

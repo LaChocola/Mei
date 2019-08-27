@@ -1,6 +1,6 @@
 "use strict";
 
-var safeEval = require('safe-eval')
+var safeEval = require("safe-eval")
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {

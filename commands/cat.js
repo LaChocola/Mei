@@ -1,11 +1,11 @@
 "use strict";
 
-var request = require('request');
-var randomCat = require('random-cat');
+var request = require("request");
+var randomCat = require("random-cat");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        request('http://aws.random.cat/meow', (err, res, body) => {
+        request("http://aws.random.cat/meow", (err, res, body) => {
             if (res.statusCode == 200) {
                 var catURL = JSON.parse(body);
                 const data = {

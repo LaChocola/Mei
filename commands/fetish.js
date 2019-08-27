@@ -125,7 +125,7 @@ module.exports = {
                 incoming.push(capFirstLetter(e[1]))
             }
             if (incoming.length == 0) {
-                Bot.createMessage(m.channel.id, 'Please say which fetish you would like to add, for example `!fetish add Butts`').then((msg) => {
+                Bot.createMessage(m.channel.id, "Please say which fetish you would like to add, for example `!fetish add Butts`").then((msg) => {
                     setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
@@ -134,7 +134,7 @@ module.exports = {
                 return;
             }
             if (data.people[id].fetishes[incoming[0]]) {
-                Bot.createMessage(m.channel.id, "That's already been added, silly~").then((msg) => {
+                Bot.createMessage(m.channel.id, "That"s already been added, silly~").then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
@@ -146,7 +146,7 @@ module.exports = {
                 incoming[0] = incoming[0].replace(/\bdislike\b/ig, "")
                 incoming[0] = capFirstLetter(incoming[0].trim())
                 if (!incoming[0]) {
-                    Bot.createMessage(m.channel.id, 'Please say which fetish you would like to dislike, for example `!fetish add Death dislike`').then((msg) => {
+                    Bot.createMessage(m.channel.id, "Please say which fetish you would like to dislike, for example `!fetish add Death dislike`").then((msg) => {
                         setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
@@ -199,8 +199,8 @@ module.exports = {
                 var commonLikes = [];
                 for (let val in lowerMain) {
                     if (lowerOther[val] && lowerOther[val] === lowerMain[val]) {
-                        if (lowerMain[val] == 'like') commonLikes.push(val);
-                        if (lowerMain[val] == 'dislike') commonDislikes.push(val);
+                        if (lowerMain[val] == "like") commonLikes.push(val);
+                        if (lowerMain[val] == "dislike") commonDislikes.push(val);
                     }
                 }
             }
@@ -246,12 +246,12 @@ module.exports = {
                         color: 0xA260F6,
                         title: Object.keys(data.people[id].fetishes).length + " fetishes for **" + unidecode(name) + "**",
                         fields: [{
-                            name: ':green_heart: Likes: ' + likes.length,
+                            name: ":green_heart: Likes: " + likes.length,
                             value: likes.join("\n"),
                             inline: true
                         },
                         {
-                            name: ':x: Dislikes: ' + dislikes.length,
+                            name: ":x: Dislikes: " + dislikes.length,
                             value: dislikes.join("\n"),
                             inline: true
                         }
@@ -275,7 +275,7 @@ module.exports = {
                     embed: {
                         color: 0xA260F6,
                         fields: [{
-                            name: ':green_heart: Likes: ' + likes.length,
+                            name: ":green_heart: Likes: " + likes.length,
                             value: likes.join("\n") + " \n \u200b",
                             inline: true
                         },
@@ -285,12 +285,12 @@ module.exports = {
                             inline: true
                         },
                         {
-                            name: ':x: Dislikes: ' + dislikes.length,
+                            name: ":x: Dislikes: " + dislikes.length,
                             value: dislikes.join("\n") + " \n \u200b",
                             inline: true
                         },
                         {
-                            name: ':green_heart: Common Likes: ' + commonLikes.length,
+                            name: ":green_heart: Common Likes: " + commonLikes.length,
                             value: commonLikes.join("\n"),
                             inline: true
                         },
@@ -300,7 +300,7 @@ module.exports = {
                             inline: true
                         },
                         {
-                            name: ':x: Common Dislikes: ' + commonDislikes.length,
+                            name: ":x: Common Dislikes: " + commonDislikes.length,
                             value: commonDislikes.join("\n"),
                             inline: true
                         }

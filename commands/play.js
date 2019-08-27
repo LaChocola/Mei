@@ -3,8 +3,8 @@
 const yt = require("ytdl-core");
 const fs = require("fs");
 const _ = require("../servers.js");
-const progress = require('progress-string')
-const ytsr = require('ytsr');
+const progress = require("progress-string")
+const ytsr = require("ytsr");
 var data = _.load();
 module.exports = {
     main: async function(Bot, m, args, prefix) {
@@ -35,7 +35,7 @@ module.exports = {
             // Use hours if there are hours
             if (h)
                 time.unshift(h)
-            return time.map(n => n.toString().padStart(2, '0')).join(':')
+            return time.map(n => n.toString().padStart(2, "0")).join(":")
         }
         var guild = m.channel.guild
         if (!(data[guild.id])) {
@@ -99,7 +99,7 @@ module.exports = {
                                     var bar = progress({
                                         total: end,
                                         style: function(complete, incomplete) {
-                                            return '+'.repeat(complete.length) + '' + incomplete
+                                            return "+".repeat(complete.length) + "" + incomplete
                                         }
                                     })
                                     if (data[guild.id].music.current.code) {
@@ -171,7 +171,7 @@ module.exports = {
                                 await Bot.sendChannelTyping(m.channel.id);
                                 try {
                                     console.log(data[guild.id].music.queue);
-                                    if (!Object.entries(data[guild.id].music.queue)) { Bot.createMessage(m.channel.id, 'The queue is empty right now'); } else {
+                                    if (!Object.entries(data[guild.id].music.queue)) { Bot.createMessage(m.channel.id, "The queue is empty right now"); } else {
                                         for (const [id, queuer] of Object.entries(data[guild.id].music.queue)) {
                                             var info = await yt.getInfo(`https://www.youtube.com/watch?v=${id}`);
                                             var title = info.title
@@ -181,7 +181,7 @@ module.exports = {
                                             embed: {
                                                 color: 0xA260F6,
                                                 title: `${songs.length} songs currently queued`,
-                                                description: " \n\n" + songs.join('\n'),
+                                                description: " \n\n" + songs.join("\n"),
                                             },
                                         }).catch((err) => {
                                             if (err.code == 50013) {
@@ -469,7 +469,7 @@ module.exports = {
                         })
                     }
                     // pls ignore all the extra console logs, they are for debugging this
-                    voiceConnection.on('end', () => { // when the song ends
+                    voiceConnection.on("end", () => { // when the song ends
                         var data = _.load()
                         var queue = Object.keys(data[guild.id].music.queue)
                         if (queue.length > 0 && !voiceConnection.playing) { // if there is another song in the queue, try to play that song

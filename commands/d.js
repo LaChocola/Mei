@@ -53,11 +53,11 @@ module.exports = {
         }
         var msg = {
             color: 0xA260F6,
-            title: ``,
+            title: "",
             fields: [
                 {
-                    "name": `:game_die: Rolling ${dice} D${amount}${dice > 1 ? 's' : ''}:`,
-                    "value": '\n' + rolls.join('\n'),
+                    "name": `:game_die: Rolling ${dice} D${amount}${dice > 1 ? "s" : ""}:`,
+                    "value": "\n" + rolls.join("\n"),
                     "inline": "true"
                 }
             ]
@@ -69,8 +69,8 @@ module.exports = {
                 rolls2.push(`Roll ${i + 1}: **${roll}**`)
             }
             msg.fields.push({
-                "name": `:game_die: Rolling ${dice2} D${amount2}${dice2 > 1 ? 's' : ''}:`,
-                "value": '\n' + rolls2.join('\n'),
+                "name": `:game_die: Rolling ${dice2} D${amount2}${dice2 > 1 ? "s" : ""}:`,
+                "value": "\n" + rolls2.join("\n"),
                 "inline": "true"
             })
         }

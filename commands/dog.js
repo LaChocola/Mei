@@ -1,6 +1,6 @@
 "use strict";
 
-const randomPuppy = require('random-puppy');
+const randomPuppy = require("random-puppy");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {

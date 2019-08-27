@@ -99,7 +99,7 @@ module.exports = {
             if (!name || m.mentions.length < 2) {
                 var user = await Bot.users.get(id);
                 if (!user || !user.username) {
-                    var name = 'Unknown User';
+                    var name = "Unknown User";
                     return;
                 }
                 var name = user.username;

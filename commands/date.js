@@ -1,7 +1,7 @@
 "use strict";
 
 var timeago = require("timeago.js");
-var timediff = require('timediff');
+var timediff = require("timediff");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {

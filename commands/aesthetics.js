@@ -1,6 +1,6 @@
 "use strict";
 
-const aesthetics = require('aesthetics');
+const aesthetics = require("aesthetics");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {

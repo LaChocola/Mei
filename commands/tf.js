@@ -2,12 +2,12 @@
 
 const _ = require("../people.js");
 var reload = require("require-reload")(require);
-var miscl = reload('../misc.js');
+var miscl = reload("../misc.js");
 var data = _.load();
 const use = require("../data.js");
 var stats = use.load();
 var time = new Date().toISOString();
-var ordinal = require('ordinal')
+var ordinal = require("ordinal")
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var args = args.toLowerCase()

@@ -131,7 +131,7 @@ module.exports = {
             }
             if (m.author.id == "161027274764713984" || m.author.id == m.channel.guild.ownerID || mod == true) {
                 m.delete()
-                Bot.createMessage(m.channel.id, 'Time to clean up').then(a => {
+                Bot.createMessage(m.channel.id, "Time to clean up").then(a => {
                     return setTimeout(function() {
                         a.delete()
                     }, 5000)

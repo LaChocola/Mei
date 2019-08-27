@@ -1,9 +1,9 @@
 "use strict";
 
 var config = require("../etc/config.json");
-const Sagiri = require('sagiri');
+const Sagiri = require("sagiri");
 const handler = new Sagiri(config.tokens.sauce);
-const qs = require('querystring')
+const qs = require("querystring")
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -22,12 +22,12 @@ module.exports = {
             const msg = {
                 color: 0xA260F6,
                 fields: [{
-                    name: 'Similarity',
+                    name: "Similarity",
                     value: `${data.similarity}%`,
                     inline: true
                 },
                 {
-                    name: 'Site',
+                    name: "Site",
                     value: `${data.site}`,
                     inline: true
                 }

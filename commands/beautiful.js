@@ -1,6 +1,6 @@
 "use strict";
 
-const Jimp = require('jimp');
+const Jimp = require("jimp");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {

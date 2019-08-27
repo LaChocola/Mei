@@ -1,6 +1,6 @@
 "use strict";
 
-const MarkovGen = require('markov-generator');
+const MarkovGen = require("markov-generator");
 var time = new Date().toISOString();
 
 module.exports = {
@@ -41,7 +41,7 @@ module.exports = {
             return;
         }
         var amount = 7000
-        Bot.createMessage(m.channel.id, 'Indexing ' + amount + ' messages from **' + name + '** in *' + m.channel.guild.channels.get(channel).name + '*, Please wait.').then(a => {
+        Bot.createMessage(m.channel.id, "Indexing " + amount + " messages from **" + name + "** in *" + m.channel.guild.channels.get(channel).name + "*, Please wait.").then(a => {
             setTimeout(function() {
                 a.delete()
             }, 10000);

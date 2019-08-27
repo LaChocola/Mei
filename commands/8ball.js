@@ -1,6 +1,6 @@
 "use strict";
 
-const eightball = require('8ball')()
+const eightball = require("8ball")()
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -8,7 +8,7 @@ module.exports = {
         if (m.content == `${prefix}8ball`) {
             Bot.createMessage(m.channel.id, "Please add something")
         } else {
-            Bot.createMessage(m.channel.id, `***` + msg + `***\n:8ball: ${eightball}`);
+            Bot.createMessage(m.channel.id, "***" + msg + `***\n:8ball: ${eightball}`);
         }
     },
     help: "8ball"
