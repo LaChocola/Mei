@@ -25,7 +25,7 @@ var hands = [':ok_hand::skin-tone-1:', ':ok_hand::skin-tone-2:', ':ok_hand::skin
 var hand = hands[Math.floor(Math.random() * hands.length)]
 var commandContentsMap = {}
 
-var send = function(channel, text, timeout) {
+function send(channel, text, timeout) {
     Bot.createMessage(channel, text).then((msg) => {
         return setTimeout(function() {
             Bot.deleteMessage(m.channel.id, m.id, 'Timeout')
@@ -153,7 +153,7 @@ Bot.on('guildBanRemove', async function(guild, user) {
 
 Bot.on('messageCreate', async function(m) {
     const timestamps = [Date.now()]
-    const updateTimestamps = () => {
+    function updateTimestamps() {
         const latest = timestamps[timestamps.length - 1]
         const now = Date.now()
         timestamps[timestamps.length - 1] = now - latest
