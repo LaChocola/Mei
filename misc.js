@@ -139,7 +139,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
             else {
                 names = cname;
             }
-            var bigname = Misc.randomelement(names);
+            bigname = Misc.randomelement(names);
         }
 
         var female = true;
@@ -148,12 +148,12 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         if (data.people[smallid]) {
             if (data.people[smallid].names) {
                 if (data.people[smallid].names[bigname] == "male") {
-                    var male = true;
-                    var female = false;
+                    male = true;
+                    female = false;
                 }
                 if (data.people[smallid].names[bigname] == "futa") {
-                    var futa = true;
-                    var female = false;
+                    futa = true;
+                    female = false;
                 }
             }
         }
@@ -166,12 +166,12 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var types1 = ["panties", "underwear", "thongs"];
         var types2 = ["panty", "thong", "underwear"];
         if (male) {
-            var types1 = ["underwear", "boxers", "briefs"];
-            var types2 = ["underwear", "underwear"];
+            types1 = ["underwear", "boxers", "briefs"];
+            types2 = ["underwear", "underwear"];
         }
         if (futa) {
-            var types1 = types1.concat(["underwear", "boxers", "briefs"]);
-            var types2 = types2.concat(["underwear", "underwear"]);
+            types1 = types1.concat(["underwear", "boxers", "briefs"]);
+            types2 = types2.concat(["underwear", "underwear"]);
         }
 
         var type1 = Misc.randomelement(types1);
@@ -188,24 +188,24 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var adjectiveFeet = "";
         var adjectiveFootwear = "";
 
-        var roll = Math.floor(Math.random() * 20) + 1; // roll from 1-20
-        if (roll > 0 && roll < 16) { // If the roll is between 1-5
-            var adjectiveFeet = Misc.randomelement(adjectivesFeet) + " ";
-            var adjectiveFootwear = Misc.randomelement(adjectivesFootwear) + " ";
-            if (roll > 0 && roll < 7) {
+        var footRoll = Math.floor(Math.random() * 20) + 1; // roll from 1-20
+        if (footRoll > 0 && footRoll < 16) { // If the roll is between 1-5
+            adjectiveFeet = Misc.randomelement(adjectivesFeet) + " ";
+            adjectiveFootwear = Misc.randomelement(adjectivesFootwear) + " ";
+            if (footRoll > 0 && footRoll < 7) {
                 var adjectiveFeet1 = Misc.randomelement(adjectivesFeet);
                 var adjectiveFeet2 = Misc.randomelement(adjectivesFeet);
                 if (adjectiveFeet1 == adjectiveFeet2) {
-                    var adjectiveFeet2 = Misc.randomelement(adjectivesFeet);
+                    adjectiveFeet2 = Misc.randomelement(adjectivesFeet);
                 }
-                var adjectiveFeet = adjectiveFeet1 + ", " + adjectiveFeet2 + " ";
+                adjectiveFeet = adjectiveFeet1 + ", " + adjectiveFeet2 + " ";
 
                 var adjectiveFootwear1 = Misc.randomelement(adjectivesFootwear);
                 var adjectiveFootwear2 = Misc.randomelement(adjectivesFootwear);
                 if (adjectiveFootwear1 == adjectiveFootwear2) {
-                    var adjectiveFootwear2 = Misc.randomelement(adjectivesFootwear);
+                    adjectiveFootwear2 = Misc.randomelement(adjectivesFootwear);
                 }
-                var adjectiveFootwear = adjectiveFootwear1 + ", " + adjectiveFootwear2 + " ";
+                adjectiveFootwear = adjectiveFootwear1 + ", " + adjectiveFootwear2 + " ";
             }
         }
 
@@ -215,8 +215,8 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var footwearSingulars = ["shoe", "boot", "sandal", "flip flop", "sneaker", "pump", "heel", "sock", "stocking", "nylons", "fishnets", "hose"];
         var nakedFeetPlural = adjectiveFeet + Misc.randomelement(nakedFeetPlurals);
         if (male) {
-            var footwearPlurals = Array.from(new Set([].concat(footwearPlurals, ["shoes", "boots", "sandals", "flip flops", "sneakers", "boots", "socks"])));
-            var footwearSingulars = Array.from(new Set([].concat(footwearSingulars, ["shoe", "boot", "sandal", "flip flop", "sneaker", "boot", "sock"])));
+            footwearPlurals = Array.from(new Set([].concat(footwearPlurals, ["shoes", "boots", "sandals", "flip flops", "sneakers", "boots", "socks"])));
+            footwearSingulars = Array.from(new Set([].concat(footwearSingulars, ["shoe", "boot", "sandal", "flip flop", "sneaker", "boot", "sock"])));
         }
 
         var nakedFeetSingular = adjectiveFeet + Misc.randomelement(nakedFeetSingulars);
@@ -243,7 +243,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
                 const primarytype = pool[primarytypename];
                 if (maintype == false || primarytypename == maintype) {
                     if (!primarytype[subtype]) {
-                        var subtype = false;
+                        subtype = false;
                     }
                     for (const secondarytypename in primarytype) {
                         if (primarytype.hasOwnProperty(secondarytypename)) {
@@ -273,8 +273,8 @@ class Misc { // Declaring export as a class because cbf to make other way work p
             lewdmessage = lewdmessage.replace(/\bhis\b/ig, "her").replace(/\bhe\b/ig, "she").replace(/\bchest\b/ig, "breasts").replace(/\bdick\b/ig, "pussy").replace(/\bboyfriend\b/ig, "girlfriend").replace(/\bdick\b/ig, "pussy");
         }
         if (futa) {
-            var roll = Math.floor(Math.random() * 10) + 1;
-            if (roll != 1) {
+            var futaRoll = Math.floor(Math.random() * 10) + 1;
+            if (futaRoll != 1) {
                 lewdmessage = lewdmessage.replace(/\bpussy\b/ig, "dick").replace(/\bvagina\b/ig, "dick").replace(/\bcunt\b/ig, "dick").replace(/\bclit\b/ig, "urethra").replace(/\blabia\b/ig, "foreskin");
             }
         }
@@ -313,42 +313,42 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n").replace("Baiken,", "Baiken,\n").replace("Gwen,", "Gwen,\n").replace("Aqua,", "Aqua,\n").replace("Lulu,", "Lulu,\n").replace("Samus,", "Samus,\n");
 
         if (guildid === "261599167695159298") { // Krumbly"s ant farm only
-            var names = ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Lucy", "Ryuko", "Krumbly"];
-            var cleanishNames = names.join(", ");
-            var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n");
-            var cleanNames = cleanNames.replace("Lucy,", "Lucy,\n");
+            names = ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Lucy", "Ryuko", "Krumbly"];
+            cleanishNames = names.join(", ");
+            cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n");
+            cleanNames = cleanNames.replace("Lucy,", "Lucy,\n");
         }
         if (guildid === "373589430448947200") { // r/Macrophilia Only
-            var names = ["Miau"];
-            var cleanNames = names[0];
+            names = ["Miau"];
+            cleanNames = names[0];
         }
         if (guildid === "420402860027805696") { // Giantess Archive
-            var names = ["Brittany", "Bethany", "Alicia", "Katie", "Cali", "Asuna", "Cat", "Brianna", "Emily", "Alice", "Yuri", "Monica", "Brie", "Sierra"];
-            var cleanishNames = names.join(", ");
-            var cleanNames = cleanishNames.replace("Cali,", "Cali,\n");
-            var cleanNames = cleanNames.replace("Yuri,", "Yuri,\n");
+            names = ["Brittany", "Bethany", "Alicia", "Katie", "Cali", "Asuna", "Cat", "Brianna", "Emily", "Alice", "Yuri", "Monica", "Brie", "Sierra"];
+            cleanishNames = names.join(", ");
+            cleanNames = cleanishNames.replace("Cali,", "Cali,\n");
+            cleanNames = cleanNames.replace("Yuri,", "Yuri,\n");
         }
         if (guildid === "319534510318551041") { // The Big House Only
-            var names = names.concat(["Zem", "Ardy", "Vas"]);
-            var cleanishNames = names.join(", ");
-            var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n");
-            var cleanNames = cleanNames.replace("Lucy,", "Lucy,\n");
+            names = names.concat(["Zem", "Ardy", "Vas"]);
+            cleanishNames = names.join(", ");
+            cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n");
+            cleanNames = cleanNames.replace("Lucy,", "Lucy,\n");
         }
         if (guildid === "354709664509853708") { // Small World Only
-            var names = names.concat(["Docop", "Mikki", "Spellgirl"]);
-            var cleanishNames = names.join(", ");
-            var cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n");
-            var cleanNames = cleanNames.replace("Lucy,", "Lucy,\n");
+            names = names.concat(["Docop", "Mikki", "Spellgirl"]);
+            cleanishNames = names.join(", ");
+            cleanNames = cleanishNames.replace("Mt. Lady,", "Mt. Lady,\n");
+            cleanNames = cleanNames.replace("Lucy,", "Lucy,\n");
         }
         if (guildid === "345390985150201859") { // The Giantess Club Only
-            var names = ["Yami", "Mikan", "Momo", "Nana", "Yui", "May", "Dawn", "Hilda", "Rosa", "Serena", "Palutena", "Wii Fit Trainer", "Lucina", "Robin", "Corrin", "Bayonetta", "Zelda", "Sheik",
+            names = ["Yami", "Mikan", "Momo", "Nana", "Yui", "May", "Dawn", "Hilda", "Rosa", "Serena", "Palutena", "Wii Fit Trainer", "Lucina", "Robin", "Corrin", "Bayonetta", "Zelda", "Sheik",
                 "Tifa", "Chun-li", "R. Mika", "Daisy", "Misty", "Gardevoir", "Lyn", "Cammy", "Angewomon", "Liara", "Samara", "Tali", "Miranda", "Cus", "Marcarita", "Vados", "Wendy", "Sabrina", "Cana", "Erza",
                 "Levy", "Lucy", "Wendy Marvell"];
-            var cleanishNames = names.join(", ");
-            var cleanNames = cleanishNames.replace("Hilda,", "Hilda,\n");
-            var cleanNames = cleanNames.replace("Lucina,", "Lucina,\n");
-            var cleanNames = cleanNames.replace("Chun-li,", "Chun-li,\n");
-            var cleanNames = cleanNames.replace("Cammy,", "Cammy,\n");
+            cleanishNames = names.join(", ");
+            cleanNames = cleanishNames.replace("Hilda,", "Hilda,\n");
+            cleanNames = cleanNames.replace("Lucina,", "Lucina,\n");
+            cleanNames = cleanNames.replace("Chun-li,", "Chun-li,\n");
+            cleanNames = cleanNames.replace("Cammy,", "Cammy,\n");
         }
 
         return { "names": names, "cleannames": cleanNames, "totalnames": names.length };
