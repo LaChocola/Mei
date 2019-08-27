@@ -33,8 +33,9 @@ module.exports = {
             let s = Math.floor(ms / 1000) - m * 60 - h * 60 * 60
             let time = [m, s]
             // Use hours if there are hours
-            if (h)
+            if (h) {
                 time.unshift(h)
+            }
             return time.map(n => n.toString().padStart(2, "0")).join(":")
         }
         var guild = m.channel.guild

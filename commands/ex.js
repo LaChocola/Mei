@@ -30,8 +30,9 @@ module.exports = {
         var name = m.author.nick || m.author.username
         var args = m.cleanContent.replace(`${prefix}ex`, "").replace(`${prefix}ex `, "").toLowerCase().split(", ")
         var search = args.join(" ")
-        if (!search)
+        if (!search) {
             search = "giantess"
+        }
         var q = qs.encode(Object.assign({
             f_search: search
         }, defaultQuery))

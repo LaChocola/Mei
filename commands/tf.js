@@ -72,8 +72,9 @@ module.exports = {
         var cname = miscl.getcustomGTSNames(smallid);
         names = names.concat(cname);
         for (var i = 0; i < names.length; i++) {
-            if (args.includes(names[i].toLowerCase()))
+            if (args.includes(names[i].toLowerCase())) {
                 big = names[i];
+            }
         }
 
         var maintype = "tf";
