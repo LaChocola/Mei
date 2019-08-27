@@ -62,7 +62,7 @@ module.exports = {
                 minLength: 6
             });
             var sentence = markov.makeChain();
-            if (!(messages) || !(sentence)) {
+            if (!messages || !sentence) {
                 Bot.createMessage(m.channel.id, "Sorry, I couldn't find any messages from **" + mentioned.username + "** in `" + m.channel.name + "`").then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

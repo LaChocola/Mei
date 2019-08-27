@@ -130,7 +130,7 @@ module.exports = {
                 }
             }
         }
-        if (!(data.people[id]) || !(data.people[id].hoard)) {
+        if (!(data.people[id] && data.people[id].hoard)) {
             Bot.createMessage(m.channel.id, `Could not find any hoard for **${name}**`).then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

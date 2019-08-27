@@ -93,7 +93,7 @@ module.exports = {
             });
             return;
         }
-        if (!(data[guild.id])) {
+        if (!data[guild.id]) {
             data[guild.id] = {};
             data[guild.id].name = guild.name;
             data[guild.id].owner = guild.ownerID;
@@ -175,7 +175,7 @@ module.exports = {
                         Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
                     }
-                    if (!(data[guild.id].notifications)) {
+                    if (!data[guild.id].notifications) {
                         data[guild.id].notifications = {};
                     }
                     data[guild.id].notifications.banLog = channel.id;
@@ -234,7 +234,7 @@ module.exports = {
                         Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
                     }
-                    if (!(data[guild.id].notifications)) {
+                    if (!data[guild.id].notifications) {
                         data[guild.id].notifications = {};
                     }
                     data[guild.id].notifications.updates = channel.id;
@@ -284,7 +284,7 @@ module.exports = {
                     return;
                 }
                 if (args.toLowerCase().includes("add")) {
-                    if (!(data[guild.id].notifications)) {
+                    if (!data[guild.id].notifications) {
                         data[guild.id].notifications = {};
                     }
                     if (!m.channelMentions[0]) {
@@ -358,7 +358,7 @@ module.exports = {
                     return;
                 }
                 if (args.toLowerCase().includes("add")) {
-                    if (!(data[guild.id].notifications)) {
+                    if (!data[guild.id].notifications) {
                         data[guild.id].notifications = {};
                     }
                     if (!m.channelMentions[0]) {

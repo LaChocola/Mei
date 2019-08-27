@@ -38,7 +38,7 @@ module.exports = {
             return time.map(n => n.toString().padStart(2, "0")).join(":");
         }
         var guild = m.channel.guild;
-        if (!(data[guild.id])) {
+        if (!data[guild.id]) {
             data[guild.id] = {};
             data[guild.id].name = guild.name;
             data[guild.id].owner = guild.ownerID;
@@ -135,7 +135,7 @@ module.exports = {
                                             ]
                                         }
                                     };
-                                    if (((args.toLowerCase().includes("queue") || args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list=")) && Object.entries(data[guild.id].music.queue).length < 1)) {
+                                    if ((args.toLowerCase().includes("queue") || (args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list="))) && (Object.entries(data[guild.id].music.queue).length < 1)) {
                                         console.log(msg.embed.author.name);
                                         msg.embed.author.name = "Nothing Else is Queued.\nCurrently Playing:";
                                         console.log(msg.embed.author.name);

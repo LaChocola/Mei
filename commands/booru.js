@@ -1325,7 +1325,7 @@ module.exports = {
                     // Log the direct link to each image
                     for (const image of images) {
                         imageURL.push(image.common.file_url);
-                        Bot.createMessage(m.channel.id, "Result for: **" + tags[0] + (", ") + "** on " + site + "\n" + imageURL);
+                        Bot.createMessage(m.channel.id, "Result for: **" + tags[0] + ", " + "** on " + site + "\n" + imageURL);
                     }
                 })
                 .catch(err => {
