@@ -133,7 +133,8 @@ class Misc { // Declaring export as a class because cbf to make other way work p
             var names;
             if (cname.length == 0) {
                 names = Misc.getDefaultGTSNames(guildid).names;
-            } else {
+            }
+            else {
                 names = cname;
             }
             var bigname = Misc.randomelement(names);
