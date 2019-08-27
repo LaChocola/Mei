@@ -13,4 +13,4 @@ module.exports = {
         });
     },
     help: "Random Haiku's"
-}
+};

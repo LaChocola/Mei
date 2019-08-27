@@ -1262,9 +1262,9 @@ module.exports = {
                     const $ = cheerio.load(body);
                     if (response.request.uri.href.startsWith("http://giantessbooru.com/post/view/") || response.request.uri.href.startsWith("https://giantessbooru.com/post/view/")) { // gtsbooru redirects to the result pic page immediately if only 1 result exists, so we have to handle that specifically
                         post_array.push(response.request.uri.path);
-                        var match = body.match(/\/_images\/([0-9a-zA-Z]+)\//gm)
+                        var match = body.match(/\/_images\/([0-9a-zA-Z]+)\//gm);
                         if (match && match[0]) {
-                            link_array.push(match)
+                            link_array.push(match);
                         }
                     }
                     else if (!response.request.uri.href.startsWith("http://giantessbooru.com/post/view/") || !response.request.uri.href.startsWith("https://giantessbooru.com/post/view/")) {
@@ -1273,7 +1273,7 @@ module.exports = {
                             const child_thing = thing[child];
                             if (child_thing.type == "tag") {
                                 link_array.push(child_thing.children[0].attribs.src.replace("/_thumbs/", "_images/").replace("/thumb.jpg", ""));
-                                post_array.push(child_thing.attribs.href)
+                                post_array.push(child_thing.attribs.href);
                             }
                             else {
                                 break;
@@ -1287,7 +1287,7 @@ module.exports = {
                     return;
                 }
                 const number = maths + 1;
-                const imageURL = "http://giantessbooru.com/" + link_array[maths] + ".gif"
+                const imageURL = "http://giantessbooru.com/" + link_array[maths] + ".gif";
                 const data = {
                     content: "Results on **" + site + "**",
                     embed: {

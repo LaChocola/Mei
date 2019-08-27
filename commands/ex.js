@@ -1,9 +1,9 @@
 "use strict";
 
-const qs = require("querystring")
+const qs = require("querystring");
 const request = require("request").defaults({
     jar: true
-})
+});
 const j = request.jar();
 const cheerio = require("cheerio");
 var config = require("../etc/config.json");
@@ -19,7 +19,7 @@ const defaultQuery = {
     f_asianporn: 0,
     f_misc: 0,
     f_apply: "Apply Filter"
-}
+};
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -27,16 +27,16 @@ module.exports = {
             Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
             return;
         }
-        var name = m.author.nick || m.author.username
-        var args = m.cleanContent.replace(`${prefix}ex`, "").replace(`${prefix}ex `, "").toLowerCase().split(", ")
-        var search = args.join(" ")
+        var name = m.author.nick || m.author.username;
+        var args = m.cleanContent.replace(`${prefix}ex`, "").replace(`${prefix}ex `, "").toLowerCase().split(", ");
+        var search = args.join(" ");
         if (!search) {
-            search = "giantess"
+            search = "giantess";
         }
         var q = qs.encode(Object.assign({
             f_search: search
-        }, defaultQuery))
-        var pageToVisit = `https://exhentai.org/?${q}`
+        }, defaultQuery));
+        var pageToVisit = `https://exhentai.org/?${q}`;
         var cookie1 = request.cookie(config.tokens.exhentai.id);
         var cookie2 = request.cookie(config.tokens.exhentai.hash);
         var cookie3 = request.cookie("sl=dm_1");
@@ -48,7 +48,7 @@ module.exports = {
                 url: pageToVisit,
                 jar: j
             }, (error, response, body) => {
-                var link_array = []
+                var link_array = [];
                 if (error) {
                     console.log("Error: " + error);
                 }
@@ -59,26 +59,26 @@ module.exports = {
                             name: $("a .glname", this).text(),
                             link: $("a", this).attr("href"),
                             pic: $("img", this).attr("src")
-                        })
+                        });
                     });
                     if (link_array.length < 1) {
                         Bot.createMessage(m.channel.id, "No results found :(");
                         return;
                     }
-                    const maths = Math.floor(Math.random() * link_array.length)
-                    var number = maths + 1
-                    var pairs = link_array[maths]
+                    const maths = Math.floor(Math.random() * link_array.length);
+                    var number = maths + 1;
+                    var pairs = link_array[maths];
                     var $ = cheerio.load(body);
-                    var exOnly = false
-                    var newPage = pairs.link.replace("exhentai", "e-hentai")
+                    var exOnly = false;
+                    var newPage = pairs.link.replace("exhentai", "e-hentai");
                     request({ url: newPage }, (error, response, body) => {
                         if (response.statusCode != 200) {
-                            exOnly = true
+                            exOnly = true;
                         }
                         if (response.statusCode == 200) {
                             var $$ = cheerio.load(body);
                             if ($$(".d").text().toLowerCase().includes("this gallery has been removed or is unavailable.")) {
-                                exOnly = true
+                                exOnly = true;
                             }
                         }
                         if (exOnly == true) {

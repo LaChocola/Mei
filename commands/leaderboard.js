@@ -20,34 +20,34 @@ module.exports = {
             });
             return arr.reverse();
         }
-        var sorted = rank(data.people)
+        var sorted = rank(data.people);
         if (args.toLowerCase().includes("global")) {
-            var i = 1
-            var leaders = []
-            var leader = []
-            var y = 0
-            var personalRank = []
+            var i = 1;
+            var leaders = [];
+            var leader = [];
+            var y = 0;
+            var personalRank = [];
             for (person of sorted) {
-                var user = Bot.users.filter(m => m.id == person["key"])[0]
+                var user = Bot.users.filter(m => m.id == person["key"])[0];
                 if (user && user.id != "309220487957839872" && user.id != "444791634966740993") {
-                    y++
+                    y++;
                     if (i == 1) {
-                        leader.push(user.id)
+                        leader.push(user.id);
                     }
                     if (person.value > 1 && i < 26) {
-                        leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} adds`)
-                        i++
+                        leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} adds`);
+                        i++;
                     }
                     if (person.value == 1 && i < 26) {
-                        leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} add`)
-                        i++
+                        leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} add`);
+                        i++;
                     }
                     if (user.id == m.author.id) {
                         if (person.value > 1) {
-                            personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} adds`)
+                            personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} adds`);
                         }
                         if (person.value == 1) {
-                            personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} add`)
+                            personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} add`);
                         }
                     }
                 }
@@ -85,32 +85,32 @@ module.exports = {
                 return;
             }
         }
-        var leaders = []
-        var leader = []
-        var i = 1
-        var y = 0
-        var personalRank = []
+        var leaders = [];
+        var leader = [];
+        var i = 1;
+        var y = 0;
+        var personalRank = [];
         for (person of sorted) {
-            var user = m.channel.guild.members.filter(m => m.id == person["key"])[0]
+            var user = m.channel.guild.members.filter(m => m.id == person["key"])[0];
             if (user && user.id != "309220487957839872" && user.id != "444791634966740993") {
-                y++
+                y++;
                 if (i == 1) {
-                    leader.push(user.id)
+                    leader.push(user.id);
                 }
                 if (person.value > 1 && i < 11) {
-                    leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} adds`)
-                    i++
+                    leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} adds`);
+                    i++;
                 }
                 if (person.value == 1 && i < 11) {
-                    leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} add`)
-                    i++
+                    leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} add`);
+                    i++;
                 }
                 if (user.id == m.author.id) {
                     if (person.value > 1) {
-                        personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} adds`)
+                        personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} adds`);
                     }
                     if (person.value == 1) {
-                        personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} add`)
+                        personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} add`);
                     }
                 }
             }
@@ -148,4 +148,4 @@ module.exports = {
         }
     },
     help: "Shows hoard leaderboards"
-}
+};

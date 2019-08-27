@@ -8,7 +8,7 @@ const config = require("../etc/config.json");
 
 function fallbackHTMLScraper(args, safe, message) {
 
-    console.log("Falling back on HTML scraper...")
+    console.log("Falling back on HTML scraper...");
 
     request("https://www.google.com/search?safe=" + safe + "&q=" + encodeURI(args), function(err, res, body) {
         if (res.statusCode !== 200) {
@@ -34,7 +34,7 @@ function fallbackHTMLScraper(args, safe, message) {
                 }
             }
             catch (err) {
-                console.error(err)
+                console.error(err);
                 message.edit("`No results found`");
                 return;
             }
@@ -47,14 +47,14 @@ module.exports = {
     main: function(Bot, m, args, prefix) {
         var args = m.cleanContent.replace(`${prefix}search `, "").trim();
         Bot.createMessage(m.channel.id, "`Searching...`").then(function(message) {
-            var safe = "off"
+            var safe = "off";
             var key = config.tokens.google;
             var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=013652921652433515166:cnlmax0k6mu&q=" + encodeURI(args);
             try {
                 request(url, function(error, response, body) {
 
                     try {
-                        var jBody = JSON.parse(body)
+                        var jBody = JSON.parse(body);
                         if (!jBody) {
                             message.edit("`No results found`");
                             return;
@@ -79,4 +79,4 @@ module.exports = {
         });
     },
     help: "Google Stuff" // add description
-}
+};

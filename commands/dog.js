@@ -20,8 +20,8 @@ module.exports = {
                 };
 
                 Bot.createMessage(m.channel.id, data);
-            })
+            });
 
     },
     help: "Random Dogs"
-}
+};
