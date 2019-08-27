@@ -21,34 +21,34 @@ var _ = require('./data.js');
 var ppl = require('./people.js');
 var servers = reload('./servers.js');
 var Bot = bot(config.tokens.mei);
-var hands = [':ok_hand::skin-tone-1:', ':ok_hand::skin-tone-2:', ':ok_hand::skin-tone-3:', ':ok_hand::skin-tone-4:', ':ok_hand::skin-tone-5:', ':ok_hand:']
-var hand = hands[Math.floor(Math.random() * hands.length)]
-var commandContentsMap = {}
+var hands = [':ok_hand::skin-tone-1:', ':ok_hand::skin-tone-2:', ':ok_hand::skin-tone-3:', ':ok_hand::skin-tone-4:', ':ok_hand::skin-tone-5:', ':ok_hand:'];
+var hand = hands[Math.floor(Math.random() * hands.length)];
+var commandContentsMap = {};
 
 function send(channel, text, timeout) {
     Bot.createMessage(channel, text).then((msg) => {
         return setTimeout(function() {
-            Bot.deleteMessage(m.channel.id, m.id, 'Timeout')
-            Bot.deleteMessage(m.channel.id, msg.id, 'Timeout')
-        }, timeout)
+            Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+            Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+        }, timeout);
     })
         .catch((err) => {
-            console.log(`\nError Occured while sending message\n`)
-            console.log(err)
-        })
+            console.log(`\nError Occured while sending message\n`);
+            console.log(err);
+        });
 }
 
 Bot.on('guildBanAdd', async function(guild, user) {
-    var server = servers.load()
+    var server = servers.load();
     if (server[guild.id]) {
         if (server[guild.id].notifications) {
             if (server[guild.id].notifications.banLog) {
-                var banned = await Bot.getGuildBan(guild.id, user.id)
-                var userFull = await Bot.users.filter(m => m.id === user.id)[0]
-                var origID = userFull.id || null
-                var hash = userFull.avatar || null
-                var avy = `https://cdn.discordapp.com/avatars/${origID}/${hash}.jpg?size=128`
-                var name = userFull.nick || user.username
+                var banned = await Bot.getGuildBan(guild.id, user.id);
+                var userFull = await Bot.users.filter(m => m.id === user.id)[0];
+                var origID = userFull.id || null;
+                var hash = userFull.avatar || null;
+                var avy = `https://cdn.discordapp.com/avatars/${origID}/${hash}.jpg?size=128`;
+                var name = userFull.nick || user.username;
                 var msg = {
                     'embed': {
                         'color': 13632027,
@@ -85,15 +85,15 @@ Bot.on('guildBanAdd', async function(guild, user) {
                 };
                 if (banned.reason) {
                     if (banned.reason.toLowerCase().startsWith("banned by: ")) {
-                        banned.reason = banned.reason + " (Automated ban through Mei)"
+                        banned.reason = banned.reason + " (Automated ban through Mei)";
                     }
                     msg.embed.fields.push({
                         "name": "\nReason:",
                         "value": banned.reason,
                         "inline": true
-                    })
+                    });
                 }
-                var channel = server[guild.id].notifications.banLog
+                var channel = server[guild.id].notifications.banLog;
                 Bot.createMessage(channel, msg);
             }
         }
@@ -101,15 +101,15 @@ Bot.on('guildBanAdd', async function(guild, user) {
 });
 
 Bot.on('guildBanRemove', async function(guild, user) {
-    var server = servers.load()
+    var server = servers.load();
     if (server[guild.id]) {
         if (server[guild.id].notifications) {
             if (server[guild.id].notifications.banLog) {
-                var userFull = await Bot.users.filter(m => m.id === user.id)[0]
-                var origID = userFull.id || null
-                var hash = userFull.avatar || null
-                var avy = `https://cdn.discordapp.com/avatars/${origID}/${hash}.jpg?size=128`
-                var name = userFull.nick || user.username
+                var userFull = await Bot.users.filter(m => m.id === user.id)[0];
+                var origID = userFull.id || null;
+                var hash = userFull.avatar || null;
+                var avy = `https://cdn.discordapp.com/avatars/${origID}/${hash}.jpg?size=128`;
+                var name = userFull.nick || user.username;
                 var msg = {
                     'embed': {
                         'color': 8311585,
@@ -144,7 +144,7 @@ Bot.on('guildBanRemove', async function(guild, user) {
                         ]
                     }
                 };
-                var channel = server[guild.id].notifications.banLog
+                var channel = server[guild.id].notifications.banLog;
                 Bot.createMessage(channel, msg);
             }
         }
@@ -152,18 +152,18 @@ Bot.on('guildBanRemove', async function(guild, user) {
 });
 
 Bot.on('messageCreate', async function(m) {
-    const timestamps = [Date.now()]
+    const timestamps = [Date.now()];
     function updateTimestamps() {
-        const latest = timestamps[timestamps.length - 1]
-        const now = Date.now()
-        timestamps[timestamps.length - 1] = now - latest
-        timestamps.push(now)
+        const latest = timestamps[timestamps.length - 1];
+        const now = Date.now();
+        timestamps[timestamps.length - 1] = now - latest;
+        timestamps.push(now);
     }
     var data = _.load();
     if (data.banned.global[m.author.id]) {
         return;
     }
-    updateTimestamps()
+    updateTimestamps();
     if (!m.channel.guild) {
         console.log(`${m.author.username}#${m.author.discriminator} (${m.author.id}): ${m.content}`);
         Bot.getDMChannel(m.author.id).then(function(DMchannel) {
@@ -173,16 +173,16 @@ Bot.on('messageCreate', async function(m) {
             if (err.code == 50007) {
                 return;
             }
-            console.log(err)
-        })
+            console.log(err);
+        });
         if (m.author.id !== "161027274764713984") {
-            console.log("Guild 1:", m.channel.guild)
-            var roles = new Collection(bot.Role)
-            var members = new Collection(bot.User)
-            var channels = new Collection(bot.Channel)
-            members.add(m.author, bot.User, true)
-            channels.add(m.channel, bot.Channel, true)
-            roles.add({ "name": "fakeRole", "id": "00001" }, bot.Role, true)
+            console.log("Guild 1:", m.channel.guild);
+            var roles = new Collection(bot.Role);
+            var members = new Collection(bot.User);
+            var channels = new Collection(bot.Channel);
+            members.add(m.author, bot.User, true);
+            channels.add(m.channel, bot.Channel, true);
+            roles.add({ "name": "fakeRole", "id": "00001" }, bot.Role, true);
             var fakeGuild = {
                 name: m.author.username,
                 ownerid: m.author.id,
@@ -191,18 +191,18 @@ Bot.on('messageCreate', async function(m) {
                 roles: roles,
                 members: members,
                 channels: channels
-            }
-            console.log(`Guild 2: ${m.channel.guild}`)
-        };
+            };
+            console.log(`Guild 2: ${m.channel.guild}`);
+        }
         return;
     }
-    updateTimestamps()
-    var config = reload('./etc/config.json')
-    var server = servers.load()
-    var prefix = config.prefix
+    updateTimestamps();
+    var config = reload('./etc/config.json');
+    var server = servers.load();
+    var prefix = config.prefix;
     if (server[m.channel.guild.id] && server[m.channel.guild.id].game && server[m.channel.guild.id].game.channel == m.channel.id && server[m.channel.guild.id].game.player == m.author.id) {
         if (server[m.channel.guild.id].game.active && server[m.channel.guild.id].game.choices.includes(m.content)) {
-            m.content = prefix + 't ' + m.content
+            m.content = prefix + 't ' + m.content;
         }
     }
 
@@ -222,121 +222,121 @@ Bot.on('messageCreate', async function(m) {
                 if (err.code == 50007) {
                     return;
                 }
-                console.log(err)
-            })
+                console.log(err);
+            });
         });
     }
     if (m.author.id === '161027274764713984' && m.content.includes('pls')) {
         if (m.content.includes('stop')) {
             Bot.createMessage(m.channel.id, `Let me rest my eyes for a moment`).then((msg) => {
                 return setTimeout(function() {
-                    Bot.deleteMessage(m.channel.id, m.id, 'Timeout')
+                    Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
                     Bot.deleteMessage(m.channel.id, msg.id, 'Timeout').then(() => {
-                        process.exit(0)
-                    })
-                }, 1500)
-            })
+                        process.exit(0);
+                    });
+                }, 1500);
+            });
         }
         if (m.content.includes('override')) {
-            send(m.channel.id, 'Chocola Recognized. Permission overrides engaged. I am at your service~', 2000)
+            send(m.channel.id, 'Chocola Recognized. Permission overrides engaged. I am at your service~', 2000);
         }
     }
-    updateTimestamps()
+    updateTimestamps();
     if (server[m.channel.guild.id]) {
         if (server[m.channel.guild.id].prefix) {
-            var prefix = server[m.channel.guild.id].prefix
+            var prefix = server[m.channel.guild.id].prefix;
         }
     }
     if (m.guild.id === '373589430448947200') {
         if (m.content.includes('you joined') === true && m.author.id === '155149108183695360') { // If shit bot says 'you joined' in #welcome
-            Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, '375633311449481218', 'Removed from role assign') // remove the No channel access role
+            Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, '375633311449481218', 'Removed from role assign'); // remove the No channel access role
         }
     }
     if (m.author.id === '161027274764713984' && m.content.includes('pls')) {
         if (m.content.includes(' mute') && m.mentions.length > 0) {
             if (m.mentions.length > 1) {
-                var muteArray = []
-                var mentions = m.mentions
+                var muteArray = [];
+                var mentions = m.mentions;
                 for (const mention of mentions) {
                     Bot.addGuildMemberRole(m.channel.guild.id, mention.id, '363854631035469825', 'Daddy said shush').then(() => {
                         return Bot.createMessage(m.channel.id, hand).then((m) => {
-                            return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout') }, 5000)
-                        })
-                    })
+                            return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 5000);
+                        });
+                    });
                 }
                 return;
             }
             Bot.addGuildMemberRole(m.channel.guild.id, m.mentions[0].id, '363854631035469825', 'Daddy said shush').then(() => {
                 return Bot.createMessage(m.channel.id, hand).then((m) => {
-                    return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout') }, 5000)
-                })
-            })
+                    return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 5000);
+                });
+            });
         }
         if (m.content.includes(' unmute') && m.mentions.length > 0) {
             if (m.mentions.length > 1) {
-                var unmuteArray = []
-                var mentions = m.mentions
+                var unmuteArray = [];
+                var mentions = m.mentions;
                 for (const mention of mention) {
                     Bot.removeGuildMemberRole(m.channel.guild.id, mention.id, '363854631035469825', 'Daddy said speak').then(() => {
                         return Bot.createMessage(m.channel.id, hand).then((m) => {
-                            return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout') }, 5000)
-                        })
-                    })
+                            return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 5000);
+                        });
+                    });
                 }
                 return;
             }
             Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, '363854631035469825', 'Daddy said speak').then(() => {
                 return Bot.createMessage(m.channel.id, hand).then((m) => {
-                    return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout') }, 5000)
-                })
-            })
+                    return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 5000);
+                });
+            });
         }
     }
     if (m.channel.guild.id === '196027622944145408' && m.content.startsWith(`${prefix}play`)) {
         return;
     }
-    updateTimestamps()
+    updateTimestamps();
     var loguser = `${m.author.username}#${m.author.discriminator}`.magenta.bold;
-    var logserver = `${m.channel.guild.name}`.cyan.bold || 'Direct Message'.cyan.bold
+    var logserver = `${m.channel.guild.name}`.cyan.bold || 'Direct Message'.cyan.bold;
     var logchannel = `#${m.channel.name}`.green.bold;
     var logdivs = [' > '.blue.bold, ' - '.blue.bold];
     var commands = fs.readdirSync('./commands/');
-    updateTimestamps()
+    updateTimestamps();
     if (m.content.startsWith(prefix)) {
         var command = m.content.split(' ')[0].replace(prefix, '').toLowerCase();
         if (commands.indexOf(command + '.js') > -1) {
             var data = _.load(); // Track command usage in ../db/data.json
-            updateTimestamps()
-            data.commands.totalRuns++
+            updateTimestamps();
+            data.commands.totalRuns++;
             if (!(data.commands[command])) {
                 data.commands[command] = {};
-                data.commands[command].totalUses = 0
-                data.commands[command].users = {}
+                data.commands[command].totalUses = 0;
+                data.commands[command].users = {};
             }
             if (!(data.commands[command].users[m.author.id])) {
-                data.commands[command].users[m.author.id] = 0
+                data.commands[command].users[m.author.id] = 0;
             }
-            data.commands[command].users[m.author.id]++
-            data.commands[command].totalUses++
-            updateTimestamps()
+            data.commands[command].users[m.author.id]++;
+            data.commands[command].totalUses++;
+            updateTimestamps();
             _.save(data);
-            updateTimestamps()
-            const commandContents = fs.readFileSync('./commands/' + command + '.js')
+            updateTimestamps();
+            const commandContents = fs.readFileSync('./commands/' + command + '.js');
             if (commandContentsMap[command] !== commandContents) {
                 var cmd = reload('./commands/' + command + '.js');
-                commandContentsMap[command] = commandContents
+                commandContentsMap[command] = commandContents;
             } else {
-                var cmd = require('./commands/' + command + '.js')
+                var cmd = require('./commands/' + command + '.js');
             }
-            updateTimestamps()
+            updateTimestamps();
             var args = m.content.replace(/\[\?\]/ig, '').split(' ');
             args.splice(0, 1);
             args = args.join(' ');
             var logcmd = `${prefix}${command}`.bold;
             var logargs = `${args}`.bold;
             try {
-                updateTimestamps()
-                timestamps.pop()
+                updateTimestamps();
+                timestamps.pop();
                 fs.appendFileSync('db/timestamps.txt', timestamps.reduce((a, b) => a + b) + 'ms | ' + timestamps.join(', ') + '\n');
                 console.log('CMD'.black.bgGreen + ' ' + loguser + logdivs[1] + logserver + logdivs[0] + logchannel + ' ' + logcmd.blue);
                 if (args) {
@@ -383,11 +383,11 @@ Bot.on('guildMemberAdd', async function(guild, member) {
                         }
                     }
                 }).catch((err) => {
-                    console.log(err)
+                    console.log(err);
                 });
                 if (diff.days < 2) {
                     Bot.createMessage(channel, `:warning: **${name}** Joined less than 24 hours after creating their account`).catch((err) => {
-                        console.log(err)
+                        console.log(err);
                     });
                 }
             }
@@ -397,7 +397,7 @@ Bot.on('guildMemberAdd', async function(guild, member) {
                 message = message.replace('[name]', `${member.username}`).replace('[user]', `${member.username}#${member.discriminator}`).replace('[server]', `${guild.name}`).replace('[mention]', `${member.mention}`).replace('[count]', `${guild.memberCount - guild.members.filter(m => m.bot).length}`);
                 if (channel && message) {
                     Bot.createMessage(channel, message).catch((err) => {
-                        console.log(err)
+                        console.log(err);
                     });
                 }
             }
@@ -407,11 +407,11 @@ Bot.on('guildMemberAdd', async function(guild, member) {
 
 Bot.on('guildMemberRemove', async function(guild, member) {
     var server = servers.load();
-    var count = guild.memberCount - guild.members.filter(m => m.bot).length
+    var count = guild.memberCount - guild.members.filter(m => m.bot).length;
     if (server[guild.id]) {
         if (server[guild.id].notifications) {
             if (server[guild.id].notifications.updates) {
-                var channel = server[guild.id].notifications.updates
+                var channel = server[guild.id].notifications.updates;
                 Bot.createMessage(channel, {
                     embed: {
                         color: 0xA260F6,
@@ -423,7 +423,7 @@ Bot.on('guildMemberRemove', async function(guild, member) {
                         }
                     }
                 }).catch((err) => {
-                    console.log(err)
+                    console.log(err);
                 });
             }
             if (server[guild.id].notifications.leave) {
@@ -431,7 +431,7 @@ Bot.on('guildMemberRemove', async function(guild, member) {
                 var message = server[guild.id].notifications.leave[channel];
                 message = message.replace('[name]', `${member.username}`).replace('[user]', `${member.username}#${member.discriminator}`).replace('[server]', `${guild.name}`).replace('[mention]', `${member.mention}`).replace('[count]', `${guild.memberCount - guild.members.filter(m => m.bot).length}`);
                 Bot.createMessage(channel, message).catch((err) => {
-                    console.log(err)
+                    console.log(err);
                 });
             }
         }
@@ -455,7 +455,7 @@ Bot.on('guildCreate', async function(guild) {
         if (err.code == 50007) {
             return;
         }
-        console.log(err)
+        console.log(err);
     });
 });
 
@@ -476,7 +476,7 @@ Bot.on('guildDelete', async function(guild) {
         if (err.code == 50007) {
             return;
         }
-        console.log(err)
+        console.log(err);
     });
 });
 
@@ -490,10 +490,10 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
             }
             else if (m.attachments[0] && m.attachments.length !== 0) {
                 if (m.attachments.length === 1) {
-                    var link = m.attachments[0].url
+                    var link = m.attachments[0].url;
                 }
                 else if (m.attachments.length > 1) {
-                    var i = 0
+                    var i = 0;
                     var links = [];
                     for (var attachment of m.attachments) {
                         if (attachment.url) {
@@ -504,7 +504,7 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
             }
             else if (m.embeds[0]) {
                 if (m.embeds[0].image) {
-                    var link = m.embeds[0].image.url
+                    var link = m.embeds[0].image.url;
                 }
             }
             if (link || (links && links[0])) {
@@ -542,9 +542,9 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
                                     if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== '309220487957839872') {
                                         var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                         Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                            return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout') }, 60000);
+                                            return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 60000);
                                         }).catch((err) => {
-                                            console.log(err)
+                                            console.log(err);
                                         });
                                     }
                                 }
@@ -571,9 +571,9 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
                             if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== '309220487957839872') {
                                 var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                 Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                    return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout') }, 60000)
+                                    return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 60000);
                                 }).catch((err) => {
-                                    console.log(err)
+                                    console.log(err);
                                 });
                             }
                         }
@@ -586,7 +586,7 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
             if (server[m.channel.guild.id].giveaways) {
                 if (server[m.channel.guild.id].giveaways.running && emoji.id === '367892951780818946' && userID !== '309220487957839872' && userID !== server[m.channel.guild.id].giveaways.creator) {
                     if (m.id === server[guild.id].giveaways.mID) {
-                        server[m.channel.guild.id].giveaways.current.contestants[userID] = 'entered'
+                        server[m.channel.guild.id].giveaways.current.contestants[userID] = 'entered';
                         servers.save(server);
                         return;
                     }
@@ -597,14 +597,14 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
                 if (people.people[id] && people.people[id].hoard && people.people[id].hoard[emoji.name]) {
                     var m = await Bot.getMessage(m.channel.id, m.id).then((m) => {
                         if (m.attachments.length === 0 && m.embeds.length === 0) {
-                            var link = m.cleanContent
+                            var link = m.cleanContent;
                         }
                         else if (m.attachments[0] && m.attachments.length !== 0) {
                             if (m.attachments.length === 1) {
-                                var link = m.attachments[0].url
+                                var link = m.attachments[0].url;
                             }
                             else if (m.attachments.length > 1) {
-                                var i = 0
+                                var i = 0;
                                 var links = [];
                                 for (var attachment of m.attachments) {
                                     if (attachment.url) {
@@ -614,11 +614,11 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
                             }
                         }
                         else if (m.embeds[0] && m.embeds[0].image) {
-                            var link = m.embeds[0].image.url
+                            var link = m.embeds[0].image.url;
                         }
                         if (link || (links && links[0])) {
                             var people = ppl.load();
-                            var hoard = people.people[id].hoard[emoji.name]
+                            var hoard = people.people[id].hoard[emoji.name];
                             if (hoard) {
                                 if (links && links[0]) {
                                     for (var link of links) {
@@ -641,9 +641,9 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
                                                 if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== '309220487957839872') {
                                                     var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                                     Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                        return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout') }, 60000);
+                                                        return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 60000);
                                                     }).catch((err) => {
-                                                        console.log(err)
+                                                        console.log(err);
                                                     });
                                                 }
                                             }
@@ -670,9 +670,9 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
                                         if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== '309220487957839872') {
                                             var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                             Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout') }, 60000)
+                                                return setTimeout(function() { Bot.deleteMessage(m.channel.id, m.id, 'Timeout'); }, 60000);
                                             }).catch((err) => {
-                                                console.log(err)
+                                                console.log(err);
                                             });
                                         }
                                     }
@@ -680,19 +680,19 @@ Bot.on('messageReactionAdd', async function(m, emoji, userID) {
                                 }
                             }
                         }
-                    })
+                    });
                 }
             }
         }
     }).catch((err) => {
-        console.log(err)
+        console.log(err);
     });
 });
 
 Bot.on('messageReactionRemove', async function(m, emoji, userID) {
     var server = servers.load();
     var m = await Bot.getMessage(m.channel.id, m.id).then(async (m) => {
-        var id = userID
+        var id = userID;
         var data = _.load();
         var people = ppl.load();
         if (emoji.name === '😍') {
@@ -701,10 +701,10 @@ Bot.on('messageReactionRemove', async function(m, emoji, userID) {
             }
             else if (m.attachments[0] && m.attachments.length !== 0) {
                 if (m.attachments.length === 1) {
-                    var link = m.attachments[0].url
+                    var link = m.attachments[0].url;
                 }
                 else if (m.attachments.length > 1) {
-                    var i = 0
+                    var i = 0;
                     var links = [];
                     for (var attachment of m.attachments) {
                         if (attachment.url) {
@@ -726,7 +726,7 @@ Bot.on('messageReactionRemove', async function(m, emoji, userID) {
             if (hoard) {
                 if (links && links[0]) {
                     for (var link of links) {
-                        hoard = people.people[id].hoard[emoji.name]
+                        hoard = people.people[id].hoard[emoji.name];
                         if (hoard[link]) {
                             delete hoard[link];
                             ppl.save(people);
@@ -770,7 +770,7 @@ Bot.on('messageReactionRemove', async function(m, emoji, userID) {
                 if (server[m.channel.guild.id].giveaways.running && emoji.id === '367892951780818946' && userID !== '309220487957839872' && userID !== server[m.channel.guild.id].giveaways.creator) {
                     if (m.id === server[m.channel.guild.id].giveaways.mID) {
                         if (server[m.channel.guild.id].giveaways.current.contestants[userID]) {
-                            delete server[m.channel.guild.id].giveaways.current.contestants[userID]
+                            delete server[m.channel.guild.id].giveaways.current.contestants[userID];
                             servers.save(server);
                             return;
                         }
@@ -788,14 +788,14 @@ Bot.on('messageReactionRemove', async function(m, emoji, userID) {
                 if (people.people[id].hoard[emoji.name]) {
                     var m = await Bot.getMessage(m.channel.id, m.id).then(async (m) => {
                         if (m.attachments.length === 0 && m.embeds.length === 0) {
-                            var link = m.cleanContent
+                            var link = m.cleanContent;
                         }
                         else if (m.attachments[0] && m.attachments.length !== 0) {
                             if (m.attachments.length === 1) {
-                                var link = m.attachments[0].url
+                                var link = m.attachments[0].url;
                             }
                             else if (m.attachments.length > 1) {
-                                var i = 0
+                                var i = 0;
                                 var links = [];
                                 for (var attachment of m.attachments) {
                                     if (attachment.url) {
@@ -805,13 +805,13 @@ Bot.on('messageReactionRemove', async function(m, emoji, userID) {
                             }
                         }
                         else if (m.embeds[0]) {
-                            var link = m.embeds[0].image.url
+                            var link = m.embeds[0].image.url;
                         }
-                        var hoard = people.people[id].hoard[emoji.name]
+                        var hoard = people.people[id].hoard[emoji.name];
                         if (hoard) {
                             if (links && links[0]) {
                                 for (var link of links) {
-                                    hoard = people.people[id].hoard[emoji.name]
+                                    hoard = people.people[id].hoard[emoji.name];
                                     if (hoard[link]) {
                                         delete hoard[link];
                                         ppl.save(people);
@@ -848,12 +848,12 @@ Bot.on('messageReactionRemove', async function(m, emoji, userID) {
                             }
                             return;
                         }
-                    })
+                    });
                 }
             }
         }
     }).catch((err) => {
-        console.log(err)
+        console.log(err);
     });
 });
 
