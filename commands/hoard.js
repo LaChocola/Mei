@@ -198,7 +198,7 @@ module.exports = {
                 return;
             }
         }
-        var imgURL = /([a-z\-_0-9\/\:\.]*\.(?:png|jpg|gif|svg|jpeg)[:orig]*)/i.exec(rando);
+        var imgURL = /([a-z\-_0-9/:.]*\.(?:png|jpg|gif|svg|jpeg)[:orig]*)/i.exec(rando);
         if (rando.includes("https://cdn.discordapp.com")) {
             var msg = {
                 "content": `A Random piece, from **${name}**'s hoard`,

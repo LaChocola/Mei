@@ -1428,5 +1428,5 @@ module.exports = {
                 }
             });
     },
-    help: "Search Boorus for images. \`!booru list\` for list"
+    help: "Search Boorus for images. `!booru list` for list"
 };
