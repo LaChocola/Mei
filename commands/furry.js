@@ -30,7 +30,7 @@ module.exports = {
                 bg.clone()
                     .print(nameFont, 550, 145, name)
                     .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
-                        Bot.createMessage(m.channel.id, `Weirdo`, {
+                        Bot.createMessage(m.channel.id, "Weirdo", {
                             "file": buffer,
                             "name": "furry.png"
                         })

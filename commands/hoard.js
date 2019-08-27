@@ -260,7 +260,7 @@ module.exports = {
             };
         }
         if (!isNaN(+args[1]) && !pass) {
-            msg.content = `That is not a valid index number for that hoard\n\n` + msg.content
+            msg.content = "That is not a valid index number for that hoard\n\n" + msg.content
         }
         Bot.createMessage(m.channel.id, msg);
         return;
