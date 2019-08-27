@@ -1,3 +1,5 @@
+"use strict";
+
 const _ = require('./people.js');
 let data = _.load();
 const servers = require('./servers.js');
