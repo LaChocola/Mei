@@ -175,7 +175,6 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var side = Misc.randomelement(sides);
         var type2 = Misc.randomelement(types2);
 
-
         //============feet info================
         var adjectivesFeet = ['stinky', 'smelly', 'sweaty', 'damp', 'pungent', 'odorous', 'sweet-scented', 'huge', 'powerful', 'godly', 'beautiful', 'dirty', 'filthy', 'disgusting',
             'rancid', 'giant', 'massive', 'moist', 'sweat-soaked', 'victim-covered', 'soft', 'lotion-scented'];
@@ -209,7 +208,6 @@ class Misc { // Declaring export as a class because cbf to make other way work p
             }
         }
 
-
         var nakedFeetPlurals = ['bare feet', 'heels', 'arches', 'big toes', 'toes', 'soles'];
         var nakedFeetSingulars = ['bare foot', 'heel', 'arch', 'big toe', 'toe', 'sole'];
         var footwearPlurals = ['shoes', 'boots', 'sandals', 'flip flops', 'sneakers', 'pumps', 'heels', 'socks', 'stockings', 'nylons', 'fishnets', 'hose'];
@@ -235,7 +233,6 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var nakedFoot = Misc.randomelement(nakedFoots);
         var footwear = Misc.randomelement(footwears);
         var feet = Misc.randomelement(feets);
-
 
         //==========select from pool
         var candidates = [];
@@ -313,7 +310,6 @@ class Misc { // Declaring export as a class because cbf to make other way work p
             'Aqua', 'Megumin', 'Cortana', 'Yuna', 'Lulu', 'Rikku', 'Rosalina', 'Samus', 'Princess Peach', 'Palutena', 'Shin', 'Kimmy', 'Zoey', 'Camilla', 'Lillian', 'Narumi', 'D.va'];
         var cleanishNames = names.join(', ');
         var cleanNames = cleanishNames.replace('Mt. Lady,', 'Mt. Lady,\n').replace('Baiken,', 'Baiken,\n').replace('Gwen,', 'Gwen,\n').replace('Aqua,', 'Aqua,\n').replace('Lulu,', 'Lulu,\n').replace('Samus,', 'Samus,\n');
-
 
         if (guildid === '261599167695159298') { // Krumbly's ant farm only
             var names = ['Mei', 'Sucy', '2B', 'Mt. Lady', 'Rika', 'Miku', 'Lexi', 'Lucy', 'Ryuko', 'Krumbly'];
