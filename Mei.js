@@ -5,22 +5,26 @@ process.on("unhandledRejection", (err, promise) => {
     console.error(err ? err.stack : promise);
 });
 
+var fs = require("fs");
+var reload = require("require-reload")(require);
+var timediff = require("timediff");
+require("colors");  // Adds to string prototype
+
 var bot = require("eris");
 Object.defineProperty(bot.Message.prototype, "guild", {
     get: function guild() {
         return this.channel.guild;
     }
 });
-var fs = require("fs");
 
-var reload = require("require-reload")(require);
-var timediff = require("timediff");
-var config = reload("./etc/config.json");
-require("colors");  // Adds to string prototype
 var _ = require("./data.js");
 var ppl = require("./people.js");
 var servers = reload("./servers.js");
+
+var config = reload("./etc/config.json");
+
 var Bot = bot(config.tokens.mei);
+
 var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
 var hand = hands[Math.floor(Math.random() * hands.length)];
 var commandContentsMap = {};
