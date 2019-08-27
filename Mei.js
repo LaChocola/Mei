@@ -25,6 +25,7 @@ var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin
 var hand = hands[Math.floor(Math.random() * hands.length)];
 var commandContentsMap = {};
 
+// m is not defined
 function send(channel, text, timeout) {
     Bot.createMessage(channel, text).then((msg) => {
         return setTimeout(function() {
@@ -587,7 +588,7 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
         if (server[m.channel.guild.id]) {
             if (server[m.channel.guild.id].giveaways) {
                 if (server[m.channel.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== "309220487957839872" && userID !== server[m.channel.guild.id].giveaways.creator) {
-                    if (m.id === server[guild.id].giveaways.mID) {
+                    if (m.id === server[m.channel.guild.id].giveaways.mID) {
                         server[m.channel.guild.id].giveaways.current.contestants[userID] = "entered";
                         servers.save(server);
                         return;
