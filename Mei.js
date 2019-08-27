@@ -178,6 +178,7 @@ Bot.on("messageCreate", async function(m) {
         });
         if (m.author.id !== "161027274764713984") {
             console.log("Guild 1:", m.channel.guild);
+            // TODO: Collection is not defined
             var roles = new Collection(bot.Role);
             var members = new Collection(bot.User);
             var channels = new Collection(bot.Channel);
