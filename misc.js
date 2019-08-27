@@ -182,8 +182,6 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var adjectivesFootwear = ['stinky', 'smelly', 'sweaty', 'damp', 'pungent', 'odorous', 'sweet-scented', 'huge', 'stinky, sweaty', 'dirty', 'filthy', 'disgusting', 'rancid', 'giant', 'massive', 'moist',
             'sweat-soaked', 'victim-covered', 'old', 'worn out', 'grimy'];
 
-        var adjectives = Array.from(new Set([].concat(adjectivesFeet, adjectivesFootwear)));
-
         var adjectiveFeet = '';
         var adjectiveFootwear = '';
 
