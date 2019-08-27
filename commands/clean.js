@@ -73,6 +73,7 @@ module.exports = {
         }
         var perms = m.channel.guild.members.get(m.author.id).permission.json;
         var pArray = ["kickMembers", "banMembers", "administrator", "manageChannels", "manageGuild", "manageMessages"];
+        var mod;
         if (perms[pArray[0]] || perms[pArray[1]] || perms[pArray[2]] || perms[pArray[3]] || perms[pArray[4]] || perms[pArray[5]]) {
             mod = true;
         }
@@ -83,7 +84,7 @@ module.exports = {
                 Bot.getMessages(m.channel.id, parseInt(int)).then(async function(msgs) {
                     var method = 1;
                     var oldestAllowed = (Date.now() - 1421280000000) * 4194304;
-                    for (msg of msgs) {
+                    for (let msg of msgs) {
                         ids.push(msg.id);
                     }
                     var invalid = ids.find((messageID) => messageID < oldestAllowed);
@@ -105,7 +106,7 @@ module.exports = {
                     }
 
                     if (method == 2) {
-                        for (id of ids) {
+                        for (let id of ids) {
                             Bot.deleteMessage(m.channel.id, id, `${ids.length} messages cleaned. Approved by ${m.author.username}#${m.author.discriminator}`);
                         }
                         Bot.createMessage(m.channel.id, `Cleaning ${ids.length} messages`).then(a => {

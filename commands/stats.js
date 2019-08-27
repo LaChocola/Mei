@@ -17,7 +17,7 @@ module.exports = {
         var commands = data.commands;
         var userUses = 0;
         var stats = [];
-        for (command in commands) {
+        for (let command in commands) {
             if (data.commands[command].totalUses && data.commands[command].users[mentioned.id]) {
                 if (data.commands[command].totalUses && data.commands[command].users[mentioned.id] == 1) {
                     stats.push("**!" + command + ":** " + data.commands[command].users[mentioned.id] + " run");

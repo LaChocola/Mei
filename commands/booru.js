@@ -1212,7 +1212,7 @@ module.exports = {
                     }
                 }
                 dislikes = [];
-                for (key of commonDislikes) {
+                for (let key of commonDislikes) {
                     dislikes.push(`-${encodeURIComponent(key.replace(" ", "_"))}`);
                 }
                 for (const arg of args) {
@@ -1268,7 +1268,7 @@ module.exports = {
                     }
                     else if (!response.request.uri.href.startsWith("http://giantessbooru.com/post/view/") || !response.request.uri.href.startsWith("https://giantessbooru.com/post/view/")) {
                         const thing = $(".thumb").children();
-                        for (child in thing) {
+                        for (let child in thing) {
                             const child_thing = thing[child];
                             if (child_thing.type == "tag") {
                                 link_array.push(child_thing.children[0].attribs.src.replace("/_thumbs/", "_images/").replace("/thumb.jpg", ""));

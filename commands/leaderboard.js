@@ -27,7 +27,7 @@ module.exports = {
             var leader = [];
             var y = 0;
             var personalRank = [];
-            for (person of sorted) {
+            for (let person of sorted) {
                 var user = Bot.users.filter(m => m.id == person["key"])[0];
                 if (user && user.id != "309220487957839872" && user.id != "444791634966740993") {
                     y++;
@@ -90,7 +90,7 @@ module.exports = {
         var i = 1;
         var y = 0;
         var personalRank = [];
-        for (person of sorted) {
+        for (let person of sorted) {
             var user = m.channel.guild.members.filter(m => m.id == person["key"])[0];
             if (user && user.id != "309220487957839872" && user.id != "444791634966740993") {
                 y++;
