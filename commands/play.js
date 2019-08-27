@@ -21,6 +21,7 @@ module.exports = {
         }
         var hands = [":wave::skin-tone-1:", ":wave::skin-tone-2:", ":wave::skin-tone-3:", ":wave::skin-tone-4:", ":wave::skin-tone-5:", ":wave:"]
         var hand = hands[Math.floor(Math.random() * hands.length)]
+        var isNewQueue = false;
         var close = false
         function msToHMS (ms) {
           // Get hours
@@ -376,6 +377,7 @@ module.exports = {
                             }
                         }
                         else { // start a song since the bot is not currently playing anything, and the voice connection should be ready
+                            isNewQueue = true;
                             if (code) {
                               var valid = await yt.validateID(code)
                             }
@@ -466,6 +468,7 @@ module.exports = {
                                 }, 7000)
                             })
                         }
+                        if (isNewQueue) {
                         // pls ignore all the extra console logs, they are for debugging this
                         voiceConnection.on('end', () => { // when the song ends
                           var data = _.load()
@@ -527,6 +530,7 @@ module.exports = {
                             }, 5000);
                           }
                         })
+                        }
                     }
                 })
         } else { // User isn't in a Voice Channel
