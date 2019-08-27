@@ -51,7 +51,6 @@ module.exports = {
             }
         }
 
-        var mentioned = m.mentions[0] || member || m.author;
         if (m.mentions.length == 1 && m.author.id == m.mentions[0].id) { // If the user mentions only themself
             Bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; *hugs you*\n~~only one user was detected~~`);
             return;

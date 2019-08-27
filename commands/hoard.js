@@ -15,8 +15,6 @@ module.exports = {
         var member = m.guild.members.find(isThisUsernameThatUsername);
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
-        var artists = data.people;
-        var nameArray = [];
         var id = mentioned.id;
         var url = m.channel.guild.members.get(id).avatarURL;
         if (args[0]) {

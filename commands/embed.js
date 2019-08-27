@@ -1,7 +1,5 @@
 "use strict";
 
-const fs = require("fs");
-
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var prefix = "!";

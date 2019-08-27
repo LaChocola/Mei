@@ -2,7 +2,6 @@
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var guild = m.channel.guild;
         var roleSearch = function(role) {
             var roleName = role.name;
             if (roleName != "undefined") {

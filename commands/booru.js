@@ -34,7 +34,6 @@ module.exports = {
         let site = "giantessbooru.com";
         const imageURL = [];
         let tags = [];
-        const things = [];
         var limit = 1;
         const aliases = [
             "e6",

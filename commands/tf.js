@@ -1,9 +1,7 @@
 "use strict";
 
-const _ = require("../people.js");
 var reload = require("require-reload")(require);
 var miscl = reload("../misc.js");
-var data = _.load();
 const use = require("../data.js");
 var stats = use.load();
 var time = new Date().toISOString();
@@ -30,7 +28,6 @@ module.exports = {
         };
         var member = m.guild.members.find(isThisUsernameThatUsername);
         var mentioned = m.mentions[0] || member || m.author;
-        var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         var commands = stats.commands["tf"].users;
         var usage = 0;
         if (commands[mentioned.id]) {
@@ -45,7 +42,6 @@ module.exports = {
                     cleanishNames.replace(names[i], `${names[i]}\n`);
                 }
             }
-            var cleanNames = cleanishNames;
             resultstring += "**Names avaible: **" + names.length + "\n " + cleanishNames + "\n \n" + miscl.getLewdCounts("tf");
             if (names.length < 1) {
                 names = miscl.getDefaultGTSNames(m.channel.guild.id);

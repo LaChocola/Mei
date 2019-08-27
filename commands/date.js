@@ -5,11 +5,6 @@ var timediff = require("timediff");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var number = m.author.id;
-        if (m.mentions.length > 0) {
-            var number = m.mentions[0].id;
-        }
-        var guild = m.channel.guild;
         var name1 = m.cleanContent.replace(/!date /i, "");
         var isThisUsernameThatUsername = function(member) {
             var memberName = member.nick || member.username;

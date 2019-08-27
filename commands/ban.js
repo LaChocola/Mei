@@ -2,10 +2,9 @@
 
 const _ = require("../servers.js");
 var data = _.load();
-var reload = require("require-reload")(require);
+
 module.exports = {
     main: async function(Bot, m, args, prefix) {
-        var name1 = m.cleanContent.replace(/!names /i, "");
         var args = args.split(" ");
         var isMod = async function(member, guild) {
             if (data[guild.id]) {
@@ -52,7 +51,6 @@ module.exports = {
         var modCheck = await isMod(m.channel.guild.members.get(m.author.id), m.channel.guild);
         var responses = ["Are you a real villan?", "Have you ever caught a good guy? \nLike a real super hero?", "Have you ever tried a disguise?", "What are you doing?!?!?!", "*NO!*, Don't touch that!", "Fuck Off", "Roses are red\nfuck me ;) "];
         var response = responses[Math.floor(Math.random() * responses.length)];
-        var authorRoles = m.channel.guild.members.get(m.author.id).roles;
         if (modCheck !== true && m.author.id !== "161027274764713984") {
             Bot.createMessage(m.channel.id, response).then((msg) => {
                 return setTimeout(function() {
@@ -64,22 +62,8 @@ module.exports = {
         }
         var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
         var hand = hands[Math.floor(Math.random() * hands.length)];
-        var isThisUsernameThatUsername = function(member) {
-            var memberName = member.nick || member.username;
-            if (memberName.toLowerCase() == name1.toLowerCase()) {
-                return true;
-            }
-        };
-        var member = m.guild.members.find(isThisUsernameThatUsername);
-        var mentioned = m.mentions[0] || member;
-        var id = undefined;
-        var name = undefined;
         var undo = false;
         var guardian = m.channel.guild.members.get(m.author.id).nick || m.author.username;
-        if (m.mentions[0] && m.mentions.length < 2) {
-            id = mentioned.id;
-            name = mentioned.username;
-        }
         if (args.indexOf("undo") > -1) {
             undo = true;
         }

@@ -1,7 +1,6 @@
 "use strict";
 
 const yt = require("ytdl-core");
-const fs = require("fs");
 const _ = require("../servers.js");
 const progress = require("progress-string");
 const ytsr = require("ytsr");
@@ -91,7 +90,7 @@ module.exports = {
                             }
                             if (args.toLowerCase().includes("current") || ((args.toLowerCase().includes("queue") || args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list=")) && Object.entries(data[guild.id].music.queue).length < 1)) { // someone asks for current song info
                                 var playTime = voiceConnection.current.playTime;
-                                var endTime = yt.getInfo("https://www.youtube.com/watch?v=" + data[guild.id].music.current.code).then(async function(info) {
+                                yt.getInfo("https://www.youtube.com/watch?v=" + data[guild.id].music.current.code).then(async function(info) {
                                     info = await info;
                                     var start = playTime;
                                     var end = +info.length_seconds * 1000;
@@ -485,7 +484,6 @@ module.exports = {
                         var queue = Object.keys(data[guild.id].music.queue);
                         if (queue.length > 0 && !voiceConnection.playing) { // if there is another song in the queue, try to play that song
                             code = queue[0];
-                            var leave = false;
                             voiceConnection.playing = true;
                             console.log(code);
                             var valid = yt.validateID(code);

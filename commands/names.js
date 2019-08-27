@@ -34,7 +34,6 @@ module.exports = {
                 return;
             }
             var incomingEntries = name1.replace(/remove /i, "").replace(": ", " ").split(" | ");
-            var incoming = [];
             var iterator = incomingEntries.entries();
             for (let e of iterator) {
                 e[1] = capFirstLetter(e[1]);
@@ -61,7 +60,6 @@ module.exports = {
                 return;
             }
             var incomingEntries = name1.replace(/add /i, "").replace(": ", " ").split(" | ");
-            var incoming = [];
             var iterator = incomingEntries.entries();
             for (let e of iterator) {
                 e[1] = capFirstLetter(e[1]);

@@ -8,7 +8,6 @@ module.exports = {
         })
             .then(cards => {
                 var chosen = cards[Math.floor(Math.random() * cards.length)];
-                var attack = "None";
                 var weaknesses = "None";
                 var resistances = "None";
                 if (chosen.attacks[0]) {

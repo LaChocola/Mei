@@ -8,7 +8,6 @@ module.exports = {
             return !isNaN(num);
         }
         var number = 102;
-        var command = prefix + "clean ";
         var args = m.cleanContent.replace(`${prefix}clean `, "").split(" ");
         var argsIterator = args.entries();
         for (let e of argsIterator) {
@@ -80,8 +79,6 @@ module.exports = {
         if (m.cleanContent.includes(" all")) {
             if (m.author.id == "161027274764713984" || m.author.id == m.channel.guild.ownerID || mod == true) {
                 m.delete();
-                var i = 0;
-                var count = 0;
                 var ids = [];
                 Bot.getMessages(m.channel.id, parseInt(int)).then(async function(msgs) {
                     var method = 1;
