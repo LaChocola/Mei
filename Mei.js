@@ -16,7 +16,7 @@ var fs = require("fs");
 var reload = require("require-reload")(require);
 var timediff = require("timediff");
 var config = reload("./etc/config.json");
-var colors = require("colors");
+require("colors");  // Adds to string prototype
 var _ = require("./data.js");
 var ppl = require("./people.js");
 var servers = reload("./servers.js");
@@ -183,15 +183,6 @@ Bot.on("messageCreate", async function(m) {
             members.add(m.author, bot.User, true);
             channels.add(m.channel, bot.Channel, true);
             roles.add({ "name": "fakeRole", "id": "00001" }, bot.Role, true);
-            var fakeGuild = {
-                name: m.author.username,
-                ownerid: m.author.id,
-                id: m.channel.id,
-                iconURL: m.author.iconURL,
-                roles: roles,
-                members: members,
-                channels: channels
-            };
             console.log(`Guild 2: ${m.channel.guild}`);
         }
         return;
@@ -255,7 +246,6 @@ Bot.on("messageCreate", async function(m) {
     if (m.author.id === "161027274764713984" && m.content.includes("pls")) {
         if (m.content.includes(" mute") && m.mentions.length > 0) {
             if (m.mentions.length > 1) {
-                var muteArray = [];
                 var mentions = m.mentions;
                 for (const mention of mentions) {
                     Bot.addGuildMemberRole(m.channel.guild.id, mention.id, "363854631035469825", "Daddy said shush").then(() => {
@@ -278,7 +268,6 @@ Bot.on("messageCreate", async function(m) {
         }
         if (m.content.includes(" unmute") && m.mentions.length > 0) {
             if (m.mentions.length > 1) {
-                var unmuteArray = [];
                 var mentions = m.mentions;
                 for (const mention of mention) {
                     Bot.removeGuildMemberRole(m.channel.guild.id, mention.id, "363854631035469825", "Daddy said speak").then(() => {
@@ -503,7 +492,6 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
                     var link = m.attachments[0].url;
                 }
                 else if (m.attachments.length > 1) {
-                    var i = 0;
                     var links = [];
                     for (var attachment of m.attachments) {
                         if (attachment.url) {
@@ -618,7 +606,6 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                 var link = m.attachments[0].url;
                             }
                             else if (m.attachments.length > 1) {
-                                var i = 0;
                                 var links = [];
                                 for (var attachment of m.attachments) {
                                     if (attachment.url) {
@@ -711,7 +698,6 @@ Bot.on("messageReactionRemove", async function(m, emoji, userID) {
     var server = servers.load();
     var m = await Bot.getMessage(m.channel.id, m.id).then(async (m) => {
         var id = userID;
-        var data = _.load();
         var people = ppl.load();
         if (emoji.name === "😍") {
             if (m.attachments.length === 0 && m.embeds.length === 0) {
@@ -722,7 +708,6 @@ Bot.on("messageReactionRemove", async function(m, emoji, userID) {
                     var link = m.attachments[0].url;
                 }
                 else if (m.attachments.length > 1) {
-                    var i = 0;
                     var links = [];
                     for (var attachment of m.attachments) {
                         if (attachment.url) {
@@ -813,7 +798,6 @@ Bot.on("messageReactionRemove", async function(m, emoji, userID) {
                                 var link = m.attachments[0].url;
                             }
                             else if (m.attachments.length > 1) {
-                                var i = 0;
                                 var links = [];
                                 for (var attachment of m.attachments) {
                                     if (attachment.url) {
