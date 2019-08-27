@@ -185,8 +185,8 @@ module.exports = {
                                             embed: {
                                                 color: 0xA260F6,
                                                 title: `${songs.length} songs currently queued`,
-                                                description: " \n\n" + songs.join("\n"),
-                                            },
+                                                description: " \n\n" + songs.join("\n")
+                                            }
                                         }).catch((err) => {
                                             if (err.code == 50013) {
                                                 Bot.createMessage(m.channel.id, "I do not have permisson to embed links in this channel. Please make sure I have the `embed links` permission on my highest role, and that the channel permissions are not overriding it.").then((msg) => {

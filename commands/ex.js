@@ -18,7 +18,7 @@ const defaultQuery = {
     f_cosplay: 0,
     f_asianporn: 0,
     f_misc: 0,
-    f_apply: "Apply Filter",
+    f_apply: "Apply Filter"
 }
 
 module.exports = {
