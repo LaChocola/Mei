@@ -1,10 +1,12 @@
 "use strict";
 
-const _ = require("./people.js");
-let data = _.load();
-const servers = require("./servers.js");
-var server = servers.load();
 const fs = require("fs");
+
+const _ = require("./people.js");
+const servers = require("./servers.js");
+let data = _.load();
+var server = servers.load();
+
 class Misc { // Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
     static isThisUsernameThatUsername(member, name1) {
         var memberName = member.nick || member.username;
@@ -391,4 +393,5 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         return JSON.parse(fs.readFileSync("./db/lewds.json"));
     }
 }
+
 module.exports = Misc;
