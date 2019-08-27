@@ -65,7 +65,6 @@ module.exports = {
         var smallid = id;
         var big = false;
 
-
         var names = miscl.getDefaultGTSNames(m.channel.guild.id).names;
         var cname = miscl.getcustomGTSNames(smallid);
         names = names.concat(cname);
@@ -75,16 +74,12 @@ module.exports = {
             }
         }
 
-
-
         var maintype = "gentle";
         var subtype = miscl.searchForLewd(args);
         if (args.indexOf("invert") >= 0 || args.indexOf("inverse") >= 0) {
             big = miscl.getTrueName(m.author.id, m);
         }
         var guildid = m.channel.guild.id;
-
-
 
         var lewdmessage = miscl.generateLewdMessage(smallid, big, guildid, maintype, subtype);
 
@@ -105,8 +100,6 @@ module.exports = {
         };
         Bot.createMessage(m.channel.id, data);
         return;
-
-
     },
     help: "A Gentle smush"
 };

@@ -61,7 +61,6 @@ module.exports = {
             return;
         }
 
-
         Bot.sendChannelTyping(m.channel.id).then(async () => {
             try {
                 var firstName = m.channel.guild.members.get(m.mentions[0].id).nick || m.mentions[0].username;

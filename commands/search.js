@@ -5,7 +5,6 @@ const cheerio = require("cheerio");
 const querystring = require("querystring");
 const config = require("../etc/config.json");
 
-
 function fallbackHTMLScraper(args, safe, message) {
 
     console.log("Falling back on HTML scraper...");

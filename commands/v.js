@@ -66,7 +66,6 @@ module.exports = {
         var smallid = id;
         var big = false;
 
-
         var names = miscl.getDefaultGTSNames(m.channel.guild.id).names;
         var cname = miscl.getcustomGTSNames(smallid);
         names = names.concat(cname);
@@ -75,8 +74,6 @@ module.exports = {
                 big = names[i];
             }
         }
-
-
 
         var maintype = "violent";
         var subtype = miscl.searchForLewd(args);
