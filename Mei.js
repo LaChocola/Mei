@@ -24,16 +24,16 @@ var hand = hands[Math.floor(Math.random() * hands.length)]
 var commandContentsMap = {}
 
 var send = function (channel, text, timeout) {
-	Bot.createMessage(channel, text).then((msg) => {
-		return setTimeout(function () {
-			Bot.deleteMessage(m.channel.id, m.id, 'Timeout')
-			Bot.deleteMessage(m.channel.id, msg.id, 'Timeout')
-		}, timeout)
-	})
-	.catch((err) => {
-		console.log(`\nError Occured while sending message\n`)
-		console.log(err)
-	})
+    Bot.createMessage(channel, text).then((msg) => {
+        return setTimeout(function () {
+            Bot.deleteMessage(m.channel.id, m.id, 'Timeout')
+            Bot.deleteMessage(m.channel.id, msg.id, 'Timeout')
+        }, timeout)
+    })
+    .catch((err) => {
+        console.log(`\nError Occured while sending message\n`)
+        console.log(err)
+    })
 }
 
 Bot.on('guildBanAdd', async function (guild, user) {
@@ -221,7 +221,7 @@ Bot.on('messageCreate', async function (m) {
             return;
           }
           console.log(err)
-		    })
+            })
     });
   }
   if (m.author.id === '161027274764713984' && m.content.includes('pls')) {
@@ -236,7 +236,7 @@ Bot.on('messageCreate', async function (m) {
       })
     }
     if (m.content.includes('override')) {
-		send(m.channel.id, 'Chocola Recognized. Permission overrides engaged. I am at your service~', 2000)
+        send(m.channel.id, 'Chocola Recognized. Permission overrides engaged. I am at your service~', 2000)
     }
   }
   updateTimestamps()
@@ -294,26 +294,26 @@ Bot.on('messageCreate', async function (m) {
     return;
   }
   updateTimestamps()
-	var loguser = `${m.author.username}#${m.author.discriminator}`.magenta.bold;
-	var logserver = `${m.channel.guild.name}`.cyan.bold || 'Direct Message'.cyan.bold
-	var logchannel = `#${m.channel.name}`.green.bold;
-	var logdivs = [' > '.blue.bold, ' - '.blue.bold];
-	var commands = fs.readdirSync('./commands/');
+    var loguser = `${m.author.username}#${m.author.discriminator}`.magenta.bold;
+    var logserver = `${m.channel.guild.name}`.cyan.bold || 'Direct Message'.cyan.bold
+    var logchannel = `#${m.channel.name}`.green.bold;
+    var logdivs = [' > '.blue.bold, ' - '.blue.bold];
+    var commands = fs.readdirSync('./commands/');
   updateTimestamps()
-	if (m.content.startsWith(prefix)) {
-		var command = m.content.split(' ')[0].replace(prefix, '').toLowerCase();
-		if (commands.indexOf(command+'.js') > -1) {
-  		var data = _.load(); // Track command usage in ../db/data.json
+    if (m.content.startsWith(prefix)) {
+        var command = m.content.split(' ')[0].replace(prefix, '').toLowerCase();
+        if (commands.indexOf(command+'.js') > -1) {
+        var data = _.load(); // Track command usage in ../db/data.json
       updateTimestamps()
       data.commands.totalRuns++
-  		if (!(data.commands[command])) {
-  			data.commands[command]= {};
+        if (!(data.commands[command])) {
+            data.commands[command]= {};
         data.commands[command].totalUses = 0
         data.commands[command].users = {}
-  		}
+        }
       if (!(data.commands[command].users[m.author.id])) {
-  			data.commands[command].users[m.author.id] = 0
-  		}
+            data.commands[command].users[m.author.id] = 0
+        }
       data.commands[command].users[m.author.id]++
       data.commands[command].totalUses++
       updateTimestamps()
@@ -327,27 +327,27 @@ Bot.on('messageCreate', async function (m) {
         var cmd = require('./commands/'+command+'.js')
       }
       updateTimestamps()
-			var args = m.content.replace(/\[\?\]/ig,'').split(' ');
-			args.splice(0, 1);
-			args = args.join(' ');
-			var logcmd = `${prefix}${command}`.bold;
-			var logargs = `${args}`.bold;
-			try {
+            var args = m.content.replace(/\[\?\]/ig,'').split(' ');
+            args.splice(0, 1);
+            args = args.join(' ');
+            var logcmd = `${prefix}${command}`.bold;
+            var logargs = `${args}`.bold;
+            try {
         updateTimestamps()
         timestamps.pop()
         fs.appendFileSync('db/timestamps.txt', timestamps.reduce((a, b) => a + b) + 'ms | ' + timestamps.join(', ') + '\n');
-				console.log('CMD'.black.bgGreen+' '+loguser+logdivs[1]+logserver+logdivs[0]+logchannel+' '+logcmd.blue);
-				if (args) console.log('ARG'.black.bgCyan+' '+logargs.blue.bold);
-				cmd.main(Bot, m, args, prefix);
-			} catch (err) {
-				console.log(err);
-				Bot.createMessage(m.channel.id, 'An error has occured.');
-				console.log('CMD'.black.bgRed+' '+loguser+logdivs[1]+logserver+logdivs[0]+logchannel+' '+logcmd.red);
-				if (args) console.log('ARG'.black.bgCyan+' '+logargs.red.bold);
-				console.log('');
-			}
-		}
-	}
+                console.log('CMD'.black.bgGreen+' '+loguser+logdivs[1]+logserver+logdivs[0]+logchannel+' '+logcmd.blue);
+                if (args) console.log('ARG'.black.bgCyan+' '+logargs.blue.bold);
+                cmd.main(Bot, m, args, prefix);
+            } catch (err) {
+                console.log(err);
+                Bot.createMessage(m.channel.id, 'An error has occured.');
+                console.log('CMD'.black.bgRed+' '+loguser+logdivs[1]+logserver+logdivs[0]+logchannel+' '+logcmd.red);
+                if (args) console.log('ARG'.black.bgCyan+' '+logargs.red.bold);
+                console.log('');
+            }
+        }
+    }
 });
 
 Bot.on('guildMemberAdd', async function (guild, member) {
