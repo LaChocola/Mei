@@ -33,7 +33,7 @@ function send(channel, text, timeout) {
         }, timeout);
     })
         .catch((err) => {
-            console.log(`\nError Occured while sending message\n`);
+            console.log("\nError Occured while sending message\n");
             console.log(err);
         });
 }
@@ -219,7 +219,7 @@ Bot.on("messageCreate", async function(m) {
     }
     if (m.author.id === "161027274764713984" && m.content.includes("pls")) {
         if (m.content.includes("stop")) {
-            Bot.createMessage(m.channel.id, `Let me rest my eyes for a moment`).then((msg) => {
+            Bot.createMessage(m.channel.id, "Let me rest my eyes for a moment").then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout").then(() => {
