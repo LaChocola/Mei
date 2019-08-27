@@ -3,6 +3,8 @@
 const MarkovGen = require("markov-generator");
 var time = new Date().toISOString();
 
+const isSameMember = require("./utils/isSameMember");
+
 module.exports = {
     main: async function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(`${prefix}markov `, "");
@@ -13,13 +15,7 @@ module.exports = {
             var channelName = " #" + m.channel.guild.channels.get(m.channelMentions[0]).name;
             var name1 = name1.replace(channelName, "");
         }
-        var isThisUsernameThatUsername = function(member) {
-            var memberName = member.nick || member.username;
-            if (memberName.toLowerCase() == name1.toLowerCase()) {
-                return true;
-            }
-        };
-        var member = m.guild.members.find(isThisUsernameThatUsername);
+        var member = m.guild.members.find(m => isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         var channel = m.channelMentions[0] || m.channel.id;

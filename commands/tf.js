@@ -6,6 +6,9 @@ const use = require("../data.js");
 var stats = use.load();
 var time = new Date().toISOString();
 var ordinal = require("ordinal");
+
+const isSameMember = require("./utils/isSameMember");
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var args = args.toLowerCase();
@@ -20,13 +23,7 @@ module.exports = {
         var mentioned = m.mentions[0] || m.author;
         var id = mentioned.id;
         var name1 = args;
-        var isThisUsernameThatUsername = function(member) {
-            var memberName = member.nick || member.username;
-            if (memberName.toLowerCase() == name1.toLowerCase()) {
-                return true;
-            }
-        };
-        var member = m.guild.members.find(isThisUsernameThatUsername);
+        var member = m.guild.members.find(m => isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;
         var commands = stats.commands["tf"].users;
         var usage = 0;

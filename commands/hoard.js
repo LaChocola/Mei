@@ -2,17 +2,14 @@
 
 const _ = require("../people.js");
 var data = _.load();
+
+const isSameMember = require("./utils/isSameMember");
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!hoard /i, "");
-        var isThisUsernameThatUsername = function(member) {
-            var memberName = member.nick || member.username;
-            if (memberName.toLowerCase() == name1.toLowerCase()) {
-                return true;
-            }
-        };
         var args = args.split(" | ");
-        var member = m.guild.members.find(isThisUsernameThatUsername);
+        var member = m.guild.members.find(m => isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         var id = mentioned.id;

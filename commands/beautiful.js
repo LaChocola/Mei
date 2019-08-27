@@ -2,15 +2,11 @@
 
 const Jimp = require("jimp");
 
+const isSameMember = require("./utils/isSameMember");
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var isThisUsernameThatUsername = function(member) {
-            var memberName = member.nick || member.username;
-            if (memberName.toLowerCase() == m.author.username.toLowerCase()) {
-                return true;
-            }
-        };
-        var member = m.guild.members.find(isThisUsernameThatUsername);
+        var member = m.guild.members.find(m => isSameMember(m, m.author));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         var pic = `https://images.discordapp.net/avatars/${m.author.id}/${m.author.avatar}.png?size=1024`;

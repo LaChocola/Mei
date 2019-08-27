@@ -1,5 +1,7 @@
 "use strict";
 
+const isSameMember = require("./utils/isSameMember");
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var guild = m.channel.guild;
@@ -7,14 +9,8 @@ module.exports = {
         if (m.content.length < 7) {
             name1 = m.author.username;
         }
-        var isThisUsernameThatUsername = function(member) {
-            var memberName = member.nick || member.username;
-            if (memberName.toLowerCase() === name1.toLowerCase()) {
-                return true;
-            }
-        };
 
-        var member = m.guild.members.find(isThisUsernameThatUsername);
+        var member = m.guild.members.find(m => isSameMember(m, name1));
         if (m.mentions.length === 0) {
             var mentioned = member || guild.members.get(m.author.id);
         }

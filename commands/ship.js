@@ -2,6 +2,8 @@
 
 const Jimp = require("jimp");
 
+const isSameMember = require("./utils/isSameMember");
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var names = m.cleanContent.replace(/^[ !ship\t]+[^a-zA-Z]+|[!ship \t]+[^a-zA-Z]$|!ship/i, "").split(" | ");
@@ -10,13 +12,7 @@ module.exports = {
                 names[0] = names[0].slice(1);
             }
             var name1 = names[0];
-            var isThisUsernameThatUsername = function(member) {
-                var memberName = member.nick || member.username;
-                if (memberName.toLowerCase() == name1.toLowerCase()) {
-                    return true;
-                }
-            };
-            var member = m.guild.members.find(isThisUsernameThatUsername);
+            var member = m.guild.members.find(m => isSameMember(m, name1));
 
             if (member != undefined) {
                 if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) {
@@ -32,13 +28,7 @@ module.exports = {
                 }
                 var name2 = names[1];
 
-                var isThisUsernameThatUsername2 = function(member) {
-                    var memberName = member.nick || member.username;
-                    if (memberName.toLowerCase() == name2.toLowerCase()) {
-                        return true;
-                    }
-                };
-                var member2 = m.guild.members.find(isThisUsernameThatUsername2);
+                var member2 = m.guild.members.find(m => isSameMember(m, name2));
 
                 if (member2 != undefined) {
                     if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) {

@@ -4,17 +4,11 @@ const fs = require("fs");
 
 const _ = require("./people.js");
 const servers = require("./servers.js");
+
 let data = _.load();
 var server = servers.load();
 
 class Misc { // Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
-    static isThisUsernameThatUsername(member, name1) {
-        var memberName = member.nick || member.username;
-        if (memberName.toLowerCase() === name1.toLowerCase()) {
-            return true;
-        }
-    }
-
     static isMod(Bot, m, member, guild) {
         if (server[guild.id]) {
             if (server[guild.id].owner != guild.ownerID || server[guild.id].name != guild.name) {

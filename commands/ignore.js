@@ -4,6 +4,8 @@ var _ = require("../data.js");
 
 var data = _.load();
 
+const isSameMember = require("./utils/isSameMember");
+
 module.exports = {
     main: async function(Bot, m, args, prefix) {
         if (m.author.id !== "161027274764713984") {
@@ -12,18 +14,7 @@ module.exports = {
         var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
         var hand = hands[Math.floor(Math.random() * hands.length)];
         var name1 = m.cleanContent.replace(`${prefix}ignore`, "").replace(/\bundo\b/, "").trim().split(" | ");
-        var isThisUsernameThatUsername = function(member) {
-            var memberName = member.nick || member.username;
-            if (name1[1]) {
-                if (memberName.toLowerCase() === name1[0].trim().toLowerCase() || memberName.toLowerCase() === name1[1].trim().toLowerCase()) {
-                    return true;
-                }
-            }
-            else if (memberName.toLowerCase() === name1[0].trim().toLowerCase()) {
-                return true;
-            }
-        };
-        var member = m.guild.members.find(isThisUsernameThatUsername);
+        var member = m.guild.members.find(m => isSameMember(m, name1[0]) || isSameMember(m, name1[1]));
         var mentioned = m.mentions[0] || member;
         var id;
         var name;
