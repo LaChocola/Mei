@@ -2,8 +2,8 @@ const pokemon = require('pokemontcgsdk')
 module.exports = {
     main: function(Bot, m, args, prefix) {
         pokemon.card.where({
-                supertype: 'pokemon'
-            })
+            supertype: 'pokemon'
+        })
             .then(cards => {
                 var chosen = cards[Math.floor(Math.random() * cards.length)]
                 var attack = "None"
@@ -27,35 +27,35 @@ module.exports = {
                         "title": chosen.name,
                         "color": 0xA260F6,
                         "fields": [{
-                                "name": "Attacks",
-                                "value": attacks,
-                                "inline": true
-                            },
-                            {
-                                "name": "HP",
-                                "value": chosen.hp,
-                                "inline": true
-                            },
-                            {
-                                name: "\u200b",
-                                value: "\u200b",
-                                inline: true
-                            },
-                            {
-                                "name": "Weaknesses",
-                                "value": weaknesses,
-                                "inline": true
-                            },
-                            {
-                                "name": "Resistances",
-                                "value": resistances,
-                                "inline": true
-                            },
-                            {
-                                name: "\u200b",
-                                value: "\u200b",
-                                inline: true
-                            }
+                            "name": "Attacks",
+                            "value": attacks,
+                            "inline": true
+                        },
+                        {
+                            "name": "HP",
+                            "value": chosen.hp,
+                            "inline": true
+                        },
+                        {
+                            name: "\u200b",
+                            value: "\u200b",
+                            inline: true
+                        },
+                        {
+                            "name": "Weaknesses",
+                            "value": weaknesses,
+                            "inline": true
+                        },
+                        {
+                            "name": "Resistances",
+                            "value": resistances,
+                            "inline": true
+                        },
+                        {
+                            name: "\u200b",
+                            value: "\u200b",
+                            inline: true
+                        }
                         ],
                         "image": {
                             "url": chosen.imageUrl

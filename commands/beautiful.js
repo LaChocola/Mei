@@ -13,8 +13,8 @@ module.exports = {
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username
         var pic = `https://images.discordapp.net/avatars/${m.author.id}/${m.author.avatar}.png?size=1024`
         if (pic.includes("null")) {
-          Bot.createMessage(m.channel.id, "You need an avatar to use this command");
-          return;
+            Bot.createMessage(m.channel.id, "You need an avatar to use this command");
+            return;
         }
         if (m.mentions.length == 1) {
             var pic = `https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`

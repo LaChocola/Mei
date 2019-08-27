@@ -20,15 +20,15 @@ module.exports = {
             const msg = {
                 color: 0xA260F6,
                 fields: [{
-                        name: 'Similarity',
-                        value: `${data.similarity}%`,
-                        inline: true
-                    },
-                    {
-                        name: 'Site',
-                        value: `${data.site}`,
-                        inline: true
-                    }
+                    name: 'Similarity',
+                    value: `${data.similarity}%`,
+                    inline: true
+                },
+                {
+                    name: 'Site',
+                    value: `${data.site}`,
+                    inline: true
+                }
                 ],
                 image: {
                     url: qs.encode(data.original.header.thumbnail)
@@ -43,18 +43,18 @@ module.exports = {
                 embed: msg
             });
         }).catch((err) => {
-          console.log(err.message);
-          var err = err.toString()
-          if (err.includes("You need an image") || err.includes("Supplied URL is not usable") || err.includes("Error: Got HTML response while expecting JSON")) {
-            Bot.createMessage(m.channel.id, "No sauce found, please try uploading an image");
+            console.log(err.message);
+            var err = err.toString()
+            if (err.includes("You need an image") || err.includes("Supplied URL is not usable") || err.includes("Error: Got HTML response while expecting JSON")) {
+                Bot.createMessage(m.channel.id, "No sauce found, please try uploading an image");
+                return;
+            }
+            if (err.includes("No Results")) {
+                Bot.createMessage(m.channel.id, "No Results found, sorry :sob:");
+                return
+            }
+            Bot.createMessage(m.channel.id, "An error has occured, please try using an actual image and trying again");
             return;
-          }
-          if (err.includes("No Results")) {
-            Bot.createMessage(m.channel.id, "No Results found, sorry :sob:");
-            return
-          }
-          Bot.createMessage(m.channel.id, "An error has occured, please try using an actual image and trying again");
-          return;
         });
     },
     help: "sauce"

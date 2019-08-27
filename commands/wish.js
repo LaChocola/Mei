@@ -3,8 +3,8 @@ const Jimp = require('jimp');
 // They are both availible at https://github.com/LaChocola/Mei/tree/master/db/fonts
 var time = new Date().toDateString().slice(4).replace(` ${new Date().getFullYear()}`, `, ${new Date().getFullYear()}`);
 module.exports = {
-    main: function (Bot, m, args, prefix) {
-        var isThisUsernameThatUsername = function (member) {
+    main: function(Bot, m, args, prefix) {
+        var isThisUsernameThatUsername = function(member) {
             var memberName = member.nick || member.username
             if (memberName.toLowerCase() == m.author.username.toLowerCase()) {
                 return true;
@@ -18,8 +18,8 @@ module.exports = {
         }
         var pic = `https://images.discordapp.net/avatars/${m.author.id}/${m.author.avatar}.png?size=1024`
         if (pic.includes('null')) {
-          Bot.createMessage(m.channel.id, 'You need an avatar to use this command');
-          return;
+            Bot.createMessage(m.channel.id, 'You need an avatar to use this command');
+            return;
         }
         if (m.mentions.length == 1) {
             var pic = `https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`

@@ -36,9 +36,9 @@ module.exports = {
                 var author = m.author.id;
                 var name = m.channel.guild.members.get(author).nick || m.channel.guild.members.get(author).username;
                 if (!data[guild.id].giveaways) {
-                  data[guild.id].giveaways = {}
-                  _.save(data)
-                  data = _.load()
+                    data[guild.id].giveaways = {}
+                    _.save(data)
+                    data = _.load()
                 }
                 if (data[guild.id].giveaways.running) {
                     Bot.createMessage(m.channel.id, "There is already a giveaway running, try again later~");

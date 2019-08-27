@@ -2,13 +2,13 @@ const request = require('request');
 const esc = require('unidecode');
 
 module.exports = {
-    main: function (Bot, m, args, prefix) {
+    main: function(Bot, m, args, prefix) {
         var word = (m.content.replace(`${prefix}urban `, ''));
         var urbanJsonURL = 'http://api.urbandictionary.com/v0/define?term=' + esc(word);
         request.get({
             url: urbanJsonURL,
             json: true
-        }, function (e, r, b) {
+        }, function(e, r, b) {
             if (!e && b.list[0] !== undefined) {
                 var message = [
                     '```' + b.list[0].definition + '```',

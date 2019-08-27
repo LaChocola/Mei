@@ -1,9 +1,9 @@
 const _ = require('../people.js');
 var data = _.load();
 module.exports = {
-    main: function (Bot, m, args) {
+    main: function(Bot, m, args) {
         var name1 = m.cleanContent.replace(/!artist /i, '');
-        var isThisUsernameThatUsername = function (member) {
+        var isThisUsernameThatUsername = function(member) {
             var memberName = member.nick || member.username;
             if (memberName.toLowerCase() === name1.toLowerCase()) {
                 return true;
@@ -67,7 +67,7 @@ module.exports = {
             return;
         } else {
             var links = data.people[id].links;
-            Object.keys(links).forEach(function (key) {
+            Object.keys(links).forEach(function(key) {
                 linkArray.push(key + ': ' + links[key] + '\n');
             });
             Bot.createMessage(m.channel.id, {

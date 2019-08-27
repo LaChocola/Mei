@@ -3,7 +3,7 @@ const _ = require('../servers.js');
 const data = _.load();
 module.exports = {
     async main(Bot, m, args) {
-        const isMod = function (member, guild) {
+        const isMod = function(member, guild) {
             if (data[guild.id]) {
                 if (data[guild.id].owner !== guild.ownerID) {
                     Bot.createMessage(m.channel.id, 'New server owner detected, updating database.').then(msg => {
@@ -54,19 +54,19 @@ module.exports = {
                 return false;
             }
         };
-        const roleSearch = function (role) {
+        const roleSearch = function(role) {
             const roleName = role.name.toLowerCase();
             if (roleName !== 'undefined') {
                 return roleName;
             }
         };
-        const findRole = function (role) {
+        const findRole = function(role) {
             if (role.name !== 'undefined' && args.toLowerCase().trim() === role.name.toLowerCase().trim()) {
                 const role2 = role.id;
                 return role2;
             }
         };
-        const hasDuplicates = function (name) {
+        const hasDuplicates = function(name) {
             let duplicate = false;
             const length = m.channel.guild.roles.filter(r => r.name.toLowerCase() === name.toLowerCase()).length;
             if (length > 1) {
@@ -722,7 +722,7 @@ module.exports = {
             if (args.toLowerCase().includes('update')) {
                 var roles = Object.keys(data[m.channel.guild.id].roles);
                 for (var role of roles) {
-                    const exists = m.channel.guild.roles.find((r) => {if (r.id == data[m.channel.guild.id].roles[role]) {return true;}});
+                    const exists = m.channel.guild.roles.find((r) => { if (r.id == data[m.channel.guild.id].roles[role]) { return true; } });
                     if (!exists) {
                         delete data[guild.id].roles[role];
                         _.save(data);

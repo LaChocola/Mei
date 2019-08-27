@@ -27,7 +27,7 @@ module.exports = {
             return;
         }
         if (!+dice || !+amount || (args2 && !+dice2 || args2 && !+amount2)) {
-        Bot.createMessage(m.channel.id, "Please put the roll in the format of `!d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.").then((msg) => {
+            Bot.createMessage(m.channel.id, "Please put the roll in the format of `!d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.").then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout")
@@ -46,33 +46,33 @@ module.exports = {
         }
         var rolls = [];
         for (var i = 0; i < dice; i++) {
-            var roll = Math.floor(Math.random() * amount+1)
-            rolls.push(`Roll ${i+1}: **${roll}**`)
+            var roll = Math.floor(Math.random() * amount + 1)
+            rolls.push(`Roll ${i + 1}: **${roll}**`)
         }
         var msg = {
             color: 0xA260F6,
             title: ``,
             fields: [
-              {
-                "name": `:game_die: Rolling ${dice} D${amount}${ dice>1 ? 's' : ''}:`,
-                "value": '\n'+rolls.join('\n'),
-                "inline": "true"
-              }
+                {
+                    "name": `:game_die: Rolling ${dice} D${amount}${dice > 1 ? 's' : ''}:`,
+                    "value": '\n' + rolls.join('\n'),
+                    "inline": "true"
+                }
             ]
-          }
+        }
         if (args2) {
             rolls2 = [];
             for (var i = 0; i < dice2; i++) {
-                var roll = Math.floor(Math.random() * amount2+1)
-                rolls2.push(`Roll ${i+1}: **${roll}**`)
+                var roll = Math.floor(Math.random() * amount2 + 1)
+                rolls2.push(`Roll ${i + 1}: **${roll}**`)
             }
             msg.fields.push({
-                "name": `:game_die: Rolling ${dice2} D${amount2}${ dice2>1 ? 's' : ''}:`,
-                "value": '\n'+rolls2.join('\n'),
+                "name": `:game_die: Rolling ${dice2} D${amount2}${dice2 > 1 ? 's' : ''}:`,
+                "value": '\n' + rolls2.join('\n'),
                 "inline": "true"
-              })
+            })
         }
-        Bot.createMessage(m.channel.id, {embed: msg})
+        Bot.createMessage(m.channel.id, { embed: msg })
     },
     help: "Dice rolling. `!d 2d20` or `!d 3d20 | 2d10` for dfferent values"
 };

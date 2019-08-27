@@ -8,8 +8,8 @@ module.exports = {
             if (commands.indexOf(args + ".js") > -1) {
                 var cmd = require("./" + args + ".js");
                 if (!cmd.hidden) {
-                  Bot.createMessage(m.channel.id, "`"+ prefix + args + "`, " + cmd.help);
-                  return;
+                    Bot.createMessage(m.channel.id, "`" + prefix + args + "`, " + cmd.help);
+                    return;
                 }
                 return;
             } else {

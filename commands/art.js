@@ -30,9 +30,9 @@ module.exports = {
         }
         var index = 5000
         if (args) {
-          if (!isNaN(+args)) {
-            index = args
-          }
+            if (!isNaN(+args)) {
+                index = args
+            }
         }
         var channel = data[guild.id].art
         channel = Bot.getChannel(channel)
@@ -42,22 +42,22 @@ module.exports = {
         var gName = channel.guild.name
         var icon = channel.guild.iconURL || null
         if (channel.nsfw && !m.channel.nsfw) {
-          Bot.createMessage(m.channel.id, `The selected art channel, <#${channel.id}>, is an nsfw channel, and this channel is not. Please either use this command in an nsfw channel, or set the art channel to a non-nsfw channel`).then((msg) => {
-              return setTimeout(function() {
-                  Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                  Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-              }, 10000)
-          })
-          return;
+            Bot.createMessage(m.channel.id, `The selected art channel, <#${channel.id}>, is an nsfw channel, and this channel is not. Please either use this command in an nsfw channel, or set the art channel to a non-nsfw channel`).then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                }, 10000)
+            })
+            return;
         }
         channel = channel.id
         if (index > 7000) {
-          Bot.createMessage(m.channel.id, `I can't grab more than 7000 messages in any channel. Setting limit to 7000`).then((msg) => {
-              return setTimeout(function() {
-                  Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-              }, 5000)
-          })
-          index = 7000
+            Bot.createMessage(m.channel.id, `I can't grab more than 7000 messages in any channel. Setting limit to 7000`).then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                }, 5000)
+            })
+            index = 7000
         }
         Bot.sendChannelTyping(m.channel.id).then(async () => {
             Bot.getMessages(channel, parseInt(index)).then(function(msgs) {
@@ -70,12 +70,12 @@ module.exports = {
                         art[msg.attachments[0].url] = [msg.author.id, msg.timestamp]
                     }
                     if (msg.embeds[0]) {
-                      if (msg.embeds[0].image) {
-                        art[msg.embeds[0].image.url] = [msg.author.id, msg.timestamp]
-                      }
-                      if (!msg.embeds[0].image) {
-                        art[msg.embeds[0].url] = [msg.author.id, msg.timestamp]
-                      }
+                        if (msg.embeds[0].image) {
+                            art[msg.embeds[0].image.url] = [msg.author.id, msg.timestamp]
+                        }
+                        if (!msg.embeds[0].image) {
+                            art[msg.embeds[0].url] = [msg.author.id, msg.timestamp]
+                        }
                     }
                 }
                 var number = Math.floor(Math.random() * Object.entries(art).length);
@@ -108,8 +108,8 @@ module.exports = {
                                 "icon_url": url
                             },
                             "footer": {
-                              "icon_url": icon,
-                              "text": `${cName} | ${gName}`
+                                "icon_url": icon,
+                                "text": `${cName} | ${gName}`
                             }
                         }
                     };
@@ -130,8 +130,8 @@ module.exports = {
                                 "icon_url": url
                             },
                             "footer": {
-                              "icon_url": icon,
-                              "text": `${cName} | ${gName}`
+                                "icon_url": icon,
+                                "text": `${cName} | ${gName}`
                             }
                         }
                     };

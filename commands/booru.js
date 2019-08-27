@@ -2,7 +2,7 @@ const booru = require('booru');
 
 let request = require('request');
 
-request = request.defaults({jar: true});
+request = request.defaults({ jar: true });
 const cheerio = require('cheerio');
 const _ = require('../people.js');
 
@@ -1247,7 +1247,7 @@ module.exports = {
             j.setCookie(cookie3, 'http://giantessbooru.com');
             j.setCookie(cookie4, 'http://giantessbooru.com');
             j.setCookie(cookie5, 'http://giantessbooru.com');
-            request({url: pageToVisit, jar: j}, (error, response, body) => {
+            request({ url: pageToVisit, jar: j }, (error, response, body) => {
                 const link_array = [];
                 const post_array = [];
                 if (error) {
@@ -1257,50 +1257,50 @@ module.exports = {
                     // Parse the document body
                     const $ = cheerio.load(body);
                     if (response.request.uri.href.startsWith('http://giantessbooru.com/post/view/') || response.request.uri.href.startsWith('https://giantessbooru.com/post/view/')) { // gtsbooru redirects to the result pic page immediately if only 1 result exists, so we have to handle that specifically
-                            post_array.push(response.request.uri.path);
-                            var match = body.match(/\/_images\/([0-9a-zA-Z]+)\//gm)
-                            if (match && match[0]) {
-                                link_array.push(match)
-                            }
+                        post_array.push(response.request.uri.path);
+                        var match = body.match(/\/_images\/([0-9a-zA-Z]+)\//gm)
+                        if (match && match[0]) {
+                            link_array.push(match)
+                        }
                     } else if (!response.request.uri.href.startsWith('http://giantessbooru.com/post/view/') || !response.request.uri.href.startsWith('https://giantessbooru.com/post/view/')) {
-                            const thing = $('.thumb').children();
-                            for (child in thing) {
-                                    const child_thing = thing[child];
-                                    if (child_thing.type == 'tag') {
-                                        link_array.push(child_thing.children[0].attribs.src.replace('/_thumbs/', '_images/').replace('/thumb.jpg', ''));
-                                        post_array.push(child_thing.attribs.href)
-                                    } else {
-                                            break;
-                                    }
+                        const thing = $('.thumb').children();
+                        for (child in thing) {
+                            const child_thing = thing[child];
+                            if (child_thing.type == 'tag') {
+                                link_array.push(child_thing.children[0].attribs.src.replace('/_thumbs/', '_images/').replace('/thumb.jpg', ''));
+                                post_array.push(child_thing.attribs.href)
+                            } else {
+                                break;
                             }
                         }
                     }
-                    const maths = Math.floor(Math.random() * link_array.length);
-                    if (link_array.length === 0) {
-                        Bot.createMessage(m.channel.id, 'No image found for: **' + tags.join(', ') + '**');
-                        return;
-                    }
-                    const number = maths + 1;
-                    const imageURL = 'http://giantessbooru.com/'+link_array[maths]+".gif"
-                    const data = {
-                        content: 'Results on **' + site + '**',
-                        embed: {
-                            color: 0xA260F6,
-                            footer: {
-                                icon_url: m.channel.guild.members.get(m.author.id).avatarURL.replace('.jpg', '.webp?size=1024'),
-                                text: 'Searched by: ' + name + '. Image ' + number + ' of ' + link_array.length
-                            },
-                            image: {
-                                url: imageURL.toString()
-                            },
-                            author: {
-                                name: cleanTags,
-                                url: 'http://giantessbooru.com'+post_array[maths]
-                            }
-                        }
-                    };
-                    Bot.createMessage(m.channel.id, data);
+                }
+                const maths = Math.floor(Math.random() * link_array.length);
+                if (link_array.length === 0) {
+                    Bot.createMessage(m.channel.id, 'No image found for: **' + tags.join(', ') + '**');
                     return;
+                }
+                const number = maths + 1;
+                const imageURL = 'http://giantessbooru.com/' + link_array[maths] + ".gif"
+                const data = {
+                    content: 'Results on **' + site + '**',
+                    embed: {
+                        color: 0xA260F6,
+                        footer: {
+                            icon_url: m.channel.guild.members.get(m.author.id).avatarURL.replace('.jpg', '.webp?size=1024'),
+                            text: 'Searched by: ' + name + '. Image ' + number + ' of ' + link_array.length
+                        },
+                        image: {
+                            url: imageURL.toString()
+                        },
+                        author: {
+                            name: cleanTags,
+                            url: 'http://giantessbooru.com' + post_array[maths]
+                        }
+                    }
+                };
+                Bot.createMessage(m.channel.id, data);
+                return;
             });
             return;
         }
@@ -1309,23 +1309,23 @@ module.exports = {
             Bot.createMessage(m.channel.id, `Please input your search tags and/or booru. A list is availible by doing \`\`${prefix}booru list\`\``);
             return;
         }
-        
+
         if (site == 'danbooru' || site == 'dan' || site == 'db') {
             if (tags.length > 3) {
                 Bot.createMessage(m.channel.id, 'Danbooru doesnt support searching with multiple tags this way. Only the first tag was used');
             }
-            booru.search(site, [tags[0]], {limit, random: true})
-            .then(booru.commonfy)
-            .then(images => {
-                // Log the direct link to each image
-                for (const image of images) {
-                    imageURL.push(image.common.file_url);
+            booru.search(site, [tags[0]], { limit, random: true })
+                .then(booru.commonfy)
+                .then(images => {
+                    // Log the direct link to each image
+                    for (const image of images) {
+                        imageURL.push(image.common.file_url);
                         Bot.createMessage(m.channel.id, 'Result for: **' + tags[0] + (', ') + '** on ' + site + '\n' + imageURL);
-                }
-            })
-            .catch(err => {
-                if (err.name === 'BooruError') {
-                    // It's a custom error thrown by the package
+                    }
+                })
+                .catch(err => {
+                    if (err.name === 'BooruError') {
+                        // It's a custom error thrown by the package
                         if (err.message == 'You didn\'t give any images') {
                             Bot.createMessage(m.channel.id, 'No images were found for: ' + tags[0]);
                             return;
@@ -1337,11 +1337,11 @@ module.exports = {
                         console.log(err);
                         Bot.createMessage(m.channel.id, 'An unknown error has occured');
                     }
-            });
+                });
             return;
         }
 
-        booru.search(site, tags.join(' | ').split(' | '), {limit, random: true})
+        booru.search(site, tags.join(' | ').split(' | '), { limit, random: true })
             .then(booru.commonfy)
             .then(images => {
                 // Log the direct link to each image

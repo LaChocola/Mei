@@ -1,7 +1,7 @@
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var msg = m.cleanContent.replace(`${prefix}suggest `, "");
-        var msg = msg.trim().replace(/\bXXX\b/ig,`[name]`).replace(/"/ig, `\"`).replace(/\b“\b/ig, `\"`).replace(/\b”\b/ig, `\"`).replace(/\b""\b/ig, `"`).replace(/"/ig, `''`).replace(`  `, ` `)
+        var msg = msg.trim().replace(/\bXXX\b/ig, `[name]`).replace(/"/ig, `\"`).replace(/\b“\b/ig, `\"`).replace(/\b”\b/ig, `\"`).replace(/\b""\b/ig, `"`).replace(/"/ig, `''`).replace(`  `, ` `)
         var msg = msg.replace(/\bfeet\b/ig, `[feet]`).replace("`", "'")
         var person = m.author
         if (m.content == `${prefix}suggest`) {
@@ -26,7 +26,7 @@ module.exports = {
                     color: 0x5A459C,
                     description: msg,
                     footer: {
-                      text: `A new suggestion from: ${person.username} (${person.id}) in the Guild: ${m.guild.name}`
+                        text: `A new suggestion from: ${person.username} (${person.id}) in the Guild: ${m.guild.name}`
                     }
                 }
             })

@@ -48,12 +48,12 @@ module.exports = {
             let messages = await Bot.getMessages(channel, amount);
             messages = messages.filter(msg => msg.author.id === mentioned.id && !msg.content.startsWith(prefix) && !msg.content.includes("<@") && !msg.content.includes("http")).map(msg => msg.content);
             if (messages.length < 5) {
-              Bot.createMessage(m.channel.id, "That user does not have enough messages to make a markov").then((msg) => {
-                  return setTimeout(function() {
-                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                  }, 5000)
-              });
-              return;
+                Bot.createMessage(m.channel.id, "That user does not have enough messages to make a markov").then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    }, 5000)
+                });
+                return;
             }
             let markov = new MarkovGen({
                 input: messages,
@@ -69,8 +69,8 @@ module.exports = {
                 return;
             }
             if (m.channel.guild.id == "187694240585744384" && m.mentions[0].id == "143906582235840512") {
-              Bot.createMessage(m.channel.id, `"${sentence}"\n    -${name} 2018`);
-              return;
+                Bot.createMessage(m.channel.id, `"${sentence}"\n    -${name} 2018`);
+                return;
             }
             Bot.createMessage(m.channel.id, {
                 embed: {

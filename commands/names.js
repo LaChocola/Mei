@@ -35,21 +35,21 @@ module.exports = {
             var incoming = [];
             var iterator = incomingEntries.entries()
             for (let e of iterator) {
-            e[1] = capFirstLetter(e[1])
-            if (data.people[id].names[e[1]]) {
-                delete data.people[id].names[e[1]]
-                _.save(data)
-                Bot.createMessage(m.channel.id, "Removed: **" + e[1] + "** from your names list" + hand).then((msg) => {
-                    return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                    }, 5000)
-                })
-            } else {
-                Bot.createMessage(m.channel.id, "Sorry, I couldnt find **" + e[1] + "** in your names list");
+                e[1] = capFirstLetter(e[1])
+                if (data.people[id].names[e[1]]) {
+                    delete data.people[id].names[e[1]]
+                    _.save(data)
+                    Bot.createMessage(m.channel.id, "Removed: **" + e[1] + "** from your names list" + hand).then((msg) => {
+                        return setTimeout(function() {
+                            Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                        }, 5000)
+                    })
+                } else {
+                    Bot.createMessage(m.channel.id, "Sorry, I couldnt find **" + e[1] + "** in your names list");
+                }
             }
-          }
-          return;
+            return;
         }
         if (args.search(/add /i) !== -1) {
             if (mentioned.id != m.author.id) {

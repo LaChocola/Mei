@@ -4,45 +4,45 @@ module.exports = {
     main: function(Bot, m, args, prefix) {
         var names = m.cleanContent.replace(/^[ !ship\t]+[^a-zA-Z]+|[!ship \t]+[^a-zA-Z]$|!ship/i, "").split(" | ")
         if (names[0] != undefined) {
-          if (names[0].startsWith("@")) {
-            names[0] = names[0].slice(1)
-          }
-          var name1 = names[0]
-          var isThisUsernameThatUsername = function(member) {
-              var memberName = member.nick || member.username
-              if (memberName.toLowerCase() == name1.toLowerCase()) {
-                  return true;
-              }
-          }
-          var member = m.guild.members.find(isThisUsernameThatUsername)
-
-          if (member != undefined) {
-            if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) { return user.id == member.id})) {
-              m.mentions.push(member.user)
+            if (names[0].startsWith("@")) {
+                names[0] = names[0].slice(1)
             }
-          }
-
-          if (names[1] != undefined) {
-            if (names[1].startsWith("@")) {
-              names[1] = names[1].slice(1)
-            }
-            var name2 = names[1]
-
-            var isThisUsernameThatUsername2 = function(member) {
+            var name1 = names[0]
+            var isThisUsernameThatUsername = function(member) {
                 var memberName = member.nick || member.username
-                if (memberName.toLowerCase() == name2.toLowerCase()) {
+                if (memberName.toLowerCase() == name1.toLowerCase()) {
                     return true;
                 }
             }
-            var member2 = m.guild.members.find(isThisUsernameThatUsername2)
+            var member = m.guild.members.find(isThisUsernameThatUsername)
 
-            if (member2 != undefined) {
-              if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) { return user.id == member2.id})) {
-                m.mentions.push(member2.user)
-              }
+            if (member != undefined) {
+                if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) { return user.id == member.id })) {
+                    m.mentions.push(member.user)
+                }
             }
 
-          }
+            if (names[1] != undefined) {
+                if (names[1].startsWith("@")) {
+                    names[1] = names[1].slice(1)
+                }
+                var name2 = names[1]
+
+                var isThisUsernameThatUsername2 = function(member) {
+                    var memberName = member.nick || member.username
+                    if (memberName.toLowerCase() == name2.toLowerCase()) {
+                        return true;
+                    }
+                }
+                var member2 = m.guild.members.find(isThisUsernameThatUsername2)
+
+                if (member2 != undefined) {
+                    if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) { return user.id == member2.id })) {
+                        m.mentions.push(member2.user)
+                    }
+                }
+
+            }
         }
 
         var mentioned = m.mentions[0] || member || m.author
