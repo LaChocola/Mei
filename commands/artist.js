@@ -28,7 +28,7 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "Okay....but that isnt you");
                 return;
             }
-            var incoming = name1.replace(/add /i, "").replace(": ", " ").split(" ");
+            let incoming = name1.replace(/add /i, "").replace(": ", " ").split(" ");
             if (data.people[id].links[incoming[0]]) {
                 Bot.createMessage(m.channel.id, "That's already been added, silly~");
                 return;
@@ -50,7 +50,7 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "Okay....but that isnt you");
                 return;
             }
-            var incoming = name1.replace("remove ", "").replace(": ", " ").split(" ");
+            let incoming = name1.replace("remove ", "").replace(": ", " ").split(" ");
             if (data.people[id].links[incoming[0]]) {
                 delete data.people[id].links[incoming[0]];
                 _.save(data);

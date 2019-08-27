@@ -25,12 +25,12 @@ module.exports = {
         var args2 = m.cleanContent.replace(`${prefix}ignore`, "").replace(/\bundo\b/, "").replace("<@", "").replace(">", "").trim().split(" | ");
         if (!id) {
             if (!isNaN(Number(args2[0]))) {
-                var id = args2[0];
+                id = args2[0];
             }
         }
         if (args2[1]) {
             if (!isNaN(Number(args2[1]))) {
-                var id = args2[1];
+                id = args2[1];
                 return;
             }
             var reason = args2[1].trim();
@@ -38,10 +38,10 @@ module.exports = {
         if (!name) {
             var user = await Bot.users.get(id);
             if (!user || !user.username) {
-                var name = "Unknown User";
+                name = "Unknown User";
                 return;
             }
-            var name = user.username;
+            name = user.username;
         }
         var discrim = await Bot.users.get(id).discriminator;
         if (discrim) {
@@ -55,7 +55,7 @@ module.exports = {
                 }, 2500);
             });
         }
-        var args = args.split(" ");
+        args = args.split(" ");
         if (args.indexOf("undo") > -1) {
             if (!data.banned.global[id]) {
                 Bot.createMessage(m.channel.id, `The ID "${id}" was not found in the list of ignored users. Nothing to undo.`).then((msg) => {

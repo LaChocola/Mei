@@ -22,7 +22,7 @@ module.exports = {
                 else {
                     stats.push("**!" + command + ":** " + data.commands[command].users[mentioned.id] + " runs");
                 }
-                var userUses = userUses + data.commands[command].users[mentioned.id];
+                userUses = userUses + data.commands[command].users[mentioned.id];
             }
         }
         var percent = ((userUses / commands.totalRuns) * 100).toFixed(2);

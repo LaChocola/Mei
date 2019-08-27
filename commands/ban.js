@@ -5,7 +5,7 @@ var data = _.load();
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {
-        var args = args.split(" ");
+        args = args.split(" ");
         var isMod = async function(member, guild) {
             if (data[guild.id]) {
                 if (data[guild.id].owner !== guild.ownerID) {
@@ -80,13 +80,14 @@ module.exports = {
         var args3 = ments || args2;
         args3.forEach(async (id) => {
             id = id.replace("<@", "").replace(">", "").trim();
+            // TODO: name is undeclared here?
             if (!name || m.mentions.length < 2) {
                 var user = await Bot.users.get(id);
                 if (!user || !user.username) {
-                    var name = "Unknown User";
+                    name = "Unknown User";
                     return;
                 }
-                var name = user.username;
+                name = user.username;
             }
             if (undo) {
                 Bot.unbanGuildMember(m.channel.guild.id, id, "Unbanned by: " + guardian)

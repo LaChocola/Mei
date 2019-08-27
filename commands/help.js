@@ -4,7 +4,7 @@ const fs = require("fs");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var args = args.replace(prefix, "");
+        args = args.replace(prefix, "");
         if (args != "") {
             var commands = fs.readdirSync("./commands/");
             if (commands.indexOf(args + ".js") > -1) {

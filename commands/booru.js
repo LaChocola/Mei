@@ -30,7 +30,7 @@ module.exports = {
             Bot.createMessage(m.channel.id, "**Total Boorus Availible:** 16\n**Default Booru:** giantessbooru.com \n\n**Other Availbe Boorus | Aliases:**\n***giantessbooru*** | gtsbooru, gbooru\n***e621*** | e6, e621, e9, e926\n***hypnohub*** | hh, hypno\n***danbooru*** | db\n***konachan*** | kc, konan\n***yande.re*** | yd, yand\n***gelbooru*** | gb, gel\n***rule34*** | r34\n***safebooru*** | sb\n***thebigimagebooru*** | tb, tbib\n***xbooru*** | xb\n***derpibooru*** | dp, derpi\n***furrybooru*** | fb \n***realbooru*** | rb");
             return;
         }
-        var args = m.cleanContent.toLowerCase().replace(`${prefix}booru `, "").split(", ");
+        args = m.cleanContent.toLowerCase().replace(`${prefix}booru `, "").split(", ");
         let site = "giantessbooru.com";
         const imageURL = [];
         let tags = [];
@@ -83,7 +83,7 @@ module.exports = {
         const argsIterator = args.entries();
         for (const e of argsIterator) {
             if (isNumeric(Number(e[1]))) {
-                var limit = Number(e[1]);
+                limit = Number(e[1]);
                 args.splice(e[0], 1);
             }
             if (aliases.indexOf(e[1]) > -1) {
@@ -1227,14 +1227,15 @@ module.exports = {
             if (dislikes.length > 0) {
                 tags = tags.concat(dislikes);
             }
+            var pageToVisit;
             if (tags.length === 0) {
-                var pageToVisit = "http://giantessbooru.com/post/list";
+                pageToVisit = "http://giantessbooru.com/post/list";
             }
             else if (tags.length == 1) {
-                var pageToVisit = "http://giantessbooru.com/post/list/" + tags[0] + "%2C-scat/1";
+                pageToVisit = "http://giantessbooru.com/post/list/" + tags[0] + "%2C-scat/1";
             }
             else if (tags.length > 1) {
-                var pageToVisit = "http://giantessbooru.com/post/list/" + tags.join("%2C") + "%2C-scat/1";
+                pageToVisit = "http://giantessbooru.com/post/list/" + tags.join("%2C") + "%2C-scat/1";
             }
             if (scat) {
                 pageToVisit = pageToVisit.replace("%2C-scat", "");

@@ -20,15 +20,15 @@ module.exports = {
         if (!id) {
             var args2 = m.cleanContent.replace("!date ", "").replace("<@", "").replace(">", "").trim();
             if (!isNaN(+args2)) {
-                var id = args2;
+                id = args2;
             }
         }
 
-        var mentioned = m.guild.members.find(m => isSameMember(m, name1));
-        var member = m.mentions[0] || mentioned || m.author;
-        var args2 = m.content.replace("!date ", "").replace("<@", "").replace(">", "").trim();
+        mentioned = m.guild.members.find(m => isSameMember(m, name1));
+        member = m.mentions[0] || mentioned || m.author;
+        args2 = m.content.replace("!date ", "").replace("<@", "").replace(">", "").trim();
         if (args2.length > 1) {
-            var id = args2;
+            id = args2;
         }
         if (id != undefined) {
             member = m.channel.guild.members.get(id);
@@ -47,7 +47,7 @@ module.exports = {
         }
         var date = member.joinedAt;
         var date2 = member.createdAt;
-        var name = member.nick || member.username;
+        name = member.nick || member.username;
         var length = new Date(date).toDateString();
         var length2 = new Date(date2).toDateString();
         var ago = timeago.format(date);

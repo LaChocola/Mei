@@ -28,7 +28,7 @@ module.exports = {
             return;
         }
         var name = m.author.nick || m.author.username;
-        var args = m.cleanContent.replace(`${prefix}ex`, "").replace(`${prefix}ex `, "").toLowerCase().split(", ");
+        args = m.cleanContent.replace(`${prefix}ex`, "").replace(`${prefix}ex `, "").toLowerCase().split(", ");
         var search = args.join(" ");
         if (!search) {
             search = "giantess";
@@ -68,7 +68,7 @@ module.exports = {
                     const maths = Math.floor(Math.random() * link_array.length);
                     var number = maths + 1;
                     var pairs = link_array[maths];
-                    var $ = cheerio.load(body);
+                    $ = cheerio.load(body);
                     var exOnly = false;
                     var newPage = pairs.link.replace("exhentai", "e-hentai");
                     request({ url: newPage }, (error, response, body) => {
@@ -112,7 +112,7 @@ module.exports = {
                             };
                         }
                         if (exOnly == false) {
-                            var data = {
+                            data = {
                                 "content": "Results on for **" + search + "**",
                                 "embed": {
                                     "color": 0xA260F6,

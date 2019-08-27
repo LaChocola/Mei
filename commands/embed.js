@@ -2,12 +2,12 @@
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var prefix = "!";
-        var args = m.content.slice(prefix.length).split(" ");
+        prefix = "!";
+        args = m.content.slice(prefix.length).split(" ");
         args.shift();
         var embed = args.join(" ");
         if (args.indexOf("code") > -1) {
-            var embed = args.join(" ");
+            embed = args.join(" ");
             Bot.createMessage(m.channel.id, {
                 embed: {
                     color: 0xA260F6,
@@ -16,7 +16,7 @@ module.exports = {
             });
         }
         else if (args.indexOf("blank") > -1) {
-            var embed = args.join(" ");
+            embed = args.join(" ");
             Bot.createMessage(m.channel.id, {
                 embed: {
                     color: 0xA260F6,
@@ -25,7 +25,7 @@ module.exports = {
             });
         }
         else {
-            var embed = args.join(" ");
+            embed = args.join(" ");
             Bot.createMessage(m.channel.id, {
                 embed: {
                     color: 0xA260F6,

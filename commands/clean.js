@@ -8,7 +8,7 @@ module.exports = {
             return !isNaN(num);
         }
         var number = 102;
-        var args = m.cleanContent.replace(`${prefix}clean `, "").split(" ");
+        args = m.cleanContent.replace(`${prefix}clean `, "").split(" ");
         var argsIterator = args.entries();
         for (let e of argsIterator) {
             if (isNumeric(+e[1])) {

@@ -13,7 +13,7 @@ module.exports = {
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         if (name.length > 13) {
-            var name = name.slice(0, 11) + "..";
+            name = name.slice(0, 11) + "..";
         }
         var pic = `https://images.discordapp.net/avatars/${m.author.id}/${m.author.avatar}.png?size=1024`;
         if (pic.includes("null")) {
@@ -21,7 +21,7 @@ module.exports = {
             return;
         }
         if (m.mentions.length == 1) {
-            var pic = `https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`;
+            pic = `https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`;
         }
         else if (m.mentions.length > 1) {
             Bot.createMessage(m.channel.id, "This Command cant be used with more than one mention");

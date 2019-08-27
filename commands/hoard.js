@@ -8,7 +8,7 @@ const isSameMember = require("./utils/isSameMember");
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!hoard /i, "");
-        var args = args.split(" | ");
+        args = args.split(" | ");
         var member = m.guild.members.find(m => isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
@@ -82,7 +82,7 @@ module.exports = {
                 }
                 if (!isNaN(+args[1]) && 0 < +args[1]) {
                     if (data.people[id].hoard) {
-                        var hoard = Object.keys(data.people[id].hoard);
+                        hoard = Object.keys(data.people[id].hoard);
                         args[1] = +args[1];
                         --args[1];
                         if (hoard.indexOf(args[0]) > -1) {
@@ -111,7 +111,7 @@ module.exports = {
                     }
                 }
                 if (data.people[id].hoard) {
-                    var hoard = Object.keys(data.people[id].hoard);
+                    hoard = Object.keys(data.people[id].hoard);
                     if (hoard.indexOf(args[0]) > -1) {
                         delete data.people[id].hoard[args[0]];
                         _.save(data);
@@ -136,13 +136,13 @@ module.exports = {
             });
             return;
         }
-        var hoard = Object.keys(data.people[id].hoard);
+        hoard = Object.keys(data.people[id].hoard);
         var rando = hoard[Math.floor(Math.random() * hoard.length)];
         if (hoard.indexOf(args[0]) > -1) {
             rando = hoard[hoard.indexOf(args[0])];
         }
         var origID = data.people[id].hoard[rando];
-        var index = `Item ${hoard.indexOf(rando) + 1} of ${hoard.length} from :heart_eyes: hoard`;
+        index = `Item ${hoard.indexOf(rando) + 1} of ${hoard.length} from :heart_eyes: hoard`;
         if (!origID || !origID.length) {
             var hoardInnder = Object.keys(origID);
             var hoardName = rando;
@@ -216,7 +216,7 @@ module.exports = {
         }
         if (imgURL) {
             if (imgURL[0]) {
-                var msg = {
+                msg = {
                     "content": `A Random piece, from **${name}**'s hoard`,
                     "embed": {
                         "description": index,
@@ -237,7 +237,7 @@ module.exports = {
             }
         }
         else {
-            var msg = {
+            msg = {
                 "content": `A Random piece, from **${name}**'s hoard`,
                 "embed": {
                     "description": rando,

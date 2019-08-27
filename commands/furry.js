@@ -10,15 +10,15 @@ module.exports = {
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         if (name.length > 11) {
-            var name = name.slice(0, 11) + "..";
+            name = name.slice(0, 11) + "..";
         }
         if (m.mentions.length > 1) {
             Bot.createMessage(m.channel.id, "This Command can't be used with more than one mention");
             return;
         }
-        var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
+        name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         if (name.length > 10) {
-            var name = name.slice(0, 10) + "..";
+            name = name.slice(0, 10) + "..";
         }
         Bot.sendChannelTyping(m.channel.id).then(async () => {
             try {

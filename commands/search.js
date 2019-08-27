@@ -23,7 +23,7 @@ function fallbackHTMLScraper(args, safe, message) {
                     message.edit("`No results found`");
                     return;
                 }
-                var res = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
+                res = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
                 if (res == "?q") {
                     message.edit("`No results found`");
                     return;
@@ -44,7 +44,7 @@ function fallbackHTMLScraper(args, safe, message) {
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var args = m.cleanContent.replace(`${prefix}search `, "").trim();
+        args = m.cleanContent.replace(`${prefix}search `, "").trim();
         Bot.createMessage(m.channel.id, "`Searching...`").then(function(message) {
             var safe = "off";
             var key = config.tokens.google;

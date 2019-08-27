@@ -10,19 +10,20 @@ module.exports = {
                 var chosen = cards[Math.floor(Math.random() * cards.length)];
                 var weaknesses = "None";
                 var resistances = "None";
+                var attacks;
                 if (chosen.attacks[0]) {
                     if (chosen.attacks[0].text) {
-                        var attacks = chosen.attacks[0].name + ": " + chosen.attacks[0].text;
+                        attacks = chosen.attacks[0].name + ": " + chosen.attacks[0].text;
                     }
                     else {
-                        var attacks = chosen.attacks[0].name;
+                        attacks = chosen.attacks[0].name;
                     }
                 }
                 if (chosen.weaknesses[0]) {
-                    var weaknesses = chosen.weaknesses[0].type + ": " + chosen.weaknesses[0].value;
+                    weaknesses = chosen.weaknesses[0].type + ": " + chosen.weaknesses[0].value;
                 }
                 if (chosen.resistances) {
-                    var resistances = chosen.resistances[0].type + ": " + chosen.resistances[0].value;
+                    resistances = chosen.resistances[0].type + ": " + chosen.resistances[0].value;
                 }
                 const msgEmbed = {
                     "embed": {

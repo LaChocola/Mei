@@ -727,7 +727,7 @@ module.exports = {
             }
             if (args.toLowerCase().includes("update")) {
                 var roles = Object.keys(data[m.channel.guild.id].roles);
-                for (var role of roles) {
+                for (let role of roles) {
                     const exists = m.channel.guild.roles.find((r) => {
                         if (r.id == data[m.channel.guild.id].roles[role]) {
                             return true;

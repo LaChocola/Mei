@@ -17,12 +17,12 @@ module.exports = {
         if (m.content.indexOf(prefix + "g") < 0) {
             return false;
         }
-        var args = args.toLowerCase();
+        args = args.toLowerCase();
         var mentioned = m.mentions[0] || m.author;
         var id = mentioned.id;
         var name1 = args;
         var member = m.guild.members.find(m => isSameMember(m, name1));
-        var mentioned = m.mentions[0] || member || m.author;
+        mentioned = m.mentions[0] || member || m.author;
         var commands = stats.commands["g"].users;
         var usage = 0;
         if (commands[mentioned.id]) {
@@ -32,7 +32,7 @@ module.exports = {
             var names = miscl.getcustomGTSNames(id);
             var resultstring = "";
             var cleanishNames = names.join(", ");
-            for (var i = 0; i < names.length; i++) {
+            for (let i = 0; i < names.length; i++) {
                 if (i % 5 === 0) {
                     cleanishNames.replace(names[i], `${names[i]}\n`);
                 }
@@ -40,7 +40,7 @@ module.exports = {
             resultstring += "**Names avaible: **" + names.length + "\n " + cleanishNames + "\n \n" + miscl.getLewdCounts("gentle");
             if (names.length < 1) {
                 names = miscl.getDefaultGTSNames(m.channel.guild.id);
-                var resultstring = "";
+                resultstring = "";
                 resultstring += "**Names avaible: **" + names.totalnames + "\n " + names.cleannames + "\n \n" + miscl.getLewdCounts("gentle");
             }
             Bot.createMessage(m.channel.id, {
@@ -58,10 +58,10 @@ module.exports = {
         var smallid = id;
         var big = false;
 
-        var names = miscl.getDefaultGTSNames(m.channel.guild.id).names;
+        names = miscl.getDefaultGTSNames(m.channel.guild.id).names;
         var cname = miscl.getcustomGTSNames(smallid);
         names = names.concat(cname);
-        for (var i = 0; i < names.length; i++) {
+        for (let i = 0; i < names.length; i++) {
             if (args.includes(names[i].toLowerCase())) {
                 big = names[i];
             }

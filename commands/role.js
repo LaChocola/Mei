@@ -27,7 +27,7 @@ module.exports = {
         if (data[guild.id]) {
             if (data[guild.id].roles) {
                 if (Object.keys(data[guild.id].roles)[0]) {
-                    var roles = data[guild.id].roles;
+                    roles = data[guild.id].roles;
                 }
             }
         }
@@ -45,7 +45,7 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "There are no roles set up in this server, to add roles, please use `!edit roles add <rolename>`");
                 return;
             }
-            var roles = Object.keys(data[m.channel.guild.id].roles);
+            roles = Object.keys(data[m.channel.guild.id].roles);
             for (var role of roles) {
                 const exists = m.channel.guild.roles.find(r => r.id == data[m.channel.guild.id].roles[role]);
                 if (!exists) {
@@ -58,7 +58,7 @@ module.exports = {
                     });
                 }
             }
-            var roles = Object.keys(data[guild.id].roles);
+            roles = Object.keys(data[guild.id].roles);
             Bot.createMessage(m.channel.id, {
                 content: "",
                 embed: {
@@ -103,13 +103,13 @@ module.exports = {
                 return;
             }
             if (m.content.includes(" | ")) {
-                var content = m.cleanContent.toLowerCase().replace(`${prefix}role add `, "").split(" | ");
+                content = m.cleanContent.toLowerCase().replace(`${prefix}role add `, "").split(" | ");
                 var iterator = content.entries();
                 var found = [];
                 var notFound = [];
                 for (const e of iterator) {
                     if (roles[e[1]]) {
-                        var roleID = roles[e[1]];
+                        roleID = roles[e[1]];
                         Bot.addGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?");
                         found.push(e[1]);
                     }
@@ -141,9 +141,9 @@ module.exports = {
         }
         if (m.content.includes("remove")) {
             if (!m.content.includes(" | ")) {
-                var content = m.cleanContent.toLowerCase().replace(`${prefix}role remove `, "");
+                content = m.cleanContent.toLowerCase().replace(`${prefix}role remove `, "");
                 if (roles[content]) {
-                    var roleID = roles[content];
+                    roleID = roles[content];
                     Bot.removeGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
                         return Bot.createMessage(m.channel.id, hand + " Successful removed: " + content).then(msg => {
                             return setTimeout(() => {
@@ -165,13 +165,13 @@ module.exports = {
                 }
             }
             else if (m.content.includes(" | ")) {
-                var content = m.cleanContent.toLowerCase().replace(`${prefix}role remove `, "").split(" | ");
-                var iterator = content.entries();
-                var found = [];
-                var notFound = [];
+                content = m.cleanContent.toLowerCase().replace(`${prefix}role remove `, "").split(" | ");
+                iterator = content.entries();
+                found = [];
+                notFound = [];
                 for (const e of iterator) {
                     if (roles[e[1]]) {
-                        var roleID = roles[e[1]];
+                        roleID = roles[e[1]];
                         Bot.removeGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?");
                         found.push(e[1]);
                     }

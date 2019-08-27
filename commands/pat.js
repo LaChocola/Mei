@@ -23,7 +23,7 @@ module.exports = {
             var url = m.channel.guild.members.get(m.author.id).avatarURL;
             var image = imageArray[Math.floor(Math.random() * imageArray.length)];
             var author = m.channel.guild.members.get(m.author.id).nick || m.channel.guild.members.get(m.author.id).username;
-            var url = m.channel.guild.members.get(m.author.id).avatarURL;
+            url = m.channel.guild.members.get(m.author.id).avatarURL;
             if (m.mentions.length == 1 && m.author.id != m.mentions[0].id) {
                 var pet = m.channel.guild.members.get(m.mentions[0].id).nick || m.channel.guild.members.get(m.mentions[0].id).username;
                 const data = {

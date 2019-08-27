@@ -85,13 +85,13 @@ module.exports = {
                 return;
             }
         }
-        var leaders = [];
-        var leader = [];
-        var i = 1;
-        var y = 0;
-        var personalRank = [];
+        leaders = [];
+        leader = [];
+        i = 1;
+        y = 0;
+        personalRank = [];
         for (let person of sorted) {
-            var user = m.channel.guild.members.filter(m => m.id == person["key"])[0];
+            user = m.channel.guild.members.filter(m => m.id == person["key"])[0];
             if (user && user.id != "309220487957839872" && user.id != "444791634966740993") {
                 y++;
                 if (i == 1) {

@@ -13,7 +13,7 @@ module.exports = {
         }
         if (m.channelMentions.length > 0) {
             var channelName = " #" + m.channel.guild.channels.get(m.channelMentions[0]).name;
-            var name1 = name1.replace(channelName, "");
+            name1 = name1.replace(channelName, "");
         }
         var member = m.guild.members.find(m => isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;

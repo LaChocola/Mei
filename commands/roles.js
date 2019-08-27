@@ -11,11 +11,12 @@ module.exports = {
         }
 
         var member = m.guild.members.find(m => isSameMember(m, name1));
+        var mentioned;
         if (m.mentions.length === 0) {
-            var mentioned = member || guild.members.get(m.author.id);
+            mentioned = member || guild.members.get(m.author.id);
         }
         if (m.mentions.length > 0) {
-            var mentioned = guild.members.get(m.mentions[0].id);
+            mentioned = guild.members.get(m.mentions[0].id);
         }
         var arrayOfRoleIDs = mentioned.roles;
         var getRoleNameFromRoleID = function(roleID) {

@@ -8,7 +8,7 @@ module.exports = {
             Bot.createMessage(m.channel.id, "Please add something i.e. ``!e Whats cooler than being cool``");
             return;
         }
-        var args = unidecode(args);
+        args = unidecode(args);
         var base = "http://emoji.getdango.com/api/emoji?q=";
         var query = args.replace(/ /g, "+");
         request.get({

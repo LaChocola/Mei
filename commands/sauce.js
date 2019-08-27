@@ -8,15 +8,16 @@ const qs = require("querystring");
 module.exports = {
     main: function(Bot, m, args, prefix) {
         let data;
+        var link;
         if (m.content.length < 7 && !m.attachments || m.content == `${prefix}sauce` && m.attachments.length == 0) {
             Bot.createMessage(m.channel.id, "Please add an image, or image url");
             return;
         }
         else if (m.attachments[0]) {
-            var link = m.attachments[0].url;
+            link = m.attachments[0].url;
         }
         else {
-            var link = m.cleanContent.replace(`${prefix}sauce `, "");
+            link = m.cleanContent.replace(`${prefix}sauce `, "");
         }
         handler.getSauce(link).then(res => {
             data = res[0];
@@ -48,7 +49,7 @@ module.exports = {
             });
         }).catch((err) => {
             console.log(err.message);
-            var err = err.toString();
+            err = err.toString();
             if (err.includes("You need an image") || err.includes("Supplied URL is not usable") || err.includes("Error: Got HTML response while expecting JSON")) {
                 Bot.createMessage(m.channel.id, "No sauce found, please try uploading an image");
                 return;

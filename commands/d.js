@@ -2,7 +2,7 @@
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var args = m.content.replace(`${prefix}d `, "");
+        args = m.content.replace(`${prefix}d `, "");
         if (args.split("|").length > 2) {
             Bot.createMessage(m.channel.id, "You are onle able to roll 2 dice at once. Please use the following format: `!d 1d20 | 2d10` to roll multiple dice.").then((msg) => {
                 return setTimeout(function() {
@@ -47,8 +47,8 @@ module.exports = {
             return;
         }
         var rolls = [];
-        for (var i = 0; i < dice; i++) {
-            var roll = Math.floor(Math.random() * amount + 1);
+        for (let i = 0; i < dice; i++) {
+            let roll = Math.floor(Math.random() * amount + 1);
             rolls.push(`Roll ${i + 1}: **${roll}**`);
         }
         var msg = {
@@ -64,8 +64,8 @@ module.exports = {
         };
         if (args2) {
             var rolls2 = [];
-            for (var i = 0; i < dice2; i++) {
-                var roll = Math.floor(Math.random() * amount2 + 1);
+            for (let i = 0; i < dice2; i++) {
+                let roll = Math.floor(Math.random() * amount2 + 1);
                 rolls2.push(`Roll ${i + 1}: **${roll}**`);
             }
             msg.fields.push({

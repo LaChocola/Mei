@@ -56,8 +56,8 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "Okay....but that isnt you");
                 return;
             }
-            var incomingEntries = name1.replace(/add /i, "").replace(": ", " ").split(" | ");
-            var iterator = incomingEntries.entries();
+            incomingEntries = name1.replace(/add /i, "").replace(": ", " ").split(" | ");
+            iterator = incomingEntries.entries();
             for (let e of iterator) {
                 e[1] = capFirstLetter(e[1]);
                 if (data.people[id].names[e[1]]) {
@@ -83,7 +83,7 @@ module.exports = {
                         continue;
                     }
                     if (e[1].search(/ futa/i) !== -1 || e[1].search(/ futanari/i) !== -1) {
-                        var cleanName = e[1].replace(/ futa/i, "").replace(/ futanari/i, "");
+                        cleanName = e[1].replace(/ futa/i, "").replace(/ futanari/i, "");
                         data.people[id].names[cleanName] = "futa";
                         _.save(data);
                         Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then((msg) => {

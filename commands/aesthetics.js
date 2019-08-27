@@ -6,7 +6,7 @@ module.exports = {
     main: function(Bot, m, args, prefix) {
         var msg = m.cleanContent.replace(`${prefix}aesthetics `, "");
         if (m.content == `${prefix}aesthetics`) {
-            var msg = "You need to add something to say";
+            msg = "You need to add something to say";
         }
         var text = aesthetics(msg);
         var embed = "**" + text + "**";

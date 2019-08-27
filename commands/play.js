@@ -14,7 +14,7 @@ module.exports = {
                 code = /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/.exec(args)[1];
             }
         }
-        var args = m.cleanContent.replace(`${prefix}play `, "");
+        args = m.cleanContent.replace(`${prefix}play `, "");
         console.log(args);
         if (m.content == `${prefix}play`) {
             Bot.createMessage(m.channel.id, `Please say what you want to do. e.g. \`${prefix}play <youtube link>\`, \`${prefix}play queue\`, \`${prefix}play current\`, or \`${prefix}play stop\``);
@@ -70,7 +70,7 @@ module.exports = {
             Bot.joinVoiceChannel(m.member.voiceState.channelID).then(async function(voiceConnection) { // Join user voice channel
                 var BotVoiceState = m.channel.guild.members.get(Bot.user.id).voiceState;
                 if (BotVoiceState.channelID) { // Bot is in Voice Channel
-                    var voiceConnection = Bot.voiceConnections.get(m.channel.guild.id);
+                    voiceConnection = Bot.voiceConnections.get(m.channel.guild.id);
                     if (BotVoiceState.channelID == m.member.voiceState.channelID) { // User is in the same Voice Channel
                         if (args.toLowerCase().includes("resume")) {
                             Bot.createMessage(m.channel.id, "Resuming music.");
@@ -350,7 +350,7 @@ module.exports = {
                                         return;
                                     }
 
-                                    var queue = Object.keys(data[guild.id].music.queue);
+                                    queue = Object.keys(data[guild.id].music.queue);
                                     queue = queue.length;
                                     if (queue > 14) {
                                         Bot.createMessage(m.channel.id, "Sorry, only 15 songs are allowed in the queue at a time").then((msg) => {
@@ -362,7 +362,7 @@ module.exports = {
                                         return;
                                     }
                                     if (code) {
-                                        var queue = data[guild.id].music.queue;
+                                        queue = data[guild.id].music.queue;
                                         queue[code] = `${m.author.username + "#" + m.author.discriminator}`;
                                         _.save(data);
                                         _.load();
@@ -386,10 +386,10 @@ module.exports = {
                         }
                         else { // start a song since the bot is not currently playing anything, and the voice connection should be ready
                             if (code) {
-                                var valid = await yt.validateID(code);
+                                valid = await yt.validateID(code);
                             }
                             if (valid) {
-                                var valid = await yt.validateURL("https://www.youtube.com/watch?v=" + code);
+                                valid = await yt.validateURL("https://www.youtube.com/watch?v=" + code);
                             }
                             console.log("valid: " + valid);
                             console.log("code: " + code);
@@ -399,10 +399,10 @@ module.exports = {
                                 }
                             }
                             if (!code) {
-                                var search = await ytsr(args);
+                                search = await ytsr(args);
                                 Bot.sendChannelTyping(m.channel.id);
                                 try {
-                                    var target = search.items[Object.keys(search.items)[0]];
+                                    target = search.items[Object.keys(search.items)[0]];
                                     if (!target.type == "video") {
                                         target = search.items[Object.keys(search.items)[1]];
                                     }
@@ -460,7 +460,7 @@ module.exports = {
                                     }
                                     return;
                                 }
-                                var info = await info;
+                                info = await info;
                                 Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` [" + msToHMS(+info.length_seconds * 1000) + "m] requested by **" + m.author.username + "#" + m.author.discriminator + "**").then((msg) => {
                                     return setTimeout(function() {
                                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
