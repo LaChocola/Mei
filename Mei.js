@@ -1,8 +1,10 @@
 'use strict';
+
 process.on('unhandledRejection', (err, promise) => {
     console.error("== Node detected an unhandled rejection! ==");
     console.error(err ? err.stack : promise);
 });
+
 var bot = require('eris');
 Object.defineProperty(bot.Message.prototype, 'guild', {
     get: function guild() {
