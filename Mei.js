@@ -333,7 +333,8 @@ Bot.on('messageCreate', async function(m) {
             if (commandContentsMap[command] !== commandContents) {
                 var cmd = reload('./commands/' + command + '.js');
                 commandContentsMap[command] = commandContents;
-            } else {
+            }
+            else {
                 var cmd = require('./commands/' + command + '.js');
             }
             updateTimestamps();
@@ -351,7 +352,8 @@ Bot.on('messageCreate', async function(m) {
                     console.log('ARG'.black.bgCyan + ' ' + logargs.blue.bold);
                 }
                 cmd.main(Bot, m, args, prefix);
-            } catch (err) {
+            }
+            catch (err) {
                 console.log(err);
                 Bot.createMessage(m.channel.id, 'An error has occured.');
                 console.log('CMD'.black.bgRed + ' ' + loguser + logdivs[1] + logserver + logdivs[0] + logchannel + ' ' + logcmd.red);
