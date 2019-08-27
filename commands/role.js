@@ -101,7 +101,8 @@ module.exports = {
                     }, 7000);
                 });
                 return;
-            } if (m.content.includes(" | ")) {
+            }
+            if (m.content.includes(" | ")) {
                 var content = m.cleanContent.toLowerCase().replace(`${prefix}role add `, "").split(" | ");
                 var iterator = content.entries();
                 var found = [];
