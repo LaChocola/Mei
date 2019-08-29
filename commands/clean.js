@@ -1,6 +1,8 @@
 "use strict";
 
+const conf = require("../conf");
 const _ = require("../servers.js");
+
 var data = _.load();
 module.exports = {
     main: async function(Bot, m, args, prefix) {
@@ -63,7 +65,7 @@ module.exports = {
         var modCheck = isMod(m.channel.guild.members.get(m.author.id), m.channel.guild);
         var responses = ["Are you a real villan?", "Have you ever caught a good guy? \nLike a real super hero?", "Have you ever tried a disguise?", "What are you doing?!?!?!", "*NO!*, Don't touch that!", "Fuck Off", "Roses are red\nfuck me ;) "];
         var response = responses[Math.floor(Math.random() * responses.length)];
-        if (modCheck != true && m.author.id != "161027274764713984") {
+        if (modCheck != true && m.author.id != conf.chocolaId) {
             Bot.createMessage(m.channel.id, response);
             return;
         }
@@ -78,7 +80,7 @@ module.exports = {
             mod = true;
         }
         if (m.cleanContent.includes(" all")) {
-            if (m.author.id == "161027274764713984" || m.author.id == m.channel.guild.ownerID || mod == true) {
+            if (m.author.id == conf.chocolaId || m.author.id == m.channel.guild.ownerID || mod == true) {
                 m.delete();
                 var ids = [];
                 Bot.getMessages(m.channel.id, parseInt(int)).then(async function(msgs) {
@@ -127,7 +129,7 @@ module.exports = {
                     }
                 }
             }
-            if (m.author.id == "161027274764713984" || m.author.id == m.channel.guild.ownerID || mod == true) {
+            if (m.author.id == conf.chocolaId || m.author.id == m.channel.guild.ownerID || mod == true) {
                 m.delete();
                 Bot.createMessage(m.channel.id, "Time to clean up").then(a => {
                     return setTimeout(function() {

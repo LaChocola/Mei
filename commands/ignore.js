@@ -1,14 +1,14 @@
 "use strict";
 
+const conf = require("../conf");
 var _ = require("../data.js");
+const utils = require("../utils");
 
 var data = _.load();
 
-const utils = require("../utils");
-
 module.exports = {
     main: async function(Bot, m, args, prefix) {
-        if (m.author.id !== "161027274764713984") {
+        if (m.author.id !== conf.chocolaId) {
             return;
         }
         var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];

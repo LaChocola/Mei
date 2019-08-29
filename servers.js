@@ -2,14 +2,15 @@
 
 const fs = require("fs");
 
+const conf = require("./conf");
+
 var dataPath = "./db/servers.json";
 var backupPath = "/home/badmin/backup/Mei/db/servers.json";
-var chocolaId = "161027274764713984";
 
 module.exports = {
     load: function() {
         var data = fs.readFileSync(dataPath, "utf8");
-        if (data.includes(chocolaId)) {
+        if (data.includes(conf.chocolaId)) {
             try {
                 return JSON.parse(fs.readFileSync(dataPath));
             }

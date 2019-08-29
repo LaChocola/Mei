@@ -1,5 +1,6 @@
 "use strict";
 
+const conf = require("../conf");
 const _ = require("../servers.js");
 
 const data = _.load();
@@ -84,7 +85,7 @@ module.exports = {
             return;
         }
         const modCheck = isMod(m.channel.guild.members.get(m.author.id), guild);
-        if (m.author.id !== guild.ownerID && m.author.id !== "161027274764713984" && modCheck !== true) {
+        if (m.author.id !== guild.ownerID && m.author.id !== conf.chocolaId && modCheck !== true) {
             Bot.createMessage(m.channel.id, "You must be the server owner, or have moderator permissions to run this command. Have the server owner use `!edit mod add @you` or `!edit mod add @modRole`").then(msg => {
                 return setTimeout(() => {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");

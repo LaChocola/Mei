@@ -2,9 +2,11 @@
 
 var safeEval = require("safe-eval");
 
+const conf = require("../conf");
+
 module.exports = {
     main: async function(Bot, m, args, prefix) {
-        var coolkids = ["161027274764713984", "271803699095928832", "137269976255037440"];
+        var coolkids = [conf.chocolaId, "271803699095928832", "137269976255037440"];
         if (coolkids.indexOf(m.author.id) > -1) {
             try {
                 var ev = await safeEval(args);

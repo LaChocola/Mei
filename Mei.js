@@ -8,20 +8,20 @@ process.on("unhandledRejection", (err, promise) => {
 var fs = require("fs");
 var reload = require("require-reload")(require);
 var timediff = require("timediff");
-require("colors");  // Adds to string prototype
-
+require("colors");  // Extends to string prototype
 var bot = require("eris");
+
+const conf = require("../conf");
+var _ = require("./data.js");
+var ppl = require("./people.js");
+var servers = reload("./servers.js");
+var config = reload("./etc/config.json");
+
 Object.defineProperty(bot.Message.prototype, "guild", {
     get: function guild() {
         return this.channel.guild;
     }
 });
-
-var _ = require("./data.js");
-var ppl = require("./people.js");
-var servers = reload("./servers.js");
-
-var config = reload("./etc/config.json");
 
 var Bot = bot(config.tokens.mei);
 
@@ -180,7 +180,7 @@ Bot.on("messageCreate", async function(m) {
             }
             console.log(err);
         });
-        if (m.author.id !== "161027274764713984") {
+        if (m.author.id !== conf.chocolaId) {
             console.log("Guild 1:", m.channel.guild);
             // TODO: Collection is not defined
             var roles = new Collection(bot.Role);
@@ -204,15 +204,15 @@ Bot.on("messageCreate", async function(m) {
     }
 
     if (m.content.toLowerCase().match(/\bchocola\b/i) || m.content.toLowerCase().match(/\bchoco\b/i) || m.content.toLowerCase().match(/\bchoc\b/i)) {
-        var member = m.channel.guild.members.get("161027274764713984");
+        var member = m.channel.guild.members.get(conf.chocolaId);
         var present = member.id || false;
-        if (present !== "161027274764713984") {
+        if (present !== conf.chocolaId) {
             return;
         }
-        if (m.author.id === "161027274764713984" || m.author.id === "309220487957839872") {
+        if (m.author.id === conf.chocolaId || m.author.id === "309220487957839872") {
             return;
         }
-        Bot.getDMChannel("161027274764713984").then(function(DMchannel) {
+        Bot.getDMChannel(conf.chocolaId).then(function(DMchannel) {
             Bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`).then((msg) => {
                 Bot.createMessage(DMchannel.id, m.content);
             }).catch((err) => {
@@ -223,7 +223,7 @@ Bot.on("messageCreate", async function(m) {
             });
         });
     }
-    if (m.author.id === "161027274764713984" && m.content.includes("pls")) {
+    if (m.author.id === conf.chocolaId && m.content.includes("pls")) {
         if (m.content.includes("stop")) {
             Bot.createMessage(m.channel.id, "Let me rest my eyes for a moment").then((msg) => {
                 return setTimeout(function() {
@@ -249,7 +249,7 @@ Bot.on("messageCreate", async function(m) {
             Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "375633311449481218", "Removed from role assign"); // remove the No channel access role
         }
     }
-    if (m.author.id === "161027274764713984" && m.content.includes("pls")) {
+    if (m.author.id === conf.chocolaId && m.content.includes("pls")) {
         if (m.content.includes(" mute") && m.mentions.length > 0) {
             if (m.mentions.length > 1) {
                 let mentions = m.mentions;
@@ -446,7 +446,7 @@ Bot.on("guildMemberRemove", async function(guild, member) {
 });
 
 Bot.on("guildCreate", async function(guild) {
-    Bot.getDMChannel("161027274764713984").then(function(DMchannel) {
+    Bot.getDMChannel(conf.chocolaId).then(function(DMchannel) {
         Bot.createMessage(DMchannel.id, {
             embed: {
                 color: 0xA260F6,
@@ -467,7 +467,7 @@ Bot.on("guildCreate", async function(guild) {
 });
 
 Bot.on("guildDelete", async function(guild) {
-    Bot.getDMChannel("161027274764713984").then(function(DMchannel) {
+    Bot.getDMChannel(conf.chocolaId).then(function(DMchannel) {
         Bot.createMessage(DMchannel.id, {
             embed: {
                 color: 0xA260F6,
