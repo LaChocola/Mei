@@ -11,7 +11,7 @@ var timediff = require("timediff");
 require("colors");  // Extends to string prototype
 var bot = require("eris");
 
-const conf = require("../conf");
+const conf = require("./conf");
 var _ = require("./data.js");
 var ppl = require("./people.js");
 var servers = reload("./servers.js");
