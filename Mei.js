@@ -5,18 +5,17 @@ process.on("unhandledRejection", (err, promise) => {
     console.error(err ? err.stack : promise);
 });
 
-const fs = require("fs");
-const reload = require("require-reload")(require);
-const timediff = require("timediff");
-// colors module extends string prototype
-const colors = require("colors");  // eslint-disable-line no-unused-vars
-const bot = require("eris");
+var fs = require("fs");
+var reload = require("require-reload")(require);
+var timediff = require("timediff");
+require("colors");  // Extends to string prototype
+var bot = require("eris");
 
 const conf = require("./conf");
-const _ = require("./data.js");
-const ppl = require("./people.js");
-const servers = reload("./servers.js");
-const config = reload("./etc/config.json");
+var _ = require("./data.js");
+var ppl = require("./people.js");
+var servers = reload("./servers.js");
+var config = reload("./etc/config.json");
 
 Object.defineProperty(bot.Message.prototype, "guild", {
     get: function guild() {
