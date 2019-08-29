@@ -16,10 +16,10 @@ module.exports = {
         else {
             console.log("JSON error, attempting restore");
             try {
-                var backup = JSON.parse(fs.readFileSync("/home/badmin/backup/Mei/db/data.json"));
-                fs.writeFileSync("/home/badmin/Bots/Mei/db/data.json", JSON.stringify(backup, null, "\t"));
+                var backup = JSON.parse(fs.readFileSync("./db/data.json"));
+                fs.writeFileSync("./db/data.json", JSON.stringify(backup, null, "\t"));
                 console.log("Restore Successful");
-                return JSON.parse(fs.readFileSync("/home/badmin/Bots/Mei/db/data.json"));
+                return JSON.parse(fs.readFileSync("./db/data.json"));
             }
             catch (err) {
                 console.log(err);
