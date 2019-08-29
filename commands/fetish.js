@@ -132,7 +132,7 @@ module.exports = {
                 return;
             }
             if (data.people[id].fetishes[incoming[0]]) {
-                Bot.createMessage(m.channel.id, "That"s already been added, silly~").then((msg) => {
+                Bot.createMessage(m.channel.id, "That's already been added, silly~").then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
