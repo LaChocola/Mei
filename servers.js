@@ -8,17 +8,20 @@ module.exports = {
         if (data.includes("161027274764713984")) {
             try {
                 return JSON.parse(fs.readFileSync("./db/servers.json"));
-            } catch (err) {
+            }
+            catch (err) {
                 console.log(err);
             }
-        } else {
+        }
+        else {
             console.log("JSON error, attempting restore");
             try {
                 var backup = JSON.parse(fs.readFileSync("/home/badmin/backup/Mei/db/servers.json"));
                 fs.writeFileSync("/home/badmin/Bots/Mei/db/servers.json", JSON.stringify(backup, null, "\t"));
                 console.log("Restore Successful");
                 return JSON.parse(fs.readFileSync("/home/badmin/Bots/Mei/db/servers.json"));
-            } catch (err) {
+            }
+            catch (err) {
                 console.log(err);
             }
         }
