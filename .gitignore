@@ -1,2 +1,6 @@
 node_modules
 .vs
+/db/data.json
+/db/servers.json
+/db/timestamps.txt
+/etc/config.json
