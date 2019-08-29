@@ -1,6 +1,6 @@
-const fs = require("fs");
-const reload = require("require-reload")(require);
+"use strict";
 
 module.exports = {
-    main: function(Bot, m, config) {}
-}
+    main: function(Bot, m, config) {
+    }
+};
