@@ -480,6 +480,7 @@ module.exports = {
                         });
                     }
                     if (isNewQueue) {
+                        var close = false;
                         // pls ignore all the extra console logs, they are for debugging this
                         voiceConnection.on("end", () => { // when the song ends
                             var data = _.load();
@@ -521,7 +522,7 @@ module.exports = {
                                 _.load();
                                 return;
                             }
-                            else if (queue.length < 1 && !voiceConnection.playing && close !== true) {
+                            else if (queue.length < 1 && !voiceConnection.playing && !close) {
                                 setTimeout(function() {
                                     if (queue.length == 0 && !voiceConnection.playing) { // if there is no other song in the queue, leave the voice channel and have a wonderful day
                                         if (BotVoiceState.channelID) {
