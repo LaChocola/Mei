@@ -1,4 +1,6 @@
-var safeEval = require('safe-eval')
+"use strict";
+
+var safeEval = require("safe-eval");
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {
@@ -8,10 +10,12 @@ module.exports = {
                 var ev = await safeEval(args);
                 Bot.createMessage(m.channel.id, ev);
                 console.log(ev);
-            } catch (err) {
+            }
+            catch (err) {
                 Bot.createMessage(m.channel.id, err);
             }
-        } else {
+        }
+        else {
             Bot.createMessage(m.channel.id, "No, dont touch that");
         }
     },

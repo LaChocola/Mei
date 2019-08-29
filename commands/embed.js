@@ -1,29 +1,31 @@
-const fs = require("fs");
+"use strict";
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var prefix = "!";
-        var args = m.content.slice(prefix.length).split(" ");
+        prefix = "!";
+        args = m.content.slice(prefix.length).split(" ");
         args.shift();
         var embed = args.join(" ");
         if (args.indexOf("code") > -1) {
-            var embed = args.join(" ");
+            embed = args.join(" ");
             Bot.createMessage(m.channel.id, {
                 embed: {
                     color: 0xA260F6,
                     description: "**Embeded Text:**\n" + "```" + embed + "```"
                 }
             });
-        } else if (args.indexOf("blank") > -1) {
-            var embed = args.join(" ");
+        }
+        else if (args.indexOf("blank") > -1) {
+            embed = args.join(" ");
             Bot.createMessage(m.channel.id, {
                 embed: {
                     color: 0xA260F6,
                     description: embed
                 }
             });
-        } else {
-            var embed = args.join(" ");
+        }
+        else {
+            embed = args.join(" ");
             Bot.createMessage(m.channel.id, {
                 embed: {
                     color: 0xA260F6,
@@ -34,4 +36,4 @@ module.exports = {
         }
     },
     help: "Embed text"
-}
+};

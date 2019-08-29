@@ -1,4 +1,6 @@
-const randomPuppy = require('random-puppy');
+"use strict";
+
+const randomPuppy = require("random-puppy");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -18,8 +20,8 @@ module.exports = {
                 };
 
                 Bot.createMessage(m.channel.id, data);
-            })
+            });
 
     },
     help: "Random Dogs"
-}
+};

@@ -1,25 +1,24 @@
-const Jimp = require('jimp');
+"use strict";
+
+const Jimp = require("jimp");
+
+const utils = require("../utils");
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var isThisUsernameThatUsername = function(member) {
-            var memberName = member.nick || member.username
-            if (memberName.toLowerCase() == m.author.username.toLowerCase()) {
-                return true;
-            }
-        }
-        var member = m.guild.members.find(isThisUsernameThatUsername)
-        var mentioned = m.mentions[0] || member || m.author
-        var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username
+        var member = m.guild.members.find(m => utils.isSameMember(m, m.author));
+        var mentioned = m.mentions[0] || member || m.author;
+        var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         if (name.length > 11) {
-            var name = name.slice(0, 11) + ".."
+            name = name.slice(0, 11) + "..";
         }
         if (m.mentions.length > 1) {
-            Bot.createMessage(m.channel.id, "This Command can't be used with more than one mention")
+            Bot.createMessage(m.channel.id, "This Command can't be used with more than one mention");
             return;
         }
-        var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username
+        name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         if (name.length > 10) {
-            var name = name.slice(0, 10) + ".."
+            name = name.slice(0, 10) + "..";
         }
         Bot.sendChannelTyping(m.channel.id).then(async () => {
             try {
@@ -28,12 +27,13 @@ module.exports = {
                 bg.clone()
                     .print(nameFont, 550, 145, name)
                     .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
-                        Bot.createMessage(m.channel.id, `Weirdo`, {
+                        Bot.createMessage(m.channel.id, "Weirdo", {
                             "file": buffer,
                             "name": "furry.png"
-                        })
+                        });
                     });
-            } catch (error) {
+            }
+            catch (error) {
                 console.log(error);
                 return Bot.createMessage(m.channel.id, "Something went wrong...");
             }
@@ -41,4 +41,4 @@ module.exports = {
     },
     help: "idk",
     type: "Image Command"
-}
+};
