@@ -33,7 +33,7 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function async reply(userMessage, text, timeout) {
+async function reply(userMessage, text, timeout) {
     var channelId = userMessage.channel.id;
     var botMessage = await Bot.createMessage(channelId, text);
     if (timeout) {
