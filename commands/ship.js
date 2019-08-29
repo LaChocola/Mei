@@ -2,7 +2,7 @@
 
 const Jimp = require("jimp");
 
-const isSameMember = require("./utils/isSameMember");
+const utils = require("../utils");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -12,7 +12,7 @@ module.exports = {
                 names[0] = names[0].slice(1);
             }
             var name1 = names[0];
-            var member = m.guild.members.find(m => isSameMember(m, name1));
+            var member = m.guild.members.find(m => utils.isSameMember(m, name1));
 
             if (member != undefined) {
                 if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) {
@@ -28,7 +28,7 @@ module.exports = {
                 }
                 var name2 = names[1];
 
-                var member2 = m.guild.members.find(m => isSameMember(m, name2));
+                var member2 = m.guild.members.find(m => utils.isSameMember(m, name2));
 
                 if (member2 != undefined) {
                     if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(function(user) {

@@ -1,14 +1,14 @@
 "use strict";
 
 const _ = require("../people.js");
-const isSameMember = require("./utils/isSameMember");
+const utils = require("../utils");
 
 var data = _.load();
 
 module.exports = {
     main: function(Bot, m, args) {
         var name1 = m.cleanContent.replace(/!artist /i, "");
-        var member = m.guild.members.find(m => isSameMember(m, name1));
+        var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         var linkArray = [];

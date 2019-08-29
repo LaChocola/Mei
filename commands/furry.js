@@ -2,11 +2,11 @@
 
 const Jimp = require("jimp");
 
-const isSameMember = require("./utils/isSameMember");
+const utils = require("../utils");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var member = m.guild.members.find(m => isSameMember(m, m.author));
+        var member = m.guild.members.find(m => utils.isSameMember(m, m.author));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         if (name.length > 11) {

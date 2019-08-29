@@ -3,12 +3,12 @@
 const _ = require("../data.js");
 var data = _.load();
 
-const isSameMember = require("./utils/isSameMember");
+const utils = require("../utils");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(`${prefix}stats `, "");
-        var member = m.guild.members.find(m => isSameMember(m, name1));
+        var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         var commands = data.commands;

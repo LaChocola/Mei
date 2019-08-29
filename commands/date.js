@@ -3,13 +3,13 @@
 var timeago = require("timeago.js");
 var timediff = require("timediff");
 
-const isSameMember = require("./utils/isSameMember");
+const utils = require("../utils");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!date /i, "");
 
-        var member = m.guild.members.find(m => isSameMember(m, name1));
+        var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;
         var id = undefined;
         var name = undefined;
@@ -24,7 +24,7 @@ module.exports = {
             }
         }
 
-        mentioned = m.guild.members.find(m => isSameMember(m, name1));
+        mentioned = m.guild.members.find(m => utils.isSameMember(m, name1));
         member = m.mentions[0] || mentioned || m.author;
         args2 = m.content.replace("!date ", "").replace("<@", "").replace(">", "").trim();
         if (args2.length > 1) {

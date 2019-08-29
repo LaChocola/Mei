@@ -4,7 +4,7 @@ var _ = require("../data.js");
 
 var data = _.load();
 
-const isSameMember = require("./utils/isSameMember");
+const utils = require("../utils");
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {
@@ -14,7 +14,7 @@ module.exports = {
         var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
         var hand = hands[Math.floor(Math.random() * hands.length)];
         var name1 = m.cleanContent.replace(`${prefix}ignore`, "").replace(/\bundo\b/, "").trim().split(" | ");
-        var member = m.guild.members.find(m => isSameMember(m, name1[0]) || isSameMember(m, name1[1]));
+        var member = m.guild.members.find(m => utils.isSameMember(m, name1[0]) || isSameMember(m, name1[1]));
         var mentioned = m.mentions[0] || member;
         var id;
         var name;

@@ -7,7 +7,7 @@ var stats = use.load();
 var time = new Date().toISOString();
 var ordinal = require("ordinal");
 
-const isSameMember = require("./utils/isSameMember");
+const utils = require("../utils");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -18,7 +18,7 @@ module.exports = {
             prefix = "?";
         }
         var name1 = args;
-        var member = m.guild.members.find(m => isSameMember(m, name1));
+        var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         mentioned = m.mentions[0] || member || m.author;
         var commands = stats.commands["v"].users;
         var usage = 0;

@@ -5,11 +5,11 @@ const Jimp = require("jimp");
 // They are both availible at https://github.com/LaChocola/Mei/tree/master/db/fonts
 var time = new Date().toDateString().slice(4).replace(` ${new Date().getFullYear()}`, `, ${new Date().getFullYear()}`);
 
-const isSameMember = require("./utils/isSameMember");
+const utils = require("../utils");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var member = m.guild.members.find(m => isSameMember(m, m.author));
+        var member = m.guild.members.find(m => utils.isSameMember(m, m.author));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         if (name.length > 13) {
