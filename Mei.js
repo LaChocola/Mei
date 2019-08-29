@@ -275,7 +275,7 @@ Bot.on("messageCreate", async function(m) {
         if (m.content.includes(" unmute") && m.mentions.length > 0) {
             if (m.mentions.length > 1) {
                 let mentions = m.mentions;
-                for (const mention of mention) {
+                for (const mention of mentions) {
                     Bot.removeGuildMemberRole(m.channel.guild.id, mention.id, "363854631035469825", "Daddy said speak").then(() => {
                         return Bot.createMessage(m.channel.id, hand).then((m) => {
                             return setTimeout(function() {
