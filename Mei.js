@@ -29,18 +29,18 @@ var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin
 var hand = hands[Math.floor(Math.random() * hands.length)];
 var commandContentsMap = {};
 
-// m is not defined
-function send(channel, text, timeout) {
-    Bot.createMessage(channel, text).then((msg) => {
-        return setTimeout(function() {
-            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-        }, timeout);
-    })
-        .catch((err) => {
-            console.log("\nError Occured while sending message\n");
-            console.log(err);
-        });
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function async reply(userMessage, text, timeout) {
+    var channelId = userMessage.channel.id;
+    var botMessage = await Bot.createMessage(channelId, text);
+    if (timeout) {
+        await delay(timeout);
+        Bot.deleteMessage(channelId, userMessage.id, "Timeout");
+        Bot.deleteMessage(channelId, botMessage.id, "Timeout");
+    }        
 }
 
 Bot.on("guildBanAdd", async function(guild, user) {
@@ -235,7 +235,7 @@ Bot.on("messageCreate", async function(m) {
             });
         }
         if (m.content.includes("override")) {
-            send(m.channel.id, "Chocola Recognized. Permission overrides engaged. I am at your service~", 2000);
+            reply(m, "Chocola Recognized. Permission overrides engaged. I am at your service~", 2000);
         }
     }
     updateTimestamps();
