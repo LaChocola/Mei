@@ -1,9 +1,9 @@
 "use strict";
 
-const _ = require("../data.js");
-var data = _.load();
-
 const utils = require("../utils");
+const _ = require("../data");
+
+var data = _.load();
 
 module.exports = {
     main: function(Bot, m, args, prefix) {

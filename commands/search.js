@@ -3,10 +3,10 @@
 const request = require("request");
 const cheerio = require("cheerio");
 const querystring = require("querystring");
+
 const config = require("../etc/config.json");
 
 function fallbackHTMLScraper(args, safe, message) {
-
     console.log("Falling back on HTML scraper...");
 
     request("https://www.google.com/search?safe=" + safe + "&q=" + encodeURI(args), function(err, res, body) {

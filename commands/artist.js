@@ -1,7 +1,7 @@
 "use strict";
 
-const _ = require("../people.js");
 const utils = require("../utils");
+const _ = require("../people");
 
 var data = _.load();
 

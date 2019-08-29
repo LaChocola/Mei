@@ -1,7 +1,7 @@
 "use strict";
 
 const conf = require("../conf");
-const _ = require("../servers.js");
+const _ = require("../servers");
 
 var data = _.load();
 

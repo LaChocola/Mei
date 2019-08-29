@@ -1,9 +1,10 @@
 "use strict";
 
 const conf = require("../conf");
-const _ = require("../servers.js");
+const _ = require("../servers");
 
-const data = _.load();
+var data = _.load();
+
 module.exports = {
     async main(Bot, m, args) {
         const isMod = function(member, guild) {

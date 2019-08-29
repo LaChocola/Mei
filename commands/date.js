@@ -1,7 +1,8 @@
 "use strict";
 
-var timeago = require("timeago.js");
-var timediff = require("timediff");
+// TODO: Replace this with moment
+const timeago = require("timeago.js");
+const timediff = require("timediff");
 
 const utils = require("../utils");
 

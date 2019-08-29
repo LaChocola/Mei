@@ -1,8 +1,9 @@
 "use strict";
 
-const _ = require("../servers.js");
+const _ = require("../servers");
 
 const data = _.load();
+
 module.exports = {
     main(Bot, m, args, prefix) {
         const hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];

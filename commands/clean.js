@@ -1,9 +1,10 @@
 "use strict";
 
 const conf = require("../conf");
-const _ = require("../servers.js");
+const _ = require("../servers");
 
 var data = _.load();
+
 module.exports = {
     main: async function(Bot, m, args, prefix) {
         function isNumeric(num) {

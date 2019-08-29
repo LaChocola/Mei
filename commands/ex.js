@@ -1,12 +1,13 @@
 "use strict";
 
 const qs = require("querystring");
-const request = require("request").defaults({
-    jar: true
-});
-const j = request.jar();
+const request = require("request").defaults({ jar: true });
 const cheerio = require("cheerio");
-var config = require("../etc/config.json");
+
+const config = require("../etc/config.json");
+
+const j = request.jar();
+
 const defaultQuery = {
     f_doujinshi: 0,
     f_manga: 0,

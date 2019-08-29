@@ -1,13 +1,14 @@
 "use strict";
 
 var reload = require("require-reload")(require);
-var miscl = reload("../misc.js");
-const use = require("../data.js");
-var stats = use.load();
-var time = new Date().toISOString();
-var ordinal = require("ordinal");
+const ordinal = require("ordinal");
 
 const utils = require("../utils");
+const miscl = reload("../misc");
+const use = require("../data");
+
+var stats = use.load();
+var time = new Date().toISOString();
 
 module.exports = {
     main: function(Bot, m, args, prefix) {

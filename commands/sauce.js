@@ -1,9 +1,11 @@
 "use strict";
 
-var config = require("../etc/config.json");
 const Sagiri = require("sagiri");
-const handler = new Sagiri(config.tokens.sauce);
 const qs = require("querystring");
+
+var config = require("../etc/config.json");
+
+const handler = new Sagiri(config.tokens.sauce);
 
 module.exports = {
     main: function(Bot, m, args, prefix) {

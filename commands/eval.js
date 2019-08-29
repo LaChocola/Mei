@@ -1,6 +1,6 @@
 "use strict";
 
-var safeEval = require("safe-eval");
+const safeEval = require("safe-eval");
 
 const conf = require("../conf");
 

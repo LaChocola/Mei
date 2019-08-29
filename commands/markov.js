@@ -1,9 +1,10 @@
 "use strict";
 
 const MarkovGen = require("markov-generator");
-var time = new Date().toISOString();
 
 const utils = require("../utils");
+
+var time = new Date().toISOString();
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {

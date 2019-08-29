@@ -1,7 +1,7 @@
 "use strict";
 
-var request = require("request");
-var randomCat = require("random-cat");
+const request = require("request");
+const randomCat = require("random-cat");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {

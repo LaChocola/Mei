@@ -1,14 +1,12 @@
 "use strict";
 
 const booru = require("booru");
-
-let request = require("request");
-
-request = request.defaults({ jar: true });
+const request = require("request").defaults({ jar: true });
 const cheerio = require("cheerio");
-const _ = require("../people.js");
 
-let people = _.load();
+const _ = require("../people");
+
+var people = _.load();
 
 module.exports = {
     main(Bot, m, args, prefix) {

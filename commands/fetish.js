@@ -1,10 +1,11 @@
 "use strict";
 
-const _ = require("../people.js");
-var data = _.load();
-var unidecode = require("unidecode")
+const unidecode = require("unidecode")
 
 const utils = require("../utils");
+const _ = require("../people");
+
+var data = _.load();
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -311,7 +312,6 @@ module.exports = {
                 return;
             }
         }
-
     },
     help: "Add custom fetishes"
 }

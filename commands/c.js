@@ -1,7 +1,9 @@
 "use strict";
 
-var apiai = require("apiai");
-var config = require("../etc/config.json");
+const apiai = require("apiai");
+
+const config = require("../etc/config.json");
+
 var app = apiai(config.tokens.apiai);
 
 module.exports = {

@@ -1,7 +1,9 @@
 "use strict";
 
-const _ = require("../people.js");
+const _ = require("../people");
+
 var data = _.load();
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         function rank(obj) {
