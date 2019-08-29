@@ -1,9 +1,14 @@
+# libraries
 node_modules
+
+# project files
 .vs
+*.njsproj
+*.sln
+
+# config files
 /db/data.json
+/db/people.json
 /db/servers.json
 /db/timestamps.txt
 /etc/config.json
-*.njsproj
-*.sln
-/db/people.json
