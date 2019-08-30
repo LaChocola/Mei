@@ -1,6 +1,5 @@
 "use strict";
 
-const conf = require("../conf");
 const _ = require("../people");
 
 var data = _.load();
@@ -23,7 +22,7 @@ function makeRankString(user, rankNum) {
 
 module.exports = {
     main: function(bot, m, args, prefix) {
-        var isGlobal = args.toLowerCase().includes("global")
+        var isGlobal = args.toLowerCase().includes("global");
 
         // Pull from all users, or just guild members, depending on isGlobal
         var userPool = isGlobal ? bot.users : m.channel.guild.members;
@@ -38,13 +37,13 @@ module.exports = {
                 return user;
             })
             // Ignore any missing or bot users
-            .filter(user => user && !user.bot));
+            .filter(user => user && !user.bot);
 
         // Get the top userId
         var leaderAvatar = sortedUsers[0] && sortedUsers[0].avatar;
 
         // Make a list of rankStrings for the first 26 users
-        var description = sortedUsers.slice(0, 26).map((user, i) = > makeRankString(user, i + 1)).join("\n");
+        var description = sortedUsers.slice(0, 26).map((user, i) => makeRankString(user, i + 1)).join("\n");
 
         // Get the message author's rank
         var userIndex = sortedUsers.findIndex(u => u.id === m.author.id);
