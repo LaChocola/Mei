@@ -7,7 +7,7 @@ process.on("unhandledRejection", (err, promise) => {
 
 const fs = require("fs");
 const reload = require("require-reload")(require);
-const timediff = require("timediff");
+const moment = require("moment");
 // colors module extends string prototype
 const colors = require("colors");  // eslint-disable-line no-unused-vars
 const Eris = require("eris");
@@ -358,7 +358,7 @@ bot.on("guildMemberAdd", async function(guild, member) {
     var date = member.joinedAt;
     var date2 = member.createdAt;
     name = member.nick || member.username;
-    var diff = timediff(date2, date, "D");
+    var diffDays = moment(date2).diff(date, "days");
     if (server[guild.id]) {
         if (server[guild.id].notifications) {
             if (server[guild.id].notifications.updates) {
@@ -376,7 +376,7 @@ bot.on("guildMemberAdd", async function(guild, member) {
                 }).catch((err) => {
                     console.log(err);
                 });
-                if (diff.days < 2) {
+                if (diffDays < 2) {
                     bot.createMessage(channel, `:warning: **${name}** Joined less than 24 hours after creating their account`).catch((err) => {
                         console.log(err);
                     });
