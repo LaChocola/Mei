@@ -45,11 +45,11 @@ async function alertChoco(bot, m) {
         return;
     }
 
-    dmChannel = await bot.getDMChannel(conf.users.chocola);
+    var dmChannel = await bot.getDMChannel(conf.users.chocola);
 
     try {
-        await bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`);
-        await bot.createMessage(DMchannel.id, m.content);
+        await bot.createMessage(dmChannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`);
+        await bot.createMessage(dmChannel.id, m.content);
     }
     catch (err) {
         if (err.code === 50007) {
@@ -57,7 +57,7 @@ async function alertChoco(bot, m) {
         }
         console.log(err);
     }
-});
+}
 
 bot.on("ready", async function() {
     console.log("Mei is running");
