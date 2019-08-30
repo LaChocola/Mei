@@ -18,7 +18,7 @@ function getArgs(msg, cmd, prefix) {
 
 function getTagged(args) {
     var tagMatch = args.match(/<@(.*)>/);
-    var taggedId = tagMatch & isNum(tagMatch[0]) && tagMatch[0];
+    var taggedId = tagMatch && isNum(tagMatch[0]) && tagMatch[0];
     return taggedId;
 }
 
