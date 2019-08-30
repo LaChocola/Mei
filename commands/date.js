@@ -45,9 +45,9 @@ module.exports = {
         var createdString = createdDate.format("ddd MMM DD YYYY");
         var sinceJoined = joinedDate.fromNow();
         var sinceCreated = createdDate.fromNow();
-        var diffDays = createdDate.diff(joinedDate, "days");
+        var daysBeforeJoining = joinedDate.diff(createdDate, "days");
         m.reply("**" + name + "**\nJoined: " + joinedString + " | " + sinceJoined + "\nCreated: " + createdString + " | " + sinceCreated);
-        if (diffDays < 2) {
+        if (daysBeforeJoining < 1) {
             m.reply(":warning: **" + name + "** Joined less than 24 hours after creating account");
         }
     },
