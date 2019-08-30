@@ -226,7 +226,7 @@ bot.on("messageCreate", async function(m) {
         }
     }
 
-    alertChoco(m);
+    alertChoco(bot, m);
     if (m.author.id === conf.users.owner && m.content.includes("pls")) {
         if (m.content.includes("stop")) {
             bot.createMessage(m.channel.id, "Let me rest my eyes for a moment").then((msg) => {
