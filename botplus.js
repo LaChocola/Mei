@@ -20,6 +20,7 @@ function extend(bot) {
                 bot.deleteMessage(channelId, userMsg.id, "Timeout");
                 bot.deleteMessage(channelId, botMsg.id, "Timeout");
             }
+            return botMsg;
         }
     });
 }
