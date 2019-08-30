@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 
-const conf = require("../conf");
+const conf = require("./conf");
 const _ = require("./people.js");
 const servers = require("./servers.js");
 
