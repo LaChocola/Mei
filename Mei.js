@@ -193,7 +193,7 @@ bot.on("messageCreate", async function(m) {
         if (present !== conf.chocolaId) {
             return;
         }
-        if (m.author.id === conf.chocolaId || m.author.id === "309220487957839872") {
+        if (m.author.id === conf.chocolaId || m.author.id === conf.meiId) {
             return;
         }
         bot.getDMChannel(conf.chocolaId).then(function(DMchannel) {

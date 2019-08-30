@@ -2,6 +2,7 @@
 
 const MarkovGen = require("markov-generator");
 
+const conf = require("../conf");
 const utils = require("../utils");
 
 var time = new Date().toISOString();
@@ -29,7 +30,7 @@ module.exports = {
             });
             return;
         }
-        if (channelFull.permissionsOf("309220487957839872").json.readMessages != true) {
+        if (channelFull.permissionsOf(conf.meiId).json.readMessages != true) {
             Bot.createMessage(m.channel.id, "I do not have permission to read that channel, please try a different one.").then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

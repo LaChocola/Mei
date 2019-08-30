@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 
+const conf = require("../conf");
 const _ = require("./people.js");
 const servers = require("./servers.js");
 
@@ -57,7 +58,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var members = m.channel.guild.members.filter(m => !m.bot);
         var people = [];
         members.forEach(function(member) {
-            if ((member.status != "offline") && (member.user.id != "309220487957839872")) {
+            if ((member.status != "offline") && (member.user.id != conf.meiId)) {
                 people.push(member.id);
             }
         });

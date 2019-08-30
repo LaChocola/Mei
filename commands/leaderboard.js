@@ -1,5 +1,6 @@
 "use strict";
 
+const conf = require("../conf");
 const _ = require("../people");
 
 var data = _.load();
@@ -31,7 +32,7 @@ module.exports = {
             var personalRank = [];
             for (let person of sorted) {
                 var user = Bot.users.filter(m => m.id == person["key"])[0];
-                if (user && user.id != "309220487957839872" && user.id != "444791634966740993") {
+                if (user && user.id != conf.meiId && user.id != "444791634966740993") {
                     y++;
                     if (i == 1) {
                         leader.push(user.id);
@@ -94,7 +95,7 @@ module.exports = {
         personalRank = [];
         for (let person of sorted) {
             user = m.channel.guild.members.filter(m => m.id == person["key"])[0];
-            if (user && user.id != "309220487957839872" && user.id != "444791634966740993") {
+            if (user && user.id != conf.meiId && user.id != "444791634966740993") {
                 y++;
                 if (i == 1) {
                     leader.push(user.id);
