@@ -150,9 +150,11 @@ bot.on("guildBanRemove", async function(guild, user) {
 });
 
 bot.on("messageCreate", async function(m) {
+    // Ignore messages from bots
     if (m.author.bot) {
         return;
     }
+
     const timestamps = [Date.now()];
     function updateTimestamps() {
         const latest = timestamps[timestamps.length - 1];
