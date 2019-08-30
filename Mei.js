@@ -32,6 +32,33 @@ var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin
 var hand = hands[Math.floor(Math.random() * hands.length)];
 var commandContentsMap = {};
 
+async function alertChoco(function(bot, m) {
+    if (!m.content.toLowerCase().match(/\b(chocola|choco|choc)\b/i)) {
+        return;
+    }
+    if (m.author.id === conf.users.chocola) {
+        return;
+    }
+
+    var member = m.channel.guild.members.get(conf.users.chocola);
+    if (!member) {
+        return;
+    }
+
+    await dmChannel = bot.getDMChannel(conf.users.chocola);
+
+    try {
+        await bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`);
+        await bot.createMessage(DMchannel.id, m.content);
+    }
+    catch (err) {
+        if (err.code === 50007) {
+            return;
+        }
+        console.log(err);
+    }
+});
+
 bot.on("ready", async function() {
     console.log("Mei is running");
 });
@@ -199,26 +226,7 @@ bot.on("messageCreate", async function(m) {
         }
     }
 
-    if (m.content.toLowerCase().match(/\bchocola\b/i) || m.content.toLowerCase().match(/\bchoco\b/i) || m.content.toLowerCase().match(/\bchoc\b/i)) {
-        var member = m.channel.guild.members.get(conf.users.owner);
-        var present = member.id || false;
-        if (present !== conf.users.owner) {
-            return;
-        }
-        if (m.author.id === conf.users.owner || m.author.id === conf.users.bot) {
-            return;
-        }
-        bot.getDMChannel(conf.users.owner).then(function(DMchannel) {
-            bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`).then((msg) => {
-                bot.createMessage(DMchannel.id, m.content);
-            }).catch((err) => {
-                if (err.code == 50007) {
-                    return;
-                }
-                console.log(err);
-            });
-        });
-    }
+    alertChoco(m);
     if (m.author.id === conf.users.owner && m.content.includes("pls")) {
         if (m.content.includes("stop")) {
             bot.createMessage(m.channel.id, "Let me rest my eyes for a moment").then((msg) => {
