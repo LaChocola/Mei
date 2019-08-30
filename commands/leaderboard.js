@@ -5,150 +5,68 @@ const _ = require("../people");
 
 var data = _.load();
 
+// Map each user to a { userId, adds } object, sorted by adds
+function sortByAdds(people) {
+    var arr = Object.entries(people)
+        .filter(([userId, person]) => person.adds)
+        .map(function([userId, person]) {
+            return { userId, adds: person.adds };
+        });
+    arr.sort((a, b) => a.add - b.adds).reverse();
+    return arr;
+}
+
+function makeRankString(user, rankNum) {
+    var rankString = `**${rankNum}.**  ${user.username}#${user.discriminator}: ${user.adds} add${user.adds === 1 ? "" : "s"}`;
+    return rankString;
+}
+
 module.exports = {
-    main: function(Bot, m, args, prefix) {
-        function rank(obj) {
-            var arr = [];
-            var entries = Object.entries(obj);
-            for (var entry of entries) {
-                if (entry[1].adds) {
-                    arr.push({
-                        "key": entry[0],
-                        "value": entry[1].adds
-                    });
+    main: function(bot, m, args, prefix) {
+        var isGlobal = args.toLowerCase().includes("global")
+
+        // Pull from all users, or just guild members, depending on isGlobal
+        var userPool = isGlobal ? bot.users : m.channel.guild.members;
+
+        var sortedUsers = sortByAdds(data.people)
+            // Map to user objects
+            .map(function(person) {
+                var user = userPool.find(u => u.id === person.userId);
+                if (user) {
+                    user.adds = person.adds;
                 }
-            }
-            arr.sort(function(a, b) {
-                return a.value - b.value;
-            });
-            return arr.reverse();
+                return user;
+            })
+            // Ignore any missing or bot users
+            .filter(user => user && !user.bot));
+
+        // Get the top userId
+        var leaderAvatar = sortedUsers[0] && sortedUsers[0].avatar;
+
+        // Make a list of rankStrings for the first 26 users
+        var description = sortedUsers.slice(0, 26).map((user, i) = > makeRankString(user, i + 1)).join("\n");
+
+        // Get the message author's rank
+        var userIndex = sortedUsers.findIndex(u => u.id === m.author.id);
+        if (userIndex !== -1) {
+            var user = sortedUsers[userIndex];
+            var personalRank = makeRankString(user, userIndex + 1);
+            description += `\n\nYour Current ${isGlobal ? "Global" : "Guild"} Rank:\n\n` + personalRank;
         }
-        var sorted = rank(data.people);
-        if (args.toLowerCase().includes("global")) {
-            var i = 1;
-            var leaders = [];
-            var leader = [];
-            var y = 0;
-            var personalRank = [];
-            for (let person of sorted) {
-                var user = Bot.users.filter(m => m.id == person["key"])[0];
-                if (user && user.id != conf.users.bot && user.id != "444791634966740993") {
-                    y++;
-                    if (i == 1) {
-                        leader.push(user.id);
-                    }
-                    if (person.value > 1 && i < 26) {
-                        leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} adds`);
-                        i++;
-                    }
-                    if (person.value == 1 && i < 26) {
-                        leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} add`);
-                        i++;
-                    }
-                    if (user.id == m.author.id) {
-                        if (person.value > 1) {
-                            personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} adds`);
-                        }
-                        if (person.value == 1) {
-                            personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} add`);
-                        }
-                    }
-                }
+
+        bot.createMessage(m.channel.id, {
+            embed: {
+                author: {
+                    name: `Current ${isGlobal ? "*Global*" : "Guild"} Leaderboard:`,
+                    icon_url: m.channel.guild.iconURL
+                },
+                thumbnail: {
+                    url: leaderAvatar
+                },
+                color: 0xA260F6,
+                description: description
             }
-            if (personalRank[0]) {
-                Bot.createMessage(m.channel.id, {
-                    embed: {
-                        author: {
-                            name: "Current *Global* Leaderboard:",
-                            icon_url: m.channel.guild.iconURL
-                        },
-                        thumbnail: {
-                            url: Bot.users.filter(m => m.id == leader[0])[0].avatarURL
-                        },
-                        color: 0xA260F6,
-                        description: leaders.join("\n") + "\n\nYour Current Global Rank:\n\n" + personalRank[0]
-                    }
-                });
-                return;
-            }
-            else {
-                Bot.createMessage(m.channel.id, {
-                    embed: {
-                        author: {
-                            name: "Current *Global* Leaderboard:",
-                            icon_url: m.channel.guild.iconURL
-                        },
-                        thumbnail: {
-                            url: Bot.users.filter(m => m.id == leader[0])[0].avatarURL
-                        },
-                        color: 0xA260F6,
-                        description: leaders.join("\n")
-                    }
-                });
-                return;
-            }
-        }
-        leaders = [];
-        leader = [];
-        i = 1;
-        y = 0;
-        personalRank = [];
-        for (let person of sorted) {
-            user = m.channel.guild.members.filter(m => m.id == person["key"])[0];
-            if (user && user.id != conf.users.bot && user.id != "444791634966740993") {
-                y++;
-                if (i == 1) {
-                    leader.push(user.id);
-                }
-                if (person.value > 1 && i < 11) {
-                    leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} adds`);
-                    i++;
-                }
-                if (person.value == 1 && i < 11) {
-                    leaders.push(`**${i}.**  ${user.username}#${user.discriminator}: ${person.value} add`);
-                    i++;
-                }
-                if (user.id == m.author.id) {
-                    if (person.value > 1) {
-                        personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} adds`);
-                    }
-                    if (person.value == 1) {
-                        personalRank.push(`**${y}.**  ${user.username}#${user.discriminator}: ${person.value} add`);
-                    }
-                }
-            }
-        }
-        if (personalRank[0]) {
-            Bot.createMessage(m.channel.id, {
-                embed: {
-                    author: {
-                        name: "Current Guild Leaderboard:",
-                        icon_url: m.channel.guild.iconURL
-                    },
-                    thumbnail: {
-                        url: m.channel.guild.members.filter(m => m.id == leader[0])[0].avatarURL
-                    },
-                    color: 0xA260F6,
-                    description: leaders.join("\n") + "\n\nYour Current Guild Rank:\n\n" + personalRank[0]
-                }
-            });
-            return;
-        }
-        else {
-            Bot.createMessage(m.channel.id, {
-                embed: {
-                    author: {
-                        name: "Current Guild Leaderboard:",
-                        icon_url: m.channel.guild.iconURL
-                    },
-                    thumbnail: {
-                        url: m.channel.guild.members.filter(m => m.id == leader[0])[0].avatarURL
-                    },
-                    color: 0xA260F6,
-                    description: leaders.join("\n")
-                }
-            });
-        }
+        });
     },
     help: "Shows hoard leaderboards"
 };
