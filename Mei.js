@@ -20,12 +20,18 @@ const ppl = require("./people.js");
 const servers = reload("./servers.js");
 const config = reload("./etc/config.json");
 
+console.log("Loading...");
+
 botplus.extend(Eris);
 var bot = Eris(config.tokens.mei);
 
 var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
 var hand = hands[Math.floor(Math.random() * hands.length)];
 var commandContentsMap = {};
+
+bot.on("ready", async function() {
+    console.log("Mei is running");
+});
 
 bot.on("guildBanAdd", async function(guild, user) {
     var server = servers.load();
