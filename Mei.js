@@ -18,12 +18,15 @@ const conf = require("./conf");
 const _ = require("./data.js");
 const ppl = require("./people.js");
 const servers = reload("./servers.js");
-const config = reload("./etc/config.json");
 
 console.log("Loading...");
 
 botplus.extend(Eris);
-var bot = Eris(config.tokens.mei);
+if (!conf.tokens.mei) {
+    console.error("Mei token not found. Quitting.");
+    return;
+}
+var bot = Eris(conf.tokens.mei);
 
 var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
 var hand = hands[Math.floor(Math.random() * hands.length)];
@@ -170,12 +173,11 @@ bot.on("messageCreate", async function(m) {
             }
             console.log(err);
         });
-        if (m.author.id !== conf.chocolaId) {
+        if (m.author.id !== conf.users.owner) {
             console.log("Guild 1:", m.channel.guild);
-            // TODO: Collection is not defined
-            var roles = new Collection(Eris.Role);
-            var members = new Collection(Eris.User);
-            var channels = new Collection(Eris.Channel);
+            var roles = new Eris.Collection(Eris.Role);
+            var members = new Eris.Collection(Eris.User);
+            var channels = new Eris.Collection(Eris.Channel);
             members.add(m.author, Eris.User, true);
             channels.add(m.channel, Eris.Channel, true);
             roles.add({ "name": "fakeRole", "id": "00001" }, Eris.Role, true);
@@ -184,9 +186,8 @@ bot.on("messageCreate", async function(m) {
         return;
     }
     updateTimestamps();
-    var config = reload("./etc/config.json");
     var server = servers.load();
-    var prefix = config.prefix;
+    var prefix = conf.prefix;
     if (server[m.channel.guild.id] && server[m.channel.guild.id].game && server[m.channel.guild.id].game.channel == m.channel.id && server[m.channel.guild.id].game.player == m.author.id) {
         if (server[m.channel.guild.id].game.active && server[m.channel.guild.id].game.choices.includes(m.content)) {
             m.content = prefix + "t " + m.content;
@@ -194,15 +195,15 @@ bot.on("messageCreate", async function(m) {
     }
 
     if (m.content.toLowerCase().match(/\bchocola\b/i) || m.content.toLowerCase().match(/\bchoco\b/i) || m.content.toLowerCase().match(/\bchoc\b/i)) {
-        var member = m.channel.guild.members.get(conf.chocolaId);
+        var member = m.channel.guild.members.get(conf.users.owner);
         var present = member.id || false;
-        if (present !== conf.chocolaId) {
+        if (present !== conf.users.owner) {
             return;
         }
-        if (m.author.id === conf.chocolaId || m.author.id === conf.meiId) {
+        if (m.author.id === conf.users.owner || m.author.id === conf.users.bot) {
             return;
         }
-        bot.getDMChannel(conf.chocolaId).then(function(DMchannel) {
+        bot.getDMChannel(conf.users.owner).then(function(DMchannel) {
             bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`).then((msg) => {
                 bot.createMessage(DMchannel.id, m.content);
             }).catch((err) => {
@@ -213,7 +214,7 @@ bot.on("messageCreate", async function(m) {
             });
         });
     }
-    if (m.author.id === conf.chocolaId && m.content.includes("pls")) {
+    if (m.author.id === conf.users.owner && m.content.includes("pls")) {
         if (m.content.includes("stop")) {
             bot.createMessage(m.channel.id, "Let me rest my eyes for a moment").then((msg) => {
                 return setTimeout(function() {
@@ -239,7 +240,7 @@ bot.on("messageCreate", async function(m) {
             bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "375633311449481218", "Removed from role assign"); // remove the No channel access role
         }
     }
-    if (m.author.id === conf.chocolaId && m.content.includes("pls")) {
+    if (m.author.id === conf.users.owner && m.content.includes("pls")) {
         if (m.content.includes(" mute") && m.mentions.length > 0) {
             if (m.mentions.length > 1) {
                 let mentions = m.mentions;
@@ -354,10 +355,6 @@ bot.on("messageCreate", async function(m) {
 
 bot.on("guildMemberAdd", async function(guild, member) {
     var server = servers.load();
-    var prefix = config[prefix];
-    if (server[guild.id] && server[guild.id].prefix) {
-        prefix = server[guild.id];
-    }
     var name = undefined;
     name = guild[name]; // TODO: name is undefined...
     var count = guild.memberCount - guild.members.filter(m => m.bot).length;
@@ -436,7 +433,7 @@ bot.on("guildMemberRemove", async function(guild, member) {
 });
 
 bot.on("guildCreate", async function(guild) {
-    bot.getDMChannel(conf.chocolaId).then(function(DMchannel) {
+    bot.getDMChannel(conf.users.owner).then(function(DMchannel) {
         bot.createMessage(DMchannel.id, {
             embed: {
                 color: 0xA260F6,
@@ -457,7 +454,7 @@ bot.on("guildCreate", async function(guild) {
 });
 
 bot.on("guildDelete", async function(guild) {
-    bot.getDMChannel(conf.chocolaId).then(function(DMchannel) {
+    bot.getDMChannel(conf.users.owner).then(function(DMchannel) {
         bot.createMessage(DMchannel.id, {
             embed: {
                 color: 0xA260F6,
@@ -478,9 +475,10 @@ bot.on("guildDelete", async function(guild) {
 });
 
 bot.on("messageReactionAdd", async function(m, emoji, userID) {
-    var server = servers.load();
-    var id = userID;
-    m = await bot.getMessage(m.channel.id, m.id).then(async (m) => {
+    try {
+        var server = servers.load();
+
+        m = await bot.getMessage(m.channel.id, m.id);
         if (emoji.name === "😍") {
             var link;
             if (m.attachments.length === 0 && m.embeds.length === 0) {
@@ -506,17 +504,17 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
             }
             if (link || (links && links[0])) {
                 var people = ppl.load();
-                if (!people.people[id]) {
-                    people.people[id] = {};
+                if (!people.people[userID]) {
+                    people.people[userID] = {};
                     ppl.save(people);
                 }
-                if (!people.people[id].hoard) {
-                    people.people[id].hoard = {};
-                    people.people[id].hoard["😍"] = {};
+                if (!people.people[userID].hoard) {
+                    people.people[userID].hoard = {};
+                    people.people[userID].hoard["😍"] = {};
                     ppl.save(people);
                 }
                 people = ppl.load();
-                var hoard = people.people[id].hoard["😍"];
+                var hoard = people.people[userID].hoard["😍"];
                 if (hoard) {
                     if (links && links[0]) {
                         for (let link of links) {
@@ -533,10 +531,10 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                     ppl.save(people);
                                     people = ppl.load();
                                 }
-                                if (m.author.id !== id) {
+                                if (m.author.id !== userID) {
                                     people.people[m.author.id].adds++;
                                     ppl.save(people);
-                                    if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                    if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                         var user = bot.users.filter(u => u.id === m.author.id)[0];
                                         bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                             return setTimeout(function() {
@@ -564,10 +562,10 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                             ppl.save(people);
                             people = ppl.load();
                         }
-                        if (m.author.id !== id) {
+                        if (m.author.id !== userID) {
                             people.people[m.author.id].adds++;
                             ppl.save(people);
-                            if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                            if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                 let user = bot.users.filter(u => u.id === m.author.id)[0];
                                 bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                     return setTimeout(function() {
@@ -585,7 +583,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
         }
         if (server[m.channel.guild.id]) {
             if (server[m.channel.guild.id].giveaways) {
-                if (server[m.channel.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== "309220487957839872" && userID !== server[m.channel.guild.id].giveaways.creator) {
+                if (server[m.channel.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== conf.users.bot && userID !== server[m.channel.guild.id].giveaways.creator) {
                     if (m.id === server[m.channel.guild.id].giveaways.mID) {
                         server[m.channel.guild.id].giveaways.current.contestants[userID] = "entered";
                         servers.save(server);
@@ -595,7 +593,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
             }
             people = ppl.load();
             if (server[m.channel.guild.id].hoards !== false && emoji.name !== "😍") {
-                if (people.people[id] && people.people[id].hoard && people.people[id].hoard[emoji.name]) {
+                if (people.people[userID] && people.people[userID].hoard && people.people[userID].hoard[emoji.name]) {
                     m = await bot.getMessage(m.channel.id, m.id).then((m) => {
                         if (m.attachments.length === 0 && m.embeds.length === 0) {
                             link = m.cleanContent;
@@ -618,7 +616,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                         }
                         if (link || (links && links[0])) {
                             var people = ppl.load();
-                            var hoard = people.people[id].hoard[emoji.name];
+                            var hoard = people.people[userID].hoard[emoji.name];
                             if (hoard) {
                                 if (links && links[0]) {
                                     for (let link of links) {
@@ -635,10 +633,10 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                                 ppl.save(people);
                                                 people = ppl.load();
                                             }
-                                            if (m.author.id !== id) {
+                                            if (m.author.id !== userID) {
                                                 people.people[m.author.id].adds++;
                                                 ppl.save(people);
-                                                if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                                if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                                     let user = bot.users.filter(u => u.id === m.author.id)[0];
                                                     bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                                         return setTimeout(function() {
@@ -666,10 +664,10 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                         ppl.save(people);
                                         people = ppl.load();
                                     }
-                                    if (m.author.id !== id) {
+                                    if (m.author.id !== userID) {
                                         people.people[m.author.id].adds++;
                                         ppl.save(people);
-                                        if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                        if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                             let user = bot.users.filter(u => u.id === m.author.id)[0];
                                             bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                                 return setTimeout(function() {
@@ -688,9 +686,10 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                 }
             }
         }
-    }).catch((err) => {
-        console.log(err);
-    });
+    }
+    catch (err) {
+        console.error(err);
+    }
 });
 
 bot.on("messageReactionRemove", async function(m, emoji, userID) {
@@ -770,7 +769,7 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
         }
         if (server[m.channel.guild.id]) {
             if (server[m.channel.guild.id].giveaways) {
-                if (server[m.channel.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== "309220487957839872" && userID !== server[m.channel.guild.id].giveaways.creator) {
+                if (server[m.channel.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== conf.users.bot && userID !== server[m.channel.guild.id].giveaways.creator) {
                     if (m.id === server[m.channel.guild.id].giveaways.mID) {
                         if (server[m.channel.guild.id].giveaways.current.contestants[userID]) {
                             delete server[m.channel.guild.id].giveaways.current.contestants[userID];

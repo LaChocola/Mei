@@ -58,7 +58,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var members = m.channel.guild.members.filter(m => !m.bot);
         var people = [];
         members.forEach(function(member) {
-            if ((member.status != "offline") && (member.user.id != conf.meiId)) {
+            if ((member.status != "offline") && (member.user.id != conf.users.bot)) {
                 people.push(member.id);
             }
         });

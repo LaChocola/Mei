@@ -4,7 +4,12 @@ const qs = require("querystring");
 const request = require("request").defaults({ jar: true });
 const cheerio = require("cheerio");
 
-const config = require("../etc/config.json");
+const conf = require("../conf");
+
+var enabled = Boolean(conf.tokens.exhentai.id && conf.tokens.exhentai.hash);
+if (!enabled) {
+    console.warn("Exhentai token not found. Disabling ex command.");
+}
 
 const j = request.jar();
 
@@ -24,6 +29,9 @@ const defaultQuery = {
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
+        if (!enabled) {
+            return;
+        }
         if (m.channel.nsfw == false) {
             Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
             return;
@@ -38,8 +46,8 @@ module.exports = {
             f_search: search
         }, defaultQuery));
         var pageToVisit = `https://exhentai.org/?${q}`;
-        var cookie1 = request.cookie(config.tokens.exhentai.id);
-        var cookie2 = request.cookie(config.tokens.exhentai.hash);
+        var cookie1 = request.cookie(conf.tokens.exhentai.id);
+        var cookie2 = request.cookie(conf.tokens.exhentai.hash);
         var cookie3 = request.cookie("sl=dm_1");
         j.setCookie(cookie1, pageToVisit);
         j.setCookie(cookie2, pageToVisit);
@@ -148,5 +156,6 @@ module.exports = {
             });
         });
     },
-    help: "Search Exhentai"
+    help: "Search Exhentai",
+    enabled: enabled
 };

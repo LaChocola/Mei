@@ -12,3 +12,4 @@ node_modules
 /db/servers.json
 /db/timestamps.txt
 /etc/config.json
+/.env

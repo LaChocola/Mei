@@ -3,12 +3,22 @@
 const Sagiri = require("sagiri");
 const qs = require("querystring");
 
-var config = require("../etc/config.json");
+var conf = require("../conf");
 
-const handler = new Sagiri(config.tokens.sauce);
+var enabled = Boolean(conf.tokens.sauce);
+
+if (enabled) {
+    var handler = new Sagiri(conf.tokens.sauce);
+}
+else {
+    console.warn("Sauce token not found. Disabling sauce command.");
+}
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
+        if (!enabled) {
+            return;
+        }
         let data;
         var link;
         if (m.content.length < 7 && !m.attachments || m.content == `${prefix}sauce` && m.attachments.length == 0) {
@@ -64,5 +74,6 @@ module.exports = {
             return;
         });
     },
-    help: "sauce"
+    help: "sauce",
+    enabled: enabled
 };

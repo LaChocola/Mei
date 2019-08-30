@@ -4,7 +4,7 @@ const conf = require("../conf");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        if (m.author.id === conf.chocolaId) {
+        if (m.author.id === conf.users.owner) {
             Bot.createMessage(m.channel.id, ":ok_hand:");
         }
         else {

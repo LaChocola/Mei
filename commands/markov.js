@@ -30,7 +30,7 @@ module.exports = {
             });
             return;
         }
-        if (channelFull.permissionsOf(conf.meiId).json.readMessages != true) {
+        if (channelFull.permissionsOf(conf.users.bot).json.readMessages != true) {
             Bot.createMessage(m.channel.id, "I do not have permission to read that channel, please try a different one.").then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

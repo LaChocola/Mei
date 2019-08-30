@@ -53,7 +53,7 @@ module.exports = {
         var modCheck = await isMod(m.channel.guild.members.get(m.author.id), m.channel.guild);
         var responses = ["Are you a real villan?", "Have you ever caught a good guy? \nLike a real super hero?", "Have you ever tried a disguise?", "What are you doing?!?!?!", "*NO!*, Don't touch that!", "Fuck Off", "Roses are red\nfuck me ;) "];
         var response = responses[Math.floor(Math.random() * responses.length)];
-        if (modCheck !== true && m.author.id !== conf.chocolaId) {
+        if (modCheck !== true && m.author.id !== conf.users.owner) {
             Bot.createMessage(m.channel.id, response).then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

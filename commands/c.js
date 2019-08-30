@@ -2,12 +2,22 @@
 
 const apiai = require("apiai");
 
-const config = require("../etc/config.json");
+const conf = require("../conf");
 
-var app = apiai(config.tokens.apiai);
+var enabled = Boolean(conf.tokens.apiai);
+
+if (enabled) {
+    var app = apiai(conf.tokens.apiai);
+}
+else {
+    console.warn("apiai token not found. Disabling c command.");
+}
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
+        if (!enabled) {
+            return;
+        }
         var msg = m.cleanContent.replace(`${prefix}c `, "");
         if (m.content == `${prefix}c`) {
             Bot.createMessage(m.channel.id, "Please add something i.e. ``!c How are you?``");
@@ -28,5 +38,6 @@ module.exports = {
             request.end();
         }
     },
-    help: "Lets talk~"
+    help: "Lets talk~",
+    enabled: enabled
 };

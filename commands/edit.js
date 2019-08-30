@@ -86,7 +86,7 @@ module.exports = {
             return;
         }
         const modCheck = isMod(m.channel.guild.members.get(m.author.id), guild);
-        if (m.author.id !== guild.ownerID && m.author.id !== conf.chocolaId && modCheck !== true) {
+        if (m.author.id !== guild.ownerID && m.author.id !== conf.users.owner && modCheck !== true) {
             Bot.createMessage(m.channel.id, "You must be the server owner, or have moderator permissions to run this command. Have the server owner use `!edit mod add @you` or `!edit mod add @modRole`").then(msg => {
                 return setTimeout(() => {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -173,7 +173,7 @@ module.exports = {
                         return;
                     }
                     const channel = Bot.getChannel(m.channelMentions[0]);
-                    if (channel.permissionsOf(conf.meiId).json.sendMessages !== true) {
+                    if (channel.permissionsOf(conf.users.bot).json.sendMessages !== true) {
                         Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
                     }
@@ -232,7 +232,7 @@ module.exports = {
                         return;
                     }
                     const channel = Bot.getChannel(m.channelMentions[0]);
-                    if (channel.permissionsOf(conf.meiId).json.sendMessages !== true) {
+                    if (channel.permissionsOf(conf.users.bot).json.sendMessages !== true) {
                         Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
                     }
@@ -295,7 +295,7 @@ module.exports = {
                     }
                     const channelID = m.channelMentions[0];
                     const channel = m.channel.guild.channels.get(channelID);
-                    if (channel.permissionsOf(conf.meiId).json.sendMessages !== true) {
+                    if (channel.permissionsOf(conf.users.bot).json.sendMessages !== true) {
                         Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
                     }
@@ -369,7 +369,7 @@ module.exports = {
                     }
                     const channelID = m.channelMentions[0];
                     const channel = m.channel.guild.channels.get(channelID);
-                    if (channel.permissionsOf(conf.meiId).json.sendMessages !== true) {
+                    if (channel.permissionsOf(conf.users.bot).json.sendMessages !== true) {
                         Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
                     }
@@ -462,7 +462,7 @@ module.exports = {
                     });
                     return;
                 }
-                if (channel.permissionsOf(conf.meiId).json.sendMessages !== true) {
+                if (channel.permissionsOf(conf.users.bot).json.sendMessages !== true) {
                     Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                     return;
                 }
@@ -544,7 +544,7 @@ module.exports = {
                         });
                         return;
                     }
-                    const perms = m.channel.guild.members.get(conf.meiId).permission.json;
+                    const perms = m.channel.guild.members.get(conf.users.bot).permission.json;
                     if (!perms.manageRoles) {
                         Bot.createMessage(m.channel.id, "I need permissions to be able to add roles, please add the 'Manage Roles' permission to me");
                         return;
@@ -612,7 +612,7 @@ module.exports = {
                 return;
             }
             if (args.toLowerCase().includes("create")) {
-                const perms = m.channel.guild.members.get(conf.meiId).permission.json;
+                const perms = m.channel.guild.members.get(conf.users.bot).permission.json;
                 if (!perms.manageRoles) {
                     Bot.createMessage(m.channel.id, "I need permissions to be able to create roles, please add the 'Manage Roles' permission to me");
                     return;
@@ -662,7 +662,7 @@ module.exports = {
                 return;
             }
             if (args.toLowerCase().includes("delete")) {
-                const perms = m.channel.guild.members.get(conf.meiId).permission.json;
+                const perms = m.channel.guild.members.get(conf.users.bot).permission.json;
                 if (!perms.manageRoles) {
                     Bot.createMessage(m.channel.id, "I need permissions to be able to delete roles, please add the 'Manage Roles' permission to me").then(msg => {
                         return setTimeout(() => {
@@ -699,7 +699,7 @@ module.exports = {
                         return;
                     }
 
-                    const perms = m.channel.guild.members.get(conf.meiId).permission.json;
+                    const perms = m.channel.guild.members.get(conf.users.bot).permission.json;
                     if (!perms.manageRoles) {
                         Bot.createMessage(m.channel.id, "I need permissions to be able to add roles, please add the 'Manage Roles' permission to me");
                         return;

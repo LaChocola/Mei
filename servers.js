@@ -10,7 +10,7 @@ var backupPath = "/home/badmin/backup/Mei/db/servers.json";
 module.exports = {
     load: function() {
         var data = fs.readFileSync(dataPath, "utf8");
-        if (data.includes(conf.chocolaId)) {
+        if (data.includes(conf.users.owner)) {
             try {
                 return JSON.parse(fs.readFileSync(dataPath));
             }
