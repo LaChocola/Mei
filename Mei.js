@@ -32,33 +32,6 @@ var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin
 var hand = hands[Math.floor(Math.random() * hands.length)];
 var commandContentsMap = {};
 
-async function alertChoco(bot, m) {
-    if (!m.content.toLowerCase().match(/\b(chocola|choco|choc)\b/i)) {
-        return;
-    }
-    if (m.author.id === conf.users.chocola) {
-        return;
-    }
-
-    var member = m.channel.guild.members.get(conf.users.chocola);
-    if (!member) {
-        return;
-    }
-
-    var dmChannel = await bot.getDMChannel(conf.users.chocola);
-
-    try {
-        await bot.createMessage(dmChannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`);
-        await bot.createMessage(dmChannel.id, m.content);
-    }
-    catch (err) {
-        if (err.code === 50007) {
-            return;
-        }
-        console.log(err);
-    }
-}
-
 bot.on("ready", async function() {
     console.log("Mei is running");
 });
@@ -176,6 +149,7 @@ bot.on("guildBanRemove", async function(guild, user) {
     }
 });
 
+// Handle commands
 bot.on("messageCreate", async function(m) {
     // Ignore messages from bots
     if (m.author.bot) {
@@ -226,7 +200,6 @@ bot.on("messageCreate", async function(m) {
         }
     }
 
-    alertChoco(bot, m);
     if (m.author.id === conf.users.owner && m.content.includes("pls")) {
         if (m.content.includes("stop")) {
             bot.createMessage(m.channel.id, "Let me rest my eyes for a moment").then((msg) => {
@@ -363,6 +336,39 @@ bot.on("messageCreate", async function(m) {
                 console.log("");
             }
         }
+    }
+});
+
+// Alert Chocola of mentions
+bot.on("messageCreate", async function(m) {
+    // Ignore messages from bots
+    if (m.author.bot) {
+        return;
+    }
+
+    if (!m.content.toLowerCase().match(/\b(chocola|choco|choc)\b/i)) {
+        return;
+    }
+    if (m.author.id === conf.users.chocola) {
+        return;
+    }
+
+    var member = m.channel.guild.members.get(conf.users.chocola);
+    if (!member) {
+        return;
+    }
+
+    var dmChannel = await bot.getDMChannel(conf.users.chocola);
+
+    try {
+        await bot.createMessage(dmChannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`);
+        await bot.createMessage(dmChannel.id, m.content);
+    }
+    catch (err) {
+        if (err.code === 50007) {
+            return;
+        }
+        console.log(err);
     }
 });
 
