@@ -13,3 +13,11 @@ node_modules
 /db/timestamps.txt
 /etc/config.json
 /.env
+commands/scan.js
+commands/pinger.js
+commands/t.js
+.vscode/settings.json
+.vscode/launch.json
+package-lock.json
+/Story/
+
