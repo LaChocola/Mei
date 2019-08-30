@@ -32,7 +32,7 @@ var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin
 var hand = hands[Math.floor(Math.random() * hands.length)];
 var commandContentsMap = {};
 
-async function alertChoco(function(bot, m) {
+async function alertChoco(bot, m) {
     if (!m.content.toLowerCase().match(/\b(chocola|choco|choc)\b/i)) {
         return;
     }
