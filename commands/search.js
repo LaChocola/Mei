@@ -86,6 +86,6 @@ module.exports = {
             }
         });
     },
-    help: "Google Stuff" // add description,
+    help: "Google Stuff", // add description
     enabled: enabled
 };
