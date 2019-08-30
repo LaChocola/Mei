@@ -45,7 +45,7 @@ async function alertChoco(bot, m) {
         return;
     }
 
-    await dmChannel = bot.getDMChannel(conf.users.chocola);
+    dmChannel = await bot.getDMChannel(conf.users.chocola);
 
     try {
         await bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`);
