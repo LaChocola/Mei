@@ -3,6 +3,7 @@
 const escapeStringRegexp = require("escape-string-regexp");
 
 const conf = require("../conf");
+const utils = require("../utils");
 const _ = require("../servers");
 
 var data = _.load();
@@ -72,8 +73,6 @@ meta.main = async function(bot, m, args, prefix) {
         return;
     }
 
-    var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-    var hand = hands[Math.floor(Math.random() * hands.length)];
     var undo = false;
     var guardian = authorMember.nick || authorMember.username;
 
@@ -105,7 +104,7 @@ meta.main = async function(bot, m, args, prefix) {
         if (undo) {
             try {
                 await guild.unbanMember(targetId, "Unbanned by: " + guardian);
-                let successMessage = `${hand} Successful unbanned: ${name} (${targetId})`;
+                let successMessage = `${utils.hands.ok()} Successful unbanned: ${name} (${targetId})`;
                 m.reply(successMessage, 5000);
             }
             catch (err) {
@@ -127,7 +126,7 @@ meta.main = async function(bot, m, args, prefix) {
             if (targetId || name != guardian) {
                 try {
                     await guild.banMember(targetId, 0, reason);
-                    let successMessage = `${hand} Successful banned: ${name} (${targetId})`;
+                    let successMessage = `${utils.hands.ok()} Successful banned: ${name} (${targetId})`;
                     m.reply(successMessage, 5000);
                 }
                 catch (err) {
@@ -151,6 +150,6 @@ meta.main = async function(bot, m, args, prefix) {
         }
     });
     m.delete("Timeout");
-}
+};
 
 module.exports = meta;

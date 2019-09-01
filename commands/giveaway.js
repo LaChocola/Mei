@@ -1,5 +1,6 @@
 "use strict";
 
+const utils = require("../utils");
 const _ = require("../servers");
 
 var data = _.load();
@@ -12,8 +13,6 @@ module.exports = {
     main: function(Bot, m, args, prefix) {
         return new Promise((resolve, reject) => {
             var guild = m.channel.guild;
-            var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-            var hand = hands[Math.floor(Math.random() * hands.length)];
             var time = 0.5;
             var base = m.cleanContent.replace(`${prefix}giveaway `, "").split(" | ");
             if (!isNaN(+base[1])) {
@@ -29,7 +28,7 @@ module.exports = {
                     data[guild.id] = {};
                     data[guild.id].name = guild.name;
                     data[guild.id].owner = guild.ownerID;
-                    Bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${hand}`).then((msg) => {
+                    Bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${utils.hands.ok()}`).then((msg) => {
                         return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

@@ -1,5 +1,7 @@
 "use strict";
 
+const utils = require("../utils");
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var msg = m.cleanContent.replace(`${prefix}suggest `, "");
@@ -32,9 +34,7 @@ module.exports = {
                     }
                 }
             });
-            var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-            var hand = hands[Math.floor(Math.random() * hands.length)];
-            Bot.createMessage(m.channel.id, "Suggestion: ``" + msg + "`` Sent to Chocola " + hand).then((msg) => {
+            Bot.createMessage(m.channel.id, "Suggestion: ``" + msg + "`` Sent to Chocola " + utils.hands.ok()).then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");

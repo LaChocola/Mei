@@ -17,8 +17,6 @@ module.exports = {
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         var nameArray = [];
         var id = mentioned.id;
-        var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-        var hand = hands[Math.floor(Math.random() * hands.length)];
         if (!data.people[id]) {
             data.people[id] = {};
         }
@@ -37,7 +35,7 @@ module.exports = {
                 if (data.people[id].names[e[1]]) {
                     delete data.people[id].names[e[1]];
                     _.save(data);
-                    Bot.createMessage(m.channel.id, "Removed: **" + e[1] + "** from your names list" + hand).then((msg) => {
+                    Bot.createMessage(m.channel.id, "Removed: **" + e[1] + "** from your names list" + utils.hands.ok()).then((msg) => {
                         return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -74,7 +72,7 @@ module.exports = {
                         var cleanName = e[1].replace(/ male/i, "");
                         data.people[id].names[cleanName] = "male";
                         _.save(data);
-                        Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then((msg) => {
+                        Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + utils.hands.ok()).then((msg) => {
                             return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -86,7 +84,7 @@ module.exports = {
                         cleanName = e[1].replace(/ futa/i, "").replace(/ futanari/i, "");
                         data.people[id].names[cleanName] = "futa";
                         _.save(data);
-                        Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then((msg) => {
+                        Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + utils.hands.ok()).then((msg) => {
                             return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -97,7 +95,7 @@ module.exports = {
                     else {
                         data.people[id].names[e[1]] = "female";
                         _.save(data);
-                        Bot.createMessage(m.channel.id, "Added **" + e[1] + "** " + hand).then((msg) => {
+                        Bot.createMessage(m.channel.id, "Added **" + e[1] + "** " + utils.hands.ok()).then((msg) => {
                             return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

@@ -1,6 +1,7 @@
 "use strict";
 
 const conf = require("../conf");
+const utils = require("../utils");
 const _ = require("../servers");
 
 var data = _.load();
@@ -79,8 +80,6 @@ module.exports = {
             }
             return duplicate;
         };
-        const hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-        const hand = hands[Math.floor(Math.random() * hands.length)];
         const guild = m.channel.guild;
         if (!guild) {
             return;
@@ -99,7 +98,7 @@ module.exports = {
             data[guild.id] = {};
             data[guild.id].name = guild.name;
             data[guild.id].owner = guild.ownerID;
-            Bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${hand}`).then(msg => {
+            Bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${utils.hands.ok()}`).then(msg => {
                 return setTimeout(() => {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

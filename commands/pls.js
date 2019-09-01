@@ -39,7 +39,7 @@ async function pls(bot, m, args, prefix) {
         for (let mention of m.mentions) {
             m.guild.addMemberRole(mention.id, conf.roles.role2, "Daddy said shush");
         }
-        m.reply(utils.hand());
+        m.reply(utils.hands.ok());
         m.deleteIn(5000);
     }
     if (subcommand === "unmute" && m.mentions.length > 0) {
@@ -50,7 +50,7 @@ async function pls(bot, m, args, prefix) {
         for (let mention of m.mentions) {
             m.guild.removeMemberRole(mention.id, conf.roles.role2, "Daddy said speak");
         }
-        m.reply(utils.hand());
+        m.reply(utils.hands.ok());
         m.deleteIn(5000);
     }
 }

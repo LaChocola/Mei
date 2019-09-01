@@ -13,8 +13,6 @@ module.exports = {
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         var linkArray = [];
         var id = mentioned.id;
-        var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-        var hand = hands[Math.floor(Math.random() * hands.length)];
         if (!data.people[id]) {
             data.people[id] = {};
             data.people[id].links = {};
@@ -40,7 +38,7 @@ module.exports = {
                 }
                 data.people[id].links[incoming[0]] = incoming[1];
                 _.save(data);
-                Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand);
+                Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + utils.hands.ok());
                 return;
             }
         }
@@ -54,7 +52,7 @@ module.exports = {
             if (data.people[id].links[incoming[0]]) {
                 delete data.people[id].links[incoming[0]];
                 _.save(data);
-                Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + ":** from your links " + hand);
+                Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + ":** from your links " + utils.hands.ok());
                 return;
             }
             else {

@@ -4,6 +4,7 @@ const yt = require("ytdl-core");
 const progress = require("progress-string");
 const ytsr = require("ytsr");
 
+const utils = require("../utils");
 const conf = require("../conf");
 const _ = require("../servers");
 
@@ -29,8 +30,6 @@ module.exports = {
             Bot.createMessage(m.channel.id, `Please say what you want to do. e.g. \`${prefix}play <youtube link>\`, \`${prefix}play queue\`, \`${prefix}play current\`, or \`${prefix}play stop\``);
             return;
         }
-        var hands = [":wave::skin-tone-1:", ":wave::skin-tone-2:", ":wave::skin-tone-3:", ":wave::skin-tone-4:", ":wave::skin-tone-5:", ":wave:"];
-        var hand = hands[Math.floor(Math.random() * hands.length)];
         var isNewQueue = false;
         function msToHMS(ms) {
             // Get hours
@@ -51,7 +50,7 @@ module.exports = {
             data[guild.id] = {};
             data[guild.id].name = guild.name;
             data[guild.id].owner = guild.ownerID;
-            Bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${hand}`).then((msg) => {
+            Bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${utils.hands.wave()}`).then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                 }, 5000);
@@ -539,7 +538,7 @@ module.exports = {
                                             data[guild.id].music.current = {};
                                             _.save(data);
                                             _.load();
-                                            Bot.createMessage(m.channel.id, "Thanks for Listening " + hand).then((msg) => {
+                                            Bot.createMessage(m.channel.id, "Thanks for Listening " + utils.hands.wave()).then((msg) => {
                                                 close = true;
                                                 return setTimeout(function() {
                                                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

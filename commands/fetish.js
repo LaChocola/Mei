@@ -22,8 +22,6 @@ module.exports = {
         let commonLikes = [];
         let commonDislikes = [];
         var id = mentioned.id;
-        var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-        var hand = hands[Math.floor(Math.random() * hands.length)];
         if (!data.people[id]) {
             data.people[id] = {};
         }
@@ -93,7 +91,7 @@ module.exports = {
             if (data.people[id].fetishes[capFirstLetter(incoming[0])]) {
                 delete data.people[id].fetishes[capFirstLetter(incoming[0])];
                 _.save(data);
-                Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your fetish list" + hand).then((msg) => {
+                Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your fetish list" + utils.hands.ok()).then((msg) => {
                     setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -157,7 +155,7 @@ module.exports = {
                 }
                 data.people[id].fetishes[incoming[0]] = "dislike";
                 _.save(data);
-                Bot.createMessage(m.channel.id, "Added Dislike: **" + incoming[0] + "** " + hand).then((msg) => {
+                Bot.createMessage(m.channel.id, "Added Dislike: **" + incoming[0] + "** " + utils.hands.ok()).then((msg) => {
                     setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -168,7 +166,7 @@ module.exports = {
             else {
                 data.people[id].fetishes[incoming[0]] = "like";
                 _.save(data);
-                Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand).then((msg) => {
+                Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + utils.hands.ok()).then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

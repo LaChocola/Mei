@@ -1,13 +1,12 @@
 "use strict";
 
+const utils = require("../utils");
 const _ = require("../servers");
 
 const data = _.load();
 
 module.exports = {
     main(Bot, m, args, prefix) {
-        const hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-        const hand = hands[Math.floor(Math.random() * hands.length)];
         const downs = [":thumbsdown::skin-tone-1:", ":thumbsdown::skin-tone-2:", ":thumbsdown::skin-tone-3:", ":thumbsdown::skin-tone-4:", ":thumbsdown::skin-tone-5:", ":thumbsdown:"];
         const down = downs[Math.floor(Math.random() * downs.length)];
         const guild = m.channel.guild;
@@ -75,7 +74,7 @@ module.exports = {
                 if (roles[content]) {
                     var roleID = roles[content];
                     Bot.addGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
-                        return Bot.createMessage(m.channel.id, hand + " Successful added: " + content).then(msg => {
+                        return Bot.createMessage(m.channel.id, utils.hands.ok() + " Successful added: " + content).then(msg => {
                             return setTimeout(() => {
                                 Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
                             }, 7000) && setTimeout(() => {
@@ -119,7 +118,7 @@ module.exports = {
                     }
                 }
                 if (found.length > 0) {
-                    Bot.createMessage(m.channel.id, hand + " Successfuly added: " + found.join(", ")).then(msg => {
+                    Bot.createMessage(m.channel.id, utils.hands.ok() + " Successfuly added: " + found.join(", ")).then(msg => {
                         return setTimeout(() => {
                             Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
                         }, 5000) && setTimeout(() => {
@@ -146,7 +145,7 @@ module.exports = {
                 if (roles[content]) {
                     roleID = roles[content];
                     Bot.removeGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
-                        return Bot.createMessage(m.channel.id, hand + " Successful removed: " + content).then(msg => {
+                        return Bot.createMessage(m.channel.id, utils.hands.ok() + " Successful removed: " + content).then(msg => {
                             return setTimeout(() => {
                                 Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
                             }, 5000) && setTimeout(() => {
@@ -181,7 +180,7 @@ module.exports = {
                     }
                 }
                 if (found.length > 0) {
-                    Bot.createMessage(m.channel.id, hand + " Successfuly removed: " + found.join(", ")).then(msg => {
+                    Bot.createMessage(m.channel.id, utils.hands.ok() + " Successfuly removed: " + found.join(", ")).then(msg => {
                         return setTimeout(() => {
                             Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
                         }, 5000) && setTimeout(() => {

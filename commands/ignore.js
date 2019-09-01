@@ -11,10 +11,8 @@ module.exports = {
         if (m.author.id !== conf.users.owner) {
             return;
         }
-        var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-        var hand = hands[Math.floor(Math.random() * hands.length)];
         var name1 = m.cleanContent.replace(`${prefix}ignore`, "").replace(/\bundo\b/, "").trim().split(" | ");
-        var member = m.guild.members.find(m => utils.isSameMember(m, name1[0]) || isSameMember(m, name1[1]));
+        var member = m.guild.members.find(m => utils.isSameMember(m, name1[0]) || utils.isSameMember(m, name1[1]));
         var mentioned = m.mentions[0] || member;
         var id;
         var name;
@@ -69,7 +67,7 @@ module.exports = {
             if (data.banned.global[id]) {
                 delete data.banned.global[id];
                 _.save(data);
-                Bot.createMessage(m.channel.id, `Welcome back, ${name} (${id}) ${hand}`).then((msg) => {
+                Bot.createMessage(m.channel.id, `Welcome back, ${name} (${id}) ${utils.hands.ok()}`).then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -98,7 +96,7 @@ module.exports = {
         console.log(id, reason, data.banned.global);
 
         _.save(data);
-        Bot.createMessage(m.channel.id, `Goodbye, ${name} (${id}) ${hand}`).then((msg) => {
+        Bot.createMessage(m.channel.id, `Goodbye, ${name} (${id}) ${utils.hands.ok()}`).then((msg) => {
             return setTimeout(function() {
                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
