@@ -11,16 +11,27 @@ function extend(bot) {
 
     Object.defineProperty(bot.Message.prototype, "reply", {
         value: async function(text, timeout) {
-            var userMsg = this;
-            var bot = userMsg._client;
-            var channelId = userMsg.channel.id;
-            var botMsg = await bot.createMessage(channelId, text);
+            var m = this;
+            var bot = m._client;
+            var channelId = m.channel.id;
+            var sentMsg = await bot.createMessage(channelId, text);
             if (timeout) {
-                await utils.delay(timeout);
-                bot.deleteMessage(channelId, userMsg.id, "Timeout");
-                bot.deleteMessage(channelId, botMsg.id, "Timeout");
+                sentMsg.deleteIn(timeout);
             }
-            return botMsg;
+            return sentMsg;
+        }
+    });
+
+    Object.defineProperty(bot.Message.prototype, "deleteIn", {
+        value: async function(timeout) {
+            if (!timeout) {
+                return;
+            }
+            var m = this;
+            utils.delay(timeout).then(function() {
+                m.delete("Timeout");
+            });
+            return m;
         }
     });
 }

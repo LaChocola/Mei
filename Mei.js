@@ -213,6 +213,7 @@ bot.on("messageCreate", async function(m) {
         }
         if (m.content.includes("override")) {
             m.reply("Chocola Recognized. Permission overrides engaged. I am at your service~", 2000);
+            m.deleteIn(2000);
         }
     }
     updateTimestamps();

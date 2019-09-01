@@ -35,6 +35,7 @@ module.exports = {
 
         if (!member) {
             m.reply("I could not find that member or id in this server", 5000);
+            m.deleteIn(5000);
             return;
         }
 
