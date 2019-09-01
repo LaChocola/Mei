@@ -1,33 +1,37 @@
 "use strict";
 
-const fs = require("fs");
+const commands = require("../commands");
+
+var embedLimit = 1800;
+
+function formatHelp(prefix, name, help) {
+    return "`" + prefix + name + "` " + help + ".\n";
+}
 
 module.exports = {
-    main(Bot, m, args, prefix) {
-        function format(file, help) {
-            const line = "`" + prefix + file.replace(".js", "") + "` " + help + ".";
-            return line;
-        }
-        const files = fs.readdirSync("./commands/");
-        const lines = [];
-        files.forEach(file => {
-            if (lines.length < 1800) {
-                const cmd = require("./" + file);
-                if (!cmd.hidden) {
-                    lines.push(format(file, cmd.help));
-                }
-            }
-        });
-        const message = lines.join("\n");
-        console.log(message.length);
-        console.log(message);
+    main(bot, m, args, prefix) {
+        const commandNames = commands.list();
+        var loadedCommands = commandNames.map(n => commands.load(n));
+        var publicCommands = loadedCommands.filter(c => !c.hidden);
+        var lines = publicCommands.map(c => formatHelp(prefix, c.name, c.help));
 
-        Bot.createMessage(m.channel.id, {
-            embed: {
-                color: 0x5A459C,
-                description: message
+        var embeds = [""];
+        for (let line of lines) {
+            // If adding a command to this message would make things too long, start a new message
+            if (embeds[embeds.length - 1].length + line.length > embedLimit) {
+                embeds.push("");
             }
-        });
+            embeds[embeds.length - 1] += line;
+        }
+
+        for (let embed of embeds) {
+            m.channel.createMessage({
+                embed: {
+                    color: 0x5A459C,
+                    description: embed
+                }
+            });
+        }
     },
     help: "List of commands"
 };

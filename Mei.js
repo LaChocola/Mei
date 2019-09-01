@@ -5,7 +5,6 @@ process.on("unhandledRejection", (err, promise) => {
     console.error(err ? err.stack : promise);
 });
 
-const fs = require("fs");
 const reload = require("require-reload")(require);
 const moment = require("moment");
 // colors module extends string prototype
@@ -13,11 +12,13 @@ const colors = require("colors");  // eslint-disable-line no-unused-vars
 const Eris = require("eris");
 
 const botplus = require("./botplus");
+const Profiler = require("./utils/Profiler");
+const commands = require("./commands");
 
 const conf = require("./conf");
-const _ = require("./data.js");
+const globalDataManager = require("./data.js");
 const ppl = require("./people.js");
-const servers = reload("./servers.js");
+const guildDataManager = reload("./servers.js");
 
 console.log("Loading...");
 
@@ -28,16 +29,12 @@ if (!conf.tokens.mei) {
 }
 var bot = Eris(conf.tokens.mei);
 
-var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-var hand = hands[Math.floor(Math.random() * hands.length)];
-var commandContentsMap = {};
-
 bot.on("ready", async function() {
     console.log("Mei is running");
 });
 
 bot.on("guildBanAdd", async function(guild, user) {
-    var server = servers.load();
+    var server = guildDataManager.load();
     if (server[guild.id]) {
         if (server[guild.id].notifications) {
             if (server[guild.id].notifications.banLog) {
@@ -99,7 +96,7 @@ bot.on("guildBanAdd", async function(guild, user) {
 });
 
 bot.on("guildBanRemove", async function(guild, user) {
-    var server = servers.load();
+    var server = guildDataManager.load();
     if (server[guild.id]) {
         if (server[guild.id].notifications) {
             if (server[guild.id].notifications.banLog) {
@@ -149,6 +146,49 @@ bot.on("guildBanRemove", async function(guild, user) {
     }
 });
 
+/*
+function createFakeGuild(m) {
+    console.debug(`${m.author.username}#${m.author.discriminator} (${m.author.id}): ${m.content}`);
+
+    if (m.author.id !== conf.users.owner) {
+        console.debug("Guild 1:", m.channel.guild);
+        var roles = new Eris.Collection(Eris.Role);
+        var members = new Eris.Collection(Eris.User);
+        var channels = new Eris.Collection(Eris.Channel);
+        members.add(m.author, Eris.User, true);
+        channels.add(m.channel, Eris.Channel, true);
+        roles.add({ name: "fakeRole", id: "00001" }, Eris.Role, true);
+        console.debug("Guild 2:", m.channel.guild);
+    }
+}
+*/
+
+function trackUsage(commandName, authorId, profiler) {
+    var globalData = globalDataManager.load(); // Track command usage in ../db/data.json
+
+    profiler.mark();
+
+    globalData.commands.totalRuns++;
+
+    if (!globalData.commands[commandName]) {
+        globalData.commands[commandName] = {
+            totalUses: 0,
+            users: {}
+        };
+    }
+
+    var commandData = globalData.commands[commandName];
+    if (!commandData.users[authorId]) {
+        commandData.users[authorId] = 0;
+    }
+    commandData.users[authorId]++;
+    commandData.totalUses++;
+
+    profiler.mark();
+
+    globalDataManager.save(globalData);
+}
+
 // Handle commands
 bot.on("messageCreate", async function(m) {
     // Ignore messages from bots
@@ -156,186 +196,78 @@ bot.on("messageCreate", async function(m) {
         return;
     }
 
-    const timestamps = [Date.now()];
-    function updateTimestamps() {
-        const latest = timestamps[timestamps.length - 1];
-        const now = Date.now();
-        timestamps[timestamps.length - 1] = now - latest;
-        timestamps.push(now);
-    }
-    var data = _.load();
-    if (data.banned.global[m.author.id]) {
-        return;
-    }
-    updateTimestamps();
-    if (!m.channel.guild) {
-        console.log(`${m.author.username}#${m.author.discriminator} (${m.author.id}): ${m.content}`);
-        bot.getDMChannel(m.author.id).then(function(DMchannel) {
-            bot.createMessage(DMchannel.id, "Your messages do not serve me here, bug.");
-            return;
-        }).catch((err) => {
-            if (err.code == 50007) {
+    var guild = m.channel.guild;
+    if (!guild) {
+        // createFakeGuild(m);
+        try {
+            await bot.getDMChannel(m.author.id).createMessage("Your messages do not serve me here, bug.");
+        }
+        catch (err) {
+            if (err.code === 50007) {
                 return;
             }
-            console.log(err);
-        });
-        if (m.author.id !== conf.users.owner) {
-            console.log("Guild 1:", m.channel.guild);
-            var roles = new Eris.Collection(Eris.Role);
-            var members = new Eris.Collection(Eris.User);
-            var channels = new Eris.Collection(Eris.Channel);
-            members.add(m.author, Eris.User, true);
-            channels.add(m.channel, Eris.Channel, true);
-            roles.add({ "name": "fakeRole", "id": "00001" }, Eris.Role, true);
-            console.log(`Guild 2: ${m.channel.guild}`);
+            console.error(err);
         }
         return;
-    }
-    updateTimestamps();
-    var server = servers.load();
-    var prefix = conf.prefix;
-    if (server[m.channel.guild.id] && server[m.channel.guild.id].game && server[m.channel.guild.id].game.channel == m.channel.id && server[m.channel.guild.id].game.player == m.author.id) {
-        if (server[m.channel.guild.id].game.active && server[m.channel.guild.id].game.choices.includes(m.content)) {
-            m.content = prefix + "t " + m.content;
-        }
     }
 
-    if (m.author.id === conf.users.owner && m.content.includes("pls")) {
-        if (m.content.includes("stop")) {
-            bot.createMessage(m.channel.id, "Let me rest my eyes for a moment").then((msg) => {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout").then(() => {
-                        process.exit(0);
-                    });
-                }, 1500);
-            });
-        }
-        if (m.content.includes("override")) {
-            m.reply("Chocola Recognized. Permission overrides engaged. I am at your service~", 2000);
-            m.deleteIn(2000);
-        }
-    }
-    updateTimestamps();
-    if (server[m.channel.guild.id]) {
-        if (server[m.channel.guild.id].prefix) {
-            prefix = server[m.channel.guild.id].prefix;
-        }
-    }
-    if (m.guild.id === "373589430448947200") {
-        if (m.content.includes("you joined") === true && m.author.id === "155149108183695360") { // If shit bot says "you joined" in #welcome
-            bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "375633311449481218", "Removed from role assign"); // remove the No channel access role
-        }
-    }
-    if (m.author.id === conf.users.owner && m.content.includes("pls")) {
-        if (m.content.includes(" mute") && m.mentions.length > 0) {
-            if (m.mentions.length > 1) {
-                let mentions = m.mentions;
-                for (const mention of mentions) {
-                    bot.addGuildMemberRole(m.channel.guild.id, mention.id, "363854631035469825", "Daddy said shush").then(() => {
-                        return bot.createMessage(m.channel.id, hand).then((m) => {
-                            return setTimeout(function() {
-                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            }, 5000);
-                        });
-                    });
-                }
-                return;
-            }
-            bot.addGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "363854631035469825", "Daddy said shush").then(() => {
-                return bot.createMessage(m.channel.id, hand).then((m) => {
-                    return setTimeout(function() {
-                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                    }, 5000);
-                });
-            });
-        }
-        if (m.content.includes(" unmute") && m.mentions.length > 0) {
-            if (m.mentions.length > 1) {
-                let mentions = m.mentions;
-                for (const mention of mentions) {
-                    bot.removeGuildMemberRole(m.channel.guild.id, mention.id, "363854631035469825", "Daddy said speak").then(() => {
-                        return bot.createMessage(m.channel.id, hand).then((m) => {
-                            return setTimeout(function() {
-                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            }, 5000);
-                        });
-                    });
-                }
-                return;
-            }
-            bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "363854631035469825", "Daddy said speak").then(() => {
-                return bot.createMessage(m.channel.id, hand).then((m) => {
-                    return setTimeout(function() {
-                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                    }, 5000);
-                });
-            });
-        }
-    }
-    if (m.channel.guild.id === "196027622944145408" && m.content.startsWith(`${prefix}play`)) {
+    var profiler = new Profiler();
+
+    var guildDataList = guildDataManager.load();
+    var guildData = guildDataList[guild.id];
+
+    profiler.mark();
+
+    var globalData = globalDataManager.load();
+    if (globalData && globalData.banned && globalData.banned.global && globalData.banned.global[m.author.id]) {
         return;
     }
-    updateTimestamps();
-    var loguser = `${m.author.username}#${m.author.discriminator}`.magenta.bold;
-    var logserver = `${m.channel.guild.name}`.cyan.bold || "Direct Message".cyan.bold;
-    var logchannel = `#${m.channel.name}`.green.bold;
-    var logdivs = [" > ".blue.bold, " - ".blue.bold];
-    var commands = fs.readdirSync("./commands/");
-    updateTimestamps();
-    if (m.content.startsWith(prefix)) {
-        var command = m.content.split(" ")[0].replace(prefix, "").toLowerCase();
-        if (commands.indexOf(command + ".js") > -1) {
-            data = _.load(); // Track command usage in ../db/data.json
-            updateTimestamps();
-            data.commands.totalRuns++;
-            if (!data.commands[command]) {
-                data.commands[command] = {};
-                data.commands[command].totalUses = 0;
-                data.commands[command].users = {};
-            }
-            if (!data.commands[command].users[m.author.id]) {
-                data.commands[command].users[m.author.id] = 0;
-            }
-            data.commands[command].users[m.author.id]++;
-            data.commands[command].totalUses++;
-            updateTimestamps();
-            _.save(data);
-            updateTimestamps();
-            const commandContents = fs.readFileSync("./commands/" + command + ".js");
-            var cmd;
-            if (commandContentsMap[command] !== commandContents) {
-                cmd = reload("./commands/" + command + ".js");
-                commandContentsMap[command] = commandContents;
-            }
-            else {
-                cmd = require("./commands/" + command + ".js");
-            }
-            updateTimestamps();
-            var args = m.content.replace(/\[\?\]/ig, "").split(" ");
-            args.splice(0, 1);
-            args = args.join(" ");
-            var logcmd = `${prefix}${command}`.bold;
-            var logargs = `${args}`.bold;
-            try {
-                updateTimestamps();
-                timestamps.pop();
-                fs.appendFileSync("db/timestamps.txt", timestamps.reduce((a, b) => a + b) + "ms | " + timestamps.join(", ") + "\n");
-                console.log("CMD".black.bgGreen + " " + loguser + logdivs[1] + logserver + logdivs[0] + logchannel + " " + logcmd.blue);
-                if (args) {
-                    console.log("ARG".black.bgCyan + " " + logargs.blue.bold);
-                }
-                cmd.main(bot, m, args, prefix);
-            }
-            catch (err) {
-                console.log(err);
-                bot.createMessage(m.channel.id, "An error has occured.");
-                console.log("CMD".black.bgRed + " " + loguser + logdivs[1] + logserver + logdivs[0] + logchannel + " " + logcmd.red);
-                if (args) {
-                    console.log("ARG".black.bgCyan + " " + logargs.red.bold);
-                }
-                console.log("");
-            }
+
+    profiler.mark();
+
+    var prefix = guildData && guildData.prefix || conf.prefix;
+
+    // WTF is this for?
+    if (guildData
+        && guildData.game
+        && guildData.game.channel === m.channel.id
+        && guildData.game.player === m.author.id
+        && guildData.game.active
+        && guildData.game.choices.includes(m.content)) {
+        m.content = prefix + "t " + m.content;
+    }
+
+    profiler.mark();
+
+    var commandNames = commands.list();
+
+    profiler.mark();
+
+    if (!m.content.startsWith(prefix)) {
+        return;
+    }
+
+    var args = m.content.substring(prefix.length).trim().split(/\s+/g);
+    var commandName = args.shift().toLowerCase();
+    //var command = m.content.split(" ")[0].replace(prefix, "").toLowerCase();
+    if (!commandNames.includes(commandName)) {
+        return;
+    }
+
+    trackUsage(commandName, m.author.id, profiler);
+
+    profiler.mark();
+
+    profiler.save();
+
+    commands.run(commandName, bot, m, prefix);
+});
+
+// Automatically remove the "No channel access" role from users on r/Macrophilia
+bot.on("messageCreate", async function(m) {
+    if (m.channel.guild.id === conf.guilds.r_macrophilia) {
+        if (m.content.includes("you joined") === true && m.author.id === conf.users.dyno) { // If shit bot says "you joined" in #welcome
+            m.channel.guild.removeMemberRole(m.mentions[0].id, conf.roles.role1, "Removed from role assign"); // remove the No channel access role
         }
     }
 });
@@ -362,7 +294,7 @@ bot.on("messageCreate", async function(m) {
     var dmChannel = await bot.getDMChannel(conf.users.chocola);
 
     try {
-        await bot.createMessage(dmChannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`);
+        await bot.createMessage(dmChannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}>`);
         await bot.createMessage(dmChannel.id, m.content);
     }
     catch (err) {
@@ -374,7 +306,7 @@ bot.on("messageCreate", async function(m) {
 });
 
 bot.on("guildMemberAdd", async function(guild, member) {
-    var server = servers.load();
+    var server = guildDataManager.load();
     var name = undefined;
     name = guild[name]; // TODO: name is undefined...
     var count = guild.memberCount - guild.members.filter(m => m.bot).length;
@@ -420,7 +352,7 @@ bot.on("guildMemberAdd", async function(guild, member) {
 });
 
 bot.on("guildMemberRemove", async function(guild, member) {
-    var server = servers.load();
+    var server = guildDataManager.load();
     var count = guild.memberCount - guild.members.filter(m => m.bot).length;
     if (server[guild.id]) {
         if (server[guild.id].notifications) {
@@ -466,7 +398,7 @@ bot.on("guildCreate", async function(guild) {
             }
         });
     }).catch((err) => {
-        if (err.code == 50007) {
+        if (err.code === 50007) {
             return;
         }
         console.log(err);
@@ -487,7 +419,7 @@ bot.on("guildDelete", async function(guild) {
             }
         });
     }).catch((err) => {
-        if (err.code == 50007) {
+        if (err.code === 50007) {
             return;
         }
         console.log(err);
@@ -496,7 +428,7 @@ bot.on("guildDelete", async function(guild) {
 
 bot.on("messageReactionAdd", async function(m, emoji, userID) {
     try {
-        var server = servers.load();
+        var server = guildDataManager.load();
 
         m = await bot.getMessage(m.channel.id, m.id);
         if (emoji.name === "😍") {
@@ -601,18 +533,18 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                 }
             }
         }
-        if (server[m.channel.guild.id]) {
-            if (server[m.channel.guild.id].giveaways) {
-                if (server[m.channel.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== conf.users.bot && userID !== server[m.channel.guild.id].giveaways.creator) {
-                    if (m.id === server[m.channel.guild.id].giveaways.mID) {
-                        server[m.channel.guild.id].giveaways.current.contestants[userID] = "entered";
-                        servers.save(server);
+        if (server[m.guild.id]) {
+            if (server[m.guild.id].giveaways) {
+                if (server[m.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== conf.users.bot && userID !== server[m.guild.id].giveaways.creator) {
+                    if (m.id === server[m.guild.id].giveaways.mID) {
+                        server[m.guild.id].giveaways.current.contestants[userID] = "entered";
+                        guildDataManager.save(server);
                         return;
                     }
                 }
             }
             people = ppl.load();
-            if (server[m.channel.guild.id].hoards !== false && emoji.name !== "😍") {
+            if (server[m.guild.id].hoards !== false && emoji.name !== "😍") {
                 if (people.people[userID] && people.people[userID].hoard && people.people[userID].hoard[emoji.name]) {
                     m = await bot.getMessage(m.channel.id, m.id).then((m) => {
                         if (m.attachments.length === 0 && m.embeds.length === 0) {
@@ -713,7 +645,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
 });
 
 bot.on("messageReactionRemove", async function(m, emoji, userID) {
-    var server = servers.load();
+    var server = guildDataManager.load();
     m = await bot.getMessage(m.channel.id, m.id).then(async (m) => {
         var id = userID;
         var people = ppl.load();
@@ -787,20 +719,20 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
                 return;
             }
         }
-        if (server[m.channel.guild.id]) {
-            if (server[m.channel.guild.id].giveaways) {
-                if (server[m.channel.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== conf.users.bot && userID !== server[m.channel.guild.id].giveaways.creator) {
-                    if (m.id === server[m.channel.guild.id].giveaways.mID) {
-                        if (server[m.channel.guild.id].giveaways.current.contestants[userID]) {
-                            delete server[m.channel.guild.id].giveaways.current.contestants[userID];
-                            servers.save(server);
+        if (server[m.guild.id]) {
+            if (server[m.guild.id].giveaways) {
+                if (server[m.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== conf.users.bot && userID !== server[m.guild.id].giveaways.creator) {
+                    if (m.id === server[m.guild.id].giveaways.mID) {
+                        if (server[m.guild.id].giveaways.current.contestants[userID]) {
+                            delete server[m.guild.id].giveaways.current.contestants[userID];
+                            guildDataManager.save(server);
                             return;
                         }
                     }
                 }
             }
             people = ppl.load();
-            if (server[m.channel.guild.id].hoards !== false && emoji.name !== "😍") {
+            if (server[m.guild.id].hoards !== false && emoji.name !== "😍") {
                 if (!people.people[id]) {
                     return;
                 }

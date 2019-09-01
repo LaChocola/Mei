@@ -1,9 +1,9 @@
 "use strict";
 
-const delay = require("./delay");
-const isSameMember = require("./isSameMember");
+const glob = require("glob");
+const path = require("path");
 
-module.exports = {
-    delay,
-    isSameMember
-};
+glob.sync(path.join(__dirname, "*.js"), { ignore: ["**/index.js"] }).forEach(function(file) {
+    var name = path.parse(file).name;
+    module.exports[name] = require(path.resolve(file));
+});

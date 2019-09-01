@@ -4,12 +4,18 @@ const yt = require("ytdl-core");
 const progress = require("progress-string");
 const ytsr = require("ytsr");
 
+const conf = require("../conf");
 const _ = require("../servers");
 
 var data = _.load();
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {
+        // Disable play command for this guild?
+        if (m.guild.id === conf.guilds.guild2) {
+            return;
+        }
+
         // this is so fucking long. Basically take the video code out of any form of youtube link
         var code = undefined;
         if (/(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/.exec(args)) {

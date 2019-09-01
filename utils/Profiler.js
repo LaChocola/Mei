@@ -34,10 +34,12 @@ class Profiler {
         return `${this.elapsed}ms | ${this.timestamps.map(t => t.time).join(", ")}`;
     }
 
+    // Supports optional labels for future expansion
     mark(label) {
         var now = Date.now();
+        label = label || String(this.timestamps.length + 1);
         this.timestamps.push({
-            label: label || String(now),    // Supports optional labels for future expansion
+            label: label,    
             time: now
         });
     }
