@@ -2,15 +2,12 @@
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
-        var roleSearch = function(role) {
-            var roleName = role.name;
-            if (roleName != "undefined") {
-                console.log(`"${roleName}": "${role.id}",`);
-                return roleName;
-            }
-        };
-        var roles = m.guild.roles.map(roleSearch);
-        Bot.createMessage(m.channel.id, roles.join("  |  "));
+        var roles = m.guild.roles;
+        var roleNames = roles.map(r => r.name).join("  |  ");
+        var roleDumps = roles.map(r => `"${r.name}": "${r.id}",`).join("\n");
+
+        console.log(roleDumps);
+        Bot.createMessage(m.channel.id, roleNames);
     },
     help: "Role list"
 };
