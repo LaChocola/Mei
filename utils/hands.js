@@ -9,24 +9,31 @@ var skinTones = [
     ""
 ];
 
-var emojis = [
+var emojis = {
     ok: ":ok_hand:",
     wave: ":wave:"
-];
+};
 
 function pick(options) {
     return options[Math.floor(Math.random() * options.length)];
 }
 
 function hand(emojiName) {
-    var emoji = hands[emojiName];
+    var emoji = emojis[emojiName];
     if (!emoji) {
         return "";
     }
     return emoji + pick(skinTones);
 }
 
-module.exports = {
-    ok: () => hand("ok"),
-    wave: () => hand("wave")
-};
+function register(emoji) {
+    module.exports[emoji] = () => hand(emoji);
+}
+
+function initialize() {
+    for (let emoji in emojis) {
+        register(emoji);
+    }
+}
+initialize();
+
