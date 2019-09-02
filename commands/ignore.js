@@ -2,9 +2,9 @@
 
 const conf = require("../conf");
 const utils = require("../utils");
-const _ = require("../data");
+const dbs = require("../dbs");
 
-var data = _.load();
+var globalData = dbs.global.load();
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {
@@ -55,7 +55,7 @@ module.exports = {
         }
         args = args.split(" ");
         if (args.indexOf("undo") > -1) {
-            if (!data.banned.global[id]) {
+            if (!globalData.banned.global[id]) {
                 Bot.createMessage(m.channel.id, `The ID "${id}" was not found in the list of ignored users. Nothing to undo.`).then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -64,9 +64,9 @@ module.exports = {
                 });
                 return;
             }
-            if (data.banned.global[id]) {
-                delete data.banned.global[id];
-                _.save(data);
+            if (globalData.banned.global[id]) {
+                delete globalData.banned.global[id];
+                dbs.global.save(globalData);
                 Bot.createMessage(m.channel.id, `Welcome back, ${name} (${id}) ${utils.hands.ok()}`).then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -77,7 +77,7 @@ module.exports = {
             return;
         }
         if (id) {
-            if (data.banned.global[id]) {
+            if (globalData.banned.global[id]) {
                 Bot.createMessage(m.channel.id, `${name} (${id}) is already in the ignored users list. Nothing to add.`).then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -87,15 +87,15 @@ module.exports = {
                 return;
             }
             if (!reason) {
-                data.banned.global[id] = "No Reason specified";
+                globalData.banned.global[id] = "No Reason specified";
             }
             if (reason) {
-                data.banned.global[id] = reason;
+                globalData.banned.global[id] = reason;
             }
         }
-        console.log(id, reason, data.banned.global);
+        console.log(id, reason, globalData.banned.global);
 
-        _.save(data);
+        dbs.global.save(globalData);
         Bot.createMessage(m.channel.id, `Goodbye, ${name} (${id}) ${utils.hands.ok()}`).then((msg) => {
             return setTimeout(function() {
                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

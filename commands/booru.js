@@ -4,9 +4,9 @@ const booru = require("booru");
 const request = require("request").defaults({ jar: true });
 const cheerio = require("cheerio");
 
-const _ = require("../people");
+const dbs = require("../dbs");
 
-var people = _.load();
+var userDb = dbs.user.load();
 
 module.exports = {
     main(Bot, m, args, prefix) {
@@ -89,28 +89,28 @@ module.exports = {
                 args.splice(e[0], 1);
             }
         }
-        if (!people.people[id]) {
-            people.people[id] = {};
-            _.save(people);
-            people = _.load();
+        if (!userDb.people[id]) {
+            userDb.people[id] = {};
+            dbs.user.save(userDb);
+            userDb = dbs.user.load();
         }
-        if (people.people[id]) {
-            if (!people.people[id].fetishes) {
-                people.people[id].fetishes = {};
-                _.save(people);
-                people = _.load();
+        if (userDb.people[id]) {
+            if (!userDb.people[id].fetishes) {
+                userDb.people[id].fetishes = {};
+                dbs.user.save(userDb);
+                userDb = dbs.user.load();
             }
-            if (people.people[id].fetishes) {
-                if (people.people[id].fetishes.Furry == "like") {
+            if (userDb.people[id].fetishes) {
+                if (userDb.people[id].fetishes.Furry == "like") {
                     furry = true;
                 }
-                if (people.people[id].fetishes.Male == "like") {
+                if (userDb.people[id].fetishes.Male == "like") {
                     male = true;
                 }
-                if (people.people[id].fetishes.Scat == "like") {
+                if (userDb.people[id].fetishes.Scat == "like") {
                     scat = true;
                 }
-                if (people.people[id].fetishes.Booru == "like") {
+                if (userDb.people[id].fetishes.Booru == "like") {
                     scat = true;
                     male = true;
                     furry = true;
@@ -1192,7 +1192,7 @@ module.exports = {
                     "zoom": "dislike",
                     "みとん": "dislike"
                 };
-                const fetishes = people.people[id].fetishes;
+                const fetishes = userDb.people[id].fetishes;
                 const lowerOther = Object.entries(fetishes).map(v => [v[0].toLowerCase(), v[1]]).reduce((map, val) => {
                     map[val[0]] = val[1];
                     return map;

@@ -6,9 +6,9 @@ const ytsr = require("ytsr");
 
 const utils = require("../utils");
 const conf = require("../conf");
-const _ = require("../servers");
+const dbs = require("../dbs");
 
-var data = _.load();
+var guildDb = dbs.guild.load();
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {
@@ -46,33 +46,29 @@ module.exports = {
             return time.map(n => n.toString().padStart(2, "0")).join(":");
         }
         var guild = m.channel.guild;
-        if (!data[guild.id]) {
-            data[guild.id] = {};
-            data[guild.id].name = guild.name;
-            data[guild.id].owner = guild.ownerID;
+        if (!guildDb[guild.id]) {
+            guildDb[guild.id] = {};
+            guildDb[guild.id].name = guild.name;
+            guildDb[guild.id].owner = guild.ownerID;
             Bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${utils.hands.wave()}`).then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                 }, 5000);
             });
-            _.save(data);
-            _.load();
+            dbs.guild.save(guildDb);
         }
         // I am bad with storage, I know
-        if (!data[guild.id].music) {
-            data[guild.id].music = {};
-            _.save(data);
-            _.load();
+        if (!guildDb[guild.id].music) {
+            guildDb[guild.id].music = {};
+            dbs.guild.save(guildDb);
         }
-        if (!data[guild.id].music.queue) {
-            data[guild.id].music.queue = {};
-            _.save(data);
-            _.load();
+        if (!guildDb[guild.id].music.queue) {
+            guildDb[guild.id].music.queue = {};
+            dbs.guild.save(guildDb);
         }
-        if (!data[guild.id].music.current) {
-            data[guild.id].music.current = {};
-            _.save(data);
-            _.load();
+        if (!guildDb[guild.id].music.current) {
+            guildDb[guild.id].music.current = {};
+            dbs.guild.save(guildDb);
         }
         if (m.member.voiceState.channelID) { // User is in Voice Channel
             Bot.joinVoiceChannel(m.member.voiceState.channelID).then(async function(voiceConnection) { // Join user voice channel
@@ -96,9 +92,9 @@ module.exports = {
                                 voiceConnection.stopPlaying();
                                 return;
                             }
-                            if (args.toLowerCase().includes("current") || ((args.toLowerCase().includes("queue") || args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list=")) && Object.entries(data[guild.id].music.queue).length < 1)) { // someone asks for current song info
+                            if (args.toLowerCase().includes("current") || ((args.toLowerCase().includes("queue") || args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list=")) && Object.entries(guildDb[guild.id].music.queue).length < 1)) { // someone asks for current song info
                                 var playTime = voiceConnection.current.playTime;
-                                yt.getInfo("https://www.youtube.com/watch?v=" + data[guild.id].music.current.code).then(async function(info) {
+                                yt.getInfo("https://www.youtube.com/watch?v=" + guildDb[guild.id].music.current.code).then(async function(info) {
                                     info = await info;
                                     var start = playTime;
                                     var end = +info.length_seconds * 1000;
@@ -110,11 +106,11 @@ module.exports = {
                                             return "+".repeat(complete.length) + "" + incomplete;
                                         }
                                     });
-                                    if (data[guild.id].music.current.code) {
-                                        var code3 = data[guild.id].music.current.code;
+                                    if (guildDb[guild.id].music.current.code) {
+                                        var code3 = guildDb[guild.id].music.current.code;
                                     }
-                                    if (data[guild.id].music.current.player) {
-                                        var player = data[guild.id].music.current.player;
+                                    if (guildDb[guild.id].music.current.player) {
+                                        var player = guildDb[guild.id].music.current.player;
                                     }
                                     if (!player || !code3) {
                                         Bot.createMessage(m.channel.id, "Nothing is currently playing");
@@ -143,7 +139,7 @@ module.exports = {
                                             ]
                                         }
                                     };
-                                    if ((args.toLowerCase().includes("queue") || (args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list="))) && (Object.entries(data[guild.id].music.queue).length < 1)) {
+                                    if ((args.toLowerCase().includes("queue") || (args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list="))) && (Object.entries(guildDb[guild.id].music.queue).length < 1)) {
                                         console.log(msg.embed.author.name);
                                         msg.embed.author.name = "Nothing Else is Queued.\nCurrently Playing:";
                                         console.log(msg.embed.author.name);
@@ -178,12 +174,12 @@ module.exports = {
                                 // Display queue of songs if it exists
                                 await Bot.sendChannelTyping(m.channel.id);
                                 try {
-                                    console.log(data[guild.id].music.queue);
-                                    if (!Object.entries(data[guild.id].music.queue)) {
+                                    console.log(guildDb[guild.id].music.queue);
+                                    if (!Object.entries(guildDb[guild.id].music.queue)) {
                                         Bot.createMessage(m.channel.id, "The queue is empty right now");
                                     }
                                     else {
-                                        for (const [id, queuer] of Object.entries(data[guild.id].music.queue)) {
+                                        for (const [id, queuer] of Object.entries(guildDb[guild.id].music.queue)) {
                                             var info = await yt.getInfo(`https://www.youtube.com/watch?v=${id}`);
                                             var title = info.title;
                                             songs.push(`${index++}. [${title}](https://www.youtube.com/watch?v=${id}) [${msToHMS(+info.length_seconds * 1000)}]  |  Requested by: ${queuer}`);
@@ -335,11 +331,11 @@ module.exports = {
                                         }, 5000);
                                     });
                                 }
-                                if (data[guild.id].music.queue) {
-                                    if (data[guild.id].music.queue[code]) {
-                                        var queue = Object.keys(data[guild.id].music.queue);
+                                if (guildDb[guild.id].music.queue) {
+                                    if (guildDb[guild.id].music.queue[code]) {
+                                        var queue = Object.keys(guildDb[guild.id].music.queue);
                                         var position = queue.indexOf(code);
-                                        if (data[guild.id].music.queue[position] != code) {
+                                        if (guildDb[guild.id].music.queue[position] != code) {
                                             Bot.createMessage(m.channel.id, "Unable to add that video to the queue at this time.").then((msg) => {
                                                 setTimeout(function() {
                                                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -349,7 +345,7 @@ module.exports = {
                                             return;
                                         }
                                         position++;
-                                        Bot.createMessage(m.channel.id, "That song has already been requested by: **" + data[guild.id].music.queue[code] + "**. It is at queue position: `" + position + "`").then((msg) => {
+                                        Bot.createMessage(m.channel.id, "That song has already been requested by: **" + guildDb[guild.id].music.queue[code] + "**. It is at queue position: `" + position + "`").then((msg) => {
                                             return setTimeout(function() {
                                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -358,7 +354,7 @@ module.exports = {
                                         return;
                                     }
 
-                                    queue = Object.keys(data[guild.id].music.queue);
+                                    queue = Object.keys(guildDb[guild.id].music.queue);
                                     queue = queue.length;
                                     if (queue > 14) {
                                         Bot.createMessage(m.channel.id, "Sorry, only 15 songs are allowed in the queue at a time").then((msg) => {
@@ -370,10 +366,9 @@ module.exports = {
                                         return;
                                     }
                                     if (code) {
-                                        queue = data[guild.id].music.queue;
+                                        queue = guildDb[guild.id].music.queue;
                                         queue[code] = `${m.author.username + "#" + m.author.discriminator}`;
-                                        _.save(data);
-                                        _.load();
+                                        dbs.guild.save(guildDb);
                                     }
                                 }
                                 console.log("final code:", code);
@@ -428,9 +423,8 @@ module.exports = {
                                 Bot.createMessage(m.channel.id, `Sorry, I wasnt able to play a video with the code: ${code}`).then((msg) => {
                                     if (BotVoiceState.channelID) {
                                         Bot.leaveVoiceChannel(m.member.voiceState.channelID);
-                                        data[guild.id].music.current = {};
-                                        _.save(data);
-                                        _.load();
+                                        guildDb[guild.id].music.current = {};
+                                        dbs.guild.save(guildDb);
                                     }
                                     return setTimeout(function() {
                                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -439,7 +433,6 @@ module.exports = {
                                 });
                                 return;
                             }
-                            _.load();
                             var song = yt("https://www.youtube.com/watch?v=" + code, {
                                 filter: "audioonly"
                             });
@@ -447,15 +440,14 @@ module.exports = {
                                 inlineVolume: true
                             });
                             voiceConnection.setVolume(0.3);
-                            data[guild.id].music.current = {};
-                            data[guild.id].music.current.code = code;
-                            data[guild.id].music.current.player = `${m.author.username + "#" + m.author.discriminator}`;
-                            _.save(data);
-                            _.load();
+                            guildDb[guild.id].music.current = {};
+                            guildDb[guild.id].music.current.code = code;
+                            guildDb[guild.id].music.current.player = `${m.author.username + "#" + m.author.discriminator}`;
+                            dbs.guild.save(guildDb);
                             yt.getInfo("https://www.youtube.com/watch?v=" + code, async function(error, info) {
                                 if (error) {
-                                    console.log("Erorr: " + error);
-                                    Bot.createMessage(m.channel.id, `Sorry, I wasnt able to play a video with the code: ${code}`).then((msg) => {
+                                    console.log("Error: " + error);
+                                    Bot.createMessage(m.channel.id, `Sorry, I wasn't able to play a video with the code: ${code}`).then((msg) => {
                                         return setTimeout(function() {
                                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -463,9 +455,8 @@ module.exports = {
                                     });
                                     if (BotVoiceState.channelID) {
                                         Bot.leaveVoiceChannel(m.member.voiceState.channelID);
-                                        data[guild.id].music.current = {};
-                                        _.save(data);
-                                        _.load();
+                                        guildDb[guild.id].music.current = {};
+                                        dbs.guild.save(guildDb);
                                     }
                                     return;
                                 }
@@ -491,20 +482,19 @@ module.exports = {
                         var close = false;
                         // pls ignore all the extra console logs, they are for debugging this
                         voiceConnection.on("end", () => { // when the song ends
-                            var data = _.load();
-                            var queue = Object.keys(data[guild.id].music.queue);
+                            var guildDb = dbs.guild.load();
+                            var queue = Object.keys(guildDb[guild.id].music.queue);
                             if (queue.length > 0 && !voiceConnection.playing) { // if there is another song in the queue, try to play that song
                                 code = queue[0];
                                 voiceConnection.playing = true;
                                 console.log(code);
                                 var valid = yt.validateID(code);
                                 if (!valid || code == undefined) {
-                                    delete data[guild.id].music.queue[queue[0]];
-                                    _.save(data);
-                                    _.load();
+                                    delete guildDb[guild.id].music.queue[queue[0]];
+                                    dbs.guild.save(guildDb);
                                     return;
                                 }
-                                var requester = data[guild.id].music.queue[code];
+                                var requester = guildDb[guild.id].music.queue[code];
                                 var song = yt("https://www.youtube.com/watch?v=" + code, {
                                     filter: "audioonly"
                                 });
@@ -522,12 +512,11 @@ module.exports = {
                                         }, 5000);
                                     });
                                 });
-                                data[guild.id].music.current = {};
-                                data[guild.id].music.current.code = code;
-                                data[guild.id].music.current.player = `${m.author.username + "#" + m.author.discriminator}`;
-                                delete data[guild.id].music.queue[queue[0]];
-                                _.save(data);
-                                _.load();
+                                guildDb[guild.id].music.current = {};
+                                guildDb[guild.id].music.current.code = code;
+                                guildDb[guild.id].music.current.player = `${m.author.username + "#" + m.author.discriminator}`;
+                                delete guildDb[guild.id].music.queue[queue[0]];
+                                dbs.guild.save(guildDb);
                                 return;
                             }
                             else if (queue.length < 1 && !voiceConnection.playing && !close) {
@@ -535,9 +524,8 @@ module.exports = {
                                     if (queue.length == 0 && !voiceConnection.playing) { // if there is no other song in the queue, leave the voice channel and have a wonderful day
                                         if (BotVoiceState.channelID) {
                                             Bot.leaveVoiceChannel(m.member.voiceState.channelID);
-                                            data[guild.id].music.current = {};
-                                            _.save(data);
-                                            _.load();
+                                            guildDb[guild.id].music.current = {};
+                                            dbs.guild.save(guildDb);
                                             Bot.createMessage(m.channel.id, "Thanks for Listening " + utils.hands.wave()).then((msg) => {
                                                 close = true;
                                                 return setTimeout(function() {

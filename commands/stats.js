@@ -1,9 +1,9 @@
 "use strict";
 
 const utils = require("../utils");
-const _ = require("../data");
+const dbs = require("../dbs");
 
-var data = _.load();
+var globalData = dbs.global.load();
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -11,18 +11,18 @@ module.exports = {
         var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
-        var commands = data.commands;
+        var commands = globalData.commands;
         var userUses = 0;
         var stats = [];
         for (let command in commands) {
-            if (data.commands[command].totalUses && data.commands[command].users[mentioned.id]) {
-                if (data.commands[command].totalUses && data.commands[command].users[mentioned.id] == 1) {
-                    stats.push("**!" + command + ":** " + data.commands[command].users[mentioned.id] + " run");
+            if (globalData.commands[command].totalUses && globalData.commands[command].users[mentioned.id]) {
+                if (globalData.commands[command].totalUses && globalData.commands[command].users[mentioned.id] == 1) {
+                    stats.push("**!" + command + ":** " + globalData.commands[command].users[mentioned.id] + " run");
                 }
                 else {
-                    stats.push("**!" + command + ":** " + data.commands[command].users[mentioned.id] + " runs");
+                    stats.push("**!" + command + ":** " + globalData.commands[command].users[mentioned.id] + " runs");
                 }
-                userUses = userUses + data.commands[command].users[mentioned.id];
+                userUses = userUses + globalData.commands[command].users[mentioned.id];
             }
         }
         var percent = ((userUses / commands.totalRuns) * 100).toFixed(2);

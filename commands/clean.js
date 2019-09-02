@@ -1,9 +1,9 @@
 "use strict";
 
 const conf = require("../conf");
-const _ = require("../servers");
+const dbs = require("../dbs");
 
-var data = _.load();
+var guildDb = dbs.guild.load();
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {
@@ -22,30 +22,29 @@ module.exports = {
             int = 10;
         }
         var isMod = function(member, guild) {
-            if (data[guild.id]) {
-                if (data[guild.id].owner != guild.ownerID) {
+            if (guildDb[guild.id]) {
+                if (guildDb[guild.id].owner != guild.ownerID) {
                     Bot.createMessage(m.channel.id, "New server owner detected, updating database.").then((msg) => {
                         return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
-                    data[guild.id].owner = guild.ownerID;
-                    _.save(data);
-                    _.load();
+                    guildDb[guild.id].owner = guild.ownerID;
+                    dbs.guild.save(guildDb);
                 }
-                if (data[guild.id].mods) {
-                    if (data[guild.id].mods[member.id]) {
+                if (guildDb[guild.id].mods) {
+                    if (guildDb[guild.id].mods[member.id]) {
                         return true;
                     }
                 }
-                if (m.author.id == data[guild.id].owner || m.author.id == guild.ownerID) {
+                if (m.author.id == guildDb[guild.id].owner || m.author.id == guild.ownerID) {
                     return true;
                 }
-                if (data[guild.id].modRoles) {
+                if (guildDb[guild.id].modRoles) {
                     var memberRoles = member.roles;
                     var mod = false;
                     for (let role of memberRoles) {
-                        if (data[guild.id].modRoles[role]) {
+                        if (guildDb[guild.id].modRoles[role]) {
                             mod = true;
                         }
                     }
@@ -123,9 +122,9 @@ module.exports = {
             }
         }
         if (m.mentions[0]) {
-            if (data[m.channel.guild.id]) {
-                if (data[m.channel.guild.id].mods) {
-                    if (data[m.channel.guild.id].mods[m.author.id]) {
+            if (guildDb[m.channel.guild.id]) {
+                if (guildDb[m.channel.guild.id].mods) {
+                    if (guildDb[m.channel.guild.id].mods[m.author.id]) {
                         mod = true;
                     }
                 }

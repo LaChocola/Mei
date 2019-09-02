@@ -1,13 +1,12 @@
 "use strict";
 
-var reload = require("require-reload")(require);
 const ordinal = require("ordinal");
 
 const utils = require("../utils");
-const miscl = reload("../misc");
-const use = require("../data");
+const miscl = require("../misc");
+const dbs = require("../dbs");
 
-var stats = use.load();
+var globalData = dbs.global.load();
 var time = new Date().toISOString();
 
 module.exports = {
@@ -26,7 +25,7 @@ module.exports = {
         var name1 = args;
         var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         mentioned = m.mentions[0] || member || m.author;
-        var commands = stats.commands["tf"].users;
+        var commands = globalData.commands["tf"].users;
         var usage = 0;
         if (commands[mentioned.id]) {
             usage = commands[mentioned.id];

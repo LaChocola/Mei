@@ -1,9 +1,9 @@
 "use strict";
 
 const utils = require("../utils");
-const _ = require("../people");
+const dbs = require("../dbs");
 
-var data = _.load();
+var userDb = dbs.user.load();
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -17,11 +17,11 @@ module.exports = {
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         var nameArray = [];
         var id = mentioned.id;
-        if (!data.people[id]) {
-            data.people[id] = {};
+        if (!userDb.people[id]) {
+            userDb.people[id] = {};
         }
-        if (!data.people[id].names) {
-            data.people[id].names = {};
+        if (!userDb.people[id].names) {
+            userDb.people[id].names = {};
         }
         if (args.search(/remove /i) !== -1) {
             if (mentioned.id != m.author.id) {
@@ -32,9 +32,9 @@ module.exports = {
             var iterator = incomingEntries.entries();
             for (let e of iterator) {
                 e[1] = capFirstLetter(e[1]);
-                if (data.people[id].names[e[1]]) {
-                    delete data.people[id].names[e[1]];
-                    _.save(data);
+                if (userDb.people[id].names[e[1]]) {
+                    delete userDb.people[id].names[e[1]];
+                    dbs.user.save(userDb);
                     Bot.createMessage(m.channel.id, "Removed: **" + e[1] + "** from your names list" + utils.hands.ok()).then((msg) => {
                         return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -58,7 +58,7 @@ module.exports = {
             iterator = incomingEntries.entries();
             for (let e of iterator) {
                 e[1] = capFirstLetter(e[1]);
-                if (data.people[id].names[e[1]]) {
+                if (userDb.people[id].names[e[1]]) {
                     Bot.createMessage(m.channel.id, e[1] + "'s already been added, silly~").then((msg) => {
                         return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -70,8 +70,8 @@ module.exports = {
                 else {
                     if (e[1].search(/ male/i) !== -1) {
                         var cleanName = e[1].replace(/ male/i, "");
-                        data.people[id].names[cleanName] = "male";
-                        _.save(data);
+                        userDb.people[id].names[cleanName] = "male";
+                        dbs.user.save(userDb);
                         Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + utils.hands.ok()).then((msg) => {
                             return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -82,8 +82,8 @@ module.exports = {
                     }
                     if (e[1].search(/ futa/i) !== -1 || e[1].search(/ futanari/i) !== -1) {
                         cleanName = e[1].replace(/ futa/i, "").replace(/ futanari/i, "");
-                        data.people[id].names[cleanName] = "futa";
-                        _.save(data);
+                        userDb.people[id].names[cleanName] = "futa";
+                        dbs.user.save(userDb);
                         Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + utils.hands.ok()).then((msg) => {
                             return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -93,8 +93,8 @@ module.exports = {
                         continue;
                     }
                     else {
-                        data.people[id].names[e[1]] = "female";
-                        _.save(data);
+                        userDb.people[id].names[e[1]] = "female";
+                        dbs.user.save(userDb);
                         Bot.createMessage(m.channel.id, "Added **" + e[1] + "** " + utils.hands.ok()).then((msg) => {
                             return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -106,19 +106,19 @@ module.exports = {
             }
             return;
         }
-        if (Object.keys(data.people[id].names).length < 1) {
+        if (Object.keys(userDb.people[id].names).length < 1) {
             Bot.createMessage(m.channel.id, "I could find any names list for **" + name + "** :(");
             return;
         }
         else {
-            var names = data.people[id].names;
+            var names = userDb.people[id].names;
             Object.entries(names).forEach(function(key) {
                 nameArray.push(`${key[0]}: ${key[1]}`);
             });
             Bot.createMessage(m.channel.id, {
                 embed: {
                     color: 0xA260F6,
-                    title: Object.keys(data.people[id].names).length + " names used by **" + name + "**",
+                    title: Object.keys(userDb.people[id].names).length + " names used by **" + name + "**",
                     description: " \n" + nameArray.join("\n"),
                     author: {
                         name: name,

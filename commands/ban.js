@@ -4,9 +4,9 @@ const escapeStringRegexp = require("escape-string-regexp");
 
 const conf = require("../conf");
 const utils = require("../utils");
-const _ = require("../servers");
+const dbs = require("../user/guild");
 
-var data = _.load();
+var guildDb = dbs.guild.load();
 
 var permissionDeniedResponses = [
     "Are you a real villan?",
@@ -19,7 +19,7 @@ var permissionDeniedResponses = [
 ];
 
 async function checkIsMod(member, guild) {
-    var guildData = data[guild.id];
+    var guildData = guildDb[guild.id];
     if (!guildData) {
         var perms = member.permission.json;
         return perms.banMembers || perms.administrator || perms.manageGuild;
@@ -28,8 +28,7 @@ async function checkIsMod(member, guild) {
     if (guildData.owner !== guild.ownerID) {
         //m.reply("New server owner detected, updating database.", 5000);
         guildData.owner = guild.ownerID;
-        _.save(data);
-        _.load();
+        dbs.guild.save(guildDb);
     }
 
     if (guildData.mods) {

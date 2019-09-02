@@ -1,24 +1,24 @@
 "use strict";
 
 const utils = require("../utils");
-const _ = require("../people");
-
-var data = _.load();
+const dbs = require("../dbs");
 
 module.exports = {
     main: function(Bot, m, args) {
+        var userDb = dbs.user.load();
+
         var name1 = m.cleanContent.replace(/!artist /i, "");
         var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
         var linkArray = [];
         var id = mentioned.id;
-        if (!data.people[id]) {
-            data.people[id] = {};
-            data.people[id].links = {};
+        if (!userDb.people[id]) {
+            userDb.people[id] = {};
+            userDb.people[id].links = {};
         }
-        if (!data.people[id].links) {
-            data.people[id].links = {};
+        if (!userDb.people[id].links) {
+            userDb.people[id].links = {};
         }
 
         if (args.toLowerCase().includes("add ")) {
@@ -27,7 +27,7 @@ module.exports = {
                 return;
             }
             let incoming = name1.replace(/add /i, "").replace(": ", " ").split(" ");
-            if (data.people[id].links[incoming[0]]) {
+            if (userDb.people[id].links[incoming[0]]) {
                 Bot.createMessage(m.channel.id, "That's already been added, silly~");
                 return;
             }
@@ -36,8 +36,8 @@ module.exports = {
                     Bot.createMessage(m.channel.id, "You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`!artist add Patreon <https://patreon.com/Chocola>`");
                     return;
                 }
-                data.people[id].links[incoming[0]] = incoming[1];
-                _.save(data);
+                userDb.people[id].links[incoming[0]] = incoming[1];
+                dbs.user.save(userDb);
                 Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + utils.hands.ok());
                 return;
             }
@@ -49,9 +49,9 @@ module.exports = {
                 return;
             }
             let incoming = name1.replace("remove ", "").replace(": ", " ").split(" ");
-            if (data.people[id].links[incoming[0]]) {
-                delete data.people[id].links[incoming[0]];
-                _.save(data);
+            if (userDb.people[id].links[incoming[0]]) {
+                delete userDb.people[id].links[incoming[0]];
+                dbs.user.save(userDb);
                 Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + ":** from your links " + utils.hands.ok());
                 return;
             }
@@ -61,12 +61,12 @@ module.exports = {
             }
         }
 
-        if (Object.keys(data.people[id].links).length === 0) {
+        if (Object.keys(userDb.people[id].links).length === 0) {
             Bot.createMessage(m.channel.id, "I could find any links for **" + name + "** :(");
             return;
         }
         else {
-            var links = data.people[id].links;
+            var links = userDb.people[id].links;
             Object.keys(links).forEach(function(key) {
                 linkArray.push(key + ": " + links[key] + "\n");
             });
@@ -74,7 +74,7 @@ module.exports = {
                 content: "",
                 embed: {
                     color: 0xA260F6,
-                    title: Object.keys(data.people[id].links).length + " links found for: **" + name + "**",
+                    title: Object.keys(userDb.people[id].links).length + " links found for: **" + name + "**",
                     description: " \n" + linkArray.join("\n"),
                     author: {
                         name: name,

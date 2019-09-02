@@ -1,9 +1,9 @@
 "use strict";
 
 const utils = require("../utils");
-const _ = require("../people");
+const dbs = require("../dbs");
 
-var data = _.load();
+var userDb = dbs.user.load();
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -34,8 +34,8 @@ module.exports = {
                 if (/<a:([a-zA-Z0-9]+):[0-9]+>/.exec(args[0])) {
                     args[0] = /<a:([a-zA-Z0-9]+):[0-9]+>/.exec(args[0])[1];
                 }
-                if (data.people[id].hoard) {
-                    var hoard = Object.keys(data.people[id].hoard);
+                if (userDb.people[id].hoard) {
+                    var hoard = Object.keys(userDb.people[id].hoard);
                     if (hoard[args[0]]) {
                         Bot.createMessage(m.channel.id, args[0] + " is already one of your hoards").then((msg) => {
                             return setTimeout(function() {
@@ -46,15 +46,14 @@ module.exports = {
                         return;
                     }
                 }
-                if (!data.people[id].hoard) {
-                    data.people[id].hoard = {};
-                    _.save(data);
-                    data = _.load();
+                if (!userDb.people[id].hoard) {
+                    userDb.people[id].hoard = {};
+                    dbs.user.save(userDb);
+                    userDb = dbs.user.load();
                 }
-                if (!data.people[id].hoard[args[0]]) {
-                    data.people[id].hoard[args[0]] = {};
-                    _.save(data);
-                    _.load();
+                if (!userDb.people[id].hoard[args[0]]) {
+                    userDb.people[id].hoard[args[0]] = {};
+                    dbs.user.save(userDb);
                     Bot.createMessage(m.channel.id, "Successfully added hoard: " + args[0]).then((msg) => {
                         return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -81,17 +80,16 @@ module.exports = {
                     args[0] = /<:([a-zA-Z0-9]+):[0-9]+>/.exec(args[0])[1];
                 }
                 if (!isNaN(+args[1]) && 0 < +args[1]) {
-                    if (data.people[id].hoard) {
-                        hoard = Object.keys(data.people[id].hoard);
+                    if (userDb.people[id].hoard) {
+                        hoard = Object.keys(userDb.people[id].hoard);
                         args[1] = +args[1];
                         --args[1];
                         if (hoard.indexOf(args[0]) > -1) {
                             var index = hoard.indexOf(args[0]);
-                            if (data.people[id].hoard[args[0]]) {
-                                var item = Object.keys(data.people[id].hoard[args[0]])[args[1]];
-                                delete data.people[id].hoard[args[0]][item];
-                                _.save(data);
-                                _.load();
+                            if (userDb.people[id].hoard[args[0]]) {
+                                var item = Object.keys(userDb.people[id].hoard[args[0]])[args[1]];
+                                delete userDb.people[id].hoard[args[0]][item];
+                                dbs.user.save(userDb);
                                 Bot.createMessage(m.channel.id, `Successfully deleted item ${args[1] + 1} from ${args[0]}`).then((msg) => {
                                     return setTimeout(function() {
                                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -110,12 +108,11 @@ module.exports = {
                         }
                     }
                 }
-                if (data.people[id].hoard) {
-                    hoard = Object.keys(data.people[id].hoard);
+                if (userDb.people[id].hoard) {
+                    hoard = Object.keys(userDb.people[id].hoard);
                     if (hoard.indexOf(args[0]) > -1) {
-                        delete data.people[id].hoard[args[0]];
-                        _.save(data);
-                        _.load();
+                        delete userDb.people[id].hoard[args[0]];
+                        dbs.user.save(userDb);
                         Bot.createMessage(m.channel.id, args[0] + " Successfully deleted").then((msg) => {
                             return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -127,7 +124,7 @@ module.exports = {
                 }
             }
         }
-        if (!(data.people[id] && data.people[id].hoard)) {
+        if (!(userDb.people[id] && userDb.people[id].hoard)) {
             Bot.createMessage(m.channel.id, `Could not find any hoard for **${name}**`).then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -136,12 +133,12 @@ module.exports = {
             });
             return;
         }
-        hoard = Object.keys(data.people[id].hoard);
+        hoard = Object.keys(userDb.people[id].hoard);
         var rando = hoard[Math.floor(Math.random() * hoard.length)];
         if (hoard.indexOf(args[0]) > -1) {
             rando = hoard[hoard.indexOf(args[0])];
         }
-        var origID = data.people[id].hoard[rando];
+        var origID = userDb.people[id].hoard[rando];
         index = `Item ${hoard.indexOf(rando) + 1} of ${hoard.length} from :heart_eyes: hoard`;
         if (!origID || !origID.length) {
             var hoardInnder = Object.keys(origID);

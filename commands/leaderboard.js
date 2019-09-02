@@ -1,8 +1,8 @@
 "use strict";
 
-const _ = require("../people");
+const dbs = require("../dbs");
 
-var data = _.load();
+var userDb = dbs.user.load();
 
 // Map each user to a { userId, adds } object, sorted by adds
 function sortByAdds(people) {
@@ -27,7 +27,7 @@ module.exports = {
         // Pull from all users, or just guild members, depending on isGlobal
         var userPool = isGlobal ? bot.users : m.channel.guild.members;
 
-        var sortedUsers = sortByAdds(data.people)
+        var sortedUsers = sortByAdds(userDb.people)
             // Map to user objects
             .map(function(person) {
                 var user = userPool.find(u => u.id === person.userId);

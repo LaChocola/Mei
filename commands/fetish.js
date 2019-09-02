@@ -3,9 +3,9 @@
 const unidecode = require("unidecode");
 
 const utils = require("../utils");
-const _ = require("../people");
+const dbs = require("../dbs");
 
-var data = _.load();
+var userDb = dbs.user.load();
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -22,11 +22,11 @@ module.exports = {
         let commonLikes = [];
         let commonDislikes = [];
         var id = mentioned.id;
-        if (!data.people[id]) {
-            data.people[id] = {};
+        if (!userDb.people[id]) {
+            userDb.people[id] = {};
         }
-        if (!data.people[id].fetishes) {
-            data.people[id].fetishes = {};
+        if (!userDb.people[id].fetishes) {
+            userDb.people[id].fetishes = {};
         }
         if (args.toLowerCase().includes("search ")) {
             if (args.toLowerCase().includes("dislike")) {
@@ -36,7 +36,7 @@ module.exports = {
                 for (let e of iterator) {
                     incoming.push(capFirstLetter(e[1].trim()));
                 }
-                let matches = Object.keys(data.people).filter(k => data.people[k].fetishes && data.people[k].fetishes[`${incoming[0]}`] === "dislike");
+                let matches = Object.keys(userDb.people).filter(k => userDb.people[k].fetishes && userDb.people[k].fetishes[`${incoming[0]}`] === "dislike");
                 if (matches.length < 1) {
                     Bot.createMessage(m.channel.id, "No matches found");
                     return;
@@ -64,7 +64,7 @@ module.exports = {
                 for (let e of iterator) {
                     incoming.push(capFirstLetter(e[1].trim()));
                 }
-                let matches = Object.keys(data.people).filter(k => data.people[k].fetishes && data.people[k].fetishes[`${incoming[0]}`] === "like");
+                let matches = Object.keys(userDb.people).filter(k => userDb.people[k].fetishes && userDb.people[k].fetishes[`${incoming[0]}`] === "like");
                 if (matches.length < 1) {
                     Bot.createMessage(m.channel.id, "No matches found");
                     return;
@@ -88,9 +88,9 @@ module.exports = {
                 return;
             }
             let incoming = name1.replace(/\bremove\b/i, "").replace(" ", "").split("|");
-            if (data.people[id].fetishes[capFirstLetter(incoming[0])]) {
-                delete data.people[id].fetishes[capFirstLetter(incoming[0])];
-                _.save(data);
+            if (userDb.people[id].fetishes[capFirstLetter(incoming[0])]) {
+                delete userDb.people[id].fetishes[capFirstLetter(incoming[0])];
+                dbs.user.save(userDb);
                 Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your fetish list" + utils.hands.ok()).then((msg) => {
                     setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -132,7 +132,7 @@ module.exports = {
                 });
                 return;
             }
-            if (data.people[id].fetishes[incoming[0]]) {
+            if (userDb.people[id].fetishes[incoming[0]]) {
                 Bot.createMessage(m.channel.id, "That's already been added, silly~").then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -153,8 +153,8 @@ module.exports = {
                     });
                     return;
                 }
-                data.people[id].fetishes[incoming[0]] = "dislike";
-                _.save(data);
+                userDb.people[id].fetishes[incoming[0]] = "dislike";
+                dbs.user.save(userDb);
                 Bot.createMessage(m.channel.id, "Added Dislike: **" + incoming[0] + "** " + utils.hands.ok()).then((msg) => {
                     setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -164,8 +164,8 @@ module.exports = {
                 return;
             }
             else {
-                data.people[id].fetishes[incoming[0]] = "like";
-                _.save(data);
+                userDb.people[id].fetishes[incoming[0]] = "like";
+                dbs.user.save(userDb);
                 Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + utils.hands.ok()).then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -175,13 +175,13 @@ module.exports = {
                 return;
             }
         }
-        if (Object.keys(data.people[id].fetishes).length < 1) {
+        if (Object.keys(userDb.people[id].fetishes).length < 1) {
             Bot.createMessage(m.channel.id, "I could find any fetish list for **" + unidecode(name) + "** :(");
             return;
         }
         else {
-            var fetishes = data.people[id].fetishes;
-            var fetishes2 = data.people[m.author.id];
+            var fetishes = userDb.people[id].fetishes;
+            var fetishes2 = userDb.people[m.author.id];
             if (!fetishes2.fetishes || !fetishes2) {
                 Bot.createMessage(m.channel.id, "You need to have a fetish list in order to compare lists with someone, silly bug");
                 return;
@@ -249,7 +249,7 @@ module.exports = {
                     content: "",
                     embed: {
                         color: 0xA260F6,
-                        title: Object.keys(data.people[id].fetishes).length + " fetishes for **" + unidecode(name) + "**",
+                        title: Object.keys(userDb.people[id].fetishes).length + " fetishes for **" + unidecode(name) + "**",
                         fields: [{
                             name: ":green_heart: Likes: " + likes.length,
                             value: likes.join("\n"),

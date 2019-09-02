@@ -1,27 +1,26 @@
 "use strict";
 
 const utils = require("../utils");
-const _ = require("../servers");
-
-var data = _.load();
+const dbs = require("../dbs");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
+        var guildDb = dbs.guild.load();
+
         var guild = m.channel.guild;
-        if (!data[guild.id]) {
-            data[guild.id] = {};
-            data[guild.id].name = guild.name;
-            data[guild.id].owner = guild.ownerID;
+        if (!guildDb[guild.id]) {
+            guildDb[guild.id] = {};
+            guildDb[guild.id].name = guild.name;
+            guildDb[guild.id].owner = guild.ownerID;
             Bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${utils.hands.ok()}`).then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                 }, 5000);
             });
-            _.save(data);
-            _.load();
+            dbs.guild.save(guildDb);
         }
-        if (!data[guild.id].art) {
+        if (!guildDb[guild.id].art) {
             Bot.createMessage(m.channel.id, `An art channel has not been set up for this server. Please have a mod add one using the command: \`${prefix}edit art add #channel\``).then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -36,7 +35,7 @@ module.exports = {
                 index = args;
             }
         }
-        var channel = data[guild.id].art;
+        var channel = guildDb[guild.id].art;
         channel = Bot.getChannel(channel);
         console.log(channel.nsfw);
         console.log(m.channel.nsfw);

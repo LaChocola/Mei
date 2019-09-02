@@ -1,9 +1,9 @@
 "use strict";
 
 const utils = require("../utils");
-const _ = require("../servers");
+const dbs = require("../dbs");
 
-const data = _.load();
+const guildDb = dbs.guild.load();
 
 module.exports = {
     main(Bot, m, args, prefix) {
@@ -24,10 +24,10 @@ module.exports = {
             return;
         }
         var roles;
-        if (data[guild.id]) {
-            if (data[guild.id].roles) {
-                if (Object.keys(data[guild.id].roles)[0]) {
-                    roles = data[guild.id].roles;
+        if (guildDb[guild.id]) {
+            if (guildDb[guild.id].roles) {
+                if (Object.keys(guildDb[guild.id].roles)[0]) {
+                    roles = guildDb[guild.id].roles;
                 }
             }
         }
@@ -41,16 +41,16 @@ module.exports = {
             return;
         }
         if (m.content.includes("list")) {
-            if (!data[guild.id].roles) {
+            if (!guildDb[guild.id].roles) {
                 Bot.createMessage(m.channel.id, "There are no roles set up in this server, to add roles, please use `!edit roles add <rolename>`");
                 return;
             }
-            roles = Object.keys(data[m.channel.guild.id].roles);
+            roles = Object.keys(guildDb[m.channel.guild.id].roles);
             for (var role of roles) {
-                const exists = m.channel.guild.roles.find(r => r.id == data[m.channel.guild.id].roles[role]);
+                const exists = m.channel.guild.roles.find(r => r.id == guildDb[m.channel.guild.id].roles[role]);
                 if (!exists) {
-                    delete data[guild.id].roles[role];
-                    _.save(data);
+                    delete guildDb[guild.id].roles[role];
+                    dbs.guild.save(guildDb);
                     Bot.createMessage(m.channel.id, role + " updated successfully").then(msg => {
                         return setTimeout(() => {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -58,7 +58,7 @@ module.exports = {
                     });
                 }
             }
-            roles = Object.keys(data[guild.id].roles);
+            roles = Object.keys(guildDb[guild.id].roles);
             Bot.createMessage(m.channel.id, {
                 content: "",
                 embed: {

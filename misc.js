@@ -3,38 +3,37 @@
 const fs = require("fs");
 
 const conf = require("./conf");
-const _ = require("./people.js");
-const servers = require("./servers.js");
+const dbs = require("../dbs");
 
-let data = _.load();
-var server = servers.load();
+var userDatabase = dbs.user.load();
+var guildDatabase = dbs.guild.load();
 
 class Misc { // Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
     static isMod(Bot, m, member, guild) {
-        if (server[guild.id]) {
-            if (server[guild.id].owner != guild.ownerID || server[guild.id].name != guild.name) {
+        if (guildDatabase[guild.id]) {
+            if (guildDatabase[guild.id].owner != guild.ownerID || guildDatabase[guild.id].name != guild.name) {
                 Bot.createMessage(m.channel.id, "New server info detected, updating database.").then((msg) => {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
                 });
-                server[guild.id].owner = guild.ownerID;
-                server[guild.id].name = guild.name;
-                servers.save(server);
-                server = servers.load();
-                if (server[guild.id].mods) {
-                    if (server[guild.id].mods[member.id]) {
+                guildDatabase[guild.id].owner = guild.ownerID;
+                guildDatabase[guild.id].name = guild.name;
+                dbs.guild.save(guildDatabase);
+                guildDatabase = dbs.guild.load();
+                if (guildDatabase[guild.id].mods) {
+                    if (guildDatabase[guild.id].mods[member.id]) {
                         return true;
                     }
                 }
-                if (m.author.id == server[guild.id].owner || m.author.id == guild.ownerID) {
+                if (m.author.id == guildDatabase[guild.id].owner || m.author.id == guild.ownerID) {
                     return true;
                 }
-                if (server[guild.id].modRoles) {
+                if (guildDatabase[guild.id].modRoles) {
                     var memberRoles = member.roles;
                     var mod = false;
                     for (const role of memberRoles) {
-                        if (server[guild.id].modRoles[role]) {
+                        if (guildDatabase[guild.id].modRoles[role]) {
                             mod = true;
                         }
                     }
@@ -140,13 +139,13 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var female = true;
         var male = false;
         var futa = false;
-        if (data.people[smallid]) {
-            if (data.people[smallid].names) {
-                if (data.people[smallid].names[bigname] == "male") {
+        if (userDatabase.people[smallid]) {
+            if (userDatabase.people[smallid].names) {
+                if (userDatabase.people[smallid].names[bigname] == "male") {
                     male = true;
                     female = false;
                 }
-                if (data.people[smallid].names[bigname] == "futa") {
+                if (userDatabase.people[smallid].names[bigname] == "futa") {
                     futa = true;
                     female = false;
                 }
@@ -353,9 +352,9 @@ class Misc { // Declaring export as a class because cbf to make other way work p
     static getcustomGTSNames(uid) {
 
         var customName = [];
-        if (data.people[uid]) {
-            if (data.people[uid].names) {
-                var namesObj = data.people[uid].names;
+        if (userDatabase.people[uid]) {
+            if (userDatabase.people[uid].names) {
+                var namesObj = userDatabase.people[uid].names;
                 Object.keys(namesObj).forEach(function(key) {
                     customName.push(key);
                 });
