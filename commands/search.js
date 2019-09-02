@@ -49,12 +49,12 @@ function fallbackHTMLScraper(args, safe, message) {
 }
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         if (!enabled) {
             return;
         }
         args = m.cleanContent.replace(`${prefix}search `, "").trim();
-        Bot.createMessage(m.channel.id, "`Searching...`").then(function(message) {
+        m.reply("`Searching...`").then(function(message) {
             var safe = "off";
             var key = conf.tokens.google;
             var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=013652921652433515166:cnlmax0k6mu&q=" + encodeURI(args);

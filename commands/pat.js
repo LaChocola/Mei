@@ -1,14 +1,14 @@
 "use strict";
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         if (m.mentions.length > 2) {
-            Bot.createMessage(m.channel.id, "Thats too many pats to give :angry:");
+            m.reply("Thats too many pats to give :angry:");
             return;
         }
-        Bot.sendChannelTyping(m.channel.id).then(async () => {
+        m.channel.sendTyping().then(async () => {
             if (m.mentions.length == 1 && m.author.id == m.mentions[0].id) { // If the user mentions only themself
-                Bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; *hugs you*`);
+                m.reply(`Lovely shi... Alone? Don't be like that ${m.author.username} ;-; *hugs you*`);
                 return;
             }
             var imageArray = [
@@ -39,7 +39,7 @@ module.exports = {
                         }
                     }
                 };
-                Bot.createMessage(m.channel.id, data);
+                m.reply(data);
                 return;
             }
             else {
@@ -56,7 +56,7 @@ module.exports = {
                         }
                     }
                 };
-                Bot.createMessage(m.channel.id, data);
+                m.reply(data);
                 return;
             }
         });

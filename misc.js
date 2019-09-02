@@ -9,14 +9,10 @@ var userDatabase = dbs.user.load();
 var guildDatabase = dbs.guild.load();
 
 class Misc { // Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
-    static isMod(Bot, m, member, guild) {
+    static isMod(bot, m, member, guild) {
         if (guildDatabase[guild.id]) {
             if (guildDatabase[guild.id].owner != guild.ownerID || guildDatabase[guild.id].name != guild.name) {
-                Bot.createMessage(m.channel.id, "New server info detected, updating database.").then((msg) => {
-                    return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    }, 5000);
-                });
+                m.reply("New server info detected, updating database.", 5000);
                 guildDatabase[guild.id].owner = guild.ownerID;
                 guildDatabase[guild.id].name = guild.name;
                 dbs.guild.save(guildDatabase);

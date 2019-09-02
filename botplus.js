@@ -9,15 +9,15 @@ function extend(bot) {
         }
     });
 
-    // returns promise for sent message
+    // Returns promise for sent message
     Object.defineProperty(bot.Message.prototype, "reply", {
         value: async function(text, timeout) {
             var m = this;
             var bot = m._client;
-            var channelId = m.channel.id;
-            var sentMsg = bot.createMessage(channelId, text);
+
+            var sentMsg = bot.createMessage(m.channel.id, text);
             if (timeout) {
-                return sentMsg.then(m => m.deleteIn(timeout));
+                sentMsg.then(m => m.deleteIn(timeout));
             }
             return sentMsg;
         }
@@ -25,16 +25,18 @@ function extend(bot) {
 
     // Returns message to be deleted
     Object.defineProperty(bot.Message.prototype, "deleteIn", {
-        value: async function(timeout) {
+        value: function(timeout) {
             var m = this;
 
             if (!timeout) {
-                return;
+                return m;
             }
 
-            return utils.delay(timeout).then(function() {
-                return m.delete("Timeout");
+            utils.delay(timeout).then(function() {
+                m.delete("Timeout");
             });
+
+            return m;
         }
     });
 }

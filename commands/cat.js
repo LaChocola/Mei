@@ -4,7 +4,7 @@ const request = require("request");
 const randomCat = require("random-cat");
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         request("http://aws.random.cat/meow", (err, res, body) => {
             if (res.statusCode == 200) {
                 var catURL = JSON.parse(body);
@@ -20,7 +20,7 @@ module.exports = {
                         }
                     }
                 };
-                Bot.createMessage(m.channel.id, data);
+                m.reply(data);
                 return;
             }
             else {
@@ -38,11 +38,11 @@ module.exports = {
                             }
                         }
                     };
-                    Bot.createMessage(m.channel.id, data);
+                    m.reply(data);
                     return;
                 }
                 // Random 403 error that sometimes occurs...
-                Bot.createMessage(m.channel.id, "Sorry, no kitties at the moment. :frowning2: Please try again later.");
+                m.reply("Sorry, no kitties at the moment. :frowning2: Please try again later.");
             }
         });
     },

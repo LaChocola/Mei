@@ -2,6 +2,7 @@
 
 const ordinal = require("ordinal");
 
+const conf = require("../conf");
 const utils = require("../utils");
 const misc = require("../misc");
 const dbs = require("../dbs");
@@ -10,17 +11,16 @@ var globalData = dbs.global.load();
 var time = new Date().toISOString();
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         args = args.toLowerCase();
 
-        if (m.channel.guild.id == "187694240585744384") {
+        if (m.channel.guild.id === conf.guilds.guild1) {
             prefix = "?";
         }
 
         if (m.content.indexOf(prefix + "g") < 0) {
             return false;
         }
-
 
         var mentioned = m.mentions[0] || m.author;
         var id = mentioned.id;
@@ -46,7 +46,7 @@ module.exports = {
                 names = misc.getDefaultGTSNames(m.channel.guild.id);
                 resultstring = "**Names available: **" + names.totalnames + "\n " + names.cleannames + "\n \n" + misc.getLewdCounts("gentle");
             }
-            Bot.createMessage(m.channel.id, {
+            m.reply({
                 embed: {
                     "color": 0xA260F6,
                     "description": resultstring
@@ -96,7 +96,7 @@ module.exports = {
                 }
             }
         };
-        Bot.createMessage(m.channel.id, data);
+        m.reply(data);
         return;
     },
     help: "A Gentle smush"

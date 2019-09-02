@@ -28,12 +28,12 @@ const defaultQuery = {
 };
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         if (!enabled) {
             return;
         }
         if (m.channel.nsfw == false) {
-            Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
+            m.reply("This command can only be used in NSFW channels");
             return;
         }
         var name = m.author.nick || m.author.username;
@@ -52,7 +52,7 @@ module.exports = {
         j.setCookie(cookie1, pageToVisit);
         j.setCookie(cookie2, pageToVisit);
         j.setCookie(cookie3, pageToVisit);
-        Bot.sendChannelTyping(m.channel.id).then(async () => {
+        m.channel.sendTyping().then(async () => {
             request({
                 url: pageToVisit,
                 jar: j
@@ -71,7 +71,7 @@ module.exports = {
                         });
                     });
                     if (link_array.length < 1) {
-                        Bot.createMessage(m.channel.id, "No results found :(");
+                        m.reply("No results found :(");
                         return;
                     }
                     const maths = Math.floor(Math.random() * link_array.length);
@@ -150,7 +150,7 @@ module.exports = {
                                 }
                             };
                         }
-                        Bot.createMessage(m.channel.id, data);
+                        m.reply(data);
                     });
                 }
             });

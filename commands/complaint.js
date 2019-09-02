@@ -3,12 +3,12 @@
 const conf = require("../conf");
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         if (m.author.id === conf.users.owner) {
-            Bot.createMessage(m.channel.id, ":ok_hand:");
+            m.reply(":ok_hand:");
         }
         else {
-            Bot.createMessage(m.channel.id, "Stop Whining");
+            m.reply("Stop Whining");
         }
     },
     help: "No"

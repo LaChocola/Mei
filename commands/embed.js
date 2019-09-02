@@ -1,14 +1,14 @@
 "use strict";
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         prefix = "!";
         args = m.content.slice(prefix.length).split(" ");
         args.shift();
         var embed = args.join(" ");
         if (args.indexOf("code") > -1) {
             embed = args.join(" ");
-            Bot.createMessage(m.channel.id, {
+            m.reply({
                 embed: {
                     color: 0xA260F6,
                     description: "**Embeded Text:**\n" + "```" + embed + "```"
@@ -17,7 +17,7 @@ module.exports = {
         }
         else if (args.indexOf("blank") > -1) {
             embed = args.join(" ");
-            Bot.createMessage(m.channel.id, {
+            m.reply({
                 embed: {
                     color: 0xA260F6,
                     description: embed
@@ -26,7 +26,7 @@ module.exports = {
         }
         else {
             embed = args.join(" ");
-            Bot.createMessage(m.channel.id, {
+            m.reply({
                 embed: {
                     color: 0xA260F6,
                     description: "**Embeded Text:**\n" + embed

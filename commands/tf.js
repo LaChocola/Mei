@@ -10,15 +10,15 @@ var globalData = dbs.global.load();
 var time = new Date().toISOString();
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         args = args.toLowerCase();
 
-        if (m.channel.guild.id == "187694240585744384") {
+        if (m.channel.guild.id === conf.guilds.guild1) {
             prefix = "?";
         }
 
         if (m.channel.nsfw == false) {
-            Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
+            m.reply("This command can only be used in NSFW channels");
             return;
         }
 
@@ -47,7 +47,7 @@ module.exports = {
                 resultstring = "**Names avaible: **" + names.totalnames + "\n " + names.cleannames + "\n \n" + misc.getLewdCounts("tf");
             }
 
-            Bot.createMessage(m.channel.id, {
+            m.reply({
                 embed: {
                     "color": 0xA260F6,
                     "description": resultstring.replace(/tfs/ig, "TF's")
@@ -97,7 +97,7 @@ module.exports = {
                 }
             }
         };
-        Bot.createMessage(m.channel.id, data);
+        m.reply(data);
         return;
     },
     help: "A TF responses"

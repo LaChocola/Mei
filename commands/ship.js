@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const utils = require("../utils");
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         var names = m.cleanContent.replace(/^[ !ship\t]+[^a-zA-Z]+|[!ship \t]+[^a-zA-Z]$|!ship/i, "").split(" | ");
         if (names[0] != undefined) {
             if (names[0].startsWith("@")) {
@@ -42,20 +42,20 @@ module.exports = {
         }
 
         if (m.mentions.length == 1 && m.author.id == m.mentions[0].id) { // If the user mentions only themself
-            Bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; *hugs you*\n~~only one user was detected~~`);
+            m.reply(`Lovely shi... Alone? Don't be like that ${m.author.username} ;-; *hugs you*\n~~only one user was detected~~`);
             return;
         }
         if (m.mentions.length !== 2) { // If there are not 2 people mentioned,
-            Bot.createMessage(m.channel.id, "Ship someone together~\n\nUse `!ship <@user1> <@user2>` or `!ship username1 | username2`");
+            m.reply("Ship someone together~\n\nUse `!ship <@user1> <@user2>` or `!ship username1 | username2`");
             return;
         }
 
-        Bot.sendChannelTyping(m.channel.id).then(async () => {
+        m.channel.sendTyping().then(async () => {
             try {
                 var firstName = m.channel.guild.members.get(m.mentions[0].id).nick || m.mentions[0].username;
                 var lastName = m.channel.guild.members.get(m.mentions[1].id).nick || m.mentions[1].username;
                 if (firstName == lastName) {
-                    Bot.createMessage(m.channel.id, "Lovely shi...Uhm, can you two stop being weird?\n~~both names are the same~~");
+                    m.reply("Lovely shi...Uhm, can you two stop being weird?\n~~both names are the same~~");
                     return;
                 }
                 var firstPart = firstName.substring(0, firstName.length / 2);
@@ -71,7 +71,7 @@ module.exports = {
                     .blit(user1, 0, 0)
                     .blit(user2, 256, 0)
                     .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
-                        Bot.createMessage(m.channel.id, `Lovely shipping~\nIntroducing: **${firstPart}${lastPart}**`, {
+                        m.reply(`Lovely shipping~\nIntroducing: **${firstPart}${lastPart}**`, {
                             "file": buffer,
                             "name": "ship.png"
                         });
@@ -79,7 +79,7 @@ module.exports = {
             }
             catch (error) {
                 console.log(error);
-                return Bot.createMessage(m.channel.id, "Something went wrong...");
+                return m.reply("Something went wrong...");
             }
         });
     },

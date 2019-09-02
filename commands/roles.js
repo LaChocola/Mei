@@ -3,7 +3,7 @@
 const utils = require("../utils");
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         var guild = m.channel.guild;
         var name1 = m.cleanContent.replace(`${prefix}roles `, "");
         if (m.content.length < 7) {
@@ -25,10 +25,10 @@ module.exports = {
         var arrayOfRoleNames = arrayOfRoleIDs.map(getRoleNameFromRoleID);
         var msg = JSON.stringify(mentioned.permission.json).replace("{", "").replace("}", "");
         if (arrayOfRoleNames.length === 0) {
-            Bot.createMessage(m.channel.id, "You do not currently have any assigned roles in this server.");
+            m.reply("You do not currently have any assigned roles in this server.");
             return;
         }
-        Bot.createMessage(m.channel.id, "Roles for: **" + mentioned.username + "#" + mentioned.discriminator + "**\n \n*" + arrayOfRoleNames.join("*, *") + "*\n \nPermissions: ```js\n" + msg + "```");
+        m.reply("Roles for: **" + mentioned.username + "#" + mentioned.discriminator + "**\n \n*" + arrayOfRoleNames.join("*, *") + "*\n \nPermissions: ```js\n" + msg + "```");
     },
     help: "Role info. Use !role to assign roles"
 };

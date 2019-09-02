@@ -14,13 +14,13 @@ else {
 }
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         if (!enabled) {
             return;
         }
         var msg = m.cleanContent.replace(`${prefix}c `, "");
         if (m.content == `${prefix}c`) {
-            Bot.createMessage(m.channel.id, "Please add something i.e. ``!c How are you?``");
+            m.reply("Please add something i.e. ``!c How are you?``");
         }
         else {
             var request = app.textRequest(msg, {
@@ -28,12 +28,12 @@ module.exports = {
             });
             request.on("response", function(response) {
                 let responseText = response.result.fulfillment.speech;
-                Bot.createMessage(m.channel.id, responseText);
+                m.reply(responseText);
             });
 
             request.on("error", function(error) {
                 console.log(error);
-                Bot.createMessage(m.channel.id, error);
+                m.reply(error);
             });
             request.end();
         }

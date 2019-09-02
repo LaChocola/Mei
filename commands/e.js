@@ -4,9 +4,9 @@ const request = require("request");
 const unidecode = require("unidecode");
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
-        if (m.content == `${prefix}e`) {
-            Bot.createMessage(m.channel.id, "Please add something i.e. ``!e Whats cooler than being cool``");
+    main: function(bot, m, args, prefix) {
+        if (m.content === `${prefix}e`) {
+            m.reply("Please add something i.e. ``!e Whats cooler than being cool``");
             return;
         }
         args = unidecode(args);
@@ -23,7 +23,7 @@ module.exports = {
                 scores.push(result.score);
             });
             emojis.splice(5, 5);
-            Bot.createMessage(m.channel.id, emojis.join(" "));
+            m.reply(emojis.join(" "));
         });
     },
     help: "Emojify text"

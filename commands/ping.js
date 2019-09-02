@@ -1,11 +1,11 @@
 "use strict";
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         var time = process.hrtime();
-        Bot.createMessage(m.channel.id, "Pong!").then(msg => {
+        m.reply("Pong!").then(msg => {
             var ms = Math.round(process.hrtime(time)[1] / 1000000);
-            Bot.editMessage(msg.channel.id, msg.id, "Pong! `" + ms + "ms`");
+            m.edit("Pong! `" + ms + "ms`");
         });
     },
     help: "Bot Delay"

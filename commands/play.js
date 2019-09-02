@@ -11,7 +11,7 @@ const dbs = require("../dbs");
 var guildDb = dbs.guild.load();
 
 module.exports = {
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         // Disable play command for this guild?
         if (m.guild.id === conf.guilds.guild2) {
             return;
@@ -27,7 +27,7 @@ module.exports = {
         args = m.cleanContent.replace(`${prefix}play `, "");
         console.log(args);
         if (m.content == `${prefix}play`) {
-            Bot.createMessage(m.channel.id, `Please say what you want to do. e.g. \`${prefix}play <youtube link>\`, \`${prefix}play queue\`, \`${prefix}play current\`, or \`${prefix}play stop\``);
+            m.reply(`Please say what you want to do. e.g. \`${prefix}play <youtube link>\`, \`${prefix}play queue\`, \`${prefix}play current\`, or \`${prefix}play stop\``);
             return;
         }
         var isNewQueue = false;
@@ -50,11 +50,7 @@ module.exports = {
             guildDb[guild.id] = {};
             guildDb[guild.id].name = guild.name;
             guildDb[guild.id].owner = guild.ownerID;
-            Bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${utils.hands.wave()}`).then((msg) => {
-                return setTimeout(function() {
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                }, 5000);
-            });
+            m.reply(`Server: ${guild.name} added to database. Populating information ${utils.hands.wave()}`, 5000);
             dbs.guild.save(guildDb);
         }
         // I am bad with storage, I know
@@ -71,24 +67,20 @@ module.exports = {
             dbs.guild.save(guildDb);
         }
         if (m.member.voiceState.channelID) { // User is in Voice Channel
-            Bot.joinVoiceChannel(m.member.voiceState.channelID).then(async function(voiceConnection) { // Join user voice channel
-                var BotVoiceState = m.channel.guild.members.get(Bot.user.id).voiceState;
+            bot.joinVoiceChannel(m.member.voiceState.channelID).then(async function(voiceConnection) { // Join user voice channel
+                var BotVoiceState = m.channel.guild.members.get(bot.user.id).voiceState;
                 if (BotVoiceState.channelID) { // Bot is in Voice Channel
-                    voiceConnection = Bot.voiceConnections.get(m.channel.guild.id);
+                    voiceConnection = bot.voiceConnections.get(m.channel.guild.id);
                     if (BotVoiceState.channelID == m.member.voiceState.channelID) { // User is in the same Voice Channel
                         if (args.toLowerCase().includes("resume")) {
-                            Bot.createMessage(m.channel.id, "Resuming music.");
+                            m.reply("Resuming music.");
                             voiceConnection.resume();
                             return;
                         }
                         if (voiceConnection.playing) { // Bot is actively playing something
                             if (args.toLowerCase().includes("stop") || args.toLowerCase().includes("cancel")) {
-                                Bot.createMessage(m.channel.id, "Stopping song.").then((msg) => {
-                                    return setTimeout(function() {
-                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                    }, 5000);
-                                });
+                                m.reply("Stopping song.", 5000);
+                                m.deleteIn(5000);
                                 voiceConnection.stopPlaying();
                                 return;
                             }
@@ -113,7 +105,7 @@ module.exports = {
                                         var player = guildDb[guild.id].music.current.player;
                                     }
                                     if (!player || !code3) {
-                                        Bot.createMessage(m.channel.id, "Nothing is currently playing");
+                                        m.reply("Nothing is currently playing");
                                         return;
                                     }
                                     var msg = {
@@ -144,12 +136,8 @@ module.exports = {
                                         msg.embed.author.name = "Nothing Else is Queued.\nCurrently Playing:";
                                         console.log(msg.embed.author.name);
                                     }
-                                    Bot.createMessage(m.channel.id, msg).then((mesg) => {
-                                        return setTimeout(function() {
-                                            Bot.deleteMessage(m.channel.id, mesg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, end - start);
-                                    });
+                                    m.reply(msg, end - start);
+                                    m.deleteIn(end - start);
                                     return;
                                 }).catch(err => {
                                     console.log(err);
@@ -158,12 +146,8 @@ module.exports = {
                                 return;
                             }
                             if (args.toLowerCase().includes("pause")) { // someone asks to pause the song
-                                Bot.createMessage(m.channel.id, "Pausing music.").then((msg) => {
-                                    return setTimeout(function() {
-                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                    }, 5000);
-                                });
+                                m.reply("Pausing music.", 5000);
+                                m.deleteIn(5000);
                                 voiceConnection.pause();
                                 return;
                             }
@@ -172,11 +156,11 @@ module.exports = {
                                 const songs = [];
 
                                 // Display queue of songs if it exists
-                                await Bot.sendChannelTyping(m.channel.id);
+                                await m.channel.sendTyping();
                                 try {
                                     console.log(guildDb[guild.id].music.queue);
                                     if (!Object.entries(guildDb[guild.id].music.queue)) {
-                                        Bot.createMessage(m.channel.id, "The queue is empty right now");
+                                        m.reply("The queue is empty right now");
                                     }
                                     else {
                                         for (const [id, queuer] of Object.entries(guildDb[guild.id].music.queue)) {
@@ -184,7 +168,7 @@ module.exports = {
                                             var title = info.title;
                                             songs.push(`${index++}. [${title}](https://www.youtube.com/watch?v=${id}) [${msToHMS(utils.toNum(info.length_seconds) * 1000)}]  |  Requested by: ${queuer}`);
                                         }
-                                        Bot.createMessage(m.channel.id, {
+                                        m.reply({
                                             embed: {
                                                 color: 0xA260F6,
                                                 title: `${songs.length} songs currently queued`,
@@ -192,12 +176,8 @@ module.exports = {
                                             }
                                         }).catch((err) => {
                                             if (err.code == 50013) {
-                                                Bot.createMessage(m.channel.id, "I do not have permisson to embed links in this channel. Please make sure I have the `embed links` permission on my highest role, and that the channel permissions are not overriding it.").then((msg) => {
-                                                    return setTimeout(function() {
-                                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                                    }, 5000);
-                                                });
+                                                m.reply("I do not have permisson to embed links in this channel. Please make sure I have the `embed links` permission on my highest role, and that the channel permissions are not overriding it.", 5000);
+                                                m.deleteIn(5000);
                                                 return;
                                             }
                                         });
@@ -205,7 +185,7 @@ module.exports = {
                                 }
                                 catch (e) {
                                     console.log(e);
-                                    Bot.createMessage(m.channel.id, "An error has occured.");
+                                    m.reply("An error has occured.");
                                 }
                                 return;
                             }
@@ -214,20 +194,12 @@ module.exports = {
                                     var volume = /\b[0-9]+\b/.exec(args)[0];
                                     volume = utils.toNum(volume) / 100;
                                     if (volume > 1.5) { // no ear rape
-                                        Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(utils.toNum(volume) * 100).toFixed(0)}%`).then((msg) => {
-                                            return setTimeout(function() {
-                                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                            }, 5000);
-                                        });
+                                        m.reply(`Sorry, but I can not set the volume to ${(utils.toNum(volume) * 100).toFixed(0)}%`, 5000);
+                                        m.deleteIn(5000);
                                         return;
                                     }
-                                    Bot.createMessage(m.channel.id, `Setting Volume to ${(utils.toNum(volume) * 100).toFixed(0)}%`).then((msg) => {
-                                        return setTimeout(function() {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 5000);
-                                    });
+                                    m.reply(`Setting Volume to ${(utils.toNum(volume) * 100).toFixed(0)}%`, 5000);
+                                    m.deleteIn(5000);
                                     voiceConnection.setVolume(volume);
                                     return;
                                 }
@@ -236,20 +208,12 @@ module.exports = {
                                     volume = utils.toNum(voiceConnection.volume) - 0.1;
                                     volume = Math.round(utils.toNum(volume) * 100) / 100;
                                     if (utils.toNum(volume) < 0) {
-                                        Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume * 100).toFixed(0)}%`).then((msg) => {
-                                            return setTimeout(function() {
-                                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                            }, 5000);
-                                        });
+                                        m.reply(`Sorry, but I can not set the volume to ${(volume * 100).toFixed(0)}%`, 5000);
+                                        m.deleteIn(5000);
                                         return;
                                     }
-                                    Bot.createMessage(m.channel.id, `Setting Volume to ${(volume * 100).toFixed(0)}%`).then((msg) => {
-                                        return setTimeout(function() {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 5000);
-                                    });
+                                    m.reply(`Setting Volume to ${(volume * 100).toFixed(0)}%`, 5000);
+                                    m.deleteIn(5000);
                                     voiceConnection.setVolume(volume);
                                     return;
                                 }
@@ -258,30 +222,18 @@ module.exports = {
                                     volume = utils.toNum(voiceConnection.volume) + 0.1;
                                     volume = Math.round(volume * 100) / 100;
                                     if (volume > 1.5) {
-                                        Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume * 100).toFixed(0)}%`).then((msg) => {
-                                            return setTimeout(function() {
-                                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                            }, 5000);
-                                        });
+                                        m.reply(`Sorry, but I can not set the volume to ${(volume * 100).toFixed(0)}%`, 5000);
+                                        m.deleteIn(5000);
                                         return;
                                     }
-                                    Bot.createMessage(m.channel.id, `Setting Volume to ${(volume * 100).toFixed(0)}%`).then((msg) => {
-                                        return setTimeout(function() {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 5000);
-                                    });
+                                    m.reply(`Setting Volume to ${(volume * 100).toFixed(0)}%`, 5000);
+                                    m.deleteIn(5000);
                                     voiceConnection.setVolume(volume);
                                     return;
                                 }
                                 else { // show current volume level
-                                    Bot.createMessage(m.channel.id, `Volume is set to ${voiceConnection.volume * 100}%`).then((msg) => {
-                                        return setTimeout(function() {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 5000);
-                                    });
+                                    m.reply(`Volume is set to ${voiceConnection.volume * 100}%`, 5000);
+                                    m.deleteIn(5000);
                                 }
                             }
                             else { // add the song to the queue since there is currently something playing
@@ -302,12 +254,8 @@ module.exports = {
                                     valid = undefined;
                                 }
                                 if (!valid) {
-                                    Bot.sendChannelTyping(m.channel.id);
-                                    Bot.createMessage(m.channel.id, "Searching youtube for: `" + args + "`").then((msg) => {
-                                        return setTimeout(function() {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                        }, 5000);
-                                    });
+                                    m.channel.sendTyping();
+                                    m.reply("Searching youtube for: `" + args + "`", 5000);
                                     var search = await ytsr(args);
                                     try {
                                         var target = search.items[Object.keys(search.items)[0]];
@@ -324,45 +272,29 @@ module.exports = {
                                     }
                                 }
                                 if (!valid) {
-                                    Bot.createMessage(m.channel.id, `Sorry, I wasnt able to play a video with the code: ${code}`).then((msg) => {
-                                        return setTimeout(function() {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 5000);
-                                    });
+                                    m.reply(`Sorry, I wasnt able to play a video with the code: ${code}`, 5000);
+                                    m.deleteIn(5000);
                                 }
                                 if (guildDb[guild.id].music.queue) {
                                     if (guildDb[guild.id].music.queue[code]) {
                                         var queue = Object.keys(guildDb[guild.id].music.queue);
                                         var position = queue.indexOf(code);
                                         if (guildDb[guild.id].music.queue[position] != code) {
-                                            Bot.createMessage(m.channel.id, "Unable to add that video to the queue at this time.").then((msg) => {
-                                                setTimeout(function() {
-                                                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                                }, 5000);
-                                            });
+                                            m.reply("Unable to add that video to the queue at this time.", 5000);
+                                            m.deleteIn(5000);
                                             return;
                                         }
                                         position++;
-                                        Bot.createMessage(m.channel.id, "That song has already been requested by: **" + guildDb[guild.id].music.queue[code] + "**. It is at queue position: `" + position + "`").then((msg) => {
-                                            return setTimeout(function() {
-                                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                            }, 7000);
-                                        });
+                                        m.reply("That song has already been requested by: **" + guildDb[guild.id].music.queue[code] + "**. It is at queue position: `" + position + "`", 7000);
+                                        m.deleteIn(7000);
                                         return;
                                     }
 
                                     queue = Object.keys(guildDb[guild.id].music.queue);
                                     queue = queue.length;
                                     if (queue > 14) {
-                                        Bot.createMessage(m.channel.id, "Sorry, only 15 songs are allowed in the queue at a time").then((msg) => {
-                                            setTimeout(function() {
-                                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                            }, 5000);
-                                        });
+                                        m.reply("Sorry, only 15 songs are allowed in the queue at a time", 5000);
+                                        m.deleteIn(5000);
                                         return;
                                     }
                                     if (code) {
@@ -377,12 +309,8 @@ module.exports = {
                                         console.log(error);
                                         return;
                                     }
-                                    Bot.createMessage(m.channel.id, "Added: `" + info.title + "` [" + msToHMS(utils.toNum(info.length_seconds) * 1000) + "m] to queue. Requested by **" + m.author.username + "#" + m.author.discriminator + "**").then((msg) => {
-                                        return setTimeout(function() {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 10000);
-                                    });
+                                    m.reply("Added: `" + info.title + "` [" + msToHMS(utils.toNum(info.length_seconds) * 1000) + "m] to queue. Requested by **" + m.author.username + "#" + m.author.discriminator + "**", 10000);
+                                    m.deleteIn(10000);
                                     return;
                                 });
                             }
@@ -404,7 +332,7 @@ module.exports = {
                             }
                             if (!code) {
                                 search = await ytsr(args);
-                                Bot.sendChannelTyping(m.channel.id);
+                                m.channel.sendTyping();
                                 try {
                                     target = search.items[Object.keys(search.items)[0]];
                                     if (!target.type == "video") {
@@ -420,17 +348,13 @@ module.exports = {
                                 }
                             }
                             if (!valid && code == undefined) {
-                                Bot.createMessage(m.channel.id, `Sorry, I wasnt able to play a video with the code: ${code}`).then((msg) => {
-                                    if (BotVoiceState.channelID) {
-                                        Bot.leaveVoiceChannel(m.member.voiceState.channelID);
-                                        guildDb[guild.id].music.current = {};
-                                        dbs.guild.save(guildDb);
-                                    }
-                                    return setTimeout(function() {
-                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                    }, 5000);
-                                });
+                                m.reply(`Sorry, I wasn't able to play a video with the code: ${code}`, 5000);
+                                m.deleteIn(5000);
+                                if (BotVoiceState.channelID) {
+                                    bot.leaveVoiceChannel(m.member.voiceState.channelID);
+                                    guildDb[guild.id].music.current = {};
+                                    dbs.guild.save(guildDb);
+                                }
                                 return;
                             }
                             var song = yt("https://www.youtube.com/watch?v=" + code, {
@@ -447,36 +371,24 @@ module.exports = {
                             yt.getInfo("https://www.youtube.com/watch?v=" + code, async function(error, info) {
                                 if (error) {
                                     console.log("Error: " + error);
-                                    Bot.createMessage(m.channel.id, `Sorry, I wasn't able to play a video with the code: ${code}`).then((msg) => {
-                                        return setTimeout(function() {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 5000);
-                                    });
+                                    m.reply(`Sorry, I wasn't able to play a video with the code: ${code}`, 5000);
+                                    m.deleteIn(5000);
                                     if (BotVoiceState.channelID) {
-                                        Bot.leaveVoiceChannel(m.member.voiceState.channelID);
+                                        bot.leaveVoiceChannel(m.member.voiceState.channelID);
                                         guildDb[guild.id].music.current = {};
                                         dbs.guild.save(guildDb);
                                     }
                                     return;
                                 }
                                 info = await info;
-                                Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` [" + msToHMS(utils.toNum(info.length_seconds) * 1000) + "m] requested by **" + m.author.username + "#" + m.author.discriminator + "**").then((msg) => {
-                                    return setTimeout(function() {
-                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                    }, 15000);
-                                });
+                                m.reply("Now playing: `" + info.title + "` [" + msToHMS(utils.toNum(info.length_seconds) * 1000) + "m] requested by **" + m.author.username + "#" + m.author.discriminator + "**", 15000);
+                                m.deleteIn(15000);
                             });
                         }
                     }
                     else { // User is in different Voice Channel and shouldnt be doing anything
-                        Bot.createMessage(m.channel.id, "You must be in the same Voice Channel as me to play a song").then((msg) => {
-                            return setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            }, 7000);
-                        });
+                        m.reply("You must be in the same Voice Channel as me to play a song", 7000);
+                        m.deleteIn(7000);
                     }
                     if (isNewQueue) {
                         var close = false;
@@ -506,11 +418,7 @@ module.exports = {
                                     if (error) {
                                         console.log("Error: " + error);
                                     }
-                                    Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` [" + msToHMS(utils.toNum(info.length_seconds) * 1000) + "m] requested by **" + requester + "**").then((msg) => {
-                                        return setTimeout(function() {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                        }, 5000);
-                                    });
+                                    m.reply("Now playing: `" + info.title + "` [" + msToHMS(utils.toNum(info.length_seconds) * 1000) + "m] requested by **" + requester + "**", 5000);
                                 });
                                 guildDb[guild.id].music.current = {};
                                 guildDb[guild.id].music.current.code = code;
@@ -523,15 +431,11 @@ module.exports = {
                                 setTimeout(function() {
                                     if (queue.length == 0 && !voiceConnection.playing) { // if there is no other song in the queue, leave the voice channel and have a wonderful day
                                         if (BotVoiceState.channelID) {
-                                            Bot.leaveVoiceChannel(m.member.voiceState.channelID);
+                                            bot.leaveVoiceChannel(m.member.voiceState.channelID);
                                             guildDb[guild.id].music.current = {};
                                             dbs.guild.save(guildDb);
-                                            Bot.createMessage(m.channel.id, "Thanks for Listening " + utils.hands.wave()).then((msg) => {
-                                                close = true;
-                                                return setTimeout(function() {
-                                                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                }, 20000);
-                                            });
+                                            m.reply("Thanks for Listening " + utils.hands.wave(), 20000);
+                                            close = true;
                                         }
                                     }
                                 }, 5000);
@@ -542,7 +446,7 @@ module.exports = {
             });
         }
         else { // User isn't in a Voice Channel
-            Bot.createMessage(m.channel.id, "You must be in a Voice Channel to play a song");
+            m.reply("You must be in a Voice Channel to play a song");
         }
     },
     help: "`!play <YT URL>` | `!play <search>` to play | `!play stop` to stop"

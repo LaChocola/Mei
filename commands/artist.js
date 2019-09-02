@@ -4,7 +4,7 @@ const utils = require("../utils");
 const dbs = require("../dbs");
 
 module.exports = {
-    main: function(Bot, m, args) {
+    main: function(bot, m, args) {
         var userDb = dbs.user.load();
 
         var name1 = m.cleanContent.replace(/!artist /i, "");
@@ -23,46 +23,46 @@ module.exports = {
 
         if (args.toLowerCase().includes("add ")) {
             if (mentioned.id !== m.author.id) {
-                Bot.createMessage(m.channel.id, "Okay....but that isnt you");
+                m.reply("Okay....but that isn't you");
                 return;
             }
             let incoming = name1.replace(/add /i, "").replace(": ", " ").split(" ");
             if (userDb.people[id].links[incoming[0]]) {
-                Bot.createMessage(m.channel.id, "That's already been added, silly~");
+                m.reply("That's already been added, silly~");
                 return;
             }
             else {
                 if (incoming.length > 2) {
-                    Bot.createMessage(m.channel.id, "You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`!artist add Patreon <https://patreon.com/Chocola>`");
+                    m.reply("You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`!artist add Patreon <https://patreon.com/Chocola>`");
                     return;
                 }
                 userDb.people[id].links[incoming[0]] = incoming[1];
                 dbs.user.save(userDb);
-                Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + utils.hands.ok());
+                m.reply("Added **" + incoming[0] + "** " + utils.hands.ok());
                 return;
             }
         }
 
         if (args.includes("remove")) {
             if (mentioned.id !== m.author.id) {
-                Bot.createMessage(m.channel.id, "Okay....but that isnt you");
+                m.reply("Okay....but that isnt you");
                 return;
             }
             let incoming = name1.replace("remove ", "").replace(": ", " ").split(" ");
             if (userDb.people[id].links[incoming[0]]) {
                 delete userDb.people[id].links[incoming[0]];
                 dbs.user.save(userDb);
-                Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + ":** from your links " + utils.hands.ok());
+                m.reply("Removed: **" + incoming[0] + ":** from your links " + utils.hands.ok());
                 return;
             }
             else {
-                Bot.createMessage(m.channel.id, "Sorry, I couldnt find**" + incoming[0] + ":** `" + incoming[1] + " in your links");
+                m.reply("Sorry, I couldnt find**" + incoming[0] + ":** `" + incoming[1] + " in your links");
                 return;
             }
         }
 
         if (Object.keys(userDb.people[id].links).length === 0) {
-            Bot.createMessage(m.channel.id, "I could find any links for **" + name + "** :(");
+            m.reply("I could find any links for **" + name + "** :(");
             return;
         }
         else {
@@ -70,7 +70,7 @@ module.exports = {
             Object.keys(links).forEach(function(key) {
                 linkArray.push(key + ": " + links[key] + "\n");
             });
-            Bot.createMessage(m.channel.id, {
+            m.reply({
                 content: "",
                 embed: {
                     color: 0xA260F6,

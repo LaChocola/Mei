@@ -1,11 +1,11 @@
 "use strict";
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         var list = m.cleanContent.replace(prefix, "").replace(/choose/i, "");
 
         if (!list) {
-            Bot.createMessage(m.channel.id, "You need to add your choices, seperated by ` | `");
+            m.reply("You need to add your choices, seperated by ` | `");
             return;
         }
 
@@ -17,7 +17,7 @@ module.exports = {
 
         var msg = comments[Math.floor(Math.random() * comments.length)];
 
-        Bot.createMessage(m.channel.id, msg);
+        m.reply(msg);
     },
     help: "This or that?"
 };

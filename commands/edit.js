@@ -64,7 +64,7 @@ function checkHasDuplicates(role, roles) {
 }
 
 module.exports = {
-    async main(Bot, m, args, prefix) {
+    async main(bot, m, args, prefix) {
         var commandArgs = utils.commandParser.parse(m, prefix);
         if (!commandArgs) {
             return;
@@ -137,7 +137,7 @@ module.exports = {
                         m.reply("Please mention which channel you want the ban log to appear in");
                         return;
                     }
-                    const channel = Bot.getChannel(m.channelMentions[0]);
+                    const channel = bot.getChannel(m.channelMentions[0]);
                     if (channel.permissionsOf(conf.users.bot).json.sendMessages !== true) {
                         m.reply("I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
@@ -180,7 +180,7 @@ module.exports = {
                         m.reply("Please mention which channel you want the update messages to appear in");
                         return;
                     }
-                    const channel = Bot.getChannel(m.channelMentions[0]);
+                    const channel = bot.getChannel(m.channelMentions[0]);
                     if (channel.permissionsOf(conf.users.bot).json.sendMessages !== true) {
                         m.reply("I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
@@ -340,7 +340,7 @@ module.exports = {
             }
             if (args.toLowerCase().includes("add")) {
                 const channelID = m.channelMentions[0] || m.content.replace("!edit ", "").replace("art", "").replace("add", "").replace("<#", "").replace(">", "").trim();
-                const channel = Bot.getChannel(channelID);
+                const channel = bot.getChannel(channelID);
                 console.log(channel);
                 if (channel === undefined || !channel.id) {
                     m.reply("I couldn't find the channel you were looking to add, please make sure it is somewhere I can see, and try again.", 5000);
@@ -478,7 +478,7 @@ module.exports = {
                         }
                     }
                 }
-                Bot.createRole(m.channel.guild.id, {
+                bot.createRole(m.channel.guild.id, {
                     name: `${selectedRole}`,
                     permissions: 104188992,
                     reason: `Role created by ${m.author.username}`
@@ -525,7 +525,7 @@ module.exports = {
                         delete guildDb[guild.id].roles[serverRoleName];
                         dbs.guild.save(guildDb);
                     }
-                    Bot.deleteRole(m.channel.guild.id, role.id, `Role deleted by ${m.channel.guild.members.get(m.author.id).name}`).then(() => {
+                    bot.deleteRole(m.channel.guild.id, role.id, `Role deleted by ${m.channel.guild.members.get(m.author.id).name}`).then(() => {
                         m.reply(`The role \`${serverRoleName}\` has been deleted successfully`, 5000);
                         m.deleteIn(5000);
                     });

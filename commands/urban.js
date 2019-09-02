@@ -4,7 +4,7 @@ const request = require("request");
 const esc = require("unidecode");
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         var word = m.content.replace(`${prefix}urban `, "");
         var urbanJsonURL = "http://api.urbandictionary.com/v0/define?term=" + esc(word);
         request.get({
@@ -18,10 +18,10 @@ module.exports = {
                     "<" + b.list[0].permalink + ">"
                 ].join("\n");
                 if (message.length > 2000) {
-                    Bot.createMessage(m.channel.id, `Sorry, the definition of **${b.list[0].word}** is too long to post.`);
+                    m.reply(`Sorry, the definition of **${b.list[0].word}** is too long to post.`);
                     return;
                 }
-                Bot.createMessage(m.channel.id, {
+                m.reply({
                     content: `Urban Dictionary definition of **${b.list[0].word}**:\n`,
                     embed: {
                         color: 0xA260F6,
@@ -30,7 +30,7 @@ module.exports = {
                 });
             }
             else {
-                Bot.createMessage(m.channel.id, "Not found");
+                m.reply("Not found");
             }
         });
     },

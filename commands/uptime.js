@@ -1,12 +1,12 @@
 "use strict";
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         var prettyMs = require("pretty-ms");
-        var prettyUptime = prettyMs(Bot.uptime, {
+        var prettyUptime = prettyMs(bot.uptime, {
             verbose: true
         });
-        Bot.createMessage(m.channel.id, "I have been running for:\n:alarm_clock: " + prettyUptime + " :alarm_clock:");
+        m.reply("I have been running for:\n:alarm_clock: " + prettyUptime + " :alarm_clock:");
     },
     help: "Uptime"
 };

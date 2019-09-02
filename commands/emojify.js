@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         args = args.replace(/(\w|\d|\*|\?|!| )/g, "$1");
         args = args.toLowerCase();
         args = args.split("");
@@ -25,13 +25,13 @@ module.exports = {
             else if ("1234567890".indexOf(char) > -1) {
                 emojis.push(":" + numbers[char] + ":");
             }
-            else if (char == "?") {
+            else if (char === "?") {
                 emojis.push(":question:");
             }
-            else if (char == "!") {
+            else if (char === "!") {
                 emojis.push(":exclamation:");
             }
-            else if (char == "*") {
+            else if (char === "*") {
                 emojis.push(":asterisk:");
             }
             else {
@@ -47,7 +47,7 @@ module.exports = {
         emojis = emojis.replace(/:regional_indicator_f::regional_indicator_i::regional_indicator_r::regional_indicator_e:/g, ":fire:");
         emojis = emojis.replace(/:exclamation::exclamation:/g, ":bangbang:");
         emojis = emojis.replace(/:exclamation::question:/g, ":interrobang:");
-        Bot.createMessage(m.channel.id, emojis);
+        m.reply(emojis);
     },
     help: "Emoji Letters"
 };

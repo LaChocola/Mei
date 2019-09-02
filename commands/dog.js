@@ -3,7 +3,7 @@
 const randomPuppy = require("random-puppy");
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         randomPuppy()
             .then(url => {
                 const data = {
@@ -19,7 +19,7 @@ module.exports = {
                     }
                 };
 
-                Bot.createMessage(m.channel.id, data);
+                m.reply(data);
             });
 
     },

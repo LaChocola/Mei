@@ -19,7 +19,7 @@ function getTagged(args) {
 }
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         var commandArgs = getArgs(m.cleanContent, "date", prefix);
 
         var taggedId = getTagged(commandArgs);

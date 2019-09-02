@@ -493,13 +493,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                     dbs.user.save(peopleDatabase);
                                     if (utils.toNum(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                         var user = bot.users.filter(u => u.id === m.author.id)[0];
-                                        bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                            return setTimeout(function() {
-                                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                            }, 60000);
-                                        }).catch((err) => {
-                                            console.log(err);
-                                        });
+                                        bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`, 60000);
                                     }
                                 }
                             }
@@ -524,13 +518,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                             dbs.user.save(peopleDatabase);
                             if (utils.toNum(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                 let user = bot.users.filter(u => u.id === m.author.id)[0];
-                                bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                    return setTimeout(function() {
-                                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                    }, 60000);
-                                }).catch((err) => {
-                                    console.log(err);
-                                });
+                                bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`, 60000);
                             }
                         }
                         return;
@@ -595,13 +583,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                                 dbs.user.save(peopleDatabase);
                                                 if (utils.toNum(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                                     let user = bot.users.filter(u => u.id === m.author.id)[0];
-                                                    bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                        return setTimeout(function() {
-                                                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                                        }, 60000);
-                                                    }).catch((err) => {
-                                                        console.log(err);
-                                                    });
+                                                    bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`, 60000);
                                                 }
                                             }
                                         }
@@ -626,13 +608,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                         dbs.user.save(peopleDatabase);
                                         if (utils.toNum(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                             let user = bot.users.filter(u => u.id === m.author.id)[0];
-                                            bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                return setTimeout(function() {
-                                                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                                }, 60000);
-                                            }).catch((err) => {
-                                                console.log(err);
-                                            });
+                                            bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`, 60000);
                                         }
                                     }
                                     return;

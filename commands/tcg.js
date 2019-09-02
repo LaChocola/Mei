@@ -3,7 +3,7 @@
 const pokemon = require("pokemontcgsdk");
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         pokemon.card.where({
             supertype: "pokemon"
         })
@@ -66,7 +66,7 @@ module.exports = {
                         }
                     }
                 };
-                Bot.createMessage(m.channel.id, msgEmbed);
+                m.reply(msgEmbed);
             });
     },
     help: "TCG Cards"

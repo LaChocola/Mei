@@ -3,9 +3,9 @@
 const Haikudos = require("haikudos");
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         Haikudos(function(haiku) {
-            Bot.createMessage(m.channel.id, {
+            m.reply({
                 embed: {
                     color: 0xA260F6,
                     description: haiku

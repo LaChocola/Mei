@@ -4,28 +4,50 @@ const booru = require("booru");
 const request = require("request").defaults({ jar: true });
 const cheerio = require("cheerio");
 
+const conf = require("../conf");
 const utils = require("../utils");
 const dbs = require("../dbs");
 
 var userDb = dbs.user.load();
 
 module.exports = {
-    main(Bot, m, args, prefix) {
-        if (m.author.id == "187368906493526017") {
+    main(bot, m, args, prefix) {
+        if (m.author.id === conf.users.whosthis) {
             return;
         }
-        if (m.channel.nsfw == false) {
-            Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
+
+        if (!m.channel.nsfw) {
+            m.reply("This command can only be used in NSFW channels");
             return;
         }
+
         const name = m.author.nick || m.author.username;
-        if (m.content.toLowerCase() == `${prefix}booru`) {
+
+        if (m.content.toLowerCase() === `${prefix}booru`) {
             m.content = `${prefix}booru giantess`;
         }
-        if (m.content.toLowerCase() == `${prefix}booru list`) {
-            Bot.createMessage(m.channel.id, "**Total Boorus Availible:** 16\n**Default Booru:** giantessbooru.com \n\n**Other Availbe Boorus | Aliases:**\n***giantessbooru*** | gtsbooru, gbooru\n***e621*** | e6, e621, e9, e926\n***hypnohub*** | hh, hypno\n***danbooru*** | db\n***konachan*** | kc, konan\n***yande.re*** | yd, yand\n***gelbooru*** | gb, gel\n***rule34*** | r34\n***safebooru*** | sb\n***thebigimagebooru*** | tb, tbib\n***xbooru*** | xb\n***derpibooru*** | dp, derpi\n***furrybooru*** | fb \n***realbooru*** | rb");
+
+        if (m.content.toLowerCase() === `${prefix}booru list`) {
+            m.reply("**Total Boorus Available:** 16\n"
+                + "**Default Booru:** giantessbooru.com \n\n"
+                + "**Other Available Boorus | Aliases:**\n"
+                + "***giantessbooru*** | gtsbooru, gbooru\n"
+                + "***e621*** | e6, e621, e9, e926\n"
+                + "***hypnohub*** | hh, hypno\n"
+                + "***danbooru*** | db\n"
+                + "***konachan*** | kc, konan\n"
+                + "***yande.re*** | yd, yand\n"
+                + "***gelbooru*** | gb, gel\n"
+                + "***rule34*** | r34\n"
+                + "***safebooru*** | sb\n"
+                + "***thebigimagebooru*** | tb, tbib\n"
+                + "***xbooru*** | xb\n"
+                + "***derpibooru*** | dp, derpi\n"
+                + "***furrybooru*** | fb \n"
+                + "***realbooru*** | rb");
             return;
         }
+
         args = m.cleanContent.toLowerCase().replace(`${prefix}booru `, "").split(", ");
         let site = "giantessbooru.com";
         const imageURL = [];
@@ -99,16 +121,16 @@ module.exports = {
                 userDb = dbs.user.load();
             }
             if (userDb.people[id].fetishes) {
-                if (userDb.people[id].fetishes.Furry == "like") {
+                if (userDb.people[id].fetishes.Furry === "like") {
                     furry = true;
                 }
-                if (userDb.people[id].fetishes.Male == "like") {
+                if (userDb.people[id].fetishes.Male === "like") {
                     male = true;
                 }
-                if (userDb.people[id].fetishes.Scat == "like") {
+                if (userDb.people[id].fetishes.Scat === "like") {
                     scat = true;
                 }
-                if (userDb.people[id].fetishes.Booru == "like") {
+                if (userDb.people[id].fetishes.Booru === "like") {
                     scat = true;
                     male = true;
                     furry = true;
@@ -1219,7 +1241,7 @@ module.exports = {
 
         const cleanTags = tags.join(", ");
 
-        if (site == "gtsbooru" || site == "giantessbooru" || site == "gbooru" || site == "giantessbooru.com") {
+        if (site === "gtsbooru" || site === "giantessbooru" || site === "gbooru" || site === "giantessbooru.com") {
             if (dislikes.length > 0) {
                 tags = tags.concat(dislikes);
             }
@@ -1227,7 +1249,7 @@ module.exports = {
             if (tags.length === 0) {
                 pageToVisit = "http://giantessbooru.com/post/list";
             }
-            else if (tags.length == 1) {
+            else if (tags.length === 1) {
                 pageToVisit = "http://giantessbooru.com/post/list/" + tags[0] + "%2C-scat/1";
             }
             else if (tags.length > 1) {
@@ -1267,7 +1289,7 @@ module.exports = {
                         const thing = $(".thumb").children();
                         for (let child in thing) {
                             const child_thing = thing[child];
-                            if (child_thing.type == "tag") {
+                            if (child_thing.type === "tag") {
                                 link_array.push(child_thing.children[0].attribs.src.replace("/_thumbs/", "_images/").replace("/thumb.jpg", ""));
                                 post_array.push(child_thing.attribs.href);
                             }
@@ -1279,7 +1301,7 @@ module.exports = {
                 }
                 const maths = Math.floor(Math.random() * link_array.length);
                 if (link_array.length === 0) {
-                    Bot.createMessage(m.channel.id, "No image found for: **" + tags.join(", ") + "**");
+                    m.reply("No image found for: **" + tags.join(", ") + "**");
                     return;
                 }
                 const number = maths + 1;
@@ -1301,20 +1323,20 @@ module.exports = {
                         }
                     }
                 };
-                Bot.createMessage(m.channel.id, data);
+                m.reply(data);
                 return;
             });
             return;
         }
 
         if (tags.length < 0) {
-            Bot.createMessage(m.channel.id, `Please input your search tags and/or booru. A list is availible by doing \`\`${prefix}booru list\`\``);
+            m.reply(`Please input your search tags and/or booru. A list is availible by doing \`\`${prefix}booru list\`\``);
             return;
         }
 
-        if (site == "danbooru" || site == "dan" || site == "db") {
+        if (site === "danbooru" || site === "dan" || site === "db") {
             if (tags.length > 3) {
-                Bot.createMessage(m.channel.id, "Danbooru doesnt support searching with multiple tags this way. Only the first tag was used");
+                m.reply("Danbooru doesnt support searching with multiple tags this way. Only the first tag was used");
             }
             booru.search(site, [tags[0]], { limit, random: true })
                 .then(booru.commonfy)
@@ -1322,23 +1344,23 @@ module.exports = {
                     // Log the direct link to each image
                     for (const image of images) {
                         imageURL.push(image.common.file_url);
-                        Bot.createMessage(m.channel.id, "Result for: **" + tags[0] + ", " + "** on " + site + "\n" + imageURL);
+                        m.reply("Result for: **" + tags[0] + ", " + "** on " + site + "\n" + imageURL);
                     }
                 })
                 .catch(err => {
                     if (err.name === "BooruError") {
                         // It's a custom error thrown by the package
-                        if (err.message == "You didn't give any images") {
-                            Bot.createMessage(m.channel.id, "No images were found for: " + tags[0]);
+                        if (err.message === "You didn't give any images") {
+                            m.reply("No images were found for: " + tags[0]);
                             return;
                         }
                         console.log(err.message);
-                        Bot.createMessage(m.channel.id, err.message);
+                        m.reply(err.message);
                     }
                     else {
                         // This means I messed up. Whoops.
                         console.log(err);
-                        Bot.createMessage(m.channel.id, "An unknown error has occured");
+                        m.reply("An unknown error has occured");
                     }
                 });
             return;
@@ -1352,7 +1374,7 @@ module.exports = {
                     imageURL.push(image.common.file_url);
                 }
 
-                if (imageURL.length == 1) {
+                if (imageURL.length === 1) {
                     const data = {
                         content: "Results on **" + site + "**",
                         embed: {
@@ -1371,7 +1393,7 @@ module.exports = {
                         }
                     };
 
-                    Bot.createMessage(m.channel.id, data);
+                    m.reply(data);
                 }
                 else if (imageURL.length > 1) {
                     const data = {
@@ -1391,12 +1413,12 @@ module.exports = {
                             }
                         }
                     };
-                    Bot.createMessage(m.channel.id, data);
+                    m.reply(data);
                     imageURL.splice(0, 1);
                     const iterator = imageURL.entries();
 
                     for (const e of iterator) {
-                        Bot.createMessage(m.channel.id, {
+                        m.reply({
                             embed: {
                                 color: 0xA260F6,
                                 image: {
@@ -1410,17 +1432,17 @@ module.exports = {
             .catch(err => {
                 if (err.name === "BooruError") {
                     // It's a custom error thrown by the package
-                    if (err.message == "You didn't give any images") {
-                        Bot.createMessage(m.channel.id, "No images were found for: **" + tags[0] + "**");
+                    if (err.message === "You didn't give any images") {
+                        m.reply("No images were found for: **" + tags[0] + "**");
                         return;
                     }
                     console.log(err.message);
-                    Bot.createMessage(m.channel.id, err.message);
+                    m.reply(err.message);
                 }
                 else {
                     // This means I messed up. Whoops.
                     console.log(err);
-                    Bot.createMessage(m.channel.id, "An unknown error has occured, please try again later");
+                    m.reply("An unknown error has occured, please try again later");
                 }
             });
     },

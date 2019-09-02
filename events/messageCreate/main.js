@@ -1,6 +1,6 @@
 "use strict";
 
 module.exports = {
-    main: function(Bot, m, config) {
+    main: function(bot, m, config) {
     }
 };
