@@ -79,10 +79,10 @@ module.exports = {
                 if (/<:([a-zA-Z0-9]+):[0-9]+>/.exec(args[0])) {
                     args[0] = /<:([a-zA-Z0-9]+):[0-9]+>/.exec(args[0])[1];
                 }
-                if (!isNaN(+args[1]) && 0 < +args[1]) {
+                if (utils.isNum(args[1]) && 0 < utils.toNum(args[1])) {
                     if (userDb.people[id].hoard) {
                         hoard = Object.keys(userDb.people[id].hoard);
-                        args[1] = +args[1];
+                        args[1] = utils.toNum(args[1]);
                         --args[1];
                         if (hoard.indexOf(args[0]) > -1) {
                             var index = hoard.indexOf(args[0]);
@@ -145,9 +145,9 @@ module.exports = {
             var hoardName = rando;
             var randomNum = Math.floor(Math.random() * hoardInnder.length);
             rando = hoardInnder[randomNum];
-            if (!isNaN(+args[1]) && 0 < +args[1] && +args[1] < hoardInnder.length + 1) {
+            if (utils.isNum(args[1]) && utils.toNum(args[1]) > 0 && utils.toNum(args[1]) < hoardInnder.length + 1) {
                 var pass = true;
-                rando = hoardInnder[+args[1] - 1];
+                rando = hoardInnder[utils.toNum(args[1]) - 1];
             }
             index = `Item ${hoardInnder.indexOf(rando) + 1} of ${hoardInnder.length} from the ${hoardName} hoard`;
             origID = origID[rando];
@@ -251,7 +251,7 @@ module.exports = {
                 }
             };
         }
-        if (!isNaN(+args[1]) && !pass) {
+        if (utils.isNum(args[1]) && !pass) {
             msg.content = "That is not a valid index number for that hoard\n\n" + msg.content;
         }
         Bot.createMessage(m.channel.id, msg);

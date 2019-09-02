@@ -15,6 +15,7 @@ const Profiler = require("./utils/Profiler");
 const commands = require("./commands");
 
 const conf = require("./conf");
+const utils = require("./utils");
 const dbs = require("../dbs");
 
 console.log("Loading...");
@@ -161,7 +162,7 @@ function createFakeGuild(m) {
 */
 
 function trackUsage(commandName, authorId, profiler) {
-    var globalData = globalDataManager.load(); // Track command usage in ../db/data.json
+    var globalData = dbs.global.load(); // Track command usage in ../db/data.json
 
     profiler.mark();
 
@@ -183,7 +184,7 @@ function trackUsage(commandName, authorId, profiler) {
 
     profiler.mark();
 
-    globalDataManager.save(globalData);
+    dbs.global.save(globalData);
 }
 
 // Handle commands
@@ -215,7 +216,7 @@ bot.on("messageCreate", async function(m) {
 
     profiler.mark();
 
-    var globalData = globalDataManager.load();
+    var globalData = dbs.global.load();
     if (globalData && globalData.banned && globalData.banned.global && globalData.banned.global[m.author.id]) {
         return;
     }
@@ -490,9 +491,9 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                 if (m.author.id !== userID) {
                                     peopleDatabase.people[m.author.id].adds++;
                                     dbs.user.save(peopleDatabase);
-                                    if (Number(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
+                                    if (utils.toNum(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                         var user = bot.users.filter(u => u.id === m.author.id)[0];
-                                        bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(peopleDatabase.people[m.author.id].adds)} hoard adds.`).then((m) => {
+                                        bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                             return setTimeout(function() {
                                                 bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                             }, 60000);
@@ -521,9 +522,9 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                         if (m.author.id !== userID) {
                             peopleDatabase.people[m.author.id].adds++;
                             dbs.user.save(peopleDatabase);
-                            if (Number(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
+                            if (utils.toNum(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                 let user = bot.users.filter(u => u.id === m.author.id)[0];
-                                bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(peopleDatabase.people[m.author.id].adds)} hoard adds.`).then((m) => {
+                                bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                     return setTimeout(function() {
                                         bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                     }, 60000);
@@ -592,9 +593,9 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                             if (m.author.id !== userID) {
                                                 peopleDatabase.people[m.author.id].adds++;
                                                 dbs.user.save(peopleDatabase);
-                                                if (Number(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
+                                                if (utils.toNum(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                                     let user = bot.users.filter(u => u.id === m.author.id)[0];
-                                                    bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(peopleDatabase.people[m.author.id].adds)} hoard adds.`).then((m) => {
+                                                    bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                                         return setTimeout(function() {
                                                             bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                         }, 60000);
@@ -623,9 +624,9 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                     if (m.author.id !== userID) {
                                         peopleDatabase.people[m.author.id].adds++;
                                         dbs.user.save(peopleDatabase);
-                                        if (Number(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
+                                        if (utils.toNum(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                             let user = bot.users.filter(u => u.id === m.author.id)[0];
-                                            bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(peopleDatabase.people[m.author.id].adds)} hoard adds.`).then((m) => {
+                                            bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                                 return setTimeout(function() {
                                                     bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                 }, 60000);

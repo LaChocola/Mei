@@ -1,5 +1,7 @@
 "use strict";
 
+const utils = require("../utils");
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         args = m.content.replace(`${prefix}d `, "");
@@ -14,12 +16,13 @@ module.exports = {
         }
         if (args.split("|")[1]) {
             var args2 = args.split("|")[1].trim();
-            var dice2 = args2.split("d")[0].trim() || null;
-            var amount2 = args2.split("d")[1].trim() || null;
+            var dice2 = utils.toNum(args2.split("d")[0].trim()) || null;
+            var amount2 = utils.toNum(args2.split("d")[1].trim()) || null;
         }
-        var dice = args.split("|")[0].split("d")[0].trim() || null;
-        var amount = args.split("|")[0].split("d")[1].trim() || null;
-        if (+dice < 0 || +amount < 0 || (args2 && +dice2 < 0 || args2 && +amount2 < 0)) {
+        var dice = utils.toNum(args.split("|")[0].split("d")[0].trim()) || null;
+        var amount = utils.toNum(args.split("|")[0].split("d")[1].trim()) || null;
+
+        if (dice < 0 || amount < 0 || (args2 && dice2 < 0 || args2 && amount2 < 0)) {
             Bot.createMessage(m.channel.id, "No negative numbers are allowed. Please put the roll in the format of `!d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.").then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -28,8 +31,9 @@ module.exports = {
             });
             return;
         }
-        if (!+dice || !+amount || (args2 && !+dice2 || args2 && !+amount2)) {
-            Bot.createMessage(m.channel.id, "Please put the roll in the format of `!d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.").then((msg) => {
+
+        if (!dice || !amount || (args2 && !dice2) || (args2 && !amount2)) {
+            Bot.createMessage(m.channel.id, "Please put the roll in the format of `!d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possible on the roll.").then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -37,6 +41,7 @@ module.exports = {
             });
             return;
         }
+
         if (dice > 30 || dice2 > 30) {
             Bot.createMessage(m.channel.id, "Please roll with a smaller number of dice, or break your roll into multiple different rolls").then((msg) => {
                 return setTimeout(function() {

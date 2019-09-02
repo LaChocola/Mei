@@ -6,10 +6,6 @@ const escapeStringRegexp = require("escape-string-regexp");
 
 const utils = require("../utils");
 
-function isNum(val) {
-    return Boolean(val && !isNaN(+val));
-}
-
 function getArgs(msg, cmd, prefix) {
     var commandRegex = RegExp(`^${escapeStringRegexp(prefix)}${escapeStringRegexp(cmd)}`, "i");
     var commandArgs = msg.replace(commandRegex, "").trim();
@@ -18,7 +14,7 @@ function getArgs(msg, cmd, prefix) {
 
 function getTagged(args) {
     var tagMatch = args.match(/<@(.*)>/);
-    var taggedId = tagMatch && isNum(tagMatch[0]) && tagMatch[0];
+    var taggedId = tagMatch && utils.isNum(tagMatch[0]) && tagMatch[0];
     return taggedId;
 }
 

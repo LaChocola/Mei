@@ -4,15 +4,13 @@ const booru = require("booru");
 const request = require("request").defaults({ jar: true });
 const cheerio = require("cheerio");
 
+const utils = require("../utils");
 const dbs = require("../dbs");
 
 var userDb = dbs.user.load();
 
 module.exports = {
     main(Bot, m, args, prefix) {
-        function isNumeric(num) {
-            return !isNaN(Number(num));
-        }
         if (m.author.id == "187368906493526017") {
             return;
         }
@@ -80,8 +78,8 @@ module.exports = {
         let dislikes = [];
         const argsIterator = args.entries();
         for (const e of argsIterator) {
-            if (isNumeric(Number(e[1]))) {
-                limit = Number(e[1]);
+            if (utils.isNum(e[1])) {
+                limit = utils.toNum(e[1]);
                 args.splice(e[0], 1);
             }
             if (aliases.indexOf(e[1]) > -1) {

@@ -42,8 +42,8 @@ module.exports = {
         }
 
         var limit = 5000;
-        if (args && !isNaN(+args)) {
-            limit = parseInt(args, 10);
+        if (utils.isNum(args)) {
+            limit = utils.toInt(args);
         }
         var artChannel = bot.getChannel(artChannelId);
 

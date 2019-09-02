@@ -1,21 +1,19 @@
 "use strict";
 
 const conf = require("../conf");
+const utils = require("../utils");
 const dbs = require("../dbs");
 
 var guildDb = dbs.guild.load();
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {
-        function isNumeric(num) {
-            return !isNaN(num);
-        }
         var number = 102;
         args = m.cleanContent.replace(`${prefix}clean `, "").split(" ");
         var argsIterator = args.entries();
         for (let e of argsIterator) {
-            if (isNumeric(+e[1])) {
-                var int = +e[1];
+            if (utils.isNum(e[1])) {
+                var int = utils.toInt(e[1]);
             }
         }
         if (!int) {

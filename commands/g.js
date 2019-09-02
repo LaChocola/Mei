@@ -11,13 +11,17 @@ var time = new Date().toISOString();
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
+        args = args.toLowerCase();
+
         if (m.channel.guild.id == "187694240585744384") {
             prefix = "?";
         }
+
         if (m.content.indexOf(prefix + "g") < 0) {
             return false;
         }
-        args = args.toLowerCase();
+
+
         var mentioned = m.mentions[0] || m.author;
         var id = mentioned.id;
         var name1 = args;
@@ -37,11 +41,10 @@ module.exports = {
                     cleanishNames.replace(names[i], `${names[i]}\n`);
                 }
             }
-            resultstring += "**Names avaible: **" + names.length + "\n " + cleanishNames + "\n \n" + misc.getLewdCounts("gentle");
+            resultstring += "**Names available: **" + names.length + "\n " + cleanishNames + "\n \n" + misc.getLewdCounts("gentle");
             if (names.length < 1) {
                 names = misc.getDefaultGTSNames(m.channel.guild.id);
-                resultstring = "";
-                resultstring += "**Names avaible: **" + names.totalnames + "\n " + names.cleannames + "\n \n" + misc.getLewdCounts("gentle");
+                resultstring = "**Names available: **" + names.totalnames + "\n " + names.cleannames + "\n \n" + misc.getLewdCounts("gentle");
             }
             Bot.createMessage(m.channel.id, {
                 embed: {
@@ -69,6 +72,7 @@ module.exports = {
 
         var maintype = "gentle";
         var subtype = misc.searchForLewd(args);
+
         if (args.indexOf("invert") >= 0 || args.indexOf("inverse") >= 0) {
             big = misc.getTrueName(m.author.id, m);
         }
@@ -76,8 +80,9 @@ module.exports = {
 
         var lewdmessage = misc.generateLewdMessage(smallid, big, guildid, maintype, subtype);
 
-        if (usage !== 0) {
-            usage = ordinal(+usage);
+        var usageText = "0";
+        if (usage > 0) {
+            usageText = ordinal(usage);
         }
         var data = {
             embed: {
@@ -86,7 +91,7 @@ module.exports = {
                 description: lewdmessage[0],
                 timestamp: time,
                 footer: {
-                    text: `${usage} response`,
+                    text: `${usageText} response`,
                     icon_url: mentioned.avatarURL
                 }
             }

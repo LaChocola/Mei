@@ -182,7 +182,7 @@ module.exports = {
                                         for (const [id, queuer] of Object.entries(guildDb[guild.id].music.queue)) {
                                             var info = await yt.getInfo(`https://www.youtube.com/watch?v=${id}`);
                                             var title = info.title;
-                                            songs.push(`${index++}. [${title}](https://www.youtube.com/watch?v=${id}) [${msToHMS(+info.length_seconds * 1000)}]  |  Requested by: ${queuer}`);
+                                            songs.push(`${index++}. [${title}](https://www.youtube.com/watch?v=${id}) [${msToHMS(utils.toNum(info.length_seconds) * 1000)}]  |  Requested by: ${queuer}`);
                                         }
                                         Bot.createMessage(m.channel.id, {
                                             embed: {
@@ -212,9 +212,9 @@ module.exports = {
                             if (args.toLowerCase().includes("volume") || args.toLowerCase().includes("turn it") || args.toLowerCase().includes("turn")) { // someone asks to change the volume to a specific percentage
                                 if (/\b[0-9]+\b/.exec(args)) {
                                     var volume = /\b[0-9]+\b/.exec(args)[0];
-                                    volume = +volume / 100;
+                                    volume = utils.toNum(volume) / 100;
                                     if (volume > 1.5) { // no ear rape
-                                        Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(+volume * 100).toFixed(0)}%`).then((msg) => {
+                                        Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(utils.toNum(volume) * 100).toFixed(0)}%`).then((msg) => {
                                             return setTimeout(function() {
                                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -222,7 +222,7 @@ module.exports = {
                                         });
                                         return;
                                     }
-                                    Bot.createMessage(m.channel.id, `Setting Volume to ${(+volume * 100).toFixed(0)}%`).then((msg) => {
+                                    Bot.createMessage(m.channel.id, `Setting Volume to ${(utils.toNum(volume) * 100).toFixed(0)}%`).then((msg) => {
                                         return setTimeout(function() {
                                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -233,9 +233,9 @@ module.exports = {
                                 }
                                 if (args.toLowerCase().includes("down")) { // someone asks to turn volume down 10%
                                     let volume = voiceConnection.volume;
-                                    volume = +voiceConnection.volume - 0.1;
-                                    volume = Math.round(+volume * 100) / 100;
-                                    if (+volume < 0) {
+                                    volume = utils.toNum(voiceConnection.volume) - 0.1;
+                                    volume = Math.round(utils.toNum(volume) * 100) / 100;
+                                    if (utils.toNum(volume) < 0) {
                                         Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume * 100).toFixed(0)}%`).then((msg) => {
                                             return setTimeout(function() {
                                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -255,7 +255,7 @@ module.exports = {
                                 }
                                 if (args.toLowerCase().includes("up")) { // someone asks to turn volume up 10%
                                     let volume = voiceConnection.volume;
-                                    volume = +voiceConnection.volume + 0.1;
+                                    volume = utils.toNum(voiceConnection.volume) + 0.1;
                                     volume = Math.round(volume * 100) / 100;
                                     if (volume > 1.5) {
                                         Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume * 100).toFixed(0)}%`).then((msg) => {
@@ -377,7 +377,7 @@ module.exports = {
                                         console.log(error);
                                         return;
                                     }
-                                    Bot.createMessage(m.channel.id, "Added: `" + info.title + "` [" + msToHMS(+info.length_seconds * 1000) + "m] to queue. Requested by **" + m.author.username + "#" + m.author.discriminator + "**").then((msg) => {
+                                    Bot.createMessage(m.channel.id, "Added: `" + info.title + "` [" + msToHMS(utils.toNum(info.length_seconds) * 1000) + "m] to queue. Requested by **" + m.author.username + "#" + m.author.discriminator + "**").then((msg) => {
                                         return setTimeout(function() {
                                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -461,7 +461,7 @@ module.exports = {
                                     return;
                                 }
                                 info = await info;
-                                Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` [" + msToHMS(+info.length_seconds * 1000) + "m] requested by **" + m.author.username + "#" + m.author.discriminator + "**").then((msg) => {
+                                Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` [" + msToHMS(utils.toNum(info.length_seconds) * 1000) + "m] requested by **" + m.author.username + "#" + m.author.discriminator + "**").then((msg) => {
                                     return setTimeout(function() {
                                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -506,7 +506,7 @@ module.exports = {
                                     if (error) {
                                         console.log("Error: " + error);
                                     }
-                                    Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` [" + msToHMS(+info.length_seconds * 1000) + "m] requested by **" + requester + "**").then((msg) => {
+                                    Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` [" + msToHMS(utils.toNum(info.length_seconds) * 1000) + "m] requested by **" + requester + "**").then((msg) => {
                                         return setTimeout(function() {
                                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                         }, 5000);

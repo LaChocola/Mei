@@ -15,8 +15,8 @@ module.exports = {
             var guild = m.channel.guild;
             var time = 0.5;
             var base = m.cleanContent.replace(`${prefix}giveaway `, "").split(" | ");
-            if (!isNaN(+base[1])) {
-                time = +base[1];
+            if (utils.isNum(base[1])) {
+                time = utils.toNum(base[1]);
                 base.pop();
             }
             var msg = base[0];

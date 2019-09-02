@@ -22,12 +22,12 @@ module.exports = {
         }
         var args2 = m.cleanContent.replace(`${prefix}ignore`, "").replace(/\bundo\b/, "").replace("<@", "").replace(">", "").trim().split(" | ");
         if (!id) {
-            if (!isNaN(Number(args2[0]))) {
+            if (utils.isNum(args2[0])) {
                 id = args2[0];
             }
         }
         if (args2[1]) {
-            if (!isNaN(Number(args2[1]))) {
+            if (utils.isNum(args2[1])) {
                 id = args2[1];
                 return;
             }
