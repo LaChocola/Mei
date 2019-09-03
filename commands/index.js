@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 const fs = require("fs");
 const path = require("path");
@@ -22,13 +22,13 @@ function hasChanged(name) {
     return changed;
 }
 
-function logCommand(command, m, prefix, args, success) {
+function logCommand(label, m, args, success) {
     var loghead = "CMD".black;
     loghead = success ? loghead.bgGreen : loghead.bgRed;
     var loguser = `${m.author.username}#${m.author.discriminator}`.magenta.bold;
     var logserver = `${m.channel.guild.name}`.cyan.bold || "Direct Message".cyan.bold;
     var logchannel = `#${m.channel.name}`.green.bold;
-    var logcmd = `${prefix}${command}`.bold;
+    var logcmd = `${m.prefix}${label}`.bold;
     logcmd = success ? logcmd.blue : logcmd.red;
     console.log(`${loghead} ${loguser} ${">".blue.bold} ${logserver} ${"-".blue.bold} ${logchannel} ${logcmd}`);
     if (args) {
@@ -49,13 +49,14 @@ function LegacyCommand(label, legacy) {
         hidden: legacy.hidden
     };
 
-    return Eris.Command(label, generator, options);
+    return new Eris.Command(label, generator, options);
 }
 
 // This is normally done by the CommandClient
 function parseArgs(m) {
     var args = m.content.replace(/<@!/g, "<@").substring(m.prefix.length).trim().split(/\s+/g); // Remove prefix and split into args
     args.shift(); // Remove command label from args
+    return args;
 }
 
 module.exports = {

@@ -42,7 +42,7 @@ class Profiler {
             return [];
         }
         var before = this.timestamps.slice(0, -1);
-        var after = this.timestamps.slice(1, 0);
+        var after = this.timestamps.slice(1);
         var pairs = before.map(function(b, i) {
             var a = after[i];
             return a.time - b.time;

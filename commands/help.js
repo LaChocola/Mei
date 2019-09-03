@@ -23,9 +23,10 @@ async function main(m, args) {
         return;
     }
 
-    m.reply("`" + m.prefix + cmd.label + "`, " + cmd.description);
+    m.reply("`" + m.prefix + cmd.label + "` " + cmd.fullDescription || cmd.description);
 }
 
 module.exports = new Eris.Command("help", main, {
-    description: "Command help"
+    description: "Command help",
+    fullDescription: "Use this command to get detailed help about specific commands. For example, `!help commands`."
 });
