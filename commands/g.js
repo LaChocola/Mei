@@ -11,7 +11,7 @@ var globalData = dbs.global.load();
 var time = new Date().toISOString();
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         args = args.toLowerCase();
 
         if (m.channel.guild.id === conf.guilds.guild1) {

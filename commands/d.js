@@ -3,7 +3,7 @@
 const utils = require("../utils");
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         args = m.content.replace(`${prefix}d `, "");
         if (args.split("|").length > 2) {
             m.reply("You are onle able to roll 2 dice at once. Please use the following format: `!d 1d20 | 2d10` to roll multiple dice.", 15000);

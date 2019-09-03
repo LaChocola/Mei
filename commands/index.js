@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 
+const Eris = require("eris");
 const glob = require("glob");
 const reload = require("require-reload")(require);
 
@@ -21,7 +22,7 @@ function hasChanged(name) {
     return changed;
 }
 
-function logCommand(m, prefix, command, args, success) {
+function logCommand(command, m, prefix, args, success) {
     var loghead = "CMD".black;
     loghead = success ? loghead.bgGreen : loghead.bgRed;
     var loguser = `${m.author.username}#${m.author.discriminator}`.magenta.bold;
@@ -31,10 +32,31 @@ function logCommand(m, prefix, command, args, success) {
     logcmd = success ? logcmd.blue : logcmd.red;
     console.log(`${loghead} ${loguser} ${">".blue.bold} ${logserver} ${"-".blue.bold} ${logchannel} ${logcmd}`);
     if (args) {
-        var logargs = `${args}`.bold;
+        var logargs = `${args.join(" ")}`.bold;
         logargs = success ? logargs.blue : logargs.red;
         console.log("ARG".black.bgCyan + " " + logargs);
     }
+}
+
+function LegacyCommand(label, legacy) {
+    function generator(args, m) {
+        var legacyArgs = args.join(" ").replace(/\[\?\]/ig, "");
+        legacy.main(m.bot, m, legacyArgs, m.prefix);
+    }
+
+    var options = {
+        description: legacy.help,
+        hidden: legacy.hidden
+    };
+
+    return Eris.Command(label, generator, options);
+}
+
+// This is normally done by the CommandClient
+function parseArgs(command, m) {
+    var args = m.content.replace(/<@!/g, "<@").substring(m.prefix.length).trim().split(/\s+/g); // Remove prefix and split into args
+    args.shift(); // Remove command label from args
+    m.command = command;
 }
 
 module.exports = {
@@ -43,34 +65,33 @@ module.exports = {
         return glob.sync(searchPath, { ignore: ["**/index.js"] })
             .map(f => path.parse(f).name);
     },
-    load: function(name) {
-        var changed = hasChanged(name);
+    load: function(label) {
+        var changed = hasChanged(label);
         if (conf.autoReload && changed) {
-            return this.reload(name);
+            return this.reload(label);
         }
-        var command = require(getPath(name));
-        command.name = name;
+        var command = require(getPath(label));
+        if (!(command instanceof Eris.Command)) {
+            command = new LegacyCommand(label, command);
+        }
         return command;
     },
-    reload: function(name) {
-        var command = reload(getPath(name));
-        command.name = name;
+    reload: function(label) {
+        var command = reload(getPath(label));
+        command.label = label;
         return command;
     },
-    run: function(name, bot, m, prefix) {
-        var command = this.load(name);
-        var args = m.content.replace(/\[\?\]/ig, "").split(" ");
-        args.shift();
-        var argsString = args.join(" ");
-        m.prefix = prefix;
-        logCommand(m, prefix, name, argsString, true);
+    run: function(label, m) {
+        var command = this.load(label);
+        var args = parseArgs(command, m);
+        logCommand(label, m, args, true);
         try {
-            command.main(bot, m, argsString, prefix);
+            command.process(args, m);
         }
         catch (err) {
             console.log(err);
             m.reply("An error has occured.");
-            logCommand(m, prefix, name, argsString, false);
+            logCommand(label, m, args, false);
         }
     }
 };

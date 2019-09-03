@@ -10,12 +10,19 @@ function extend(bot) {
     });
 
     // Returns promise for sent message
+    Object.defineProperty(bot.Message.prototype, "bot", {
+        get: function() {
+            var m = this;
+            return m._client;
+        }
+    });
+
+    // Returns promise for sent message
     Object.defineProperty(bot.Message.prototype, "reply", {
         value: async function(text, timeout) {
             var m = this;
-            var bot = m._client;
 
-            var sentMsg = bot.createMessage(m.channel.id, text);
+            var sentMsg = m.bot.createMessage(m.channel.id, text);
             if (timeout) {
                 sentMsg.then(m => m.deleteIn(timeout));
             }

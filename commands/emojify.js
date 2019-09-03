@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         args = args.replace(/(\w|\d|\*|\?|!| )/g, "$1");
         args = args.toLowerCase();
         args = args.split("");

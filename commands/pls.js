@@ -4,8 +4,9 @@ const conf = require("../conf");
 const utils = require("../utils");
 
 async function pls(bot, m, args, prefix) {
-    var commandArgs = utils.commandParser.parse(m, prefix);
-    if (!commandArgs) {
+    args = args.split(/\s+/g);
+    var subcommand = args[0];
+    if (!subcommand) {
         return;
     }
 
@@ -15,7 +16,6 @@ async function pls(bot, m, args, prefix) {
     if (m.command.label !== "pls") {
         return;
     }
-    var subcommand = commandArgs[0];
 
     if (subcommand === "stop") {
         m.reply("Let me rest my eyes for a moment", 1500);

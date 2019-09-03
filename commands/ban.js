@@ -18,7 +18,7 @@ var permissionDeniedResponses = [
     "Roses are red\nfuck me ;) "
 ];
 
-async function checkIsMod(member, guild) {
+function checkIsMod(member, guild) {
     var guildData = guildDb[guild.id];
     if (!guildData) {
         var perms = member.permission.json;
@@ -92,7 +92,7 @@ meta.main = async function(bot, m, args, prefix) {
         targetId = targetId.replace("<@", "").replace(">", "").trim();
         // TODO: name is undeclared here?
         if (!name || m.mentions.length < 2) {
-            var target = await bot.users.get(targetId);
+            var target = bot.users.get(targetId);
             if (!target || !target.username) {
                 name = "Unknown User";
                 return;

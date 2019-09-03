@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const utils = require("../utils");
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var member = m.guild.members.find(m => utils.isSameMember(m, m.author));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
@@ -39,6 +39,5 @@ module.exports = {
             }
         });
     },
-    help: "idk",
-    type: "Image Command"
+    help: "idk"
 };

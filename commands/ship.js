@@ -54,7 +54,7 @@ module.exports = {
             try {
                 var firstName = m.channel.guild.members.get(m.mentions[0].id).nick || m.mentions[0].username;
                 var lastName = m.channel.guild.members.get(m.mentions[1].id).nick || m.mentions[1].username;
-                if (firstName == lastName) {
+                if (firstName === lastName) {
                     m.reply("Lovely shi...Uhm, can you two stop being weird?\n~~both names are the same~~");
                     return;
                 }

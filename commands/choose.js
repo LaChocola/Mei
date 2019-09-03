@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var list = m.cleanContent.replace(prefix, "").replace(/choose/i, "");
 
         if (!list) {

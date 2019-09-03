@@ -4,7 +4,7 @@ const request = require("request");
 const randomCat = require("random-cat");
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         request("http://aws.random.cat/meow", (err, res, body) => {
             if (res.statusCode == 200) {
                 var catURL = JSON.parse(body);

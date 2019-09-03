@@ -1,5 +1,6 @@
 "use strict";
 
+const conf = require("../conf");
 const utils = require("../utils");
 const dbs = require("../dbs");
 
@@ -49,11 +50,11 @@ module.exports = {
                     guildDb[guild.id].giveaways.current = {};
                     guildDb[guild.id].giveaways.creator = author;
                     guildDb[guild.id].giveaways.current.contestants = {};
-                    m.reply(`***${name}*** has started a giveaway for: **` + msg + `**. React to this message with <:giveaway:367892951780818946> in ${time} hour(s) to enter!`).then((m) => {
+                    m.reply(`***${name}*** has started a giveaway for: **` + msg + `**. React to this message with <:giveaway:${conf.emojis.giveaway}> in ${time} hour(s) to enter!`).then((m) => {
                         guildDb[guild.id].giveaways.mID = m.id;
                         guildDb[guild.id].giveaways.channelID = m.channel.id;
                         dbs.guild.save(guildDb);
-                        bot.addMessageReaction(guildDb[guild.id].giveaways.channelID, guildDb[guild.id].giveaways.mID, "giveaway:367892951780818946");
+                        bot.addMessageReaction(guildDb[guild.id].giveaways.channelID, guildDb[guild.id].giveaways.mID, `giveaway:${conf.emojis.giveaway}`);
                         var amount = time * 3600000;
                         return promiseTimeout(amount);
                     }).then(() => {

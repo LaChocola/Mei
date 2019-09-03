@@ -2,18 +2,18 @@
 
 const commands = require("../commands");
 
-var embedLimit = 1800;
+const embedLimit = 1800;
 
 function formatHelp(prefix, name, help) {
     return "`" + prefix + name + "` " + help + ".\n";
 }
 
 module.exports = {
-    main(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         const commandNames = commands.list();
         var loadedCommands = commandNames.map(n => commands.load(n));
         var publicCommands = loadedCommands.filter(c => !c.hidden);
-        var lines = publicCommands.map(c => formatHelp(prefix, c.name, c.help));
+        var lines = publicCommands.map(c => formatHelp(prefix, c.label, c.description));
 
         var embeds = [""];
         for (let line of lines) {

@@ -4,7 +4,7 @@ const request = require("request");
 const unidecode = require("unidecode");
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         if (m.content === `${prefix}e`) {
             m.reply("Please add something i.e. ``!e Whats cooler than being cool``");
             return;

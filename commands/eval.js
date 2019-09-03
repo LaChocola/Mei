@@ -6,21 +6,22 @@ const conf = require("../conf");
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
-        var coolkids = [conf.users.owner, "271803699095928832", "137269976255037440"];
-        if (coolkids.indexOf(m.author.id) > -1) {
-            try {
-                var ev = await safeEval(args);
-                m.reply(ev);
-                console.log(ev);
-            }
-            catch (err) {
-                m.reply(err);
-            }
+        var coolkids = [conf.users.owner, conf.users.digiduncan, conf.users.natalie];
+        if (!coolkids.include(m.author.id)) {
+            m.reply("No, don't touch that", 1000);
+            return;
         }
-        else {
-            m.reply("No, dont touch that");
+
+        try {
+            var ev = safeEval(args);
+            m.reply(ev);
+            console.log(ev);
         }
+        catch (err) {
+            m.reply(err);
+        }
+        
     },
-    help: "Just dont",
+    help: "Just don't",
     hidden: true
 };

@@ -20,6 +20,7 @@ catch (err) {
 
 var conf = {};
 conf.prefix = process.env.MEI_PREFIX || legacyConfig.prefix || "!";
+conf.autoReload = process.env.MEI_AUTORELOAD || false;
 conf.tokens = {
     mei: process.env.MEI_TOKEN_MEI || legacyConfig.tokens.mei,
     other: process.env.MEI_TOKEN_OTHER || legacyConfig.tokens.other,

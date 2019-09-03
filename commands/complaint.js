@@ -3,7 +3,7 @@
 const conf = require("../conf");
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         if (m.author.id === conf.users.owner) {
             m.reply(":ok_hand:");
         }

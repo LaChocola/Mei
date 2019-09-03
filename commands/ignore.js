@@ -34,14 +34,14 @@ module.exports = {
             var reason = args2[1].trim();
         }
         if (!name) {
-            var user = await bot.users.get(id);
+            var user = bot.users.get(id);
             if (!user || !user.username) {
                 name = "Unknown User";
                 return;
             }
             name = user.username;
         }
-        var discrim = await bot.users.get(id).discriminator;
+        var discrim = bot.users.get(id).discriminator;
         if (discrim) {
             name = `${name}#${discrim}`;
         }

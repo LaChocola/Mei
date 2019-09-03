@@ -64,8 +64,8 @@ function checkHasDuplicates(role, roles) {
 }
 
 module.exports = {
-    async main(bot, m, args, prefix) {
-        var commandArgs = utils.commandParser.parse(m, prefix);
+    main: async function(bot, m, args, prefix) {
+        var commandArgs = args.split(/\s+/g);
         if (!commandArgs) {
             return;
         }
@@ -394,7 +394,7 @@ module.exports = {
                 const serverRoleName = args.toLowerCase().trim();
                 console.log("selectedRole: " + serverRoleName);
                 if (serverRoleNames.includes(serverRoleName)) {
-                    var role = await m.guild.roles.filter(r => r.name.toLowerCase().trim() === serverRoleName);
+                    var role = m.guild.roles.filter(r => r.name.toLowerCase().trim() === serverRoleName);
                     console.log("length: " + role.length);
                     console.log("reults:");
                     console.log(role);

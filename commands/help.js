@@ -1,29 +1,31 @@
 "use strict";
 
-const fs = require("fs");
+const Eris = require("eris");
 
-module.exports = {
-    main: function(bot, m, args, prefix) {
-        args = args.replace(prefix, "");
-        if (args != "") {
-            var commands = fs.readdirSync("./commands/");
-            if (commands.indexOf(args + ".js") > -1) {
-                var cmd = require("./" + args + ".js");
-                if (!cmd.hidden) {
-                    m.reply("`" + prefix + args + "`, " + cmd.help);
-                    return;
-                }
-                return;
-            }
-            else {
-                m.reply("That command doesn't exist.");
-                return;
-            }
-        }
-        else {
-            m.reply(`To show a help for a certain command, say \`${prefix}help <command>\`.\nIf you want a list of commands, say \`${prefix}commands\`.`);
-            return;
-        }
-    },
-    help: "Command help"
-};
+const commands = require("../commands");
+
+async function main(m, args) {
+    var label = args[0];
+    if (!label) {
+        m.reply(`To show a help for a certain command, say \`${m.prefix}help <command>\`.\nIf you want a list of commands, say \`${m.prefix}commands\`.`);
+        return;
+    }
+
+    var cmdList = commands.list();
+    if (!cmdList.includes(label)) {
+        m.reply("That command doesn't exist.");
+        return;
+    }
+
+    var cmd = commands.load(label);
+    if (cmd.hidden) {
+        m.reply("That command doesn't exist.");
+        return;
+    }
+
+    m.reply("`" + m.prefix + cmd.label + "`, " + cmd.description);
+}
+
+module.exports = new Eris.Command("help", main, {
+    description: "Command help"
+});

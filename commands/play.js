@@ -87,10 +87,10 @@ module.exports = {
                             if (args.toLowerCase().includes("current") || ((args.toLowerCase().includes("queue") || args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list=")) && Object.entries(guildDb[guild.id].music.queue).length < 1)) { // someone asks for current song info
                                 var playTime = voiceConnection.current.playTime;
                                 yt.getInfo("https://www.youtube.com/watch?v=" + guildDb[guild.id].music.current.code).then(async function(info) {
-                                    info = await info;
+                                    info = await info; // TODO: WTF?
                                     var start = playTime;
                                     var end = +info.length_seconds * 1000;
-                                    console.log(await info.length_seconds);
+                                    console.log(await info.length_seconds); // TODO: WTF?
                                     console.log(end);
                                     var bar = progress({
                                         total: end,
@@ -380,7 +380,7 @@ module.exports = {
                                     }
                                     return;
                                 }
-                                info = await info;
+                                info = await info; // TODO: WTF?
                                 m.reply("Now playing: `" + info.title + "` [" + msToHMS(utils.toNum(info.length_seconds) * 1000) + "m] requested by **" + m.author.username + "#" + m.author.discriminator + "**", 15000);
                                 m.deleteIn(15000);
                             });

@@ -8,7 +8,7 @@ const dbs = require("../dbs");
 var userDb = dbs.user.load();
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!fetish /i, "");
 
         function capFirstLetter(string) {

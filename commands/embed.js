@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         prefix = "!";
         args = m.content.slice(prefix.length).split(" ");
         args.shift();
