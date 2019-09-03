@@ -53,10 +53,9 @@ function LegacyCommand(label, legacy) {
 }
 
 // This is normally done by the CommandClient
-function parseArgs(command, m) {
+function parseArgs(m) {
     var args = m.content.replace(/<@!/g, "<@").substring(m.prefix.length).trim().split(/\s+/g); // Remove prefix and split into args
     args.shift(); // Remove command label from args
-    m.command = command;
 }
 
 module.exports = {
@@ -82,11 +81,11 @@ module.exports = {
         return command;
     },
     run: function(label, m) {
-        var command = this.load(label);
-        var args = parseArgs(command, m);
+        m.command = this.load(label);
+        var args = parseArgs(m);
         logCommand(label, m, args, true);
         try {
-            command.process(args, m);
+            m.command.process(args, m);
         }
         catch (err) {
             console.log(err);
