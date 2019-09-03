@@ -39,7 +39,7 @@ function logCommand(label, m, args, success) {
 }
 
 function LegacyCommand(label, legacy) {
-    function generator(args, m) {
+    function generator(m, args) {
         var legacyArgs = args.join(" ").replace(/\[\?\]/ig, "");
         legacy.main(m.bot, m, legacyArgs, m.prefix);
     }
@@ -86,7 +86,10 @@ module.exports = {
         var args = parseArgs(m);
         logCommand(label, m, args, true);
         try {
-            m.command.process(args, m);
+            var resp = await m.command.process(args, m);
+            if (resp != null && !(resp instanceof Message)) {
+                await m.reply(resp);
+            }
         }
         catch (err) {
             console.log(err);
