@@ -1,6 +1,12 @@
 ﻿"use strict";
 
-const fs = require("fs").promises;
+const util = require("util");
+const fs = require("fs");
+
+const fsPromises = {
+    readFile: util.promisify(fs.readFile),
+    writeFile: util.promisify(fs.writeFile)
+};
 
 const conf = require("../conf");
 
@@ -29,7 +35,7 @@ function parse(fileData) {
 
 // Tries to load a file. On error, returns undefined.
 async function loadfile(path) {
-    var fileData = await fs.readFile(path, "utf8")
+    var fileData = await fsPromises.readFile(path, "utf8")
         .catch(function(err) {
             // TODO: If file is missing, create a new blank file. Maybe load from template?
             if (err.code === "ENOENT") {
@@ -49,22 +55,25 @@ class DataManager {
         this.backupPath = backupPath;
     }
 
+    // Loads a database file
+    // Tries to restore from backup if data file is corrupt
+    // Throws an error if unable to load from either data file or backup file
     async load() {
         var self = this;
 
         var data = await loadfile(self.dataPath);
         
         if (!data) {
-            console.log("JSON error, attempting restore");
+            console.log("db JSON error, attempting restore");
             data = await loadfile(self.backupPath);
 
-            if (data) {
-                await self.save(data);
-                console.log("Restore Successful");
-            }
-            else {
+            if (!data) {
                 console.error("Unable to load backup file");
+                throw new Error("Unable to load db");
             }
+
+            await self.save(data);
+            console.log("Restore Successful");
         }
 
         return data;
@@ -73,7 +82,7 @@ class DataManager {
     async save(data) {
         var self = this;
 
-        await fs.writeFile(self.dataPath, JSON.stringify(data, null, "\t"));
+        await fsPromises.writeFile(self.dataPath, JSON.stringify(data, null, "\t"));
     }
 }
 

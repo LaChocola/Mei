@@ -161,7 +161,7 @@ function createFakeGuild(m) {
 }
 */
 
-function trackUsage(commandName, authorId, profiler) {
+async function trackUsage(commandName, authorId, profiler) {
     var globalData = await dbs.global.load(); // Track command usage in ../db/data.json
 
     profiler.mark();
@@ -244,7 +244,7 @@ bot.on("messageCreate", async function(m) {
         return;
     }
 
-    trackUsage(commandName, m.author.id, profiler);
+    await trackUsage(commandName, m.author.id, profiler);
 
     profiler.mark();
     profiler.save();
