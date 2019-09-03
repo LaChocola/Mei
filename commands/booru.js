@@ -8,7 +8,7 @@ const conf = require("../conf");
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var userDb = dbs.user.load();
+var userDb = await dbs.user.load();
 
 module.exports = {
     main(bot, m, args, prefix) {
@@ -111,14 +111,14 @@ module.exports = {
         }
         if (!userDb.people[id]) {
             userDb.people[id] = {};
-            dbs.user.save(userDb);
-            userDb = dbs.user.load();
+            await dbs.user.save(userDb);
+            userDb = await dbs.user.load();
         }
         if (userDb.people[id]) {
             if (!userDb.people[id].fetishes) {
                 userDb.people[id].fetishes = {};
-                dbs.user.save(userDb);
-                userDb = dbs.user.load();
+                await dbs.user.save(userDb);
+                userDb = await dbs.user.load();
             }
             if (userDb.people[id].fetishes) {
                 if (userDb.people[id].fetishes.Furry === "like") {

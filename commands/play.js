@@ -8,7 +8,7 @@ const utils = require("../utils");
 const conf = require("../conf");
 const dbs = require("../dbs");
 
-var guildDb = dbs.guild.load();
+var guildDb = await dbs.guild.load();
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
@@ -51,20 +51,20 @@ module.exports = {
             guildDb[guild.id].name = guild.name;
             guildDb[guild.id].owner = guild.ownerID;
             m.reply(`Server: ${guild.name} added to database. Populating information ${utils.hands.wave()}`, 5000);
-            dbs.guild.save(guildDb);
+            await dbs.guild.save(guildDb);
         }
         // I am bad with storage, I know
         if (!guildDb[guild.id].music) {
             guildDb[guild.id].music = {};
-            dbs.guild.save(guildDb);
+            await dbs.guild.save(guildDb);
         }
         if (!guildDb[guild.id].music.queue) {
             guildDb[guild.id].music.queue = {};
-            dbs.guild.save(guildDb);
+            await dbs.guild.save(guildDb);
         }
         if (!guildDb[guild.id].music.current) {
             guildDb[guild.id].music.current = {};
-            dbs.guild.save(guildDb);
+            await dbs.guild.save(guildDb);
         }
         if (m.member.voiceState.channelID) { // User is in Voice Channel
             bot.joinVoiceChannel(m.member.voiceState.channelID).then(async function(voiceConnection) { // Join user voice channel
@@ -300,7 +300,7 @@ module.exports = {
                                     if (code) {
                                         queue = guildDb[guild.id].music.queue;
                                         queue[code] = `${m.author.username + "#" + m.author.discriminator}`;
-                                        dbs.guild.save(guildDb);
+                                        await dbs.guild.save(guildDb);
                                     }
                                 }
                                 console.log("final code:", code);
@@ -353,7 +353,7 @@ module.exports = {
                                 if (BotVoiceState.channelID) {
                                     bot.leaveVoiceChannel(m.member.voiceState.channelID);
                                     guildDb[guild.id].music.current = {};
-                                    dbs.guild.save(guildDb);
+                                    await dbs.guild.save(guildDb);
                                 }
                                 return;
                             }
@@ -367,7 +367,7 @@ module.exports = {
                             guildDb[guild.id].music.current = {};
                             guildDb[guild.id].music.current.code = code;
                             guildDb[guild.id].music.current.player = `${m.author.username + "#" + m.author.discriminator}`;
-                            dbs.guild.save(guildDb);
+                            await dbs.guild.save(guildDb);
                             yt.getInfo("https://www.youtube.com/watch?v=" + code, async function(error, info) {
                                 if (error) {
                                     console.log("Error: " + error);
@@ -376,7 +376,7 @@ module.exports = {
                                     if (BotVoiceState.channelID) {
                                         bot.leaveVoiceChannel(m.member.voiceState.channelID);
                                         guildDb[guild.id].music.current = {};
-                                        dbs.guild.save(guildDb);
+                                        await dbs.guild.save(guildDb);
                                     }
                                     return;
                                 }
@@ -394,7 +394,7 @@ module.exports = {
                         var close = false;
                         // pls ignore all the extra console logs, they are for debugging this
                         voiceConnection.on("end", () => { // when the song ends
-                            var guildDb = dbs.guild.load();
+                            var guildDb = await dbs.guild.load();
                             var queue = Object.keys(guildDb[guild.id].music.queue);
                             if (queue.length > 0 && !voiceConnection.playing) { // if there is another song in the queue, try to play that song
                                 code = queue[0];
@@ -403,7 +403,7 @@ module.exports = {
                                 var valid = yt.validateID(code);
                                 if (!valid || code == undefined) {
                                     delete guildDb[guild.id].music.queue[queue[0]];
-                                    dbs.guild.save(guildDb);
+                                    await dbs.guild.save(guildDb);
                                     return;
                                 }
                                 var requester = guildDb[guild.id].music.queue[code];
@@ -424,7 +424,7 @@ module.exports = {
                                 guildDb[guild.id].music.current.code = code;
                                 guildDb[guild.id].music.current.player = `${m.author.username + "#" + m.author.discriminator}`;
                                 delete guildDb[guild.id].music.queue[queue[0]];
-                                dbs.guild.save(guildDb);
+                                await dbs.guild.save(guildDb);
                                 return;
                             }
                             else if (queue.length < 1 && !voiceConnection.playing && !close) {
@@ -433,7 +433,7 @@ module.exports = {
                                         if (BotVoiceState.channelID) {
                                             bot.leaveVoiceChannel(m.member.voiceState.channelID);
                                             guildDb[guild.id].music.current = {};
-                                            dbs.guild.save(guildDb);
+                                            await dbs.guild.save(guildDb);
                                             m.reply("Thanks for Listening " + utils.hands.wave(), 20000);
                                             close = true;
                                         }

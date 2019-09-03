@@ -3,7 +3,7 @@
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var globalData = dbs.global.load();
+var globalData = await dbs.global.load();
 
 module.exports = {
     main: function(bot, m, args, prefix) {

@@ -3,7 +3,7 @@
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var userDb = dbs.user.load();
+var userDb = await dbs.user.load();
 
 module.exports = {
     main: function(bot, m, args, prefix) {
@@ -40,12 +40,12 @@ module.exports = {
                 }
                 if (!userDb.people[id].hoard) {
                     userDb.people[id].hoard = {};
-                    dbs.user.save(userDb);
-                    userDb = dbs.user.load();
+                    await dbs.user.save(userDb);
+                    userDb = await dbs.user.load();
                 }
                 if (!userDb.people[id].hoard[args[0]]) {
                     userDb.people[id].hoard[args[0]] = {};
-                    dbs.user.save(userDb);
+                    await dbs.user.save(userDb);
                     m.reply("Successfully added hoard: " + args[0], 5000);
                     m.deleteIn(5000);
                     return;
@@ -73,7 +73,7 @@ module.exports = {
                             if (userDb.people[id].hoard[args[0]]) {
                                 var item = Object.keys(userDb.people[id].hoard[args[0]])[args[1]];
                                 delete userDb.people[id].hoard[args[0]][item];
-                                dbs.user.save(userDb);
+                                await dbs.user.save(userDb);
                                 m.reply(`Successfully deleted item ${args[1] + 1} from ${args[0]}`, 5000);
                                 m.deleteIn(5000);
                                 return;
@@ -88,7 +88,7 @@ module.exports = {
                     hoard = Object.keys(userDb.people[id].hoard);
                     if (hoard.indexOf(args[0]) > -1) {
                         delete userDb.people[id].hoard[args[0]];
-                        dbs.user.save(userDb);
+                        await dbs.user.save(userDb);
                         m.reply(args[0] + " Successfully deleted", 5000);
                         m.deleteIn(5000);
                         return;

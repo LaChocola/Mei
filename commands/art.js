@@ -20,7 +20,7 @@ function pick(options) {
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
-        var guildDb = dbs.guild.load();
+        var guildDb = await dbs.guild.load();
 
         var guild = m.channel.guild;
         if (!guildDb[guild.id]) {
@@ -29,7 +29,7 @@ module.exports = {
                 owner: guild.ownerID
             };
             m.reply(`Server: ${guild.name} added to database. Populating information ${utils.hands.ok()}`, 5000);
-            dbs.guild.save(guildDb);
+            await dbs.guild.save(guildDb);
         }
         var guildData = guildDb[guild.id];
 

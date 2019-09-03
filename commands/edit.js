@@ -4,7 +4,7 @@ const conf = require("../conf");
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var guildDb = dbs.guild.load();
+var guildDb = await dbs.guild.load();
 
 function checkIsMod(m, member, guild) {
     var guildData = guildDb[guild.id];
@@ -16,12 +16,12 @@ function checkIsMod(m, member, guild) {
     if (guildData.owner !== guild.ownerID) {
         //m.reply("New server owner detected, updating database.", 5000);
         guildData.owner = guild.ownerID;
-        dbs.guild.save(guildDb);
+        await dbs.guild.save(guildDb);
     }
     if (guildData.name !== guild.name) {
         //m.reply("New server name detected, updating database.", 5000);
         guildData.name = guild.name;
-        dbs.guild.save(guildDb);
+        await dbs.guild.save(guildDb);
     }
     if (guildData.mods) {
         if (guildData.mods[member.id]) {
@@ -89,7 +89,7 @@ module.exports = {
             };
             m.reply(`Server: ${guild.name} added to database. Populating information ${utils.hands.ok()}`, 5000);
             m.deleteIn(5000);
-            dbs.guild.save(guildDb);
+            await dbs.guild.save(guildDb);
         }
         var guildData = guildDb[guild.id];
 
@@ -97,7 +97,7 @@ module.exports = {
             if (args.toLowerCase().includes("enable")) {
                 if (!guildDb[guild.id].hoards) {
                     guildDb[guild.id].hoards = true;
-                    dbs.guild.save(guildDb);
+                    await dbs.guild.save(guildDb);
                     m.reply("Hoards enabled for all reactions", 5000);
                     m.deleteIn(5000);
                     return;
@@ -111,7 +111,7 @@ module.exports = {
             }
             else {
                 guildDb[guild.id].hoards = false;
-                dbs.guild.save(guildDb);
+                await dbs.guild.save(guildDb);
                 m.reply("Hoards set to :heart_eyes: only", 5000);
                 m.deleteIn(5000);
                 return;
@@ -124,7 +124,7 @@ module.exports = {
                         delete guildDb[guild.id].notifications.banLog;
                         m.reply("Ban Logs disabled", 5000);
                         m.deleteIn(5000);
-                        dbs.guild.save(guildDb);
+                        await dbs.guild.save(guildDb);
                         return;
                     }
 
@@ -146,7 +146,7 @@ module.exports = {
                         guildDb[guild.id].notifications = {};
                     }
                     guildDb[guild.id].notifications.banLog = channel.id;
-                    dbs.guild.save(guildDb);
+                    await dbs.guild.save(guildDb);
                     m.reply("Added Ban Log to channel: " + channel.mention, 5000);
                     m.deleteIn(5000);
                     return;
@@ -167,7 +167,7 @@ module.exports = {
                         delete guildDb[guild.id].notifications.updates;
                         m.reply("Update Messages disabled", 5000);
                         m.deleteIn(5000);
-                        dbs.guild.save(guildDb);
+                        await dbs.guild.save(guildDb);
                         return;
                     }
 
@@ -189,7 +189,7 @@ module.exports = {
                         guildDb[guild.id].notifications = {};
                     }
                     guildDb[guild.id].notifications.updates = channel.id;
-                    dbs.guild.save(guildDb);
+                    await dbs.guild.save(guildDb);
                     m.reply("Added update messages to channel: " + channel.mention, 5000);
                     m.deleteIn(5000);
                     return;
@@ -210,7 +210,7 @@ module.exports = {
                         delete guildDb[guild.id].notifications.welcome;
                         m.reply("Welcome message removed", 5000);
                         m.deleteIn(5000);
-                        dbs.guild.save(guildDb);
+                        await dbs.guild.save(guildDb);
                         return;
                     }
 
@@ -245,7 +245,7 @@ module.exports = {
                     m.deleteIn(5000);
                     guildDb[guild.id].notifications.welcome = {};
                     guildDb[guild.id].notifications.welcome[channel.id] = message;
-                    dbs.guild.save(guildDb);
+                    await dbs.guild.save(guildDb);
                     return;
                 }
 
@@ -265,7 +265,7 @@ module.exports = {
                         delete guildDb[guild.id].notifications.leave;
                         m.reply("Leave message removed", 5000);
                         m.deleteIn(5000);
-                        dbs.guild.save(guildDb);
+                        await dbs.guild.save(guildDb);
                         return;
                     }
                     m.reply("No leave message was found, I can't remove what isn't there.", 5000);
@@ -298,7 +298,7 @@ module.exports = {
                     m.deleteIn(5000);
                     guildDb[guild.id].notifications.leave = {};
                     guildDb[guild.id].notifications.leave[channel.id] = message;
-                    dbs.guild.save(guildDb);
+                    await dbs.guild.save(guildDb);
                     return;
                 }
 
@@ -321,7 +321,7 @@ module.exports = {
             m.reply("Setting server prefix to: `" + prefix + "`", 5000);
             m.deleteIn(5000);
             guildDb[guild.id].prefix = prefix;
-            dbs.guild.save(guildDb);
+            await dbs.guild.save(guildDb);
             return;
         }
         if (args.toLowerCase().match(/\bart\b/i)) {
@@ -330,7 +330,7 @@ module.exports = {
                     delete guildDb[guild.id].art;
                     m.reply("Art channel removed", 5000);
                     m.deleteIn(5000);
-                    dbs.guild.save(guildDb);
+                    await dbs.guild.save(guildDb);
                     return;
                 }
 
@@ -354,7 +354,7 @@ module.exports = {
                 m.reply("Setting art channel to: " + channel.mention, 5000);
                 m.deleteIn(5000);
                 guildDb[guild.id].art = channel.id;
-                dbs.guild.save(guildDb);
+                await dbs.guild.save(guildDb);
                 return;
             }
 
@@ -420,7 +420,7 @@ module.exports = {
                         return;
                     }
                     guildDb[guild.id].roles[serverRoleName] = role.id;
-                    dbs.guild.save(guildDb);
+                    await dbs.guild.save(guildDb);
                     m.reply(serverRoleName + " is now an assignable role", 5000);
                     m.deleteIn(5000);
                 }
@@ -447,7 +447,7 @@ module.exports = {
                     return;
                 }
                 delete guildDb[guild.id].roles[selectedRole];
-                dbs.guild.save(guildDb);
+                await dbs.guild.save(guildDb);
                 m.reply(selectedRole + " is no longer assignable", 5000);
                 m.deleteIn(5000);
                 return;
@@ -484,7 +484,7 @@ module.exports = {
                     reason: `Role created by ${m.author.username}`
                 }).then(role => {
                     guildDb[guild.id].roles[selectedRole] = role.id;
-                    dbs.guild.save(guildDb);
+                    await dbs.guild.save(guildDb);
                     m.reply(`The role \`${role.name}\` has been created successfully, and is now assignable`, 5000);
                     m.deleteIn(5000);
                 });
@@ -523,7 +523,7 @@ module.exports = {
                     }
                     if (guildDb[guild.id].roles[serverRoleName]) {
                         delete guildDb[guild.id].roles[serverRoleName];
-                        dbs.guild.save(guildDb);
+                        await dbs.guild.save(guildDb);
                     }
                     bot.deleteRole(m.channel.guild.id, role.id, `Role deleted by ${m.channel.guild.members.get(m.author.id).name}`).then(() => {
                         m.reply(`The role \`${serverRoleName}\` has been deleted successfully`, 5000);
@@ -546,7 +546,7 @@ module.exports = {
                     });
                     if (!exists) {
                         delete guildDb[guild.id].roles[role];
-                        dbs.guild.save(guildDb);
+                        await dbs.guild.save(guildDb);
                         m.reply(role + " updated successfully", 1000);
                         m.deleteIn(1000);
                     }
@@ -569,7 +569,7 @@ module.exports = {
                         guildDb[guild.id].modRoles = {};
                     }
                     guildDb[guild.id].modRoles[m.roleMentions[0]] = true;
-                    dbs.guild.save(guildDb);
+                    await dbs.guild.save(guildDb);
                     m.reply("That role is now a registered moderator role", 5000);
                     m.deleteIn(5000);
                     return;
@@ -579,7 +579,7 @@ module.exports = {
                         guildDb[guild.id].mods = {};
                     }
                     guildDb[guild.id].mods[m.mentions[0].id] = true;
-                    dbs.guild.save(guildDb);
+                    await dbs.guild.save(guildDb);
                     m.reply(m.mentions[0].username + " is now a registered moderator", 5000);
                     m.deleteIn(5000);
                     return;
@@ -592,7 +592,7 @@ module.exports = {
                     }
                     if (guildDb[guild.id].modRoles[m.roleMentions[0]]) {
                         delete guildDb[guild.id].modRoles[m.roleMentions[0]];
-                        dbs.guild.save(guildDb);
+                        await dbs.guild.save(guildDb);
                         m.reply("That role is no longer a registered moderator role", 5000);
                         m.deleteIn(5000);
                     }
@@ -608,7 +608,7 @@ module.exports = {
                     }
                     if (guildDb[guild.id].mods[m.mentions[0].id]) {
                         delete guildDb[guild.id].mods[m.mentions[0].id];
-                        dbs.guild.save(guildDb);
+                        await dbs.guild.save(guildDb);
                         m.reply(m.mentions[0].username + " is no longer a registered moderator", 5000);
                         m.deleteIn(5000);
                         return;

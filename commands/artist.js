@@ -5,7 +5,7 @@ const dbs = require("../dbs");
 
 module.exports = {
     main: function(bot, m, args) {
-        var userDb = dbs.user.load();
+        var userDb = await dbs.user.load();
 
         var name1 = m.cleanContent.replace(/!artist /i, "");
         var member = m.guild.members.find(m => utils.isSameMember(m, name1));
@@ -37,7 +37,7 @@ module.exports = {
                     return;
                 }
                 userDb.people[id].links[incoming[0]] = incoming[1];
-                dbs.user.save(userDb);
+                await dbs.user.save(userDb);
                 m.reply("Added **" + incoming[0] + "** " + utils.hands.ok());
                 return;
             }
@@ -51,7 +51,7 @@ module.exports = {
             let incoming = name1.replace("remove ", "").replace(": ", " ").split(" ");
             if (userDb.people[id].links[incoming[0]]) {
                 delete userDb.people[id].links[incoming[0]];
-                dbs.user.save(userDb);
+                await dbs.user.save(userDb);
                 m.reply("Removed: **" + incoming[0] + ":** from your links " + utils.hands.ok());
                 return;
             }

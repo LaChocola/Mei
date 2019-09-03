@@ -2,7 +2,7 @@
 
 const dbs = require("../dbs");
 
-var userDb = dbs.user.load();
+var userDb = await dbs.user.load();
 
 // Map each user to a { userId, adds } object, sorted by adds
 function sortByAdds(people) {

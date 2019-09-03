@@ -1,12 +1,16 @@
 ﻿"use strict";
 
-const fs = require("fs");
+const fs = require("fs").promises;
 
 const conf = require("../conf");
 
-// Returns parsed data. On error, returns undefined.
+// Tries to parse file data. On error, returns undefined.
 function parse(fileData) {
-    var data = undefined;
+    var data;
+
+    if (!fileData) {
+        return data;
+    }
 
     // file must include chocola's id to be considered valid
     if (!fileData.includes(conf.users.chocola)) {
@@ -23,34 +27,39 @@ function parse(fileData) {
     return data;
 }
 
+// Tries to load a file. On error, returns undefined.
+async function loadfile(path) {
+    var fileData = await fs.readFile(path, "utf8")
+        .catch(function(err) {
+            // TODO: If file is missing, create a new blank file. Maybe load from template?
+            if (err.code === "ENOENT") {
+                console.error("DB file not found: " + path);
+            }
+            else {
+                console.error(err);
+            }
+        });
+
+    return parse(fileData);
+}
+
 class DataManager {
     constructor(dataPath, backupPath) {
         this.dataPath = dataPath;
         this.backupPath = backupPath;
     }
 
-    loadBackup() {
+    async load() {
         var self = this;
 
-        var fileData = fs.readFileSync(self.backupPath, "utf8");
-        var data = parse(fileData);
-
-        return data;
-    }
-
-    load() {
-        var self = this;
-
-        // TODO: If file is missing, create a new blank file. Maybe load from template?
-        var fileData = fs.readFileSync(self.dataPath, "utf8");
-        var data = parse(fileData);
-
+        var data = await loadfile(self.dataPath);
+        
         if (!data) {
             console.log("JSON error, attempting restore");
-            data = self.loadBackup();
+            data = await loadfile(self.backupPath);
 
             if (data) {
-                self.save(data);
+                await self.save(data);
                 console.log("Restore Successful");
             }
             else {
@@ -61,10 +70,10 @@ class DataManager {
         return data;
     }
 
-    save(data) {
+    async save(data) {
         var self = this;
 
-        fs.writeFileSync(self.dataPath, JSON.stringify(data, null, "\t"));
+        await fs.writeFile(self.dataPath, JSON.stringify(data, null, "\t"));
     }
 }
 

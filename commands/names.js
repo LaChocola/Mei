@@ -3,7 +3,7 @@
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var userDb = dbs.user.load();
+var userDb = await dbs.user.load();
 
 module.exports = {
     main: function(bot, m, args, prefix) {
@@ -34,7 +34,7 @@ module.exports = {
                 e[1] = capFirstLetter(e[1]);
                 if (userDb.people[id].names[e[1]]) {
                     delete userDb.people[id].names[e[1]];
-                    dbs.user.save(userDb);
+                    await dbs.user.save(userDb);
                     m.reply("Removed: **" + e[1] + "** from your names list" + utils.hands.ok(), 5000);
                     m.deleteIn(5000);
                 }
@@ -63,7 +63,7 @@ module.exports = {
                     if (e[1].search(/ male/i) !== -1) {
                         var cleanName = e[1].replace(/ male/i, "");
                         userDb.people[id].names[cleanName] = "male";
-                        dbs.user.save(userDb);
+                        await dbs.user.save(userDb);
                         m.reply("Added **" + cleanName + "** " + utils.hands.ok(), 5000);
                         m.deleteIn(5000);
                         continue;
@@ -71,14 +71,14 @@ module.exports = {
                     if (e[1].search(/ futa/i) !== -1 || e[1].search(/ futanari/i) !== -1) {
                         cleanName = e[1].replace(/ futa/i, "").replace(/ futanari/i, "");
                         userDb.people[id].names[cleanName] = "futa";
-                        dbs.user.save(userDb);
+                        await dbs.user.save(userDb);
                         m.reply("Added **" + cleanName + "** " + utils.hands.ok(), 5000);
                         m.deleteIn(5000);
                         continue;
                     }
                     else {
                         userDb.people[id].names[e[1]] = "female";
-                        dbs.user.save(userDb);
+                        await dbs.user.save(userDb);
                         m.reply("Added **" + e[1] + "** " + utils.hands.ok(), 5000);
                         m.deleteIn(5000);
                     }

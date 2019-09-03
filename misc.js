@@ -5,31 +5,31 @@ const fs = require("fs");
 const conf = require("./conf");
 const dbs = require("../dbs");
 
-var userDatabase = dbs.user.load();
-var guildDatabase = dbs.guild.load();
+var userDb = await dbs.user.load();
+var guildDb = await dbs.guild.load();
 
 class Misc { // Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
     static isMod(bot, m, member, guild) {
-        if (guildDatabase[guild.id]) {
-            if (guildDatabase[guild.id].owner != guild.ownerID || guildDatabase[guild.id].name != guild.name) {
+        if (guildDb[guild.id]) {
+            if (guildDb[guild.id].owner != guild.ownerID || guildDb[guild.id].name != guild.name) {
                 m.reply("New server info detected, updating database.", 5000);
-                guildDatabase[guild.id].owner = guild.ownerID;
-                guildDatabase[guild.id].name = guild.name;
-                dbs.guild.save(guildDatabase);
-                guildDatabase = dbs.guild.load();
-                if (guildDatabase[guild.id].mods) {
-                    if (guildDatabase[guild.id].mods[member.id]) {
+                guildDb[guild.id].owner = guild.ownerID;
+                guildDb[guild.id].name = guild.name;
+                await dbs.guild.save(guildDb);
+                guildDb = await dbs.guild.load();
+                if (guildDb[guild.id].mods) {
+                    if (guildDb[guild.id].mods[member.id]) {
                         return true;
                     }
                 }
-                if (m.author.id == guildDatabase[guild.id].owner || m.author.id == guild.ownerID) {
+                if (m.author.id == guildDb[guild.id].owner || m.author.id == guild.ownerID) {
                     return true;
                 }
-                if (guildDatabase[guild.id].modRoles) {
+                if (guildDb[guild.id].modRoles) {
                     var memberRoles = member.roles;
                     var mod = false;
                     for (const role of memberRoles) {
-                        if (guildDatabase[guild.id].modRoles[role]) {
+                        if (guildDb[guild.id].modRoles[role]) {
                             mod = true;
                         }
                     }
@@ -135,13 +135,13 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var female = true;
         var male = false;
         var futa = false;
-        if (userDatabase.people[smallid]) {
-            if (userDatabase.people[smallid].names) {
-                if (userDatabase.people[smallid].names[bigname] == "male") {
+        if (userDb.people[smallid]) {
+            if (userDb.people[smallid].names) {
+                if (userDb.people[smallid].names[bigname] == "male") {
                     male = true;
                     female = false;
                 }
-                if (userDatabase.people[smallid].names[bigname] == "futa") {
+                if (userDb.people[smallid].names[bigname] == "futa") {
                     futa = true;
                     female = false;
                 }
@@ -348,9 +348,9 @@ class Misc { // Declaring export as a class because cbf to make other way work p
     static getcustomGTSNames(uid) {
 
         var customName = [];
-        if (userDatabase.people[uid]) {
-            if (userDatabase.people[uid].names) {
-                var namesObj = userDatabase.people[uid].names;
+        if (userDb.people[uid]) {
+            if (userDb.people[uid].names) {
+                var namesObj = userDb.people[uid].names;
                 Object.keys(namesObj).forEach(function(key) {
                     customName.push(key);
                 });

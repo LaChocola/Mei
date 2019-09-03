@@ -6,7 +6,7 @@ const utils = require("../utils");
 const misc = require("../misc");
 const dbs = require("../dbs");
 
-var globalData = dbs.global.load();
+var globalData = await dbs.global.load();
 var time = new Date().toISOString();
 
 module.exports = {

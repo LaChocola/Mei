@@ -32,10 +32,10 @@ bot.on("ready", async function() {
 });
 
 bot.on("guildBanAdd", async function(guild, user) {
-    var guildDatabase = dbs.guild.load();
-    if (guildDatabase[guild.id]) {
-        if (guildDatabase[guild.id].notifications) {
-            if (guildDatabase[guild.id].notifications.banLog) {
+    var guildDb = await dbs.guild.load();
+    if (guildDb[guild.id]) {
+        if (guildDb[guild.id].notifications) {
+            if (guildDb[guild.id].notifications.banLog) {
                 var banned = await guild.getBan(user.id);
                 var userFull = bot.users.filter(m => m.id === user.id)[0];
                 var origID = userFull.id || null;
@@ -86,7 +86,7 @@ bot.on("guildBanAdd", async function(guild, user) {
                         "inline": true
                     });
                 }
-                var channel = guildDatabase[guild.id].notifications.banLog;
+                var channel = guildDb[guild.id].notifications.banLog;
                 bot.createMessage(channel, msg);
             }
         }
@@ -94,10 +94,10 @@ bot.on("guildBanAdd", async function(guild, user) {
 });
 
 bot.on("guildBanRemove", async function(guild, user) {
-    var guildDatabase = dbs.guild.load();
-    if (guildDatabase[guild.id]) {
-        if (guildDatabase[guild.id].notifications) {
-            if (guildDatabase[guild.id].notifications.banLog) {
+    var guildDb = await dbs.guild.load();
+    if (guildDb[guild.id]) {
+        if (guildDb[guild.id].notifications) {
+            if (guildDb[guild.id].notifications.banLog) {
                 var userFull = bot.users.filter(m => m.id === user.id)[0];
                 var origID = userFull.id || null;
                 var hash = userFull.avatar || null;
@@ -137,7 +137,7 @@ bot.on("guildBanRemove", async function(guild, user) {
                         ]
                     }
                 };
-                var channel = guildDatabase[guild.id].notifications.banLog;
+                var channel = guildDb[guild.id].notifications.banLog;
                 bot.createMessage(channel, msg);
             }
         }
@@ -162,7 +162,7 @@ function createFakeGuild(m) {
 */
 
 function trackUsage(commandName, authorId, profiler) {
-    var globalData = dbs.global.load(); // Track command usage in ../db/data.json
+    var globalData = await dbs.global.load(); // Track command usage in ../db/data.json
 
     profiler.mark();
 
@@ -184,7 +184,7 @@ function trackUsage(commandName, authorId, profiler) {
 
     profiler.mark();
 
-    dbs.global.save(globalData);
+    await dbs.user.save(globalData);
 }
 
 function getCommand(m) {
@@ -222,15 +222,15 @@ bot.on("messageCreate", async function(m) {
     var profiler = new Profiler();
     profiler.mark();
 
-    var globalData = dbs.global.load();
+    var globalData = await dbs.global.load();
     if (globalData && globalData.banned && globalData.banned.global && globalData.banned.global[m.author.id]) {
         return;
     }
 
     profiler.mark();
 
-    var guildDatabase = dbs.guild.load();
-    var guildData = guildDatabase[guild.id];
+    var guildDb = await dbs.guild.load();
+    var guildData = guildDb[guild.id];
     m.prefix = guildData && guildData.prefix || conf.prefix;
 
     profiler.mark();
@@ -260,8 +260,8 @@ bot.on("messageCreate", async function(m) {
     }
 
     var guild = m.channel.guild;
-    var guildDatabase = dbs.guild.load();
-    var guildData = guildDatabase[guild.id];
+    var guildDb = await dbs.guild.load();
+    var guildData = guildDb[guild.id];
 
     // Unimplemented hack that makes every command from a certain user in a certain channel trigger the t command
     if (!(guildData
@@ -319,7 +319,7 @@ bot.on("messageCreate", async function(m) {
 });
 
 bot.on("guildMemberAdd", async function(guild, member) {
-    var guildDatabase = dbs.guild.load();
+    var guildDb = await dbs.guild.load();
     var name = undefined;
     name = guild[name]; // TODO: name is undefined...
     var count = guild.memberCount - guild.members.filter(m => m.bot).length;
@@ -327,10 +327,10 @@ bot.on("guildMemberAdd", async function(guild, member) {
     var date2 = member.createdAt;
     name = member.nick || member.username;
     var diffDays = moment(date2).diff(date, "days");
-    if (guildDatabase[guild.id]) {
-        if (guildDatabase[guild.id].notifications) {
-            if (guildDatabase[guild.id].notifications.updates) {
-                let channel = guildDatabase[guild.id].notifications.updates;
+    if (guildDb[guild.id]) {
+        if (guildDb[guild.id].notifications) {
+            if (guildDb[guild.id].notifications.updates) {
+                let channel = guildDb[guild.id].notifications.updates;
                 bot.createMessage(channel, {
                     embed: {
                         color: 0xA260F6,
@@ -350,9 +350,9 @@ bot.on("guildMemberAdd", async function(guild, member) {
                     });
                 }
             }
-            if (guildDatabase[guild.id].notifications.welcome) {
-                let channel = Object.keys(guildDatabase[guild.id].notifications.welcome)[0];
-                var message = guildDatabase[guild.id].notifications.welcome[channel];
+            if (guildDb[guild.id].notifications.welcome) {
+                let channel = Object.keys(guildDb[guild.id].notifications.welcome)[0];
+                var message = guildDb[guild.id].notifications.welcome[channel];
                 message = message.replace("[name]", `${member.username}`).replace("[user]", `${member.username}#${member.discriminator}`).replace("[server]", `${guild.name}`).replace("[mention]", `${member.mention}`).replace("[count]", `${guild.memberCount - guild.members.filter(m => m.bot).length}`);
                 if (channel && message) {
                     bot.createMessage(channel, message).catch((err) => {
@@ -365,12 +365,12 @@ bot.on("guildMemberAdd", async function(guild, member) {
 });
 
 bot.on("guildMemberRemove", async function(guild, member) {
-    var guildDatabase = dbs.guild.load();
+    var guildDb = await dbs.guild.load();
     var count = guild.memberCount - guild.members.filter(m => m.bot).length;
-    if (guildDatabase[guild.id]) {
-        if (guildDatabase[guild.id].notifications) {
-            if (guildDatabase[guild.id].notifications.updates) {
-                let channel = guildDatabase[guild.id].notifications.updates;
+    if (guildDb[guild.id]) {
+        if (guildDb[guild.id].notifications) {
+            if (guildDb[guild.id].notifications.updates) {
+                let channel = guildDb[guild.id].notifications.updates;
                 bot.createMessage(channel, {
                     embed: {
                         color: 0xA260F6,
@@ -385,9 +385,9 @@ bot.on("guildMemberRemove", async function(guild, member) {
                     console.log(err);
                 });
             }
-            if (guildDatabase[guild.id].notifications.leave) {
-                let channel = Object.keys(guildDatabase[guild.id].notifications.leave)[0];
-                var message = guildDatabase[guild.id].notifications.leave[channel];
+            if (guildDb[guild.id].notifications.leave) {
+                let channel = Object.keys(guildDb[guild.id].notifications.leave)[0];
+                var message = guildDb[guild.id].notifications.leave[channel];
                 message = message.replace("[name]", `${member.username}`).replace("[user]", `${member.username}#${member.discriminator}`).replace("[server]", `${guild.name}`).replace("[mention]", `${member.mention}`).replace("[count]", `${guild.memberCount - guild.members.filter(m => m.bot).length}`);
                 bot.createMessage(channel, message).catch((err) => {
                     console.log(err);
@@ -443,7 +443,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
     m = await m.channel.getMessage(m.id);   // fetch message if not cached
 
     try {
-        var guildDatabase = dbs.guild.load();
+        var guildDb = await dbs.guild.load();
 
         if (emoji.name === "😍") {
             var link;
@@ -469,23 +469,23 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                 }
             }
             if (link || (links && links[0])) {
-                var peopleDatabase = dbs.user.load();
-                if (!peopleDatabase.people[userID]) {
-                    peopleDatabase.people[userID] = {};
-                    dbs.user.save(peopleDatabase);
+                var userDb = await dbs.user.load();
+                if (!userDb.people[userID]) {
+                    userDb.people[userID] = {};
+                    await dbs.user.save(userDb);
                 }
 
-                var personData = peopleDatabase.people[userID];
+                var personData = userDb.people[userID];
                 if (!personData.hoard) {
                     personData.hoard = {
                         "😍": {}
                     };
-                    dbs.user.save(peopleDatabase);
+                    await dbs.user.save(userDb);
                 }
-                peopleDatabase = dbs.user.load();  // Why load it a second time?
-                personData = peopleDatabase.people[userID];
+                userDb = await dbs.user.load();  // Why load it a second time?
+                personData = userDb.people[userID];
 
-                var authorData = peopleDatabase.people[m.author.id];
+                var authorData = userDb.people[m.author.id];
                 var hoard = personData.hoard["😍"];
                 // This should never be false?
                 if (hoard) {
@@ -493,23 +493,23 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                         for (let link of links) {
                             if (!hoard[link]) {
                                 hoard[link] = m.author.id;
-                                dbs.user.save(peopleDatabase);
-                                if (!peopleDatabase.people[m.author.id]) {
-                                    peopleDatabase.people[m.author.id] = {};
-                                    dbs.user.save(peopleDatabase);
-                                    peopleDatabase = dbs.user.load();
+                                await dbs.user.save(userDb);
+                                if (!userDb.people[m.author.id]) {
+                                    userDb.people[m.author.id] = {};
+                                    await dbs.user.save(userDb);
+                                    userDb = await dbs.user.load();
                                 }
-                                if (!peopleDatabase.people[m.author.id].adds) {
-                                    peopleDatabase.people[m.author.id].adds = 0;
-                                    dbs.user.save(peopleDatabase);
-                                    peopleDatabase = dbs.user.load();
+                                if (!userDb.people[m.author.id].adds) {
+                                    userDb.people[m.author.id].adds = 0;
+                                    await dbs.user.save(userDb);
+                                    userDb = await dbs.user.load();
                                 }
                                 if (m.author.id !== userID) {
-                                    peopleDatabase.people[m.author.id].adds++;
-                                    dbs.user.save(peopleDatabase);
-                                    if (utils.toNum(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
+                                    userDb.people[m.author.id].adds++;
+                                    await dbs.user.save(userDb);
+                                    if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                         var user = bot.users.filter(u => u.id === m.author.id)[0];
-                                        bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`, 60000);
+                                        bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(userDb.people[m.author.id].adds)} hoard adds.`, 60000);
                                     }
                                 }
                             }
@@ -518,23 +518,23 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                     }
                     if (!hoard[link] && !(links && links[0])) {
                         hoard[link] = m.author.id;
-                        dbs.user.save(peopleDatabase);
-                        if (!peopleDatabase.people[m.author.id]) {
-                            peopleDatabase.people[m.author.id] = {};
-                            dbs.user.save(peopleDatabase);
-                            peopleDatabase = dbs.user.load();
+                        await dbs.user.save(userDb);
+                        if (!userDb.people[m.author.id]) {
+                            userDb.people[m.author.id] = {};
+                            await dbs.user.save(userDb);
+                            userDb = await dbs.user.load();
                         }
-                        if (!peopleDatabase.people[m.author.id].adds) {
-                            peopleDatabase.people[m.author.id].adds = 0;
-                            dbs.user.save(peopleDatabase);
-                            peopleDatabase = dbs.user.load();
+                        if (!userDb.people[m.author.id].adds) {
+                            userDb.people[m.author.id].adds = 0;
+                            await dbs.user.save(userDb);
+                            userDb = await dbs.user.load();
                         }
                         if (m.author.id !== userID) {
-                            peopleDatabase.people[m.author.id].adds++;
-                            dbs.user.save(peopleDatabase);
-                            if (utils.toNum(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
+                            userDb.people[m.author.id].adds++;
+                            await dbs.user.save(userDb);
+                            if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                 let user = bot.users.filter(u => u.id === m.author.id)[0];
-                                bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`, 60000);
+                                bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(userDb.people[m.author.id].adds)} hoard adds.`, 60000);
                             }
                         }
                         return;
@@ -542,19 +542,19 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                 }
             }
         }
-        if (guildDatabase[m.guild.id]) {
-            if (guildDatabase[m.guild.id].giveaways) {
-                if (guildDatabase[m.guild.id].giveaways.running && emoji.id === conf.emojis.giveaway && userID !== conf.users.bot && userID !== guildDatabase[m.guild.id].giveaways.creator) {
-                    if (m.id === guildDatabase[m.guild.id].giveaways.mID) {
-                        guildDatabase[m.guild.id].giveaways.current.contestants[userID] = "entered";
-                        dbs.guild.save(guildDatabase);
+        if (guildDb[m.guild.id]) {
+            if (guildDb[m.guild.id].giveaways) {
+                if (guildDb[m.guild.id].giveaways.running && emoji.id === conf.emojis.giveaway && userID !== conf.users.bot && userID !== guildDb[m.guild.id].giveaways.creator) {
+                    if (m.id === guildDb[m.guild.id].giveaways.mID) {
+                        guildDb[m.guild.id].giveaways.current.contestants[userID] = "entered";
+                        await dbs.guild.save(guildDb);
                         return;
                     }
                 }
             }
-            peopleDatabase = dbs.user.load();
-            if (guildDatabase[m.guild.id].hoards !== false && emoji.name !== "😍") {
-                if (peopleDatabase.people[userID] && peopleDatabase.people[userID].hoard && peopleDatabase.people[userID].hoard[emoji.name]) {
+            userDb = await dbs.user.load();
+            if (guildDb[m.guild.id].hoards !== false && emoji.name !== "😍") {
+                if (userDb.people[userID] && userDb.people[userID].hoard && userDb.people[userID].hoard[emoji.name]) {
                     if (m.attachments.length === 0 && m.embeds.length === 0) {
                         link = m.cleanContent;
                     }
@@ -575,30 +575,30 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                         link = m.embeds[0].image.url;
                     }
                     if (link || (links && links[0])) {
-                        var peopleDatabase = dbs.user.load();
-                        var hoard = peopleDatabase.people[userID].hoard[emoji.name];
+                        var userDb = await dbs.user.load();
+                        var hoard = userDb.people[userID].hoard[emoji.name];
                         if (hoard) {
                             if (links && links[0]) {
                                 for (let link of links) {
                                     if (!hoard[link]) {
                                         hoard[link] = m.author.id;
-                                        dbs.user.save(peopleDatabase);
-                                        if (!peopleDatabase.people[m.author.id]) {
-                                            peopleDatabase.people[m.author.id] = {};
-                                            dbs.user.save(peopleDatabase);
-                                            peopleDatabase = dbs.user.load();
+                                        await dbs.user.save(userDb);
+                                        if (!userDb.people[m.author.id]) {
+                                            userDb.people[m.author.id] = {};
+                                            await dbs.user.save(userDb);
+                                            userDb = await dbs.user.load();
                                         }
-                                        if (!peopleDatabase.people[m.author.id].adds) {
-                                            peopleDatabase.people[m.author.id].adds = 0;
-                                            dbs.user.save(peopleDatabase);
-                                            peopleDatabase = dbs.user.load();
+                                        if (!userDb.people[m.author.id].adds) {
+                                            userDb.people[m.author.id].adds = 0;
+                                            await dbs.user.save(userDb);
+                                            userDb = await dbs.user.load();
                                         }
                                         if (m.author.id !== userID) {
-                                            peopleDatabase.people[m.author.id].adds++;
-                                            dbs.user.save(peopleDatabase);
-                                            if (utils.toNum(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
+                                            userDb.people[m.author.id].adds++;
+                                            await dbs.user.save(userDb);
+                                            if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                                 let user = bot.users.filter(u => u.id === m.author.id)[0];
-                                                bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`, 60000);
+                                                bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(userDb.people[m.author.id].adds)} hoard adds.`, 60000);
                                             }
                                         }
                                     }
@@ -607,23 +607,23 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                             }
                             if (!hoard[link] && !(links && links[0])) {
                                 hoard[link] = m.author.id;
-                                dbs.user.save(peopleDatabase);
-                                if (!peopleDatabase.people[m.author.id]) {
-                                    peopleDatabase.people[m.author.id] = {};
-                                    dbs.user.save(peopleDatabase);
-                                    peopleDatabase = dbs.user.load();
+                                await dbs.user.save(userDb);
+                                if (!userDb.people[m.author.id]) {
+                                    userDb.people[m.author.id] = {};
+                                    await dbs.user.save(userDb);
+                                    userDb = await dbs.user.load();
                                 }
-                                if (!peopleDatabase.people[m.author.id].adds) {
-                                    peopleDatabase.people[m.author.id].adds = 0;
-                                    dbs.user.save(peopleDatabase);
-                                    peopleDatabase = dbs.user.load();
+                                if (!userDb.people[m.author.id].adds) {
+                                    userDb.people[m.author.id].adds = 0;
+                                    await dbs.user.save(userDb);
+                                    userDb = await dbs.user.load();
                                 }
                                 if (m.author.id !== userID) {
-                                    peopleDatabase.people[m.author.id].adds++;
-                                    dbs.user.save(peopleDatabase);
-                                    if (utils.toNum(peopleDatabase.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
+                                    userDb.people[m.author.id].adds++;
+                                    await dbs.user.save(userDb);
+                                    if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
                                         let user = bot.users.filter(u => u.id === m.author.id)[0];
-                                        bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(peopleDatabase.people[m.author.id].adds)} hoard adds.`, 60000);
+                                        bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(userDb.people[m.author.id].adds)} hoard adds.`, 60000);
                                     }
                                 }
                                 return;
@@ -642,9 +642,9 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
 bot.on("messageReactionRemove", async function(m, emoji, userID) {
     m = await m.channel.getMessage(m.id);   // fetch message if not cached
 
-    var guildDatabase = dbs.guild.load();
+    var guildDb = await dbs.guild.load();
     var id = userID;
-    var peopleDatabase = dbs.user.load();
+    var userDb = await dbs.user.load();
     if (emoji.name === "😍") {
         var link;
         if (m.attachments.length === 0 && m.embeds.length === 0) {
@@ -668,29 +668,29 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
                 link = m.embeds[0].image.url;
             }
         }
-        if (peopleDatabase.people[id]) {
-            if (peopleDatabase.people[id].hoard) {
-                var hoard = peopleDatabase.people[id].hoard["😍"];
+        if (userDb.people[id]) {
+            if (userDb.people[id].hoard) {
+                var hoard = userDb.people[id].hoard["😍"];
             }
         }
         if (hoard) {
             if (links && links[0]) {
                 for (let link of links) {
-                    hoard = peopleDatabase.people[id].hoard[emoji.name];
+                    hoard = userDb.people[id].hoard[emoji.name];
                     if (hoard[link]) {
                         delete hoard[link];
-                        dbs.user.save(peopleDatabase);
-                        peopleDatabase = dbs.user.load();
-                        if (peopleDatabase.people[m.author.id]) {
-                            if (!peopleDatabase.people[m.author.id].adds) {
-                                peopleDatabase.people[m.author.id].adds = 0;
+                        await dbs.user.save(userDb);
+                        userDb = await dbs.user.load();
+                        if (userDb.people[m.author.id]) {
+                            if (!userDb.people[m.author.id].adds) {
+                                userDb.people[m.author.id].adds = 0;
                             }
-                            dbs.user.save(peopleDatabase);
-                            peopleDatabase = dbs.user.load();
+                            await dbs.user.save(userDb);
+                            userDb = await dbs.user.load();
                         }
                         if (m.author.id !== id) {
-                            peopleDatabase.people[m.author.id].adds--;
-                            dbs.user.save(peopleDatabase);
+                            userDb.people[m.author.id].adds--;
+                            await dbs.user.save(userDb);
                         }
                     }
                 }
@@ -698,44 +698,44 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
             }
             if (hoard[link] && !(links && links[0])) {
                 delete hoard[link];
-                dbs.user.save(peopleDatabase);
-                peopleDatabase = dbs.user.load();
-                if (peopleDatabase.people[m.author.id]) {
-                    if (!peopleDatabase.people[m.author.id].adds) {
-                        peopleDatabase.people[m.author.id].adds = 0;
+                await dbs.user.save(userDb);
+                userDb = await dbs.user.load();
+                if (userDb.people[m.author.id]) {
+                    if (!userDb.people[m.author.id].adds) {
+                        userDb.people[m.author.id].adds = 0;
                     }
-                    dbs.user.save(peopleDatabase);
-                    peopleDatabase = dbs.user.load();
+                    await dbs.user.save(userDb);
+                    userDb = await dbs.user.load();
                 }
                 if (m.author.id !== id) {
-                    peopleDatabase.people[m.author.id].adds--;
-                    dbs.user.save(peopleDatabase);
+                    userDb.people[m.author.id].adds--;
+                    await dbs.user.save(userDb);
                 }
             }
             return;
         }
     }
-    if (guildDatabase[m.guild.id]) {
-        if (guildDatabase[m.guild.id].giveaways) {
-            if (guildDatabase[m.guild.id].giveaways.running && emoji.id === conf.emojis.giveaway && userID !== conf.users.bot && userID !== guildDatabase[m.guild.id].giveaways.creator) {
-                if (m.id === guildDatabase[m.guild.id].giveaways.mID) {
-                    if (guildDatabase[m.guild.id].giveaways.current.contestants[userID]) {
-                        delete guildDatabase[m.guild.id].giveaways.current.contestants[userID];
-                        dbs.guild.save(guildDatabase);
+    if (guildDb[m.guild.id]) {
+        if (guildDb[m.guild.id].giveaways) {
+            if (guildDb[m.guild.id].giveaways.running && emoji.id === conf.emojis.giveaway && userID !== conf.users.bot && userID !== guildDb[m.guild.id].giveaways.creator) {
+                if (m.id === guildDb[m.guild.id].giveaways.mID) {
+                    if (guildDb[m.guild.id].giveaways.current.contestants[userID]) {
+                        delete guildDb[m.guild.id].giveaways.current.contestants[userID];
+                        await dbs.guild.save(guildDb);
                         return;
                     }
                 }
             }
         }
-        peopleDatabase = dbs.user.load();
-        if (guildDatabase[m.guild.id].hoards !== false && emoji.name !== "😍") {
-            if (!peopleDatabase.people[id]) {
+        userDb = await dbs.user.load();
+        if (guildDb[m.guild.id].hoards !== false && emoji.name !== "😍") {
+            if (!userDb.people[id]) {
                 return;
             }
-            if (!peopleDatabase.people[id].hoard) {
+            if (!userDb.people[id].hoard) {
                 return;
             }
-            if (peopleDatabase.people[id].hoard[emoji.name]) {
+            if (userDb.people[id].hoard[emoji.name]) {
                 var link;
                 if (m.attachments.length === 0 && m.embeds.length === 0) {
                     link = m.cleanContent;
@@ -756,24 +756,24 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
                 else if (m.embeds[0]) {
                     link = m.embeds[0].image.url;
                 }
-                var hoard = peopleDatabase.people[id].hoard[emoji.name];
+                var hoard = userDb.people[id].hoard[emoji.name];
                 if (hoard) {
                     if (links && links[0]) {
                         for (let link of links) {
-                            hoard = peopleDatabase.people[id].hoard[emoji.name];
+                            hoard = userDb.people[id].hoard[emoji.name];
                             if (hoard[link]) {
                                 delete hoard[link];
-                                dbs.user.save(peopleDatabase);
-                                if (peopleDatabase.people[m.author.id]) {
-                                    if (!peopleDatabase.people[m.author.id].adds) {
-                                        peopleDatabase.people[m.author.id].adds = 0;
+                                await dbs.user.save(userDb);
+                                if (userDb.people[m.author.id]) {
+                                    if (!userDb.people[m.author.id].adds) {
+                                        userDb.people[m.author.id].adds = 0;
                                     }
-                                    dbs.user.save(peopleDatabase);
-                                    peopleDatabase = dbs.user.load();
+                                    await dbs.user.save(userDb);
+                                    userDb = await dbs.user.load();
                                 }
                                 if (m.author.id !== id) {
-                                    peopleDatabase.people[m.author.id].adds--;
-                                    dbs.user.save(peopleDatabase);
+                                    userDb.people[m.author.id].adds--;
+                                    await dbs.user.save(userDb);
                                 }
                             }
                         }
@@ -781,18 +781,18 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
                     }
                     if (hoard[link] && !(links && links[0])) {
                         delete hoard[link];
-                        dbs.user.save(peopleDatabase);
-                        peopleDatabase = dbs.user.load();
-                        if (peopleDatabase.people[m.author.id]) {
-                            if (!peopleDatabase.people[m.author.id].adds) {
-                                peopleDatabase.people[m.author.id].adds = 0;
+                        await dbs.user.save(userDb);
+                        userDb = await dbs.user.load();
+                        if (userDb.people[m.author.id]) {
+                            if (!userDb.people[m.author.id].adds) {
+                                userDb.people[m.author.id].adds = 0;
                             }
-                            dbs.user.save(peopleDatabase);
-                            peopleDatabase = dbs.user.load();
+                            await dbs.user.save(userDb);
+                            userDb = await dbs.user.load();
                         }
                         if (m.author.id !== id) {
-                            peopleDatabase.people[m.author.id].adds--;
-                            dbs.user.save(peopleDatabase);
+                            userDb.people[m.author.id].adds--;
+                            await dbs.user.save(userDb);
                         }
                     }
                     return;

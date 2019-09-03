@@ -5,7 +5,7 @@ const unidecode = require("unidecode");
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var userDb = dbs.user.load();
+var userDb = await dbs.user.load();
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
@@ -90,7 +90,7 @@ module.exports = {
             let incoming = name1.replace(/\bremove\b/i, "").replace(" ", "").split("|");
             if (userDb.people[id].fetishes[capFirstLetter(incoming[0])]) {
                 delete userDb.people[id].fetishes[capFirstLetter(incoming[0])];
-                dbs.user.save(userDb);
+                await dbs.user.save(userDb);
                 m.reply("Removed: **" + incoming[0] + "** from your fetish list" + utils.hands.ok(), 5000);
                 m.deleteIn(5000);
                 return;
@@ -134,14 +134,14 @@ module.exports = {
                     return;
                 }
                 userDb.people[id].fetishes[incoming[0]] = "dislike";
-                dbs.user.save(userDb);
+                await dbs.user.save(userDb);
                 m.reply("Added Dislike: **" + incoming[0] + "** " + utils.hands.ok(), 5000);
                 m.deleteIn(5000);
                 return;
             }
             else {
                 userDb.people[id].fetishes[incoming[0]] = "like";
-                dbs.user.save(userDb);
+                await dbs.user.save(userDb);
                 m.reply("Added **" + incoming[0] + "** " + utils.hands.ok(), 5000);
                 m.deleteIn(5000);
                 return;

@@ -4,7 +4,7 @@ const conf = require("../conf");
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var globalData = dbs.global.load();
+var globalData = await dbs.global.load();
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
@@ -58,7 +58,7 @@ module.exports = {
             }
             if (globalData.banned.global[id]) {
                 delete globalData.banned.global[id];
-                dbs.global.save(globalData);
+                await dbs.user.save(globalData);
                 m.reply(`Welcome back, ${name} (${id}) ${utils.hands.ok()}`, 5000);
                 m.deleteIn(5000);
             }
@@ -79,7 +79,7 @@ module.exports = {
         }
         console.log(id, reason, globalData.banned.global);
 
-        dbs.global.save(globalData);
+        await dbs.user.save(globalData);
         m.reply(`Goodbye, ${name} (${id}) ${utils.hands.ok()}`, 5000);
         m.deleteIn(5000);
     },

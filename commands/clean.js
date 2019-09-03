@@ -4,7 +4,7 @@ const conf = require("../conf");
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var guildDb = dbs.guild.load();
+var guildDb = await dbs.guild.load();
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
@@ -24,7 +24,7 @@ module.exports = {
                 if (guildDb[guild.id].owner != guild.ownerID) {
                     m.reply("New server owner detected, updating database.", 5000);
                     guildDb[guild.id].owner = guild.ownerID;
-                    dbs.guild.save(guildDb);
+                    await dbs.guild.save(guildDb);
                 }
                 if (guildDb[guild.id].mods) {
                     if (guildDb[guild.id].mods[member.id]) {

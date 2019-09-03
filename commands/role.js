@@ -3,7 +3,7 @@
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-const guildDb = dbs.guild.load();
+const guildDb = await dbs.guild.load();
 
 module.exports = {
     main(bot, m, args, prefix) {
@@ -50,7 +50,7 @@ module.exports = {
                 const exists = m.channel.guild.roles.find(r => r.id == guildDb[m.channel.guild.id].roles[role]);
                 if (!exists) {
                     delete guildDb[guild.id].roles[role];
-                    dbs.guild.save(guildDb);
+                    await dbs.guild.save(guildDb);
                     m.reply(role + " updated successfully", 1000);
                 }
             }
