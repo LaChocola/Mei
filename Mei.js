@@ -16,7 +16,7 @@ const commands = require("./commands");
 
 const conf = require("./conf");
 const utils = require("./utils");
-const dbs = require("../dbs");
+const dbs = require("./dbs");
 
 console.log("Loading...");
 
