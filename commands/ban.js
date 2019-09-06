@@ -4,9 +4,6 @@ const escapeStringRegexp = require("escape-string-regexp");
 
 const conf = require("../conf");
 const utils = require("../utils");
-const dbs = require("../dbs");
-
-var guildDb = await dbs.guild.load();
 
 var permissionDeniedResponses = [
     "Are you a real villan?",
@@ -18,41 +15,6 @@ var permissionDeniedResponses = [
     "Roses are red\nfuck me ;) "
 ];
 
-function checkIsMod(member, guild) {
-    var guildData = guildDb[guild.id];
-    if (!guildData) {
-        var perms = member.permission.json;
-        return perms.banMembers || perms.administrator || perms.manageGuild;
-    }
-
-    if (guildData.owner !== guild.ownerID) {
-        //m.reply("New server owner detected, updating database.", 5000);
-        guildData.owner = guild.ownerID;
-        await dbs.guild.save(guildDb);
-    }
-
-    if (guildData.mods) {
-        if (guildData.mods[member.id]) {
-            return true;
-        }
-    }
-    if (member.id === guildData.owner || member.id === guild.ownerID) {
-        return true;
-    }
-    if (guildData.modRoles) {
-        var memberRoles = member.roles;
-        var mod = false;
-        for (let role of memberRoles) {
-            if (guildData.modRoles[role]) {
-                mod = true;
-            }
-        }
-        if (mod) {
-            return true;
-        }
-    }
-}
-
 var meta = {
     name: "ban",
     args: "[undo] user [| user] ...",
@@ -63,7 +25,7 @@ meta.main = async function(bot, m, args, prefix) {
     var guild = m.channel.guild;
     var authorMember = guild.members.get(m.author.id);
 
-    var isMod = await checkIsMod(authorMember, guild);
+    var isMod = await authorMember.isMod();
 
     if (!isMod && authorMember.id !== conf.users.owner) {
         var permissionDeniedResponse = permissionDeniedResponses[Math.floor(Math.random() * permissionDeniedResponses.length)];
