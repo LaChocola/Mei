@@ -2,8 +2,6 @@
 
 const dbs = require("../dbs");
 
-var userDb = await dbs.user.load();
-
 // Map each user to a { userId, adds } object, sorted by adds
 function sortByAdds(people) {
     var arr = Object.entries(people)
@@ -21,7 +19,9 @@ function makeRankString(user, rankNum) {
 }
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
+        var userDb = await dbs.user.load();
+
         var isGlobal = args.toLowerCase().includes("global");
 
         // Pull from all users, or just guild members, depending on isGlobal

@@ -3,7 +3,7 @@
 const eightball = require("8ball");
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var msg = m.cleanContent.replace(`${prefix}8ball `, "");
         if (m.content === `${prefix}8ball`) {
             m.reply("Please add something");

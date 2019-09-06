@@ -4,10 +4,10 @@ const conf = require("../conf");
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var globalData = await dbs.global.load();
-
 module.exports = {
     main: async function(bot, m, args, prefix) {
+        var globalData = await dbs.global.load();
+
         if (m.author.id !== conf.users.owner) {
             return;
         }

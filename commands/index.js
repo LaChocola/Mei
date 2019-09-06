@@ -81,13 +81,13 @@ module.exports = {
         command.label = label;
         return command;
     },
-    run: function(label, m) {
+    run: async function(label, m) {
         m.command = this.load(label);
         var args = parseArgs(m);
         logCommand(label, m, args, true);
         try {
             var resp = await m.command.process(args, m);
-            if (resp != null && !(resp instanceof Message)) {
+            if (resp != null && !(resp instanceof Eris.Message)) {
                 await m.reply(resp);
             }
         }

@@ -3,7 +3,7 @@
 const utils = require("../utils");
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var guild = m.channel.guild;
         var name1 = m.cleanContent.replace(`${prefix}roles `, "");
         if (m.content.length < 7) {

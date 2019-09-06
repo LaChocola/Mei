@@ -249,7 +249,7 @@ bot.on("messageCreate", async function(m) {
     profiler.mark();
     profiler.save();
 
-    commands.run(commandName, m);
+    await commands.run(commandName, m);
 });
 
 // Text adventure?

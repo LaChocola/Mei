@@ -3,10 +3,10 @@
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-const guildDb = await dbs.guild.load();
-
 module.exports = {
-    main(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
+        const guildDb = await dbs.guild.load();
+
         const downs = [":thumbsdown::skin-tone-1:", ":thumbsdown::skin-tone-2:", ":thumbsdown::skin-tone-3:", ":thumbsdown::skin-tone-4:", ":thumbsdown::skin-tone-5:", ":thumbsdown:"];
         const down = downs[Math.floor(Math.random() * downs.length)];
         const guild = m.channel.guild;

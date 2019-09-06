@@ -2,15 +2,16 @@
 
 const ordinal = require("ordinal");
 
+const conf = require("../conf");
 const utils = require("../utils");
 const misc = require("../misc");
 const dbs = require("../dbs");
 
-var globalData = await dbs.global.load();
-var time = new Date().toISOString();
-
 module.exports = {
     main: async function(bot, m, args, prefix) {
+        var globalData = await dbs.global.load();
+        var time = new Date().toISOString();
+
         args = args.toLowerCase();
 
         if (m.channel.guild.id === conf.guilds.guild1) {

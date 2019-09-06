@@ -3,7 +3,7 @@
 const utils = require("../utils");
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(`${prefix}avy `, "");
         var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;

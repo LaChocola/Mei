@@ -8,10 +8,10 @@ const conf = require("../conf");
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var userDb = await dbs.user.load();
-
 module.exports = {
-    main(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
+        var userDb = await dbs.user.load();
+
         if (m.author.id === conf.users.whosthis) {
             return;
         }

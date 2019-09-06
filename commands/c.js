@@ -14,7 +14,7 @@ else {
 }
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         if (!enabled) {
             return;
         }

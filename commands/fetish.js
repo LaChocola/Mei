@@ -5,10 +5,10 @@ const unidecode = require("unidecode");
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var userDb = await dbs.user.load();
-
 module.exports = {
     main: async function(bot, m, args, prefix) {
+        var userDb = await dbs.user.load();
+
         var name1 = m.cleanContent.replace(/!fetish /i, "");
 
         function capFirstLetter(string) {

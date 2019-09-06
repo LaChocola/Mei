@@ -3,10 +3,10 @@
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var userDb = await dbs.user.load();
-
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
+        var userDb = await dbs.user.load();
+
         var name1 = m.cleanContent.replace(/!hoard /i, "");
         args = args.split(" | ");
         var member = m.guild.members.find(m => utils.isSameMember(m, name1));

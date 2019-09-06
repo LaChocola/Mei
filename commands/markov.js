@@ -5,10 +5,10 @@ const MarkovGen = require("markov-generator");
 const conf = require("../conf");
 const utils = require("../utils");
 
-var time = new Date().toISOString();
-
 module.exports = {
     main: async function(bot, m, args, prefix) {
+        var time = new Date().toISOString();
+
         var name1 = m.cleanContent.replace(`${prefix}markov `, "");
         if (m.content.length < 8) {
             name1 = m.author.username;

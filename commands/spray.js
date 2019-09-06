@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         if (m.content == `${prefix}spray` || !m.mentions[0]) {
             m.reply("Please add someone to spray. i.e. ``!spray @Chocola``");
         }

@@ -3,7 +3,7 @@
 const Haikudos = require("haikudos");
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         Haikudos(function(haiku) {
             m.reply({
                 embed: {

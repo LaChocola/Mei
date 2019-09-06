@@ -6,10 +6,10 @@ const Jimp = require("jimp");
 
 const utils = require("../utils");
 
-var time = new Date().toDateString().slice(4).replace(` ${new Date().getFullYear()}`, `, ${new Date().getFullYear()}`);
-
 module.exports = {
     main: async function(bot, m, args, prefix) {
+        var time = new Date().toDateString().slice(4).replace(` ${new Date().getFullYear()}`, `, ${new Date().getFullYear()}`);
+
         var member = m.guild.members.find(m => utils.isSameMember(m, m.author));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;

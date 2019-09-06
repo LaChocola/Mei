@@ -8,10 +8,10 @@ const utils = require("../utils");
 const conf = require("../conf");
 const dbs = require("../dbs");
 
-var guildDb = await dbs.guild.load();
-
 module.exports = {
     main: async function(bot, m, args, prefix) {
+        var guildDb = await dbs.guild.load();
+
         // Disable play command for this guild?
         if (m.guild.id === conf.guilds.guild2) {
             return;
@@ -47,9 +47,10 @@ module.exports = {
         }
         var guild = m.channel.guild;
         if (!guildDb[guild.id]) {
-            guildDb[guild.id] = {};
-            guildDb[guild.id].name = guild.name;
-            guildDb[guild.id].owner = guild.ownerID;
+            guildDb[guild.id] = {
+                name: guild.name,
+                owner: guild.ownerID
+            };
             m.reply(`Server: ${guild.name} added to database. Populating information ${utils.hands.wave()}`, 5000);
             await dbs.guild.save(guildDb);
         }
@@ -393,7 +394,7 @@ module.exports = {
                     if (isNewQueue) {
                         var close = false;
                         // pls ignore all the extra console logs, they are for debugging this
-                        voiceConnection.on("end", () => { // when the song ends
+                        voiceConnection.on("end", async function() { // when the song ends
                             var guildDb = await dbs.guild.load();
                             var queue = Object.keys(guildDb[guild.id].music.queue);
                             if (queue.length > 0 && !voiceConnection.playing) { // if there is another song in the queue, try to play that song
@@ -428,7 +429,7 @@ module.exports = {
                                 return;
                             }
                             else if (queue.length < 1 && !voiceConnection.playing && !close) {
-                                setTimeout(function() {
+                                setTimeout(async function() {
                                     if (queue.length == 0 && !voiceConnection.playing) { // if there is no other song in the queue, leave the voice channel and have a wonderful day
                                         if (BotVoiceState.channelID) {
                                             bot.leaveVoiceChannel(m.member.voiceState.channelID);

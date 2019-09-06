@@ -2,7 +2,7 @@
 
 const Eris = require("eris");
 
-async function main(m, args) {
+async function ping(m, args) {
     var time = process.hrtime();
     await m.reply("Pong!");
     var [secs, ns] = process.hrtime(time);
@@ -10,6 +10,6 @@ async function main(m, args) {
     m.edit("Pong! `" + ms + "ms`");
 }
 
-module.exports = new Eris.Command("ping", main, {
+module.exports = new Eris.Command("ping", ping, {
     description: "Bot Delay"
 });

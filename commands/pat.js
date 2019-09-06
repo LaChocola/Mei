@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         if (m.mentions.length > 2) {
             m.reply("Thats too many pats to give :angry:");
             return;

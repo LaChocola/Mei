@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var roles = m.guild.roles;
 
         var roleDump = roles.map(r => `"${r.name}": "${r.id}",`).join("\n");

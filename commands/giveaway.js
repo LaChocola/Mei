@@ -4,15 +4,15 @@ const conf = require("../conf");
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var guildDb = await dbs.guild.load();
-
 function promiseTimeout(time) {
     return new Promise(resolve => setTimeout(() => resolve(), time));
 }
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
-        return new Promise((resolve, reject) => {
+    main: async function(bot, m, args, prefix) {
+        var guildDb = await dbs.guild.load();
+
+        return new Promise(async function(resolve, reject) {
             var guild = m.channel.guild;
             var time = 0.5;
             var base = m.cleanContent.replace(`${prefix}giveaway `, "").split(" | ");
@@ -50,31 +50,34 @@ module.exports = {
                     guildDb[guild.id].giveaways.current = {};
                     guildDb[guild.id].giveaways.creator = author;
                     guildDb[guild.id].giveaways.current.contestants = {};
-                    m.reply(`***${name}*** has started a giveaway for: **` + msg + `**. React to this message with <:giveaway:${conf.emojis.giveaway}> in ${time} hour(s) to enter!`).then((m) => {
-                        guildDb[guild.id].giveaways.mID = m.id;
-                        guildDb[guild.id].giveaways.channelID = m.channel.id;
-                        await dbs.guild.save(guildDb);
-                        bot.addMessageReaction(guildDb[guild.id].giveaways.channelID, guildDb[guild.id].giveaways.mID, `giveaway:${conf.emojis.giveaway}`);
-                        var amount = time * 3600000;
-                        return promiseTimeout(amount);
-                    }).then(() => {
-                        var userDb = await dbs.user.load();
-                        var contestants = [];
-                        var entries = userDb[guild.id].giveaways.current.contestants;
-                        Object.keys(entries).forEach(function(key) {
-                            contestants.push(key);
-                        });
-                        var winnerID = contestants[Math.floor(Math.random() * contestants.length)];
-                        if (winnerID == undefined) {
+                    m.reply(`***${name}*** has started a giveaway for: **` + msg + `**. React to this message with <:giveaway:${conf.emojis.giveaway}> in ${time} hour(s) to enter!`)
+                        .then(async function(m) {
+                            guildDb[guild.id].giveaways.mID = m.id;
+                            guildDb[guild.id].giveaways.channelID = m.channel.id;
+                            await dbs.guild.save(guildDb);
+                            bot.addMessageReaction(guildDb[guild.id].giveaways.channelID, guildDb[guild.id].giveaways.mID, `giveaway:${conf.emojis.giveaway}`);
+                            var amount = time * 3600000;
+                            return promiseTimeout(amount);
+                        })
+                        .then(async function() {
+                            var userDb = await dbs.user.load();
+                            var contestants = [];
+                            var entries = userDb[guild.id].giveaways.current.contestants;
+                            Object.keys(entries).forEach(function(key) {
+                                contestants.push(key);
+                            });
+                            var winnerID = contestants[Math.floor(Math.random() * contestants.length)];
+                            if (winnerID == undefined) {
+                                userDb[guild.id].giveaways.running = false;
+                                await dbs.guild.save(userDb);
+                                return bot.editMessage(userDb[guild.id].giveaways.channelID, userDb[guild.id].giveaways.mID, "This Giveaway has ended, no one entered. So I guess everyone loses?");
+                            }
+                            var winner = m.channel.guild.members.get(winnerID).mention;
                             userDb[guild.id].giveaways.running = false;
                             await dbs.guild.save(userDb);
-                            return bot.editMessage(userDb[guild.id].giveaways.channelID, userDb[guild.id].giveaways.mID, "This Giveaway has ended, no one entered. So I guess everyone loses?");
-                        }
-                        var winner = m.channel.guild.members.get(winnerID).mention;
-                        userDb[guild.id].giveaways.running = false;
-                        await dbs.guild.save(userDb);
-                        return bot.editMessage(userDb[guild.id].giveaways.channelID, userDb[guild.id].giveaways.mID, "This Giveaway has ended") && m.reply(`Congrats ${winner}! :tada: :tada: :tada:\nYou won <@${userDb[guild.id].giveaways.creator}>'s giveaway for: \`${userDb[guild.id].giveaways.item}\``);
-                    }).catch(console.log);
+                            return bot.editMessage(userDb[guild.id].giveaways.channelID, userDb[guild.id].giveaways.mID, "This Giveaway has ended") && m.reply(`Congrats ${winner}! :tada: :tada: :tada:\nYou won <@${userDb[guild.id].giveaways.creator}>'s giveaway for: \`${userDb[guild.id].giveaways.item}\``);
+                        })
+                        .catch(console.log);
                 }
             }
         });

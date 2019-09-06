@@ -4,7 +4,7 @@ const utils = require("../utils");
 const dbs = require("../dbs");
 
 module.exports = {
-    main: function(bot, m, args) {
+    main: async function(bot, m, args) {
         var userDb = await dbs.user.load();
 
         var name1 = m.cleanContent.replace(/!artist /i, "");

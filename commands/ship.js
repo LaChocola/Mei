@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const utils = require("../utils");
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var names = m.cleanContent.replace(/^[ !ship\t]+[^a-zA-Z]+|[!ship \t]+[^a-zA-Z]$|!ship/i, "").split(" | ");
         if (names[0] != undefined) {
             if (names[0].startsWith("@")) {

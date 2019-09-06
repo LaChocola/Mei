@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var prettyMs = require("pretty-ms");
         var prettyUptime = prettyMs(bot.uptime, {
             verbose: true

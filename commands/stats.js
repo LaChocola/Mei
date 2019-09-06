@@ -3,10 +3,10 @@
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var globalData = await dbs.global.load();
-
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
+        var globalData = await dbs.global.load();
+
         var name1 = m.cleanContent.replace(`${prefix}stats `, "");
         var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;

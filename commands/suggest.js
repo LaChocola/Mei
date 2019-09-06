@@ -4,7 +4,7 @@ const conf = require("../conf");
 const utils = require("../utils");
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var msg = m.cleanContent.replace(`${prefix}suggest `, "");
         msg = msg.trim().replace(/\bXXX\b/ig, "[name]").replace(/"/ig, "\"").replace(/\b“\b/ig, "\"").replace(/\b”\b/ig, "\"").replace(/\b""\b/ig, "\"").replace(/"/ig, "''").replace("  ", " ");
         msg = msg.replace(/\bfeet\b/ig, "[feet]").replace("`", "'");
