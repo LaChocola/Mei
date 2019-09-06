@@ -1,17 +1,19 @@
 "use strict";
 
 const eightball = require("8ball");
+const Eris = require("eris");
 
-module.exports = {
-    main: async function(bot, m, args, prefix) {
-        var msg = m.cleanContent.replace(`${prefix}8ball `, "");
-        if (m.content === `${prefix}8ball`) {
-            m.reply("Please add something");
-        }
-        else {
-            m.reply(`***${msg}***\n`
-                + `:8ball: ${eightball()}`);
-        }
-    },
-    help: "8ball"
-};
+async function main(m, args) {
+    var messageString = m.cleanContent.substring(m.prefix.length + m.command.label.length).trim();
+    if (!messageString) {
+        return "Please add something";
+    }
+    else {
+        return `***${messageString}***\n`
+            + `:8ball: ${eightball()}`;
+    }
+}
+
+module.exports = new Eris.Command("8ball", main, {
+    description: "8ball"
+});
