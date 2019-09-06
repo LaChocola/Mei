@@ -4,47 +4,6 @@ const conf = require("../conf");
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-var guildDb = await dbs.guild.load();
-
-function checkIsMod(m, member, guild) {
-    var guildData = guildDb[guild.id];
-    if (!guildData) {
-        const perms = guild.members.get(member.id).permission.json;
-        return perms.banMembers || perms.administrator || perms.manageChannels || perms.manageGuild;
-    }
-
-    if (guildData.owner !== guild.ownerID) {
-        //m.reply("New server owner detected, updating database.", 5000);
-        guildData.owner = guild.ownerID;
-        await dbs.guild.save(guildDb);
-    }
-    if (guildData.name !== guild.name) {
-        //m.reply("New server name detected, updating database.", 5000);
-        guildData.name = guild.name;
-        await dbs.guild.save(guildDb);
-    }
-    if (guildData.mods) {
-        if (guildData.mods[member.id]) {
-            return true;
-        }
-    }
-    if (m.author.id === guildData.owner || m.author.id === guild.ownerID) {
-        return true;
-    }
-    if (guildData.modRoles) {
-        const memberRoles = member.roles;
-        let mod = false;
-        for (const role of memberRoles) {
-            if (guildData.modRoles[role]) {
-                mod = true;
-            }
-        }
-        if (mod) {
-            return true;
-        }
-    }
-}
-
 function getRoleName(role) {
     var name;
     if (typeof role === "string") {
@@ -65,6 +24,8 @@ function checkHasDuplicates(role, roles) {
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
+        var guildDb = await dbs.guild.load();
+
         var commandArgs = args.split(/\s+/g);
         if (!commandArgs) {
             return;
@@ -75,8 +36,8 @@ module.exports = {
             return;
         }
 
-        const modCheck = checkIsMod(m, m.channel.guild.members.get(m.author.id), guild);
-        if (m.author.id !== guild.ownerID && m.author.id !== conf.users.owner && modCheck !== true) {
+        const isMod = guild.isMod(m.author.id);
+        if (m.author.id !== guild.ownerID && m.author.id !== conf.users.owner && isMod !== true) {
             m.reply("You must be the server owner, or have moderator permissions to run this command. Have the server owner use `!edit mod add @you` or `!edit mod add @modRole`", 20000);
             m.deleteIn(20000);
             return;
@@ -409,7 +370,7 @@ module.exports = {
                         m.deleteIn(5000);
                         return;
                     }
-                    const perms = m.channel.guild.members.get(conf.users.bot).permission.json;
+                    const perms = m.guild.members.get(conf.users.bot).permission.json;
                     if (!perms.manageRoles) {
                         m.reply("I need permissions to be able to add roles, please add the 'Manage Roles' permission to me");
                         return;
@@ -482,7 +443,7 @@ module.exports = {
                     name: `${selectedRole}`,
                     permissions: 104188992,
                     reason: `Role created by ${m.author.username}`
-                }).then(role => {
+                }).then(async function(role) {
                     guildDb[guild.id].roles[selectedRole] = role.id;
                     await dbs.guild.save(guildDb);
                     m.reply(`The role \`${role.name}\` has been created successfully, and is now assignable`, 5000);
