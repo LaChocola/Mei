@@ -3,47 +3,9 @@
 const fs = require("fs");
 
 const conf = require("./conf");
-const dbs = require("../dbs");
-
-var userDb = await dbs.user.load();
-var guildDb = await dbs.guild.load();
+const dbs = require("./dbs");
 
 class Misc { // Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
-    static isMod(bot, m, member, guild) {
-        if (guildDb[guild.id]) {
-            if (guildDb[guild.id].owner != guild.ownerID || guildDb[guild.id].name != guild.name) {
-                m.reply("New server info detected, updating database.", 5000);
-                guildDb[guild.id].owner = guild.ownerID;
-                guildDb[guild.id].name = guild.name;
-                await dbs.guild.save(guildDb);
-                guildDb = await dbs.guild.load();
-                if (guildDb[guild.id].mods) {
-                    if (guildDb[guild.id].mods[member.id]) {
-                        return true;
-                    }
-                }
-                if (m.author.id == guildDb[guild.id].owner || m.author.id == guild.ownerID) {
-                    return true;
-                }
-                if (guildDb[guild.id].modRoles) {
-                    var memberRoles = member.roles;
-                    var mod = false;
-                    for (const role of memberRoles) {
-                        if (guildDb[guild.id].modRoles[role]) {
-                            mod = true;
-                        }
-                    }
-                    if (mod) {
-                        return true;
-                    }
-                }
-            }
-        }
-        else {
-            return false;
-        }
-    }
-
     static getTrueName(id, m) {
         var name = m.channel.guild.members.get(id).nick || m.channel.guild.members.get(id).username;
         return name;
@@ -117,7 +79,8 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    static generateLewdMessage(smallid, big, guildid, maintype, subtype) {
+    static async generateLewdMessage(smallid, big, guildid, maintype, subtype) {
+        var userDb = await dbs.user.load();
         //=============get names==================
         var bigname = big;
         if (big == false) {
@@ -345,7 +308,8 @@ class Misc { // Declaring export as a class because cbf to make other way work p
 
     }
 
-    static getcustomGTSNames(uid) {
+    static async getcustomGTSNames(uid) {
+        var userDb = await dbs.user.load();
 
         var customName = [];
         if (userDb.people[uid]) {
