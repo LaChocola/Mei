@@ -54,8 +54,11 @@ function LegacyCommand(label, legacy) {
 
 // This is normally done by the CommandClient
 function parseArgs(m) {
-    var args = m.content.replace(/<@!/g, "<@").substring(m.prefix.length).trim().split(/\s+/g); // Remove prefix and split into args
-    args.shift(); // Remove command label from args
+    var fullArgs = m.content.replace(/<@!/g, "<@").substring(m.prefix.length).trim(); // Remove prefix
+    var args = fullArgs.split(/\s+/g); // split into args
+    var label = args.shift(); // Remove command label from args
+    fullArgs = fullArgs.substring(m.prefix.length + label.length).trim();   // remove command label from fullargs
+    m.fullArgs = fullArgs;
     return args;
 }
 
