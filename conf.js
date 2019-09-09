@@ -46,7 +46,7 @@ conf.users = {
     mei: "309220487957839872"
 };
 conf.users.owner = process.env.MEI_OWNER || conf.users.chocola;
-conf.users.bot = process.env.MEI_BOT || conf.users.mei; // TODO: Auto-detect bot's user id
+conf.users.bot = process.env.MEI_BOT || conf.users.mei; // TODO: REPLACE EVERYWHERE WITH `bot.user.id`
 
 conf.guilds = {
     guild1: "187694240585744384",

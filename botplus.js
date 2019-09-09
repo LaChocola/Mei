@@ -40,8 +40,13 @@ function extend(bot) {
                 return m;
             }
 
-            utils.delay(timeout).then(function() {
-                m.delete("Timeout");
+            utils.delay(timeout).then(async function() {
+                try {
+                    await m.delete("Timeout");
+                }
+                catch (err) {
+                    console.error(err);
+                }
             });
 
             return m;
