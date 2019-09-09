@@ -39,6 +39,7 @@ async function searchForVideo(searchString) {
     }
     catch (err) {
         if (err.message === "Status Code 302") {
+            // TODO: Use an actual youtube search API to prevent this?
             console.error("YouTube search thinks Mei is a robot. " + utils.shrug.html);
         }
         else {
@@ -109,6 +110,34 @@ function msToYoutubeMS(ms) {
         time = `${m}m` + time;
     }
     return time;
+}
+
+function showNowPlayingEmbed(m, ) {
+    var nowPlayingMsg = {
+        embed: {
+            author: {
+                name: "Currently Playing:"
+            },
+            title: `:musical_note: ${info.title} :musical_note:`,
+            url: getShortYoutubeUrl(current.videoId, progressMs),
+            thumbnail: {
+                url: getYoutubeImageUrl(current.videoId)
+            },
+            footer: {
+                text: `Requested by: ${current.addedBy}`
+            },
+            fields: [
+                {
+                    name: `${msToHMS(progressMs)}/${msToHMS(lengthMs)}`,
+                    value: `[${bar(progressMs)}]`,
+                    inline: true
+                }
+            ],
+            color: 0xA260F6
+        }
+    };
+    m.reply(nowPlayingMsg);
+
 }
 
 // Initialize the guild database to default values, if necessary
@@ -404,7 +433,7 @@ async function playCommand(m, voiceConnection) {
 
     var queue = guildData.music.queue;
 
-    var existingItemIndex = queue.findIndex(i => i.videoId = videoId);
+    var existingItemIndex = queue.findIndex(i => i.videoId === videoId);
     if (existingItemIndex !== -1) {
         var existingItem = queue[existingItemIndex];
         m.reply(`That song has already been requested by: **${existingItem.addedBy}"**. It is at queue position: \`${existingItemIndex + 1}\``, 7000);
