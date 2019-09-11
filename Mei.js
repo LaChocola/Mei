@@ -173,19 +173,25 @@ async function trackUsage(commandName, authorId, profiler) {
 
     profiler.mark();
 
-    globalData.commands.totalRuns++;
-
+    if (!globalData.commands) {
+        globalData.commands = {};
+    }
+    if (!globalData.commands.totalRuns) {   
+        globalData.commands.totalRuns = 0;
+    }
     if (!globalData.commands[commandName]) {
         globalData.commands[commandName] = {
             totalUses: 0,
             users: {}
         };
     }
-
     var commandData = globalData.commands[commandName];
     if (!commandData.users[authorId]) {
         commandData.users[authorId] = 0;
     }
+
+    // If you had a "totalRuns" command, this would break.
+    globalData.commands.totalRuns++;
     commandData.users[authorId]++;
     commandData.totalUses++;
 
