@@ -1,6 +1,7 @@
 "use strict";
 
 // This file loads the bot configuration from environment variables, a .env file, and ./etc/config.json in that order. If no options are set, it tries to provide reasonable defaults.
+const fs = require("fs");
 
 const dotenv = require("dotenv");
 const dotenvExpand = require("dotenv-expand");
@@ -8,7 +9,7 @@ dotenvExpand(dotenv.config());
 
 var legacyConfig;
 try {
-    legacyConfig = require("./etc/config.json");
+    legacyConfig = JSON.parse(fs.readFileSync("./etc/config.json"));    // Relative to current working directory
 }
 catch (err) {
     legacyConfig = {
