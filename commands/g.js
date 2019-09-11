@@ -34,7 +34,7 @@ module.exports = {
             usage = userUsage[mentioned.id];
         }
         if (args.indexOf("length") >= 0) {
-            var names = misc.getcustomGTSNames(id);
+            var names = await misc.getcustomGTSNames(id);
             var resultstring = "";
             var cleanishNames = names.join(", ");
             for (let i = 0; i < names.length; i++) {
@@ -63,8 +63,8 @@ module.exports = {
         var big = false;
 
         names = misc.getDefaultGTSNames(m.channel.guild.id).names;
-        var cname = misc.getcustomGTSNames(smallid);
-        names = names.concat(cname);
+        var cnames = misc.getcustomGTSNames(smallid);
+        names = names.concat(cnames);
         for (let i = 0; i < names.length; i++) {
             if (args.includes(names[i].toLowerCase())) {
                 big = names[i];

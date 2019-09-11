@@ -83,7 +83,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         //=============get names==================
         var bigname = big;
         if (big == false) {
-            var cname = Misc.getcustomGTSNames(smallid);
+            var cname = await Misc.getcustomGTSNames(smallid);
             var names;
             if (cname.length == 0) {
                 names = Misc.getDefaultGTSNames(guildid).names;
