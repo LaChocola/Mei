@@ -7,9 +7,11 @@ const dotenv = require("dotenv");
 const dotenvExpand = require("dotenv-expand");
 dotenvExpand(dotenv.config());
 
+var legacyConfigPath = "./etc/config.json";
+
 var legacyConfig;
 try {
-    legacyConfig = JSON.parse(fs.readFileSync("./etc/config.json"));    // Relative to current working directory
+    legacyConfig = JSON.parse(fs.readFileSync(legacyConfigPath));    // Relative to current working directory
 }
 catch (err) {
     legacyConfig = {
