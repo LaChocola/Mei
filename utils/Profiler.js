@@ -2,8 +2,7 @@
 
 const fs = require("fs");
 
-var timestampPath = "db/timestamps.txt";
-
+var timestampPath = "./db/timestamps.txt"; // Relative to current working directory
 
 function getTime() {
     var [secs, ns] = process.hrtime();

@@ -2,7 +2,7 @@
 
 const dbs = require("./dbs");
 
-const lewdPool = require("./db/lewds.json");
+const lewdPool = require("./data/lewds.json");  // Relative to package root
 
 class Misc { // Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
     static getTrueName(id, m) {

@@ -1,10 +1,13 @@
 "use strict";
 
 // This version of Jimp has an alphabet I created to emulated the DeviantArt username font "Trebuchet" and timestamp font
-// They are both availible at https://github.com/LaChocola/Mei/tree/master/db/fonts
+// They are both availible at https://github.com/LaChocola/Mei/tree/master/data/fonts
 const Jimp = require("jimp");
 
 const utils = require("../utils");
+
+var nameFontPath = utils.getPkgPath("/data/fonts/trebuchetms/TrebuchetMS.fnt");  // Relative to package root
+var timeFontPath = utils.getPkgPath("/data/fonts/timefont/timeFont.fnt");        // Relative to package root
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
@@ -32,8 +35,8 @@ module.exports = {
             try {
                 const bg = await Jimp.read("https://buttsare.sexy/4Vp1MUG.png");
                 const avy = await Jimp.read(pic);
-                const nameFont = await Jimp.loadFont("https://raw.githubusercontent.com/LaChocola/Mei/master/db/fonts/trebuchetms/TrebuchetMS.fnt");
-                const timeFont = await Jimp.loadFont("https://raw.githubusercontent.com/LaChocola/Mei/master/db/fonts/timefont/timeFont.fnt");
+                const nameFont = await Jimp.loadFont(nameFontPath);
+                const timeFont = await Jimp.loadFont(timeFontPath);
                 avy.resize(141, 116);
                 bg.clone()
                     .blit(avy, 15, 12)
