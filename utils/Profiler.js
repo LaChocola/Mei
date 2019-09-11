@@ -58,7 +58,7 @@ class Profiler {
 
     toString() {
         var diffs = this.calcDiffs();
-        return `${this.elapsed}ms | ${diffs.join(" , ")}`;
+        return `${this.elapsed}ms | ${diffs.join(", ")}`;
     }
 
     // Supports optional labels for future expansion
