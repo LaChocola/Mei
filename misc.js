@@ -1,9 +1,8 @@
 "use strict";
 
-const fs = require("fs");
-
-const conf = require("./conf");
 const dbs = require("./dbs");
+
+const lewdPool = require("./db/lewds.json");
 
 class Misc { // Declaring export as a class because cbf to make other way work properly. Should probably do other way for consistancy though
     static getTrueName(id, m) {
@@ -190,10 +189,9 @@ class Misc { // Declaring export as a class because cbf to make other way work p
 
         //==========select from pool
         var candidates = [];
-        var pool = Misc.getLewdPool();
-        for (const primarytypename in pool) {
-            if (pool.hasOwnProperty(primarytypename)) {
-                const primarytype = pool[primarytypename];
+        for (const primarytypename in lewdPool) {
+            if (lewdPool.hasOwnProperty(primarytypename)) {
+                const primarytype = lewdPool[primarytypename];
                 if (maintype == false || primarytypename == maintype) {
                     if (!primarytype[subtype]) {
                         subtype = false;
@@ -326,10 +324,9 @@ class Misc { // Declaring export as a class because cbf to make other way work p
     static getLewdCounts(type) {
         var resultstring = "";
         var total = 0;
-        var pool = Misc.getLewdPool();
-        for (const key in pool[type]) {
-            if (pool[type].hasOwnProperty(key)) {
-                const element = pool[type][key];
+        for (const key in lewdPool[type]) {
+            if (lewdPool[type].hasOwnProperty(key)) {
+                const element = lewdPool[type][key];
                 total += element.length;
                 resultstring += "**" + Misc.capitaliseFirstLetter(key) + " " + Misc.capitaliseFirstLetter(type) + "s:** " + element.length + "\n \n";
             }
@@ -341,10 +338,6 @@ class Misc { // Declaring export as a class because cbf to make other way work p
 
     static capitaliseFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-
-    static getLewdPool() {
-        return JSON.parse(fs.readFileSync("./db/lewds.json"));
     }
 }
 
