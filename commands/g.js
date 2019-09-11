@@ -10,6 +10,7 @@ const dbs = require("../dbs");
 module.exports = {
     main: async function(bot, m, args, prefix) {
         var globalData = await dbs.global.load();
+        
         var time = new Date().toISOString();
 
         args = args.toLowerCase();
@@ -27,10 +28,10 @@ module.exports = {
         var name1 = args;
         var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         mentioned = m.mentions[0] || member || m.author;
-        var commands = globalData.commands["g"].users;
+        var userUsage = globalData.commands && globalData.commands["g"] && globalData.commands["g"].users || {}; 
         var usage = 0;
-        if (commands[mentioned.id]) {
-            usage = commands[mentioned.id];
+        if (userUsage[mentioned.id]) {
+            usage = userUsage[mentioned.id];
         }
         if (args.indexOf("length") >= 0) {
             var names = misc.getcustomGTSNames(id);
