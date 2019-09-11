@@ -68,8 +68,8 @@ class DataManager {
             data = await loadfile(self.backupPath);
 
             if (!data) {
-                console.error("Unable to load backup file");
-                throw new Error("Unable to load db");
+                console.error("Unable to load backup file, using empty db instead");
+                data = {};
             }
 
             await self.save(data);
