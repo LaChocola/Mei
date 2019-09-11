@@ -42,11 +42,9 @@ conf.users = {
     catclancer: "143906582235840512",
     whosthis: "187368906493526017",
     arachne: "444791634966740993",  // TODO: Auto-ignore bot users
-    dyno: "155149108183695360",     // TODO: Auto-ignore bot users
-    mei: "309220487957839872"
+    dyno: "155149108183695360"     // TODO: Auto-ignore bot users
 };
 conf.users.owner = process.env.MEI_OWNER || conf.users.chocola;
-conf.users.bot = process.env.MEI_BOT || conf.users.mei; // TODO: REPLACE EVERYWHERE WITH `bot.user.id`
 
 conf.guilds = {
     guild1: "187694240585744384",

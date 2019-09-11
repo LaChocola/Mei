@@ -26,7 +26,7 @@ module.exports = {
             m.reply("You do not have permission to read that channel, please try a different one.", 5000);
             return;
         }
-        if (channelFull.permissionsOf(conf.users.bot).json.readMessages != true) {
+        if (channelFull.permissionsOf(m.bot.user.id).json.readMessages != true) {
             m.reply("I do not have permission to read that channel, please try a different one.", 5000);
             return;
         }

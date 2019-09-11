@@ -509,7 +509,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                 if (m.author.id !== userID) {
                                     userDb.people[m.author.id].adds++;
                                     await dbs.user.save(userDb);
-                                    if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
+                                    if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== m.bot.user.id) {
                                         var user = bot.users.filter(u => u.id === m.author.id)[0];
                                         bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(userDb.people[m.author.id].adds)} hoard adds.`, 60000);
                                     }
@@ -534,7 +534,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                         if (m.author.id !== userID) {
                             userDb.people[m.author.id].adds++;
                             await dbs.user.save(userDb);
-                            if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
+                            if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== m.bot.user.id) {
                                 let user = bot.users.filter(u => u.id === m.author.id)[0];
                                 bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(userDb.people[m.author.id].adds)} hoard adds.`, 60000);
                             }
@@ -546,7 +546,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
         }
         if (guildDb[m.guild.id]) {
             if (guildDb[m.guild.id].giveaways) {
-                if (guildDb[m.guild.id].giveaways.running && emoji.id === conf.emojis.giveaway && userID !== conf.users.bot && userID !== guildDb[m.guild.id].giveaways.creator) {
+                if (guildDb[m.guild.id].giveaways.running && emoji.id === conf.emojis.giveaway && userID !== m.bot.user.id && userID !== guildDb[m.guild.id].giveaways.creator) {
                     if (m.id === guildDb[m.guild.id].giveaways.mID) {
                         guildDb[m.guild.id].giveaways.current.contestants[userID] = "entered";
                         await dbs.guild.save(guildDb);
@@ -598,7 +598,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                         if (m.author.id !== userID) {
                                             userDb.people[m.author.id].adds++;
                                             await dbs.user.save(userDb);
-                                            if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
+                                            if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== m.bot.user.id) {
                                                 let user = bot.users.filter(u => u.id === m.author.id)[0];
                                                 bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(userDb.people[m.author.id].adds)} hoard adds.`, 60000);
                                             }
@@ -623,7 +623,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
                                 if (m.author.id !== userID) {
                                     userDb.people[m.author.id].adds++;
                                     await dbs.user.save(userDb);
-                                    if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== conf.users.bot) {
+                                    if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== m.bot.user.id) {
                                         let user = bot.users.filter(u => u.id === m.author.id)[0];
                                         bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(userDb.people[m.author.id].adds)} hoard adds.`, 60000);
                                     }
@@ -719,7 +719,7 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
     }
     if (guildDb[m.guild.id]) {
         if (guildDb[m.guild.id].giveaways) {
-            if (guildDb[m.guild.id].giveaways.running && emoji.id === conf.emojis.giveaway && userID !== conf.users.bot && userID !== guildDb[m.guild.id].giveaways.creator) {
+            if (guildDb[m.guild.id].giveaways.running && emoji.id === conf.emojis.giveaway && userID !== m.bot.user.id && userID !== guildDb[m.guild.id].giveaways.creator) {
                 if (m.id === guildDb[m.guild.id].giveaways.mID) {
                     if (guildDb[m.guild.id].giveaways.current.contestants[userID]) {
                         delete guildDb[m.guild.id].giveaways.current.contestants[userID];
