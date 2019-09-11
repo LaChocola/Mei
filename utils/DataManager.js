@@ -1,16 +1,15 @@
 ﻿"use strict";
 
 const util = require("util");
-const path = require("path");
 const fs = require("fs");
 
 const fsPromises = {
     readFile: util.promisify(fs.readFile),
-    writeFile: util.promisify(fs.writeFile),
-    mkdir: util.promisify(fs.mkdir)
+    writeFile: util.promisify(fs.writeFile)
 };
 
 const conf = require("../conf");
+const utils = require("../utils");
 
 // Tries to parse file data. On error, returns undefined.
 function parse(fileData) {
@@ -90,7 +89,7 @@ class DataManager {
         var self = this;
 
         try {
-            await fsPromises.mkdir(path.dirname(self.dataPath), { recursive: true }); // Create parent directory if it doesn't already exist
+            await utils.mkpath(self.dataPath);
             await fsPromises.writeFile(self.dataPath, JSON.stringify(data, null, "\t"));
         }
         catch (err) {
