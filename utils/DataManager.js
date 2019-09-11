@@ -35,16 +35,19 @@ function parse(fileData) {
 
 // Tries to load a file. On error, returns undefined.
 async function loadfile(path) {
-    var fileData = await fsPromises.readFile(path, "utf8")
-        .catch(function(err) {
-            // TODO: If file is missing, create a new blank file. Maybe load from template?
-            if (err.code === "ENOENT") {
-                console.error("DB file not found: " + path);
-            }
-            else {
-                console.error(err);
-            }
-        });
+
+    try {
+        var fileData = await fsPromises.readFile(path, "utf8");
+    }
+    catch (err) {
+        // TODO: If file is missing, create a new blank file. Maybe load from template?
+        if (err.code === "ENOENT") {
+            console.error("DB file not found: " + path);
+        }
+        else {
+            console.error(err);
+        }
+    }
 
     return parse(fileData);
 }
