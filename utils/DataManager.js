@@ -85,7 +85,12 @@ class DataManager {
     async save(data) {
         var self = this;
 
-        await fsPromises.writeFile(self.dataPath, JSON.stringify(data, null, "\t"));
+        try {
+            await fsPromises.writeFile(self.dataPath, JSON.stringify(data, null, "\t"));
+        }
+        catch (err) {
+            console.error(err);
+        }
     }
 }
 
