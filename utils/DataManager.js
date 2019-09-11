@@ -72,13 +72,15 @@ class DataManager {
             console.log("db JSON error, attempting restore");
             data = await loadfile(self.backupPath);
 
-            if (!data) {
-                console.error("Unable to load backup file, using empty db instead");
+            if (data) {
+                console.log("Restore Successful");
+            }
+            else {
+                console.warning("Unable to load backup file. Defaulting to empty db instead.");
                 data = {};
             }
 
             await self.save(data);
-            console.log("Restore Successful");
         }
 
         return data;
