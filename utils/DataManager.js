@@ -76,7 +76,9 @@ class DataManager {
             }
             else {
                 console.warn("Unable to load backup file. Defaulting to empty db instead.");
-                data = {};
+                data = {
+                    "checkValue": conf.users.chocola
+                };
             }
 
             await self.save(data);
