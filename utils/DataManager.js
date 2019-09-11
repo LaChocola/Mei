@@ -76,7 +76,7 @@ class DataManager {
                 console.log("Restore Successful");
             }
             else {
-                console.warning("Unable to load backup file. Defaulting to empty db instead.");
+                console.warn("Unable to load backup file. Defaulting to empty db instead.");
                 data = {};
             }
 
