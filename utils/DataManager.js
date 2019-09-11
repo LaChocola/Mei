@@ -1,11 +1,13 @@
 ﻿"use strict";
 
 const util = require("util");
+const path = require("path");
 const fs = require("fs");
 
 const fsPromises = {
     readFile: util.promisify(fs.readFile),
-    writeFile: util.promisify(fs.writeFile)
+    writeFile: util.promisify(fs.writeFile),
+    mkdir: util.promisify(fs.mkdir)
 };
 
 const conf = require("../conf");
@@ -86,6 +88,7 @@ class DataManager {
         var self = this;
 
         try {
+            await fsPromises.mkdir(path.dirname(self.dataPath), { recursive: true }); // Create parent directory if it doesn't already exist
             await fsPromises.writeFile(self.dataPath, JSON.stringify(data, null, "\t"));
         }
         catch (err) {

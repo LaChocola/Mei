@@ -1,6 +1,13 @@
 ﻿"use strict";
 
+const util = require("util");
+const path = require("path");
 const fs = require("fs");
+
+const fsPromises = {
+    appendFile: util.promisify(fs.appendFile),
+    mkdir: util.promisify(fs.mkdir)
+};
 
 var timestampPath = "./db/timestamps.txt"; // Relative to current working directory
 
@@ -62,8 +69,14 @@ class Profiler {
         });
     }
 
-    save() {
-        fs.appendFileSync(timestampPath, this.toString() + "\n");
+    async save() {
+        await fsPromises.mkdir(path.dirname(timestampPath), { recursive: true }); // Create parent directory if it doesn't already exist
+        try {
+            await fsPromises.appendFile(timestampPath, this.toString() + "\n");
+        }
+        catch (err) {
+            console.error(err);
+        }
     }
 }
 

@@ -254,7 +254,7 @@ bot.on("messageCreate", async function(m) {
     await trackUsage(commandName, m.author.id, profiler);
 
     profiler.mark();
-    profiler.save();
+    await profiler.save();
 
     await commands.run(commandName, m);
 });
