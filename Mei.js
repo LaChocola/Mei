@@ -30,7 +30,12 @@ if (!conf.tokens.mei) {
 var bot = Eris(conf.tokens.mei);
 
 bot.on("ready", async function() {
-    console.log("Mei is running");
+    var readyMessage = "Mei is running";
+    var botname = bot.user.username;
+    if (botname !== "Mei") {
+        readyMessage += ` as ${botname}`;
+    }
+    console.log(readyMessage);
 });
 
 bot.on("guildBanAdd", async function(guild, user) {
