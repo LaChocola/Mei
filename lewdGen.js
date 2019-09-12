@@ -30,7 +30,7 @@ function getLewdCounts(type) {
     var total = counts.reduce((t, { count }) => t + count, 0);
 
     // Construct each line
-    var lines = counts.maps(function({ subtype, count }) {
+    var lines = counts.map(function({ subtype, count }) {
         return `**${utils.capitalize(subtype)} ${utils.capitalize(type)} s:** ${count}`;
     });
 
