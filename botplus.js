@@ -89,9 +89,9 @@ function extend(bot) {
     Object.defineProperty(bot.Member.prototype, "hasPerms", {
         get: async function(perms) {
             var member = this;
-            // Make a Set() of all member permissions that are set to true
-            var memberPerms = new Set(Object.keys(member.permission.json).filter(p => member.permission.json[p]));
-            var hasPerm = perms.some(p => memberPerms.has(p));
+            var hasPerm = perms.some(function(perm) {
+                return member.permission.has(perm);
+            });
             return hasPerm;
         }
     });
