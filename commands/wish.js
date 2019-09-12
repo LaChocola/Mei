@@ -38,7 +38,7 @@ module.exports = {
             .print(nameFont, 215, 30, name)
             .print(timeFont, 460, 37, time)
             .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
-                m.reply({
+                m.channel.createMessage("", {
                     file: buffer,
                     name: "wish.png"
                 });

@@ -30,9 +30,9 @@ module.exports = {
                     .blit(avy, 253, 23)
                     .blit(avy, 258, 224)
                     .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
-                        m.reply("", {
-                            "file": buffer,
-                            "name": name + "beautiful.png"
+                        m.channel.createMessage("", {
+                            file: buffer,
+                            name: name + "beautiful.png"
                         });
                     });
             }
