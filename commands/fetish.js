@@ -9,11 +9,8 @@ module.exports = {
     main: async function(bot, m, args, prefix) {
         var userDb = await dbs.user.load();
 
-        var name1 = m.cleanContent.replace(/!fetish /i, "");
+        var name1 = m.fullArgs;
 
-        function capFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
         var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
@@ -25,16 +22,23 @@ module.exports = {
         if (!userDb.people[id]) {
             userDb.people[id] = {};
         }
-        if (!userDb.people[id].fetishes) {
-            userDb.people[id].fetishes = {};
+        var userData = userDb.people[id];
+
+        if (!userData.fetishes) {
+            userData.fetishes = {};
         }
+
         if (args.toLowerCase().includes("search ")) {
             if (args.toLowerCase().includes("dislike")) {
-                let incomingEntries = name1.replace(/\bsearch\b/i, "").replace(/\bdislike\b/i, "").replace(": ", " ").split(" | ");
+                let incomingEntries = name1
+                    .replace(/\bsearch\b/i, "")
+                    .replace(/\bdislike\b/i, "")
+                    .replace(": ", " ")
+                    .split(" | ");
                 let incoming = [];
                 let iterator = incomingEntries.entries();
                 for (let e of iterator) {
-                    incoming.push(capFirstLetter(e[1].trim()));
+                    incoming.push(utils.capitalize(e[1].trim()));
                 }
                 let matches = Object.keys(userDb.people).filter(k => userDb.people[k].fetishes && userDb.people[k].fetishes[`${incoming[0]}`] === "dislike");
                 if (matches.length < 1) {
@@ -62,7 +66,7 @@ module.exports = {
                 let incoming = [];
                 let iterator = incomingEntries.entries();
                 for (let e of iterator) {
-                    incoming.push(capFirstLetter(e[1].trim()));
+                    incoming.push(utils.capitalize(e[1].trim()));
                 }
                 let matches = Object.keys(userDb.people).filter(k => userDb.people[k].fetishes && userDb.people[k].fetishes[`${incoming[0]}`] === "like");
                 if (matches.length < 1) {
@@ -82,14 +86,15 @@ module.exports = {
                 }
             }
         }
+
         if (args.toLowerCase().includes("remove ")) {
             if (mentioned.id !== m.author.id) {
                 m.reply("Okay... but that isn't you");
                 return;
             }
             let incoming = name1.replace(/\bremove\b/i, "").replace(" ", "").split("|");
-            if (userDb.people[id].fetishes[capFirstLetter(incoming[0])]) {
-                delete userDb.people[id].fetishes[capFirstLetter(incoming[0])];
+            if (userData.fetishes[utils.capitalize(incoming[0])]) {
+                delete userData.fetishes[utils.capitalize(incoming[0])];
                 await dbs.user.save(userDb);
                 m.reply("Removed: **" + incoming[0] + "** from your fetish list" + utils.hands.ok(), 5000);
                 m.deleteIn(5000);
@@ -101,6 +106,7 @@ module.exports = {
                 return;
             }
         }
+
         if (args.toLowerCase().includes("add")) {
             if (mentioned.id !== m.author.id) {
                 m.reply("Okay... but that isn't you");
@@ -113,46 +119,47 @@ module.exports = {
                 if (!e[1]) {
                     break;
                 }
-                incoming.push(capFirstLetter(e[1]));
+                incoming.push(utils.capitalize(e[1]));
             }
             if (incoming.length === 0) {
                 m.reply("Please say which fetish you would like to add, for example `!fetish add Butts`", 5000);
                 m.deleteIn(5000);
                 return;
             }
-            if (userDb.people[id].fetishes[incoming[0]]) {
+            if (userData.fetishes[incoming[0]]) {
                 m.reply("That's already been added, silly~", 5000);
                 m.deleteIn(5000);
                 return;
             }
             else if (incoming[0].toLowerCase().includes("dislike")) {
                 incoming[0] = incoming[0].replace(/\bdislike\b/ig, "");
-                incoming[0] = capFirstLetter(incoming[0].trim());
+                incoming[0] = utils.capitalize(incoming[0].trim());
                 if (!incoming[0]) {
                     m.reply("Please say which fetish you would like to dislike, for example `!fetish add Death dislike`", 5000);
                     m.deleteIn(5000);
                     return;
                 }
-                userDb.people[id].fetishes[incoming[0]] = "dislike";
+                userData.fetishes[incoming[0]] = "dislike";
                 await dbs.user.save(userDb);
                 m.reply("Added Dislike: **" + incoming[0] + "** " + utils.hands.ok(), 5000);
                 m.deleteIn(5000);
                 return;
             }
             else {
-                userDb.people[id].fetishes[incoming[0]] = "like";
+                userData.fetishes[incoming[0]] = "like";
                 await dbs.user.save(userDb);
                 m.reply("Added **" + incoming[0] + "** " + utils.hands.ok(), 5000);
                 m.deleteIn(5000);
                 return;
             }
         }
-        if (Object.keys(userDb.people[id].fetishes).length < 1) {
+
+        if (Object.keys(userData.fetishes).length < 1) {
             m.reply("I could find any fetish list for **" + unidecode(name) + "** :(");
             return;
         }
         else {
-            var fetishes = userDb.people[id].fetishes;
+            var fetishes = userData.fetishes;
             var fetishes2 = userDb.people[m.author.id];
             if (!fetishes2.fetishes || !fetishes2) {
                 m.reply("You need to have a fetish list in order to compare lists with someone, silly bug");
@@ -221,7 +228,7 @@ module.exports = {
                     content: "",
                     embed: {
                         color: 0xA260F6,
-                        title: Object.keys(userDb.people[id].fetishes).length + " fetishes for **" + unidecode(name) + "**",
+                        title: Object.keys(userData.fetishes).length + " fetishes for **" + unidecode(name) + "**",
                         fields: [{
                             name: ":green_heart: Likes: " + likes.length,
                             value: likes.join("\n"),
