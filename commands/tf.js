@@ -77,7 +77,7 @@ module.exports = {
         }
         var guildid = m.channel.guild.id;
 
-        var lewdmessage = lewdGen.generateLewdMessage(smallid, big, guildid, maintype, subtype);
+        var lewdmessage = await lewdGen.generateLewdMessage(smallid, big, guildid, maintype, subtype);
 
         var usageText = "0";
         if (usage > 0) {
