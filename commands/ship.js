@@ -14,10 +14,10 @@ function parseNameMentions(m) {
         return m.guild.members.find(m => m.name.toLowerCase().trim() === n);
     });
 
-    members.forEach(function(m) {
-        var alreadyMentioned = m.mentions.some(u => u.id === m.id);
+    members.forEach(function(member) {
+        var alreadyMentioned = m.mentions.some(u => u.id === member.id);
         if (!alreadyMentioned) {
-            m.mentions.push(m.user);
+            m.mentions.push(member.user);
         }
     });
 }
