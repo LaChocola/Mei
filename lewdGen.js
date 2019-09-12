@@ -72,7 +72,14 @@ function getDefaultGtsNames(guildId) {
 
 function applyReplacements(s, replacements) {
     replacements.forEach(function({ oldVal, newVal }) {
-        var regex = new RegExp(`\b${escapeStringRegexp(oldVal)}\b`, "ig");
+        var regex;
+        if (oldVal.startsWith("[") && oldVal.endsWith("[")) {
+            regex = new RegExp(escapeStringRegexp(oldVal), "g");
+        }
+        else {
+            regex = new RegExp(`\b${escapeStringRegexp(oldVal)}\b`, "ig");
+        }
+
         s = s.replace(regex, newVal);
     });
     return s;
