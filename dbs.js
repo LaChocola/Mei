@@ -34,6 +34,9 @@ module.exports = {
         }),
     user: new DataManager(userDataPath, userBackupPath,
         function(userDbs) {
+            if (!userDbs.people) {
+                userDbs.people = {};
+            }
             // Reasonable defaults
             return userDbs;
         })
