@@ -58,7 +58,7 @@ module.exports = {
             }
             if (globalData.banned.global[id]) {
                 delete globalData.banned.global[id];
-                await dbs.user.save(globalData);
+                await dbs.global.save(globalData);
                 m.reply(`Welcome back, ${name} (${id}) ${utils.hands.ok()}`, 5000);
                 m.deleteIn(5000);
             }
@@ -79,7 +79,7 @@ module.exports = {
         }
         console.log(id, reason, globalData.banned.global);
 
-        await dbs.user.save(globalData);
+        await dbs.global.save(globalData);
         m.reply(`Goodbye, ${name} (${id}) ${utils.hands.ok()}`, 5000);
         m.deleteIn(5000);
     },

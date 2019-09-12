@@ -197,7 +197,7 @@ async function trackUsage(commandName, authorId, profiler) {
 
     profiler.mark();
 
-    await dbs.user.save(globalData);
+    await dbs.global.save(globalData);
 }
 
 function getCommand(m) {
