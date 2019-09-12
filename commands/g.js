@@ -74,10 +74,7 @@ module.exports = {
 
         var lewdmessage = await lewdGen.generateLewdMessage(smallid, big, guildid, maintype, subtype);
 
-        var usageText = "0";
-        if (usage > 0) {
-            usageText = ordinal(usage);
-        }
+        var usageText = ordinal(usage);
         var data = {
             embed: {
                 color: 0xFF00DC,
