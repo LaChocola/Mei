@@ -12,9 +12,7 @@ module.exports = {
     main: async function(bot, m, args, prefix) {
         const commandNames = commands.list();
         var loadedCommands = commandNames.map(n => commands.load(n));
-        var publicCommands = loadedCommands
-            .filter(c => !c.hidden)
-            .filter(c => c.enabled || c.enabled === undefined);
+        var publicCommands = loadedCommands.filter(c => !c.hidden);
         var lines = publicCommands.map(c => formatHelp(prefix, c.label, c.description));
 
         var embeds = [""];

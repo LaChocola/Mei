@@ -30,7 +30,7 @@ function fallbackHTMLScraper(args, safe, message) {
                     return;
                 }
                 res = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
-                if (res == "?q") {
+                if (res === "?q") {
                     message.edit("`No results found`");
                     return;
                 }
@@ -87,5 +87,5 @@ module.exports = {
         });
     },
     help: "Google Stuff", // add description
-    enabled: enabled
+    hidden: !enabled
 };

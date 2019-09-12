@@ -75,5 +75,5 @@ module.exports = {
         });
     },
     help: "sauce",
-    enabled: enabled
+    hidden: !enabled
 };

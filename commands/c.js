@@ -39,5 +39,5 @@ module.exports = {
         }
     },
     help: "Lets talk~",
-    enabled: enabled
+    hidden: !enabled
 };
