@@ -56,7 +56,7 @@ module.exports = {
         var big = false;
 
         names = misc.getDefaultGTSNames(m.channel.guild.id).names;
-        var cnames = misc.getcustomGTSNames(smallid);
+        var cnames = await misc.getcustomGTSNames(smallid);
         names = names.concat(cnames);
         for (let i = 0; i < names.length; i++) {
             if (args.includes(names[i].toLowerCase())) {
