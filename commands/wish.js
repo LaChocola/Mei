@@ -35,16 +35,16 @@ module.exports = {
         const nameFont = await Jimp.loadFont(nameFontPath);
         const timeFont = await Jimp.loadFont(timeFontPath);
         avy.resize(141, 116);
-        bg.clone()
+        var image = bg.clone()
             .blit(avy, 15, 12)
             .print(nameFont, 215, 30, name)
-            .print(timeFont, 460, 37, time)
-            .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
-                m.channel.createMessage("", {
-                    file: buffer,
-                    name: "wish.png"
-                });
-            });
+            .print(timeFont, 460, 37, time);
+        var buffer = await image.getBufferAsync(Jimp.MIME_PNG);
+
+        m.channel.createMessage("", {
+            file: buffer,
+            name: "wish.png"
+        });
 
     },
     help: ";)"
