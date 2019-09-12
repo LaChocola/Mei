@@ -8,7 +8,7 @@ const lewdTree = require("./data/lewdTree.json");  // Relative to package root
 const lewdNames = require("./data/lewdNames.json");
 
 function searchForSubtype(searchTerm) {
-    searchTerm = searchTerm.toLowerCase().strip();
+    searchTerm = searchTerm.toLowerCase().trim();
     return Object.keys(lewdTree).find(function(subtype) {
         var relatedTerms = lewdTree[subtype];
         return relatedTerms.includes(searchTerm);
