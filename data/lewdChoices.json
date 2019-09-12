@@ -1,0 +1,162 @@
+﻿{
+    "sides": [ "front", "back" ],
+    "adjectivesFeet": [
+        "stinky",
+        "smelly",
+        "sweaty",
+        "damp",
+        "pungent",
+        "odorous",
+        "sweet-scented",
+        "huge",
+        "powerful",
+        "godly",
+        "beautiful",
+        "dirty",
+        "filthy",
+        "disgusting",
+        "rancid",
+        "giant",
+        "massive",
+        "moist",
+        "sweat-soaked",
+        "victim-covered",
+        "soft",
+        "lotion-scented"
+    ],
+    "adjectivesFootwear": [
+        "stinky",
+        "smelly",
+        "sweaty",
+        "damp",
+        "pungent",
+        "odorous",
+        "sweet-scented",
+        "huge",
+        "stinky, sweaty",
+        "dirty",
+        "filthy",
+        "disgusting",
+        "rancid",
+        "giant",
+        "massive",
+        "moist",
+        "sweat-soaked",
+        "victim-covered",
+        "old",
+        "worn out",
+        "grimy"
+    ],
+    "nakedFeetPlurals": [ "bare feet", "heels", "arches", "big toes", "toes", "soles" ],
+    "nakedFeetSingulars": [ "bare foot", "heel", "arch", "big toe", "toe", "sole" ],
+    "footwearPlurals": [ "shoes", "boots", "sandals", "flip flops", "sneakers", "pumps", "heels", "socks", "stockings", "nylons", "fishnets", "hose" ],
+    "footwearSingulars": [ "shoe", "boot", "sandal", "flip flop", "sneaker", "pump", "heel", "sock", "stocking", "nylons", "fishnets", "hose" ],
+    "genders": {
+        "female": {
+            "underwearPlural": [ "underwear", "panties", "thongs" ],
+            "underwearSingular": [ "underwear", "panty", "thong" ],
+            "replacements": [
+                {
+                    "oldVal": "his",
+                    "newVal": "her"
+                },
+                {
+                    "oldVal": "he",
+                    "newVal": "she"
+                },
+                {
+                    "oldVal": "chest",
+                    "newVal": "breasts"
+                },
+                {
+                    "oldVal": "dick",
+                    "newVal": "pussy"
+                },
+                {
+                    "oldVal": "boyfriend",
+                    "newVal": "girlfriend"
+                },
+                {
+                    "newoldValVal": "dick",
+                    "newVal": "pussy"
+                }
+            ]
+        },
+        "male": {
+            "underwearPlural": [ "underwear", "boxers", "briefs" ],
+            "underwearSingular": [ "underwear" ],
+            "replacements": [
+                {
+                    "oldVal": "her",
+                    "newVal": "his"
+                },
+                {
+                    "oldVal": "she",
+                    "newVal": "he"
+                },
+                {
+                    "oldVal": "GTS",
+                    "newVal": "GT"
+                },
+                {
+                    "oldVal": "breasts",
+                    "newVal": "chest"
+                },
+                {
+                    "oldVal": "pussy",
+                    "newVal": "dick"
+                },
+                {
+                    "oldVal": "girlfriend",
+                    "newVal": "boyfriend"
+                },
+                {
+                    "oldVal": "vagina",
+                    "newVal": "dick"
+                },
+                {
+                    "oldVal": "cunt",
+                    "newVal": "dick"
+                },
+                {
+                    "oldVal": "clit",
+                    "newVal": "urethra"
+                },
+                {
+                    "oldVal": "womanhood",
+                    "newVal": "manhood"
+                },
+                {
+                    "oldVal": "labia",
+                    "newVal": "foreskin"
+                }
+            ]
+        },
+        "futa": {
+            "underwearPlural": [ "underwear", "panties", "thongs", "boxers", "briefs" ],
+            "underwearSingular": [ "underwear", "panty", "thong" ],
+            "replacements": [
+                {
+                    "oldVal": "pussy",
+                    "newVal": "dick"
+                },
+                {
+                    "oldVal": "vagina",
+                    "newVal": "dick"
+                },
+                {
+                    "oldVal": "cunt",
+                    "newVal": "dick"
+                },
+                {
+                    "oldVal": "clit",
+                    "newVal": "urethra"
+                },
+                {
+                    "oldVal": "labia",
+                    "newVal": "foreskin"
+                }
+            ]
+        }
+    }
+}

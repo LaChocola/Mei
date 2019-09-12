@@ -1,11 +1,15 @@
 ﻿"use strict";
 
+const _ = require("lodash");
+
 const utils = require("./utils");
 const dbs = require("./dbs");
 
-const lewdPool = require("./data/lewds.json");  // Relative to package root
-const lewdTree = require("./data/lewdTree.json");  // Relative to package root
+// Relative to package root
+const lewdPool = require("./data/lewds.json");
+const lewdTree = require("./data/lewdTree.json");
 const lewdNames = require("./data/lewdNames.json");
+const lewdChoices = require("./data/lewdChoices.json");
 
 function searchForSubtype(searchTerm) {
     searchTerm = searchTerm.toLowerCase().trim();
@@ -65,160 +69,132 @@ function getDefaultGtsNames(guildId) {
     };
 }
 
-async function generateLewdMessage(smallid, big, guildid, maintype, subtype) {
+function applyReplacements(s, replacements) {
+    replacements.forEach(function({ oldVal, newVal }) {
+        var regex = new RegExp(`\b${oldVal}\b`, "ig");
+        s = s.replace(regex, newVal);
+    });
+    return s;
+}
+
+async function generateLewdMessage(userId, bigName, guildId, maintype, subtype) {
     subtype = searchForSubtype(subtype);
 
     var userDb = await dbs.user.load();
     //=============get names==================
-    var bigname = big;
-    if (!big) {
-        var cname = await getCustomGtsNames(smallid);
-        var names;
-        if (cname.length === 0) {
-            names = getDefaultGtsNames(guildid).names;
+    if (!bigName) {
+        var names = await getCustomGtsNames(userId);
+        if (names.length === 0) {
+            names = getDefaultGtsNames(guildId).names;
         }
-        else {
-            names = cname;
-        }
-        bigname = utils.choose(names);
+        bigName = utils.choose(names);
     }
 
-    var female = true;
-    var male = false;
-    var futa = false;
-    if (userDb.people[smallid]) {
-        if (userDb.people[smallid].names) {
-            if (userDb.people[smallid].names[bigname] === "male") {
-                male = true;
-                female = false;
-            }
-            if (userDb.people[smallid].names[bigname] === "futa") {
-                futa = true;
-                female = false;
-            }
-        }
+    var gender = userDb.people[userId] && userDb.people[userId].names && userDb.people[userId].names[bigName];
+    // Default to "female" gender, if none is loaded
+    if (!["female", "male", "futa"].includes(gender)) {
+        gender = "female";
     }
 
-    var smallname = "<@" + smallid + ">, ";
+    //========= panty info ============
 
-    //=========panty info============
+    // TODO: Make fute underwear choices a automatic combination of male + female values
+    var side = utils.choose(lewdChoices.sides);
+    var underwearPlural = utils.choose(lewdChoices.genders[gender].underwearPlural);
+    var underwearSingular = utils.choose(lewdChoices.genders[gender].underwearSingular);
 
-    var sides = ["front", "back"];
-    var types1 = ["panties", "underwear", "thongs"];
-    var types2 = ["panty", "thong", "underwear"];
-    if (male) {
-        types1 = ["underwear", "boxers", "briefs"];
-        types2 = ["underwear", "underwear"];
-    }
-    if (futa) {
-        types1 = types1.concat(["underwear", "boxers", "briefs"]);
-        types2 = types2.concat(["underwear", "underwear"]);
-    }
-
-    var type1 = utils.choose(types1);
-    var side = utils.choose(sides);
-    var type2 = utils.choose(types2);
-
-    //============feet info================
-    var adjectivesFeet = ["stinky", "smelly", "sweaty", "damp", "pungent", "odorous", "sweet-scented", "huge", "powerful", "godly", "beautiful", "dirty", "filthy", "disgusting",
-        "rancid", "giant", "massive", "moist", "sweat-soaked", "victim-covered", "soft", "lotion-scented"];
-
-    var adjectivesFootwear = ["stinky", "smelly", "sweaty", "damp", "pungent", "odorous", "sweet-scented", "huge", "stinky, sweaty", "dirty", "filthy", "disgusting", "rancid", "giant", "massive", "moist",
-        "sweat-soaked", "victim-covered", "old", "worn out", "grimy"];
-
+    //============ feet info ================
     var adjectiveFeet = "";
     var adjectiveFootwear = "";
 
-    var footRoll = Math.floor(Math.random() * 20) + 1; // roll from 1-20
-    if (footRoll > 0 && footRoll < 16) { // If the roll is between 1-5
-        adjectiveFeet = utils.choose(adjectivesFeet) + " ";
-        adjectiveFootwear = utils.choose(adjectivesFootwear) + " ";
-        if (footRoll > 0 && footRoll < 7) {
-            var adjectiveFeet1 = utils.choose(adjectivesFeet);
-            var adjectiveFeet2 = utils.choose(adjectivesFeet);
-            if (adjectiveFeet1 === adjectiveFeet2) {
-                adjectiveFeet2 = utils.choose(adjectivesFeet);
-            }
-            adjectiveFeet = adjectiveFeet1 + ", " + adjectiveFeet2 + " ";
-
-            var adjectiveFootwear1 = utils.choose(adjectivesFootwear);
-            var adjectiveFootwear2 = utils.choose(adjectivesFootwear);
-            if (adjectiveFootwear1 === adjectiveFootwear2) {
-                adjectiveFootwear2 = utils.choose(adjectivesFootwear);
-            }
-            adjectiveFootwear = adjectiveFootwear1 + ", " + adjectiveFootwear2 + " ";
-        }
+    var footRoll = _.random(1, 20); // roll from 1-20
+    if (footRoll <= 6) { // 30% of the time, choose 2 adjectives
+        var [adjectiveFeet1, adjectiveFeet2] = utils.chooseMany(lewdChoices.adjectivesFeet, 2);
+        adjectiveFeet = `${adjectiveFeet1}, ${adjectiveFeet2} `;
+        var [adjectiveFootwear1, adjectiveFootwear2] = utils.chooseMany(lewdChoices.adjectivesFootwear, 2);
+        adjectiveFootwear = `${adjectiveFootwear1}, ${adjectiveFootwear2} `;
     }
-
-    var nakedFeetPlurals = ["bare feet", "heels", "arches", "big toes", "toes", "soles"];
-    var nakedFeetSingulars = ["bare foot", "heel", "arch", "big toe", "toe", "sole"];
-    var footwearPlurals = ["shoes", "boots", "sandals", "flip flops", "sneakers", "pumps", "heels", "socks", "stockings", "nylons", "fishnets", "hose"];
-    var footwearSingulars = ["shoe", "boot", "sandal", "flip flop", "sneaker", "pump", "heel", "sock", "stocking", "nylons", "fishnets", "hose"];
-    var nakedFeetPlural = adjectiveFeet + utils.choose(nakedFeetPlurals);
-    if (male) {
-        footwearPlurals = Array.from(new Set([].concat(footwearPlurals, ["shoes", "boots", "sandals", "flip flops", "sneakers", "boots", "socks"])));
-        footwearSingulars = Array.from(new Set([].concat(footwearSingulars, ["shoe", "boot", "sandal", "flip flop", "sneaker", "boot", "sock"])));
+    else if (footRoll > 6 && footRoll <= 15) { // 45% of the time, choose 1 adjective
+        adjectiveFeet = utils.choose(lewdChoices.adjectivesFeet) + " ";
+        adjectiveFootwear = utils.choose(lewdChoices.adjectivesFootwear) + " ";
     }
+    // 25% of the time, choose no adjective
 
-    var nakedFeetSingular = adjectiveFeet + utils.choose(nakedFeetSingulars);
-    var footwearPlural = adjectiveFootwear + utils.choose(footwearPlurals);
-    var footwearSingular = adjectiveFootwear + utils.choose(footwearSingulars);
+    var nakedFeetPlural = adjectiveFeet + utils.choose(lewdChoices.nakedFeetPlurals);
+    var nakedFeetSingular = adjectiveFeet + utils.choose(lewdChoices.nakedFeetSingulars);
+    var footwearPlural = adjectiveFootwear + utils.choose(lewdChoices.footwearPlurals);
+    var footwearSingular = adjectiveFootwear + utils.choose(lewdChoices.footwearSingulars);
 
-    var plurals = Array.from(new Set([].concat(nakedFeetPlural, footwearPlural)));
-    var singulars = Array.from(new Set([].concat(nakedFeetSingular, footwearSingular)));
+    var footPlurals = Array.from(new Set([].concat(nakedFeetPlural, footwearPlural)));
+    var footSingulars = Array.from(new Set([].concat(nakedFeetSingular, footwearSingular)));
     var nakedFoots = Array.from(new Set([].concat(nakedFeetSingular, nakedFeetPlural)));
     var footwears = Array.from(new Set([].concat(footwearSingular, footwearPlural)));
     var feets = Array.from(new Set([].concat(nakedFeetPlural, nakedFeetSingular, footwearPlural, footwearSingular)));
 
-    var plural = utils.choose(plurals);
-    var singular = utils.choose(singulars);
+    var footPlural = utils.choose(footPlurals);
+    var footSingular = utils.choose(footSingulars);
     var nakedFoot = utils.choose(nakedFoots);
     var footwear = utils.choose(footwears);
     var feet = utils.choose(feets);
 
-    //==========select from pool
-    var candidates = [];
-    for (const primarytypename in lewdPool) {
-        if (lewdPool.hasOwnProperty(primarytypename)) {
-            const primarytype = lewdPool[primarytypename];
-            if (!maintype || primarytypename === maintype) {
-                if (!primarytype[subtype]) {
-                    subtype = null;
-                }
-                for (const secondarytypename in primarytype) {
-                    if (primarytype.hasOwnProperty(secondarytypename)) {
-                        const typepool = primarytype[secondarytypename];
-                        if (!subtype || secondarytypename === subtype) {
-                            for (var i = 0; i < typepool.length; i++) {
-                                candidates.push(typepool[i]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    //========== select from pool
+
+    // This way of writing it is cleaner, but it doesn't lead to a equal chance for each story
+    /*
+    // Select the chosen main pool, or pick one at random
+    var mainPool = lewdPool[maintype];
+    if (!mainPool) {
+        mainPool = utils.choose(lewdPool);
     }
-    var lewdmessage = utils.choose(candidates);
+
+    // Select the chosen sub pool from the main pool, or pick on at random
+    var subPool = mainPool[subtype];
+    if (!subPool) {
+        subPool = utils.choose(Object.values(mainPool));
+    }
+
+    // Select a random story from the sub pool
+    var lewdmessage = utils.choose(subPool);
+    */
+
+    var mainPools = [lewdPool[maintype]] || Object.vals(lewdPool);
+    var candidates = _.flatten(mainPools.map(function(mainPool) {   // Get the candidates for each mainPool, and flatten them into a single array
+        var mainPoolCandidates = mainPool[subtype]; // Get an array of candidates for the provided subtype
+        if (!mainPoolCandidates) {
+            mainPoolCandidates = _.flatten(Object.vals(mainPool));    // If no candidates were found, get the candidates for each subPool, and flatten them into a single array
+        }
+        return mainPoolCandidates;
+    }));
+
+    var lewdMessage = utils.choose(candidates);
 
     //==================perform replacements==============
 
-    lewdmessage = lewdmessage.replace(/\[name]/g, bigname).replace(/\[side]/g, side).replace(/\[type1]/g, type1).replace(/\[type2]/g, type2);
-    lewdmessage = lewdmessage.replace(/\[feet]/g, feet).replace(/\[nakedfoot]/g, nakedFoot).replace(/\[nakedfeetplural]/g, nakedFeetPlural);
-    lewdmessage = lewdmessage.replace(/\[nakedfeetsingular]/g, nakedFeetSingular).replace(/\[plural]/g, plural).replace(/\[footwearsingular]/g, footwearSingular);
-    lewdmessage = lewdmessage.replace(/\[footwearplural]/g, footwearPlural).replace(/\[footwear]/g, footwear).replace(/\[singular]/g, singular);
-    if (male) {
-        lewdmessage = lewdmessage.replace(/\bher\b/ig, "his").replace(/\bshe\b/ig, "he").replace(/\bGTS\b/ig, "GT").replace(/\bbreasts\b/ig, "chest").replace(/\bpussy\b/ig, "dick").replace(/\bgirlfriend\b/ig, "boyfriend").replace(/\bvagina\b/ig, "dick").replace(/\bcunt\b/ig, "dick").replace(/\bclit\b/ig, "urethra").replace(/\bwomanhood\b/ig, "manhood").replace(/\blabia\b/ig, "foreskin");
+    var replacements = [
+        { oldVal: "[name]", newVal: bigName },
+        { oldVal: "[side]", newVal: side },
+        { oldVal: "[type1]", newVal: underwearPlural },
+        { oldVal: "[type2]", newVal: underwearSingular },
+        { oldVal: "[feet]", newVal: feet },
+        { oldVal: "[nakedfoot]", newVal: nakedFoot },
+        { oldVal: "[nakedfeetplural]", newVal: nakedFeetPlural },
+        { oldVal: "[nakedfeetsingular]", newVal: nakedFeetSingular },
+        { oldVal: "[plural]", newVal: footPlural },
+        { oldVal: "[footwearsingular]", newVal: footwearSingular },
+        { oldVal: "[footwearplural]", newVal: footwearPlural },
+        { oldVal: "[footwear]", newVal: footwear },
+        { oldVal: "[singular]", newVal: footSingular }
+    ];
+
+    lewdMessage = applyReplacements(lewdMessage, replacements);
+
+    // TODO: Make futa replacements only apply on a 1/10 chance
+    var genderReplacements = lewdChoices.genders[gender].replacements;
+    if (genderReplacements) {
+        lewdMessage = applyReplacements(lewdMessage, genderReplacements);
     }
-    if (female) {
-        lewdmessage = lewdmessage.replace(/\bhis\b/ig, "her").replace(/\bhe\b/ig, "she").replace(/\bchest\b/ig, "breasts").replace(/\bdick\b/ig, "pussy").replace(/\bboyfriend\b/ig, "girlfriend").replace(/\bdick\b/ig, "pussy");
-    }
-    if (futa) {
-        var futaRoll = Math.floor(Math.random() * 10) + 1;
-        if (futaRoll !== 1) {
-            lewdmessage = lewdmessage.replace(/\bpussy\b/ig, "dick").replace(/\bvagina\b/ig, "dick").replace(/\bcunt\b/ig, "dick").replace(/\bclit\b/ig, "urethra").replace(/\blabia\b/ig, "foreskin");
-        }
-    }
-    lewdmessage = smallname + lewdmessage;
+
+    lewdMessage = `<@${userId}>, ${lewdMessage}`;
 
     //====================return message=============
 
@@ -241,8 +217,8 @@ async function generateLewdMessage(smallid, big, guildid, maintype, subtype) {
         "Random": ":question:"
     };
     var emoji = emojis[subtype];
-    lewdmessage = [lewdmessage, emoji, subtype];
-    return lewdmessage;
+    var lewdMessageArray = [lewdMessage, emoji, subtype];
+    return lewdMessageArray;
 }
 
 module.exports = {

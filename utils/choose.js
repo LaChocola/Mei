@@ -1,7 +1,9 @@
 ﻿"use strict";
 
-function choose(options) {
-    return options[Math.floor(Math.random() * options.length)];
+const _ = require("lodash");
+
+function choose(options, count) {
+    return options[_.random(0, options.length - 1)];
 }
 
 module.exports = choose;

@@ -21,6 +21,7 @@
     "glob": "^7.1.4",
     "haikudos": "^1.0.7",
     "jimp": "^0.6.4",
+    "lodash": "^4.17.15",
     "markov-generator": "^1.2.2",
     "moment": "^2.24.0",
     "ordinal": "^1.0.3",
