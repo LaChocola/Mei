@@ -56,22 +56,22 @@ module.exports = {
 
         if (args.toLowerCase().includes("hoards")) {
             if (args.toLowerCase().includes("enable")) {
-                if (!guildDb[guild.id].hoards) {
-                    guildDb[guild.id].hoards = true;
+                if (!guildData.hoards) {
+                    guildData.hoards = true;
                     await dbs.guild.save(guildDb);
                     m.reply("Hoards enabled for all reactions", 5000);
                     m.deleteIn(5000);
                     return;
                 }
 
-                if (guildDb[guild.id].hoards) {
+                if (guildData.hoards) {
                     m.reply("Hoards have already been enabled in this server", 5000);
                     m.deleteIn(5000);
                     return;
                 }
             }
             else {
-                guildDb[guild.id].hoards = false;
+                guildData.hoards = false;
                 await dbs.guild.save(guildDb);
                 m.reply("Hoards set to :heart_eyes: only", 5000);
                 m.deleteIn(5000);
@@ -81,8 +81,8 @@ module.exports = {
         if (args.toLowerCase().includes("notifications")) {
             if (args.toLowerCase().includes("banlog")) {
                 if (args.toLowerCase().includes("disable")) {
-                    if (guildDb[guild.id].notifications.banLog) {
-                        delete guildDb[guild.id].notifications.banLog;
+                    if (guildData.notifications.banLog) {
+                        delete guildData.notifications.banLog;
                         m.reply("Ban Logs disabled", 5000);
                         m.deleteIn(5000);
                         await dbs.guild.save(guildDb);
@@ -103,18 +103,18 @@ module.exports = {
                         m.reply("I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
                     }
-                    if (!guildDb[guild.id].notifications) {
-                        guildDb[guild.id].notifications = {};
+                    if (!guildData.notifications) {
+                        guildData.notifications = {};
                     }
-                    guildDb[guild.id].notifications.banLog = channel.id;
+                    guildData.notifications.banLog = channel.id;
                     await dbs.guild.save(guildDb);
                     m.reply("Added Ban Log to channel: " + channel.mention, 5000);
                     m.deleteIn(5000);
                     return;
                 }
 
-                if (guildDb[guild.id].notifications.banLog) {
-                    m.reply(`The current ban log is in:\n<#${guildDb[guild.id].notifications.banLog}>`);
+                if (guildData.notifications.banLog) {
+                    m.reply(`The current ban log is in:\n<#${guildData.notifications.banLog}>`);
                     return;
                 }
 
@@ -124,8 +124,8 @@ module.exports = {
             }
             if (args.toLowerCase().includes("updates")) {
                 if (args.toLowerCase().includes("disable")) {
-                    if (guildDb[guild.id].notifications.updates) {
-                        delete guildDb[guild.id].notifications.updates;
+                    if (guildData.notifications.updates) {
+                        delete guildData.notifications.updates;
                         m.reply("Update Messages disabled", 5000);
                         m.deleteIn(5000);
                         await dbs.guild.save(guildDb);
@@ -146,18 +146,18 @@ module.exports = {
                         m.reply("I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
                     }
-                    if (!guildDb[guild.id].notifications) {
-                        guildDb[guild.id].notifications = {};
+                    if (!guildData.notifications) {
+                        guildData.notifications = {};
                     }
-                    guildDb[guild.id].notifications.updates = channel.id;
+                    guildData.notifications.updates = channel.id;
                     await dbs.guild.save(guildDb);
                     m.reply("Added update messages to channel: " + channel.mention, 5000);
                     m.deleteIn(5000);
                     return;
                 }
 
-                if (guildDb[guild.id].notifications.updates) {
-                    m.reply(`The current update messages are set to go in:\n<#${guildDb[guild.id].notifications.updates}>`);
+                if (guildData.notifications.updates) {
+                    m.reply(`The current update messages are set to go in:\n<#${guildData.notifications.updates}>`);
                     return;
                 }
 
@@ -167,8 +167,8 @@ module.exports = {
             }
             if (args.toLowerCase().includes("welcome")) {
                 if (args.toLowerCase().includes("remove")) {
-                    if (guildDb[guild.id].notifications.welcome) {
-                        delete guildDb[guild.id].notifications.welcome;
+                    if (guildData.notifications.welcome) {
+                        delete guildData.notifications.welcome;
                         m.reply("Welcome message removed", 5000);
                         m.deleteIn(5000);
                         await dbs.guild.save(guildDb);
@@ -180,8 +180,8 @@ module.exports = {
                     return;
                 }
                 if (args.toLowerCase().includes("add")) {
-                    if (!guildDb[guild.id].notifications) {
-                        guildDb[guild.id].notifications = {};
+                    if (!guildData.notifications) {
+                        guildData.notifications = {};
                     }
                     if (!m.channelMentions[0]) {
                         m.reply("Please mention which channel you want the welcome message to appear in, then type the welcome message");
@@ -204,14 +204,14 @@ module.exports = {
                     }
                     m.reply("Adding Welcome message: '" + message + "'\nto channel: " + channel.mention, 5000);
                     m.deleteIn(5000);
-                    guildDb[guild.id].notifications.welcome = {};
-                    guildDb[guild.id].notifications.welcome[channel.id] = message;
+                    guildData.notifications.welcome = {};
+                    guildData.notifications.welcome[channel.id] = message;
                     await dbs.guild.save(guildDb);
                     return;
                 }
 
-                if (guildDb[guild.id].notifications.welcome) {
-                    const msg = Object.values(guildDb[guild.id].notifications.welcome)[0];
+                if (guildData.notifications.welcome) {
+                    const msg = Object.values(guildData.notifications.welcome)[0];
                     m.reply("The current welcome message is set as:\n\n" + msg);
                     return;
                 }
@@ -222,8 +222,8 @@ module.exports = {
             }
             if (args.toLowerCase().includes("leave")) {
                 if (args.toLowerCase().includes("remove")) {
-                    if (guildDb[guild.id].notifications.welcome) {
-                        delete guildDb[guild.id].notifications.leave;
+                    if (guildData.notifications.welcome) {
+                        delete guildData.notifications.leave;
                         m.reply("Leave message removed", 5000);
                         m.deleteIn(5000);
                         await dbs.guild.save(guildDb);
@@ -234,15 +234,15 @@ module.exports = {
                     return;
                 }
                 if (args.toLowerCase().includes("add")) {
-                    if (!guildDb[guild.id].notifications) {
-                        guildDb[guild.id].notifications = {};
+                    if (!guildData.notifications) {
+                        guildData.notifications = {};
                     }
                     if (!m.channelMentions[0]) {
                         m.reply("Please mention which channel you want the leave message to appear in, then type the welcome message");
                         return;
                     }
                     const channelID = m.channelMentions[0];
-                    const channel = m.channel.guild.channels.get(channelID);
+                    const channel = guild.channels.get(channelID);
                     if (channel.permissionsOf(m.bot.user.id).json.sendMessages !== true) {
                         m.reply("I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
@@ -257,14 +257,14 @@ module.exports = {
                     }
                     m.reply("Adding Leave message: '" + message + "'\nto channel: " + channel.mention, 5000);
                     m.deleteIn(5000);
-                    guildDb[guild.id].notifications.leave = {};
-                    guildDb[guild.id].notifications.leave[channel.id] = message;
+                    guildData.notifications.leave = {};
+                    guildData.notifications.leave[channel.id] = message;
                     await dbs.guild.save(guildDb);
                     return;
                 }
 
-                if (guildDb[guild.id].notifications.leave) {
-                    const msg = Object.values(guildDb[guild.id].notifications.welcome)[0];
+                if (guildData.notifications.leave) {
+                    const msg = Object.values(guildData.notifications.welcome)[0];
                     m.reply("The current leave message is set as:\n\n" + msg);
                     return;
                 }
@@ -281,14 +281,14 @@ module.exports = {
             }
             m.reply("Setting server prefix to: `" + prefix + "`", 5000);
             m.deleteIn(5000);
-            guildDb[guild.id].prefix = prefix;
+            guildData.prefix = prefix;
             await dbs.guild.save(guildDb);
             return;
         }
         if (args.toLowerCase().match(/\bart\b/i)) {
             if (args.toLowerCase().includes("remove")) {
-                if (guildDb[guild.id].art) {
-                    delete guildDb[guild.id].art;
+                if (guildData.art) {
+                    delete guildData.art;
                     m.reply("Art channel removed", 5000);
                     m.deleteIn(5000);
                     await dbs.guild.save(guildDb);
@@ -314,13 +314,13 @@ module.exports = {
                 }
                 m.reply("Setting art channel to: " + channel.mention, 5000);
                 m.deleteIn(5000);
-                guildDb[guild.id].art = channel.id;
+                guildData.art = channel.id;
                 await dbs.guild.save(guildDb);
                 return;
             }
 
-            if (guildDb[guild.id].art) {
-                const channel = guildDb[guild.id].art;
+            if (guildData.art) {
+                const channel = guildData.art;
                 m.reply(`The current art channel is set to: <#${channel}>`, 5000);
                 m.deleteIn(5000);
                 return;
@@ -344,8 +344,8 @@ module.exports = {
         }
         */
         if (args.toLowerCase().includes("roles")) {
-            if (!guildDb[guild.id].roles) {
-                guildDb[guild.id].roles = {};
+            if (!guildData.roles) {
+                guildData.roles = {};
             }
             if (args.toLowerCase().includes("add")) {
                 if (args.replace(/roles /i, "").replace(/add/i, "").toLowerCase().startsWith(" ")) {
@@ -375,12 +375,12 @@ module.exports = {
                         m.reply("I need permissions to be able to add roles, please add the 'Manage Roles' permission to me");
                         return;
                     }
-                    if (guildDb[guild.id].roles[serverRoleName]) {
+                    if (guildData.roles[serverRoleName]) {
                         m.reply("That role is already assignable", 5000);
                         m.deleteIn(5000);
                         return;
                     }
-                    guildDb[guild.id].roles[serverRoleName] = role.id;
+                    guildData.roles[serverRoleName] = role.id;
                     await dbs.guild.save(guildDb);
                     m.reply(serverRoleName + " is now an assignable role", 5000);
                     m.deleteIn(5000);
@@ -397,24 +397,24 @@ module.exports = {
                     args = args.slice(1);
                 }
                 const selectedRole = args.toLowerCase();
-                if (!guildDb[guild.id].roles[selectedRole]) {
+                if (!guildData.roles[selectedRole]) {
                     m.reply("That role has not been added yet", 5000);
                     m.deleteIn(5000);
                     return;
                 }
-                if (checkHasDuplicates(selectedRole, m.channel.guild.roles)) {
+                if (checkHasDuplicates(selectedRole, guild.roles)) {
                     m.reply("There is more than one role with that name. I am not sure which you want me to remove", 5000);
                     m.deleteIn(5000);
                     return;
                 }
-                delete guildDb[guild.id].roles[selectedRole];
+                delete guildData.roles[selectedRole];
                 await dbs.guild.save(guildDb);
                 m.reply(selectedRole + " is no longer assignable", 5000);
                 m.deleteIn(5000);
                 return;
             }
             if (args.toLowerCase().includes("create")) {
-                const perms = m.channel.guild.members.get(m.bot.user.id).permission.json;
+                const perms = guild.members.get(m.bot.user.id).permission.json;
                 if (!perms.manageRoles) {
                     m.reply("I need permissions to be able to create roles, please add the 'Manage Roles' permission to me");
                     return;
@@ -424,27 +424,25 @@ module.exports = {
                     args = args.slice(1);
                 }
                 const selectedRole = args;
-                const length = m.channel.guild.roles.filter(r => r.name.toLowerCase() === selectedRole.toLowerCase()).length;
+                const length = guild.roles.filter(r => r.name.toLowerCase() === selectedRole.toLowerCase()).length;
                 if (length > 0) {
                     m.reply("There is already a role with that name. Please either choose a different name, or add that role manually", 5000);
                     m.deleteIn(5000);
                     return;
                 }
-                if (guildDb[guild.id]) {
-                    if (guildDb[guild.id].roles) {
-                        if (guildDb[guild.id].roles[selectedRole] && selectedRole !== undefined) {
-                            m.reply("That role is already created, and assignable", 5000);
-                            m.deleteIn(5000);
-                            return;
-                        }
+                if (guildData.roles) {
+                    if (guildData.roles[selectedRole] && selectedRole !== undefined) {
+                        m.reply("That role is already created, and assignable", 5000);
+                        m.deleteIn(5000);
+                        return;
                     }
                 }
-                bot.createRole(m.channel.guild.id, {
+                bot.createRole(guild.id, {
                     name: `${selectedRole}`,
                     permissions: 104188992,
                     reason: `Role created by ${m.author.username}`
                 }).then(async function(role) {
-                    guildDb[guild.id].roles[selectedRole] = role.id;
+                    guildData.roles[selectedRole] = role.id;
                     await dbs.guild.save(guildDb);
                     m.reply(`The role \`${role.name}\` has been created successfully, and is now assignable`, 5000);
                     m.deleteIn(5000);
@@ -452,7 +450,7 @@ module.exports = {
                 return;
             }
             if (args.toLowerCase().includes("delete")) {
-                const perms = m.channel.guild.members.get(m.bot.user.id).permission.json;
+                const perms = guild.members.get(m.bot.user.id).permission.json;
                 if (!perms.manageRoles) {
                     m.reply("I need permissions to be able to delete roles, please add the 'Manage Roles' permission to me", 5000);
                     m.deleteIn(5000);
@@ -464,7 +462,7 @@ module.exports = {
                 }
                 const serverRoleNames = m.guild.roles.map(getRoleName);
                 const serverRoleName = args.toLowerCase().trim();
-                if (checkHasDuplicates(serverRoleName, m.channel.guild.roles)) {
+                if (checkHasDuplicates(serverRoleName, guild.roles)) {
                     m.reply("There is more than one role with that name. Please either choose a different name, or delete that role manually", 5000);
                     m.deleteIn(5000);
                     return;
@@ -477,16 +475,16 @@ module.exports = {
                         return;
                     }
 
-                    const perms = m.channel.guild.members.get(m.bot.user.id).permission.json;
+                    const perms = guild.members.get(m.bot.user.id).permission.json;
                     if (!perms.manageRoles) {
                         m.reply("I need permissions to be able to add roles, please add the 'Manage Roles' permission to me");
                         return;
                     }
-                    if (guildDb[guild.id].roles[serverRoleName]) {
-                        delete guildDb[guild.id].roles[serverRoleName];
+                    if (guildData.roles[serverRoleName]) {
+                        delete guildData.roles[serverRoleName];
                         await dbs.guild.save(guildDb);
                     }
-                    bot.deleteRole(m.channel.guild.id, role.id, `Role deleted by ${m.channel.guild.members.get(m.author.id).name}`).then(() => {
+                    bot.deleteRole(guild.id, role.id, `Role deleted by ${guild.members.get(m.author.id).name}`).then(() => {
                         m.reply(`The role \`${serverRoleName}\` has been deleted successfully`, 5000);
                         m.deleteIn(5000);
                     });
@@ -498,15 +496,15 @@ module.exports = {
                 return;
             }
             if (args.toLowerCase().includes("update")) {
-                var roles = Object.keys(guildDb[m.channel.guild.id].roles);
+                var roles = Object.keys(guild.roles);
                 for (let role of roles) {
-                    const exists = m.channel.guild.roles.find((r) => {
-                        if (r.id == guildDb[m.channel.guild.id].roles[role]) {
+                    const exists = guild.roles.find((r) => {
+                        if (r.id === guild.roles[role]) {
                             return true;
                         }
                     });
                     if (!exists) {
-                        delete guildDb[guild.id].roles[role];
+                        delete guildData.roles[role];
                         await dbs.guild.save(guildDb);
                         m.reply(role + " updated successfully", 1000);
                         m.deleteIn(1000);
@@ -526,20 +524,20 @@ module.exports = {
         if (args.toLowerCase().includes("mod")) {
             if (args.toLowerCase().includes("add")) {
                 if (m.roleMentions[0]) {
-                    if (!guildDb[guild.id].modRoles) {
-                        guildDb[guild.id].modRoles = {};
+                    if (!guildData.modRoles) {
+                        guildData.modRoles = {};
                     }
-                    guildDb[guild.id].modRoles[m.roleMentions[0]] = true;
+                    guildData.modRoles[m.roleMentions[0]] = true;
                     await dbs.guild.save(guildDb);
                     m.reply("That role is now a registered moderator role", 5000);
                     m.deleteIn(5000);
                     return;
                 }
                 if (m.mentions[0]) {
-                    if (!guildDb[guild.id].mods) {
-                        guildDb[guild.id].mods = {};
+                    if (!guildData.mods) {
+                        guildData.mods = {};
                     }
-                    guildDb[guild.id].mods[m.mentions[0].id] = true;
+                    guildData.mods[m.mentions[0].id] = true;
                     await dbs.guild.save(guildDb);
                     m.reply(m.mentions[0].username + " is now a registered moderator", 5000);
                     m.deleteIn(5000);
@@ -548,11 +546,11 @@ module.exports = {
             }
             if (args.toLowerCase().includes("remove")) {
                 if (m.roleMentions[0]) {
-                    if (!guildDb[guild.id].modRoles) {
-                        guildDb[guild.id].modRoles = {};
+                    if (!guildData.modRoles) {
+                        guildData.modRoles = {};
                     }
-                    if (guildDb[guild.id].modRoles[m.roleMentions[0]]) {
-                        delete guildDb[guild.id].modRoles[m.roleMentions[0]];
+                    if (guildData.modRoles[m.roleMentions[0]]) {
+                        delete guildData.modRoles[m.roleMentions[0]];
                         await dbs.guild.save(guildDb);
                         m.reply("That role is no longer a registered moderator role", 5000);
                         m.deleteIn(5000);
@@ -564,11 +562,11 @@ module.exports = {
                     return;
                 }
                 if (m.mentions[0]) {
-                    if (!guildDb[guild.id].mods) {
-                        guildDb[guild.id].mods = {};
+                    if (!guildData.mods) {
+                        guildData.mods = {};
                     }
-                    if (guildDb[guild.id].mods[m.mentions[0].id]) {
-                        delete guildDb[guild.id].mods[m.mentions[0].id];
+                    if (guildData.mods[m.mentions[0].id]) {
+                        delete guildData.mods[m.mentions[0].id];
                         await dbs.guild.save(guildDb);
                         m.reply(m.mentions[0].username + " is no longer a registered moderator", 5000);
                         m.deleteIn(5000);

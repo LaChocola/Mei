@@ -14,15 +14,16 @@ module.exports = {
         var commands = globalData.commands;
         var userUses = 0;
         var stats = [];
-        for (let command in commands) {
-            if (globalData.commands[command].totalUses && globalData.commands[command].users[mentioned.id]) {
-                if (globalData.commands[command].totalUses && globalData.commands[command].users[mentioned.id] == 1) {
-                    stats.push("**!" + command + ":** " + globalData.commands[command].users[mentioned.id] + " run");
+        for (let commandName in commands) {
+            var commandStats = globalData.commands[commandName] || { totalUses: 0, users: {} };
+            if (commandStats.totalUses && commandStats.users[mentioned.id]) {
+                if (commandStats.totalUses && commandStats.users[mentioned.id] === 1) {
+                    stats.push("**!" + commandName + ":** " + commandStats.users[mentioned.id] + " run");
                 }
                 else {
-                    stats.push("**!" + command + ":** " + globalData.commands[command].users[mentioned.id] + " runs");
+                    stats.push("**!" + commandName + ":** " + commandStats.users[mentioned.id] + " runs");
                 }
-                userUses = userUses + globalData.commands[command].users[mentioned.id];
+                userUses = userUses + commandStats.users[mentioned.id];
             }
         }
         var percent = ((userUses / commands.totalRuns) * 100).toFixed(2);

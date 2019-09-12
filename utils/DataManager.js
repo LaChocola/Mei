@@ -54,9 +54,10 @@ async function loadfile(path) {
 }
 
 class DataManager {
-    constructor(dataPath, backupPath) {
+    constructor(dataPath, backupPath, filterData) {
         this.dataPath = dataPath;
         this.backupPath = backupPath;
+        this.filterData = filterData || (data => data);
     }
 
     // Loads a database file
@@ -66,7 +67,7 @@ class DataManager {
         var self = this;
 
         var data = await loadfile(self.dataPath);
-        
+
         if (!data) {
             console.log("db JSON error, attempting restore");
             data = await loadfile(self.backupPath);
@@ -84,7 +85,7 @@ class DataManager {
             await self.save(data);
         }
 
-        return data;
+        return self.filterData(data);
     }
 
     async save(data) {

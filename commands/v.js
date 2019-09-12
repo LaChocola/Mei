@@ -10,15 +10,12 @@ const dbs = require("../dbs");
 module.exports = {
     main: async function(bot, m, args, prefix) {
         var globalData = await dbs.global.load();
+
         var time = new Date().toISOString();
 
         args = args.toLowerCase();
 
-        if (m.channel.guild.id === conf.guilds.guild1) {
-            prefix = "?";
-        }
-
-        if (m.channel.nsfw == false) {
+        if (!m.channel.nsfw) {
             m.reply("This command can only be used in NSFW channels");
             return;
         }
@@ -28,10 +25,10 @@ module.exports = {
         var name1 = args;
         var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         mentioned = m.mentions[0] || member || m.author;
-        var commands = globalData.commands["v"].users;
+        var commandStats = globalData.commands["v"] || { totalUses: 0, users: {} };
         var usage = 0;
-        if (commands[mentioned.id]) {
-            usage = commands[mentioned.id];
+        if (commandStats.users[mentioned.id]) {
+            usage = commandStats.users[mentioned.id];
         }
         if (args.indexOf("length") >= 0) {
             var names = await misc.getcustomGTSNames(id);
@@ -42,11 +39,12 @@ module.exports = {
                     cleanishNames.replace(names[i], `${names[i]}\n`);
                 }
             }
-            resultstring += "**Names avaible: **" + names.length + "\n " + cleanishNames + "\n \n" + misc.getLewdCounts("violent");
+            resultstring += "**Names available: **" + names.length + "\n " + cleanishNames + "\n \n" + misc.getLewdCounts("violent");
             if (names.length < 1) {
                 names = misc.getDefaultGTSNames(m.channel.guild.id);
-                resultstring = "**Names avaible: **" + names.totalnames + "\n " + names.cleannames + "\n \n" + misc.getLewdCounts("violent");
+                resultstring = "**Names available: **" + names.totalnames + "\n " + names.cleannames + "\n \n" + misc.getLewdCounts("violent");
             }
+
             m.reply({
                 embed: {
                     "color": 0xA260F6,

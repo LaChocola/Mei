@@ -10,7 +10,31 @@ var userDataPath = "./db/people.json";      // Relative to current working direc
 var userBackupPath = "/home/badmin/backup/Mei/db/people.json";
 
 module.exports = {
-    global: new DataManager(globalDataPath, globalBackupPath),
-    guild: new DataManager(guildDataPath, guildBackupPath),
-    user: new DataManager(userDataPath, userBackupPath)
+    global: new DataManager(globalDataPath, globalBackupPath,
+        function(globalData) {
+            // Reasonable defaults
+            if (!globalData.commands) {
+                globalData.commands = {};
+            }
+            if (!globalData.commands.totalRuns) {
+                globalData.commands.totalRuns = 0;
+            }
+            if (!globalData.banned) {
+                globalData.banned = {};
+            }
+            if (!globalData.banned.global) {
+                globalData.banned.global = {};
+            }
+            return globalData;
+        }),
+    guild: new DataManager(guildDataPath, guildBackupPath,
+        function(guildDbs) {
+            // Reasonable defaults
+            return guildDbs;
+        }),
+    user: new DataManager(userDataPath, userBackupPath,
+        function(userDbs) {
+            // Reasonable defaults
+            return userDbs;
+        })
 };

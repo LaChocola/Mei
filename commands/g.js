@@ -10,28 +10,20 @@ const dbs = require("../dbs");
 module.exports = {
     main: async function(bot, m, args, prefix) {
         var globalData = await dbs.global.load();
-        
+
         var time = new Date().toISOString();
 
         args = args.toLowerCase();
-
-        if (m.channel.guild.id === conf.guilds.guild1) {
-            prefix = "?";
-        }
-
-        if (m.content.indexOf(prefix + "g") < 0) {
-            return false;
-        }
 
         var mentioned = m.mentions[0] || m.author;
         var id = mentioned.id;
         var name1 = args;
         var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         mentioned = m.mentions[0] || member || m.author;
-        var userUsage = globalData.commands && globalData.commands["g"] && globalData.commands["g"].users || {}; 
+        var commandStats = globalData.commands["g"] || { totalUses: 0, users: {} };
         var usage = 0;
-        if (userUsage[mentioned.id]) {
-            usage = userUsage[mentioned.id];
+        if (commandStats.users[mentioned.id]) {
+            usage = commandStats.users[mentioned.id];
         }
         if (args.indexOf("length") >= 0) {
             var names = await misc.getcustomGTSNames(id);
@@ -47,6 +39,7 @@ module.exports = {
                 names = misc.getDefaultGTSNames(m.channel.guild.id);
                 resultstring = "**Names available: **" + names.totalnames + "\n " + names.cleannames + "\n \n" + misc.getLewdCounts("gentle");
             }
+
             m.reply({
                 embed: {
                     "color": 0xA260F6,
