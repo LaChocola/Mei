@@ -15,7 +15,7 @@ module.exports = {
         args = args.toLowerCase();
 
         var mentioned = m.mentions[0] || m.author;
-        var id = mentioned.id;
+        var userId = mentioned.id;
         var name1 = args;
         var member = m.guild.members.find(m => utils.isSameMember(m, name1));
         mentioned = m.mentions[0] || member || m.author;
@@ -25,7 +25,7 @@ module.exports = {
             usage = commandStats.users[mentioned.id];
         }
         if (args.indexOf("length") >= 0) {
-            var names = await lewdGen.getCustomGtsNames(id);
+            var names = await lewdGen.getCustomGtsNames(userId);
             var resultstring = "";
             var cleanishNames = names.join(", ");
             for (let i = 0; i < names.length; i++) {
@@ -35,7 +35,7 @@ module.exports = {
             }
             resultstring += "**Names available: **" + names.length + "\n " + cleanishNames + "\n\n" + lewdGen.getLewdCounts("gentle");
             if (names.length < 1) {
-                names = lewdGen.getDefaultGtsNames(m.channel.guild.id);
+                names = lewdGen.getDefaultGtsNames(m.guild.id);
                 resultstring = "**Names available: **" + names.totalnames + "\n " + names.cleannames + "\n\n" + lewdGen.getLewdCounts("gentle");
             }
 
@@ -49,18 +49,17 @@ module.exports = {
         }
 
         if (args.indexOf("someone") >= 0) {
-            id = utils.chooseMember(m.channel.guild.members).id;
+            userId = utils.chooseMember(m.guild.members).id;
             // TODO: Handle the case where there are no applicable members to choose from
         }
-        var smallid = id;
-        var big = false;
+        var bigName;
 
-        names = lewdGen.getDefaultGtsNames(m.channel.guild.id).names;
-        var cnames = await lewdGen.getCustomGtsNames(smallid);
+        names = lewdGen.getDefaultGtsNames(m.guild.id).names;
+        var cnames = await lewdGen.getCustomGtsNames(userId);
         names = names.concat(cnames);
         for (let i = 0; i < names.length; i++) {
             if (args.includes(names[i].toLowerCase())) {
-                big = names[i];
+                bigName = names[i];
             }
         }
 
@@ -68,11 +67,11 @@ module.exports = {
         var subtype = args;
 
         if (args.indexOf("invert") >= 0 || args.indexOf("inverse") >= 0) {
-            big = m.member.name;
+            bigName = m.member.name;
         }
-        var guildid = m.channel.guild.id;
+        var guildId = m.guild.id;
 
-        var lewdmessage = await lewdGen.generateLewdMessage(smallid, big, guildid, maintype, subtype);
+        var lewdmessage = await lewdGen.generateLewdMessage(userId, bigName, guildId, maintype, subtype);
 
         var usageText = ordinal(usage);
         var data = {
