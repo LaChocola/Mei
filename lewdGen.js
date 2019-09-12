@@ -1,6 +1,7 @@
 ﻿"use strict";
 
 const _ = require("lodash");
+const escapeStringRegexp = require("escape-string-regexp");
 
 const utils = require("./utils");
 const dbs = require("./dbs");
@@ -71,7 +72,7 @@ function getDefaultGtsNames(guildId) {
 
 function applyReplacements(s, replacements) {
     replacements.forEach(function({ oldVal, newVal }) {
-        var regex = new RegExp(`\b${oldVal}\b`, "ig");
+        var regex = new RegExp(`\b${escapeStringRegexp(oldVal)}\b`, "ig");
         s = s.replace(regex, newVal);
     });
     return s;
