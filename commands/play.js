@@ -528,12 +528,14 @@ async function processQueue(m) {
 
     // when song is done playing, process the next song in queue
     voiceConnection.once("end", function() {
+        console.debug(`Queue item has ended for guild ${m.guild.id}`);
         processQueue(m);
     });
 }
 
 // Play a song
 async function playQueueItem(m, voiceConnection, item) {
+    console.debug("Playing queue item", item);
     var audioStream = ytdl(getYoutubeUrl(item.videoId), { filter: "audioonly" });
     voiceConnection.play(audioStream, { inlineVolume: true });
     voiceConnection.setVolume(0.3);
