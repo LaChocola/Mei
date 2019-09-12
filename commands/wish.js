@@ -40,7 +40,7 @@ module.exports = {
             .blit(avy, 15, 12)
             .print(nameFont, 215, 30, name)
             .print(timeFont, 460, 37, time);
-        var buffer = await image.getBuffer(Jimp.MIME_PNG);
+        var buffer = await image.getBufferAsync(Jimp.MIME_PNG);
 
         m.channel.createMessage("", {
             file: buffer,

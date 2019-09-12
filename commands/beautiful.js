@@ -27,7 +27,7 @@ module.exports = {
         var image = bg.clone()
             .blit(avy, 253, 23)
             .blit(avy, 258, 224);
-        var buffer = await image.getBuffer(Jimp.MIME_PNG);
+        var buffer = await image.getBufferAsync(Jimp.MIME_PNG);
 
         m.channel.createMessage("", {
             file: buffer,
