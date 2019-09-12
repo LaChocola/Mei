@@ -87,7 +87,7 @@ function extend(bot) {
     //member.hasPerms(["banMembers", "administrator", "manageGuild", "manageChannels"]);                    // "!edit" command
     //member.hasPerms(["banMembers", "administrator", "manageGuild"]);                                      // "!ban" command
     Object.defineProperty(bot.Member.prototype, "hasPerms", {
-        get: function(perms) {
+        value: function(perms) {
             var member = this;
             var hasPerm = perms.some(function(perm) {
                 return member.permission.has(perm);
