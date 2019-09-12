@@ -53,7 +53,7 @@ async function getCustomGtsNames(uid) {
 
 function getDefaultGtsNames(guildId) {
     var customGuildIds = Object.keys(lewdNames);
-    if (!customGuildIds.include(guildId)) {
+    if (!customGuildIds.includes(guildId)) {
         guildId = "default";
     }
     var defaultNames = lewdNames[guildId];
