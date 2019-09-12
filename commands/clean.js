@@ -24,15 +24,18 @@ module.exports = {
         if (!isMod) {
             var responses = [
                 "Are you a real villain?",
-                "Have you ever caught a good guy? \nLike a real super hero?",
+                "Have you ever caught a good guy?\n"
+                + "Like a real super hero?",
                 "Have you ever tried a disguise?",
                 "What are you doing?!?!?!",
                 "*NO!*, Don't touch that!",
                 "Fuck Off",
-                "Roses are red\nfuck me ;) "
+                "Roses are red\n"
+                + "fuck me ;) "
             ];
             var response = responses[Math.floor(Math.random() * responses.length)];
-            return response;
+            m.reply(response);
+            return;
         }
 
         if (!targetId && !targetAll) {
