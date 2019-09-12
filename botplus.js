@@ -90,7 +90,7 @@ function extend(bot) {
         get: async function(perms) {
             var member = this;
             // Make a Set() of all member permissions that are set to true
-            var memberPerms = new Set(Object.keys(member.permission.json.filter(p => p)));
+            var memberPerms = new Set(Object.keys(member.permission.json).filter(p => member.permission.json[p]));
             var hasPerm = perms.some(p => memberPerms.has(p));
             return hasPerm;
         }
