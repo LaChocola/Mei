@@ -5,7 +5,7 @@ const path = require("path");
 
 const Eris = require("eris");
 const glob = require("glob");
-const reload = require("require-reload")(require);
+const requireReload = require("require-reload")(require);
 
 const conf = require("../conf");
 
@@ -81,7 +81,7 @@ function load(label) {
 }
 
 function reload(label) {
-    var command = reload(getPath(label));
+    var command = requireReload(getPath(label));
     command.label = label;
     return command;
 }
