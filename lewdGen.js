@@ -60,7 +60,7 @@ function getDefaultGtsNames(guildId) {
 
     return {
         names: defaultNames,
-        cleannames: utils.wrapJoin(defaultNames, ", ", 80),
+        cleannames: utils.wrapJoin(defaultNames, ", ", 40),
         totalnames: defaultNames.length
     };
 }
