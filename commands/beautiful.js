@@ -23,6 +23,7 @@ module.exports = {
         await m.channel.sendTyping();
         const bg = await Jimp.read(templateUrl);
         const avy = await Jimp.read(avatarUrl);
+        // TODO: Fix the frame size and use a background with transparent frames
         avy.resize(95, 106);
         var image = bg.clone()
             .blit(avy, 253, 23)
