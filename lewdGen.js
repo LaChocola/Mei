@@ -157,11 +157,11 @@ async function generateLewdMessage(userId, bigName, guildId, maintype, subtype) 
     var lewdmessage = utils.choose(subPool);
     */
 
-    var mainPools = [lewdPool[maintype]] || Object.vals(lewdPool);
+    var mainPools = [lewdPool[maintype]] || Object.values(lewdPool);
     var candidates = _.flatten(mainPools.map(function(mainPool) {   // Get the candidates for each mainPool, and flatten them into a single array
         var mainPoolCandidates = mainPool[subtype]; // Get an array of candidates for the provided subtype
         if (!mainPoolCandidates) {
-            mainPoolCandidates = _.flatten(Object.vals(mainPool));    // If no candidates were found, get the candidates for each subPool, and flatten them into a single array
+            mainPoolCandidates = _.flatten(Object.values(mainPool));    // If no candidates were found, get the candidates for each subPool, and flatten them into a single array
         }
         return mainPoolCandidates;
     }));
