@@ -10,7 +10,7 @@ function parseNameMentions(m) {
     }
     names = names.map(n => parseName(n)).filter(n => n);
 
-    var members = names.forEach(function(n) {
+    var members = names.map(function(n) {
         return m.guild.members.find(m => m.name.toLowerCase().trim() === n);
     });
 
