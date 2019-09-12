@@ -22,16 +22,16 @@ function getLewdCounts(type) {
     var counts = Object.keys(lewd).map(function(subtype) {
         return {
             subtype: subtype,
-            count: lewd[subtype].length;
-        }
+            count: lewd[subtype].length
+        };
     });
 
     // Calculate total counts
-    var total = counts.reduce((t, { count }) => t + count, 0)
+    var total = counts.reduce((t, { count }) => t + count, 0);
 
     // Construct each line
     var lines = counts.maps(function({ subtype, count }) {
-        return `**${utils.capitalize(subtype)} ${utils.capitalize(type)} s:** ${storyCount}`;
+        return `**${utils.capitalize(subtype)} ${utils.capitalize(type)} s:** ${count}`;
     });
 
     // Add the total string as the first line
@@ -47,7 +47,7 @@ async function getCustomGtsNames(uid) {
         return [];
     }
 
-    var cnames = Object.keys(userDb.people[uid].names)
+    var cnames = Object.keys(userDb.people[uid].names);
     return cnames;
 }
 
@@ -56,12 +56,12 @@ function getDefaultGtsNames(guildId) {
     if (!customGuildIds.include(guildId)) {
         guildId = "default";
     }
-    defaultNames = lewdNames[guildId];
+    var defaultNames = lewdNames[guildId];
 
     return {
         names: defaultNames,
         cleannames: utils.wrapJoin(defaultNames, ", ", 80),
-        totalnames: names.length
+        totalnames: defaultNames.length
     };
 }
 
