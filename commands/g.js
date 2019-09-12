@@ -2,10 +2,9 @@
 
 const ordinal = require("ordinal");
 
-const conf = require("../conf");
 const utils = require("../utils");
-const misc = require("../misc");
 const dbs = require("../dbs");
+const lewdGen = require("../lewdGen");
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
@@ -26,7 +25,7 @@ module.exports = {
             usage = commandStats.users[mentioned.id];
         }
         if (args.indexOf("length") >= 0) {
-            var names = await misc.getcustomGTSNames(id);
+            var names = await lewdGen.getCustomGtsNames(id);
             var resultstring = "";
             var cleanishNames = names.join(", ");
             for (let i = 0; i < names.length; i++) {
@@ -34,10 +33,10 @@ module.exports = {
                     cleanishNames.replace(names[i], `${names[i]}\n`);
                 }
             }
-            resultstring += "**Names available: **" + names.length + "\n " + cleanishNames + "\n \n" + misc.getLewdCounts("gentle");
+            resultstring += "**Names available: **" + names.length + "\n " + cleanishNames + "\n\n" + lewdGen.getLewdCounts("gentle");
             if (names.length < 1) {
-                names = misc.getDefaultGTSNames(m.channel.guild.id);
-                resultstring = "**Names available: **" + names.totalnames + "\n " + names.cleannames + "\n \n" + misc.getLewdCounts("gentle");
+                names = lewdGen.getDefaultGtsNames(m.channel.guild.id);
+                resultstring = "**Names available: **" + names.totalnames + "\n " + names.cleannames + "\n\n" + lewdGen.getLewdCounts("gentle");
             }
 
             m.reply({
@@ -50,13 +49,14 @@ module.exports = {
         }
 
         if (args.indexOf("someone") >= 0) {
-            id = misc.getSomeone(m);
+            id = utils.chooseMember(m.channel.guild.members).id;
+            // TODO: Handle the case where there are no applicable members to choose from
         }
         var smallid = id;
         var big = false;
 
-        names = misc.getDefaultGTSNames(m.channel.guild.id).names;
-        var cnames = await misc.getcustomGTSNames(smallid);
+        names = lewdGen.getDefaultGtsNames(m.channel.guild.id).names;
+        var cnames = await lewdGen.getCustomGtsNames(smallid);
         names = names.concat(cnames);
         for (let i = 0; i < names.length; i++) {
             if (args.includes(names[i].toLowerCase())) {
@@ -65,14 +65,14 @@ module.exports = {
         }
 
         var maintype = "gentle";
-        var subtype = misc.searchForLewd(args);
+        var subtype = args;
 
         if (args.indexOf("invert") >= 0 || args.indexOf("inverse") >= 0) {
-            big = misc.getTrueName(m.author.id, m);
+            big = m.member.name;
         }
         var guildid = m.channel.guild.id;
 
-        var lewdmessage = misc.generateLewdMessage(smallid, big, guildid, maintype, subtype);
+        var lewdmessage = lewdGen.generateLewdMessage(smallid, big, guildid, maintype, subtype);
 
         var usageText = "0";
         if (usage > 0) {

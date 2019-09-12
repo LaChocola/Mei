@@ -95,6 +95,22 @@ function extend(bot) {
             return hasPerm;
         }
     });
+
+    // Member.name returns the user's nickname, or username if no nickname is set
+    Object.defineProperty(bot.Member.prototype, "name", {
+        get: function() {
+            var member = this;
+            return member.nickname || member.username;
+        }
+    });
+
+    // User.name returns the user's nickname, or username if no nickname is set
+    Object.defineProperty(bot.User.prototype, "name", {
+        get: function() {
+            var user = this;
+            return user.username;
+        }
+    });
 }
 
 module.exports = {
