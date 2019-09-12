@@ -19,12 +19,14 @@ module.exports = {
 
         var time = moment().format("MMM D, YYYY");
 
-        var member = m.guild.members.get(m.mentions[0] && m.mentions[0].id) || m.member;
+        var user = m.mentions[0] || m.author;
+        var member = m.guild.members.get(user.id);
         var name = member.name;
         if (name.length > 13) {
             name = name.slice(0, 11) + "..";
         }
-        var avatarUrl = `https://images.discordapp.net/avatars/${member.id}/${member.avatar || member.defaultAvatar}.png?size=1024`;
+
+        var avatarUrl = user.dynamicAvatarURL("png", 1024);
         var templateUrl = "https://buttsare.sexy/4Vp1MUG.png";
 
         await m.channel.sendTyping();
