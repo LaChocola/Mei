@@ -62,42 +62,50 @@ function parseArgs(m) {
     return args;
 }
 
-module.exports = {
-    list: function() {
-        var searchPath = path.join(__dirname, "*.js");
-        return glob.sync(searchPath, { ignore: ["**/index.js"] })
-            .map(f => path.parse(f).name);
-    },
-    load: function(label) {
-        var changed = hasChanged(label);
-        if (conf.autoReload && changed) {
-            return this.reload(label);
-        }
-        var command = require(getPath(label));
-        if (!(command instanceof Eris.Command)) {
-            command = new LegacyCommand(label, command);
-        }
-        return command;
-    },
-    reload: function(label) {
-        var command = reload(getPath(label));
-        command.label = label;
-        return command;
-    },
-    run: async function(label, m) {
-        m.command = this.load(label);
-        var args = parseArgs(m);
-        logCommand(label, m, args, true);
-        try {
-            var resp = await m.command.process(args, m);
-            if (resp != null && !(resp instanceof Eris.Message)) {
-                await m.reply(resp);
-            }
-        }
-        catch (err) {
-            console.log(err);
-            m.reply("An error has occured.");
-            logCommand(label, m, args, false);
+function list() {
+    var searchPath = path.join(__dirname, "*.js");
+    return glob.sync(searchPath, { ignore: ["**/index.js"] })
+        .map(f => path.parse(f).name);
+}
+
+function load(label) {
+    var changed = hasChanged(label);
+    if (conf.autoReload && changed) {
+        return this.reload(label);
+    }
+    var command = require(getPath(label));
+    if (!(command instanceof Eris.Command)) {
+        command = new LegacyCommand(label, command);
+    }
+    return command;
+}
+
+function reload(label) {
+    var command = reload(getPath(label));
+    command.label = label;
+    return command;
+}
+
+async function run(label, m) {
+    m.command = this.load(label);
+    var args = parseArgs(m);
+    logCommand(label, m, args, true);
+    try {
+        var resp = await m.command.process(args, m);
+        if (resp != null && !(resp instanceof Eris.Message)) {
+            await m.reply(resp);
         }
     }
+    catch (err) {
+        console.err(err);
+        m.reply("An error has occured.");
+        logCommand(label, m, args, false);
+    }
+}
+
+module.exports = {
+    list,
+    load,
+    reload,
+    run
 };

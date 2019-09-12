@@ -18,7 +18,7 @@ module.exports = {
         }
 
         var isMod = await member.isMod()
-            || await member.hasPerms(["banMembers", "administrator", "manageGuild", "manageChannels", "manageMessages"])
+            || member.hasPerms(["banMembers", "administrator", "manageGuild", "manageChannels", "manageMessages"])
             || m.author.id !== conf.users.owner;
 
         if (!isMod) {
