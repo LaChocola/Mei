@@ -14,7 +14,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var members = m.channel.guild.members.filter(m => !m.bot);
         var people = [];
         members.forEach(function(member) {
-            if ((member.status != "offline") && (member.user.id != m.bot.user.id)) {
+            if ((member.status !== "offline") && (member.user.id !== m.bot.user.id)) {
                 people.push(member.id);
             }
         });
@@ -46,7 +46,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
             if (lewdtree.hasOwnProperty(key)) {
                 const element = lewdtree[key];
                 for (var i = 0; i < element.length; i++) {
-                    if (name == lewdtree[key][i]) {
+                    if (name === lewdtree[key][i]) {
                         return key;
                     }
                 }
@@ -61,7 +61,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
             if (lewdtree.hasOwnProperty(key)) {
                 const element = lewdtree[key];
                 for (var i = 0; i < element.length; i++) {
-                    if (string.indexOf(lewdtree[key][i]) != -1) {
+                    if (string.indexOf(lewdtree[key][i]) !== -1) {
                         var reg = new RegExp("\\b" + lewdtree[key][i] + "\\b");
                         var match = reg.exec(string);
                         if (match != null && match[0]) {
@@ -82,10 +82,10 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var userDb = await dbs.user.load();
         //=============get names==================
         var bigname = big;
-        if (big == false) {
+        if (!big) {
             var cname = await Misc.getcustomGTSNames(smallid);
             var names;
-            if (cname.length == 0) {
+            if (cname.length === 0) {
                 names = Misc.getDefaultGTSNames(guildid).names;
             }
             else {
@@ -99,11 +99,11 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         var futa = false;
         if (userDb.people[smallid]) {
             if (userDb.people[smallid].names) {
-                if (userDb.people[smallid].names[bigname] == "male") {
+                if (userDb.people[smallid].names[bigname] === "male") {
                     male = true;
                     female = false;
                 }
-                if (userDb.people[smallid].names[bigname] == "futa") {
+                if (userDb.people[smallid].names[bigname] === "futa") {
                     futa = true;
                     female = false;
                 }
@@ -147,14 +147,14 @@ class Misc { // Declaring export as a class because cbf to make other way work p
             if (footRoll > 0 && footRoll < 7) {
                 var adjectiveFeet1 = Misc.randomelement(adjectivesFeet);
                 var adjectiveFeet2 = Misc.randomelement(adjectivesFeet);
-                if (adjectiveFeet1 == adjectiveFeet2) {
+                if (adjectiveFeet1 === adjectiveFeet2) {
                     adjectiveFeet2 = Misc.randomelement(adjectivesFeet);
                 }
                 adjectiveFeet = adjectiveFeet1 + ", " + adjectiveFeet2 + " ";
 
                 var adjectiveFootwear1 = Misc.randomelement(adjectivesFootwear);
                 var adjectiveFootwear2 = Misc.randomelement(adjectivesFootwear);
-                if (adjectiveFootwear1 == adjectiveFootwear2) {
+                if (adjectiveFootwear1 === adjectiveFootwear2) {
                     adjectiveFootwear2 = Misc.randomelement(adjectivesFootwear);
                 }
                 adjectiveFootwear = adjectiveFootwear1 + ", " + adjectiveFootwear2 + " ";
@@ -192,14 +192,14 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         for (const primarytypename in lewdPool) {
             if (lewdPool.hasOwnProperty(primarytypename)) {
                 const primarytype = lewdPool[primarytypename];
-                if (maintype == false || primarytypename == maintype) {
+                if (!maintype || primarytypename === maintype) {
                     if (!primarytype[subtype]) {
-                        subtype = false;
+                        subtype = null;
                     }
                     for (const secondarytypename in primarytype) {
                         if (primarytype.hasOwnProperty(secondarytypename)) {
                             const typepool = primarytype[secondarytypename];
-                            if (subtype == false || secondarytypename == subtype) {
+                            if (!subtype || secondarytypename === subtype) {
                                 for (var i = 0; i < typepool.length; i++) {
                                     candidates.push(typepool[i]);
                                 }
@@ -225,7 +225,7 @@ class Misc { // Declaring export as a class because cbf to make other way work p
         }
         if (futa) {
             var futaRoll = Math.floor(Math.random() * 10) + 1;
-            if (futaRoll != 1) {
+            if (futaRoll !== 1) {
                 lewdmessage = lewdmessage.replace(/\bpussy\b/ig, "dick").replace(/\bvagina\b/ig, "dick").replace(/\bcunt\b/ig, "dick").replace(/\bclit\b/ig, "urethra").replace(/\blabia\b/ig, "foreskin");
             }
         }
@@ -233,6 +233,9 @@ class Misc { // Declaring export as a class because cbf to make other way work p
 
         //====================return message=============
 
+        if (!subtype) {
+            subtype = "Random";
+        }
         var emojis = {
             "boob": ":melon:",
             "butt": ":peach:",
@@ -246,12 +249,9 @@ class Misc { // Declaring export as a class because cbf to make other way work p
             "cloth": ":shirt:",
             "toy": ":battery:",
             "misc": ":question:",
-            false: ":question:"
+            "Random": ":question:"
         };
         var emoji = emojis[subtype];
-        if (subtype === false) {
-            subtype = "Random";
-        }
         lewdmessage = [lewdmessage, emoji, subtype];
         return lewdmessage;
 
