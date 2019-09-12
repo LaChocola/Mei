@@ -17,6 +17,7 @@ else {
 module.exports = {
     main: async function(bot, m, args, prefix) {
         if (!enabled) {
+            console.warn("Sauce token not found. Cannot run sauce command.");
             return;
         }
         let data;

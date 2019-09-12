@@ -51,6 +51,7 @@ function fallbackHTMLScraper(args, safe, message) {
 module.exports = {
     main: async function(bot, m, args, prefix) {
         if (!enabled) {
+            console.warn("Google token not found. Cannot run search command.");
             return;
         }
         args = m.cleanContent.replace(`${prefix}search `, "").trim();

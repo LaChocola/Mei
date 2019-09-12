@@ -16,6 +16,7 @@ else {
 module.exports = {
     main: async function(bot, m, args, prefix) {
         if (!enabled) {
+            console.warn("apiai token not found. Cannot run c command.");
             return;
         }
         var msg = m.cleanContent.replace(`${prefix}c `, "");

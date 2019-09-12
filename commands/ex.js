@@ -30,6 +30,7 @@ const defaultQuery = {
 module.exports = {
     main: async function(bot, m, args, prefix) {
         if (!enabled) {
+            console.warn("Exhentai token not found. Cannot run ex command.");
             return;
         }
         if (m.channel.nsfw == false) {
@@ -157,5 +158,5 @@ module.exports = {
         });
     },
     help: "Search Exhentai",
-    enabled: enabled
+    hidden: !enabled
 };
