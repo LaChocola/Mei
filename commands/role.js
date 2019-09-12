@@ -76,7 +76,7 @@ module.exports = {
                         })
                         .catch((err) => {
                             if (err.code === 50013) {
-                                m.reply("I dont have permission to give assign that role to you. Please make sure I have `Manage Roles` permissions, and that the role you are trying to assign is under my highest role", 10000);
+                                m.reply("I don't have permission to give assign that role to you. Please make sure I have `Manage Roles` permissions, and that the role you are trying to assign is under my highest role", 10000);
                                 m.deleteIn(10000);
                             }
                         });

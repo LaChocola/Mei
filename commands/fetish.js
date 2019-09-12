@@ -84,7 +84,7 @@ module.exports = {
         }
         if (args.toLowerCase().includes("remove ")) {
             if (mentioned.id !== m.author.id) {
-                m.reply("Okay....but that isnt you");
+                m.reply("Okay... but that isn't you");
                 return;
             }
             let incoming = name1.replace(/\bremove\b/i, "").replace(" ", "").split("|");
@@ -103,7 +103,7 @@ module.exports = {
         }
         if (args.toLowerCase().includes("add")) {
             if (mentioned.id !== m.author.id) {
-                m.reply("Okay....but that isnt you");
+                m.reply("Okay... but that isn't you");
                 return;
             }
             var incomingEntries = name1.replace(/\badd\b/i, "").replace(/^[ \t]+/, "").replace(/[ \t]+$/, "").split("|");

@@ -25,7 +25,7 @@ module.exports = {
         }
         if (args.search(/remove /i) !== -1) {
             if (mentioned.id != m.author.id) {
-                m.reply("Okay....but that isnt you");
+                m.reply("Okay... but that isn't you");
                 return;
             }
             var incomingEntries = name1.replace(/remove /i, "").replace(": ", " ").split(" | ");
@@ -47,7 +47,7 @@ module.exports = {
         if (args.search(/add /i) !== -1) {
             if (mentioned.id != m.author.id) {
                 m.delete("Timeout");
-                m.reply("Okay....but that isnt you");
+                m.reply("Okay... but that isn't you");
                 return;
             }
             incomingEntries = name1.replace(/add /i, "").replace(": ", " ").split(" | ");
