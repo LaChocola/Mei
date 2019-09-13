@@ -313,7 +313,7 @@ module.exports = {
 
         var member = m.guild.members.get(m.mentions[0] && m.mentions[0].id) || m.member;
 
-        args = utils.trim().split(m.fullArgs);
+        args = utils.split(m.fullArgs.trim());
 
         var subcommand = getSubcommand(args);
 
