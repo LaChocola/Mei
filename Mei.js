@@ -647,7 +647,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
         var milestone = false;
         var changed = false;
         links.forEach(function(link) {
-            if (!hoard[link]) {
+            if (hoard[link]) {
                 return;
             }
 
