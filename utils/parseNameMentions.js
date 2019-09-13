@@ -15,9 +15,11 @@ function parseNameMentions(m, sep) {
         .map(name => parseName(name))
         .filter(name => name);
 
-    var members = names.map(function(name) {
-        return m.guild.members.find(m => m.name.toLowerCase().trim() === name);
-    });
+    var members = names
+        .map(function(name) {
+            return m.guild.members.find(m => m.name.toLowerCase().trim() === name);
+        })
+        .filter(member => member);
 
     members.forEach(function(member) {
         var alreadyMentioned = m.mentions.some(u => u.id === member.id);
