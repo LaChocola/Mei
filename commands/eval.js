@@ -13,12 +13,13 @@ module.exports = {
         }
 
         try {
-            var ev = safeEval(args);
-            m.reply(ev);
-            console.log(ev);
+            var out = safeEval(m.fullArgs);
+            m.reply(out);
+            console.log("eval: ", out);
         }
         catch (err) {
             m.reply(err);
+            console.log("eval err: ", err);
         }
         
     },
