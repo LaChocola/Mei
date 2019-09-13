@@ -20,21 +20,14 @@ const dbs = require("../dbs");
 // Separate subcommand and subcommandArgs.
 // If no recognized subcommand is given, assume "show" is implied.
 function getSubcommand(args) {
-    var subcommandArgs = args.trim().split(" ");
-    if (subcommandArgs.length === 1 && subcommandArgs[0] === "") {
-        subcommandArgs = [];
-    }
-    var subcommand = subcommandArgs[0];
+    var subcommand = args[0];
 
     if (["add", "remove"].includes(subcommand)) {
-        subcommandArgs.shift();
+        args.shift();
     }
     else {
         subcommand = "show";
     }
-
-    // Replace the old args with the filtered args
-    utils.replaceArray(subcommandArgs, args);
 
     return subcommand;
 }
