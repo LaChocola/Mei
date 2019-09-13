@@ -17,20 +17,72 @@ const dbs = require("../dbs");
  * !hoard remove ?? | 20         Remove an indexed item from a hoard
  */
 
+// Separate subcommand and subcommandArgs.
+// If no recognized subcommand is given, assume "show" is implied.
+function getSubcommand(args) {
+    var subcommandArgs = args.trim().split(" ");
+    if (subcommandArgs.length === 1 && subcommandArgs[0] === "") {
+        subcommandArgs = [];
+    }
+    var subcommand = subcommandArgs[0];
+
+    if (["add", "remove"].includes(subcommand)) {
+        subcommandArgs.shift();
+    }
+    else {
+        subcommand = "show";
+    }
+
+    // Replace the old args with the filtered args
+    utils.replaceArray(subcommandArgs, args);
+
+    return subcommand;
+}
+
 // Find all the emojis in a string, both unicode and custom discord emojis
-function getEmojis(s) {
+function getEmojis(args) {
     var customEmojiRegex = /<a?:([a-zA-Z0-9]+):[0-9]+>/g;
     var standardEmojiRegex = emojiRegex();
     var combinedRegex = new RegExp(`(?:${customEmojiRegex.source}|(${standardEmojiRegex.source}))`, "g");
+
     var emojis = [];
 
-    var match = combinedRegex.exec(s);
-    while (match) {
-        emojis.push(match[0] || match[1]);
-        match = combinedRegex.exec(s);
-    }
+    // Find all the emojis, and remove them from the args
+    var argsWithoutEmojis = args.filter(function(arg) {
+        var emoji;
+        var match = combinedRegex.exec(arg);
+        if (match) {
+            emoji = match[0] || match[1];
+            emojis.push(emoji);
+        }
+        return !match;
+    });
+
+    // Replace the old args with the filtered args
+    utils.replaceArray(argsWithoutEmojis, args);
 
     return emojis;
+}
+
+// Find the item index
+// If no valid itemIndex is provided, then itemIndex is set to NaN, which returns false on all comparisons
+function getItemIndex(args) {
+    var i = args.findIndex(arg => arg.match(/^[0-9]+$/));
+
+    var itemIndexArg;
+
+    if (i !== -1) {
+        itemIndexArg = args[i];
+        args.splice(i, 1);
+    }
+
+    var itemIndex = utils.toNum(itemIndexArg) - 1;
+
+    if (itemIndex < 0) {
+        itemIndex = NaN;
+    }
+
+    return itemIndex;
 }
 
 async function loadHoards(userId) {
@@ -255,41 +307,19 @@ async function removeHoardItem(m, member, emojis, itemIndex) {
     m.deleteIn(5000);
 }
 
-// Separate subcommand and subcommandArgs.
-// If no recognized subcommand is given, assume "show" is implied.
-function getSubcommand(args) {
-    var subcommandArgs = args.trim().split(" ");
-    if (subcommandArgs.length === 1 && subcommandArgs === "") {
-        subcommandArgs = [];
-    }
-    var subcommand = subcommandArgs[0];
-
-    if (["add", "remove"].includes(subcommand)) {
-        subcommandArgs.shift();
-    }
-    else {
-        subcommand = "show";
-    }
-
-    return { subcommand, subcommandArgs };
-}
-
 module.exports = {
     main: async function(bot, m, args, prefix) {
         utils.parseNameMentions(m);
 
         var member = m.guild.members.get(m.mentions[0] && m.mentions[0].id) || m.member;
 
-        var [mainArgs, itemIndexArg] = m.fullArgs.trim().split(" | ", 2);
-        // If no valid itemIndex is provided, then itemIndex is set to NaN, which returns false on all comparisons
-        var itemIndex = utils.toNum(itemIndexArg) - 1;
-        if (itemIndex < 0) {
-            itemIndex = NaN;
-        }
+        args = utils.trim().split(m.fullArgs);
 
-        var { subcommand, subcommandArgs } = getSubcommand(mainArgs);
+        var subcommand = getSubcommand(args);
 
-        var emojis = getEmojis(subcommandArgs);
+        var itemIndex = getItemIndex(args);
+
+        var emojis = getEmojis(args);
 
         if (subcommand === "add") {
             await addHoard(m, member, emojis);
