@@ -18,7 +18,7 @@ module.exports = {
             console.log("eval: ", out);
         }
         catch (err) {
-            m.reply(err.message);
+            m.reply("**Error:** " + err.message);
             console.log("eval err: ", err);
         }
         
