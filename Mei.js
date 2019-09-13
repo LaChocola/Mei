@@ -535,7 +535,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
         var guildData = guildDb[guild.id];
 
         // No giveaways are running
-        if (!(guildData & guildData.giveaways && guildData.giveaways.running)) {
+        if (!(guildData && guildData.giveaways && guildData.giveaways.running)) {
             return;
         }
 
@@ -695,7 +695,7 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
         var guildData = guildDb[guild.id];
 
         // No giveaways are running
-        if (!(guildData & guildData.giveaways && guildData.giveaways.running)) {
+        if (!(guildData && guildData.giveaways && guildData.giveaways.running)) {
             return;
         }
 
