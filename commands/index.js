@@ -97,7 +97,7 @@ async function run(label, m) {
         }
     }
     catch (err) {
-        console.err(err);
+        console.error(err);
         m.reply("An error has occured.");
         logCommand(label, m, args, false);
     }
