@@ -8,13 +8,13 @@ const dbs = require("../dbs");
 /*
  * !hoard                        Show a random item from a random hoard
  * !hoard ??                     Show a random item from the given hoard
- * !hoard ?? | 20                Show the indexed item from the given hoard
+ * !hoard ?? 20                  Show the indexed item from the given hoard
  * !hoard Chocola#4832           Show a random item from someone else's random hoard
  * !hoard ?? Chocola#4832        Show a random item from someone else's given hoard
- * !hoard ?? Chocola#4832 | 20   Show the indexed item from someone else's given hoard
+ * !hoard ?? Chocola#4832 20     Show the indexed item from someone else's given hoard
  * !hoard add ??                 Add a new hoard
  * !hoard remove ??              Remove a hoard
- * !hoard remove ?? | 20         Remove an indexed item from a hoard
+ * !hoard remove ?? 20           Remove an indexed item from a hoard
  */
 
 // Separate subcommand and subcommandArgs.
@@ -94,7 +94,11 @@ async function loadHoards(userId) {
     return { userDb, hoards };    // TODO: Replace with with better data management
 }
 
-async function showHoardItem(m, member, emojis, itemIndex) {
+async function showHoardItem(m, emojis, itemIndex) {
+    utils.parseNameMentions(m);
+
+    var member = m.guild.members.get(m.mentions[0] && m.mentions[0].id) || m.member;
+
     if (emojis.length > 1) {
         m.reply("Sorry, you can only lookup one hoard at a time.", 5000);
         m.deleteIn(5000);
@@ -202,7 +206,7 @@ async function showHoardItem(m, member, emojis, itemIndex) {
     m.reply(msg);
 }
 
-async function addHoard(m, member, emojis) {
+async function addHoard(m, emojis) {
     if (emojis.length > 1) {
         m.reply("Sorry, you can only make a hoard by using 1 emoji.", 5000);
         m.deleteIn(5000);
@@ -217,7 +221,7 @@ async function addHoard(m, member, emojis) {
 
     var hoardName = emojis[0];
 
-    var { userDb, hoards } = await loadHoards(member.id);
+    var { userDb, hoards } = await loadHoards(m.author.id);
 
     if (hoards[hoardName]) {
         m.reply(hoardName + " is already one of your hoards", 5000);
@@ -232,7 +236,7 @@ async function addHoard(m, member, emojis) {
     m.deleteIn(5000);
 }
 
-async function removeHoard(m, member, emojis) {
+async function removeHoard(m, emojis) {
     if (emojis.length > 1) {
         m.reply("Sorry, you can only remove 1 hoard at a time.", 5000);
         m.deleteIn(5000);
@@ -247,7 +251,7 @@ async function removeHoard(m, member, emojis) {
 
     var hoardName = emojis[0];
 
-    var { userDb, hoards } = await loadHoards(member.id);
+    var { userDb, hoards } = await loadHoards(m.author.id);
 
     if (!hoards[hoardName]) {
         m.reply("Count not find that hoard", 5000);
@@ -262,7 +266,7 @@ async function removeHoard(m, member, emojis) {
     m.deleteIn(5000);
 }
 
-async function removeHoardItem(m, member, emojis, itemIndex) {
+async function removeHoardItem(m, emojis, itemIndex) {
     if (emojis.length > 1) {
         m.reply("Sorry, you can only remove items from 1 hoard at a time.", 5000);
         m.deleteIn(5000);
@@ -277,7 +281,7 @@ async function removeHoardItem(m, member, emojis, itemIndex) {
 
     var hoardName = emojis[0];
 
-    var { userDb, hoards } = await loadHoards(member.id);
+    var { userDb, hoards } = await loadHoards(m.author.id);
 
     if (!hoards[hoardName]) {
         m.reply("Could not find that hoard", 5000);
@@ -302,10 +306,6 @@ async function removeHoardItem(m, member, emojis, itemIndex) {
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
-        utils.parseNameMentions(m);
-
-        var member = m.guild.members.get(m.mentions[0] && m.mentions[0].id) || m.member;
-
         args = utils.split(m.fullArgs.trim());
 
         var subcommand = getSubcommand(args);
@@ -315,18 +315,18 @@ module.exports = {
         var emojis = getEmojis(args);
 
         if (subcommand === "add") {
-            await addHoard(m, member, emojis);
+            await addHoard(m, emojis);
         }
         else if (subcommand === "remove") {
             if (utils.isNum(itemIndex)) {
-                await removeHoardItem(m, member, emojis, itemIndex);
+                await removeHoardItem(m, emojis, itemIndex);
             }
             else {
-                await removeHoard(m, member, emojis);
+                await removeHoard(m, emojis);
             }
         }
         else {
-            await showHoardItem(m, member, emojis, itemIndex);
+            await showHoardItem(m, emojis, itemIndex);
         }
     },
     help: "View hoards. React with :heart_eyes: to add"
