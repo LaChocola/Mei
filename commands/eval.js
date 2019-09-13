@@ -6,7 +6,7 @@ const conf = require("../conf");
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
-        var coolkids = [conf.users.owner, conf.users.digiduncan, conf.users.natalie];
+        var coolkids = [conf.users.owner, conf.users.chocola, conf.users.digiduncan, conf.users.natalie];
         if (!coolkids.includes(m.author.id)) {
             m.reply("No, don't touch that", 1000);
             return;
