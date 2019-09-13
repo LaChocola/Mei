@@ -275,7 +275,7 @@ function getSubcommand(args) {
 }
 
 module.exports = {
-    main: function(bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         utils.parseNameMentions(m);
 
         var member = m.guild.members.get(m.mentions[0] && m.mentions[0].id) || m.member;
