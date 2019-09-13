@@ -611,6 +611,9 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
         }
 
         var userDb = await dbs.user.load();
+        if (!userDb.people) {
+            userDb.people = {}
+        }
         // Load userData with defaults
         if (!userDb.people[userID]) {
             userDb.people[userID] = {};
@@ -746,6 +749,9 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
         }
 
         var userDb = await dbs.user.load();
+        if (!userDb.people) {
+            userDb.people = {}
+        }
         // Load userData with defaults
         if (!userDb.people[userID]) {
             userDb.people[userID] = {};
