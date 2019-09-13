@@ -35,10 +35,10 @@ function getEmojis(s) {
 
 function loadHoards(userId) {
     var userDb = dbs.user.load();
-    if (userDb.people) {
+    if (!userDb.people) {
         userDb.people = {};
     }
-    if (userDb.people[userId]) {
+    if (!userDb.people[userId]) {
         userDb.people[userId] = {};
     }
     var userData = userDb.people[userId];
