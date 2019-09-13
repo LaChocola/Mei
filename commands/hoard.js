@@ -1,246 +1,305 @@
 "use strict";
 
+const emojiRegex = require("emoji-regex");
+
 const utils = require("../utils");
 const dbs = require("../dbs");
 
-// Find all the emoji ids in a string
-function parseEmojis(s) {
-    var re = /<a?:([a-zA-Z0-9]+):[0-9]+>/g;
-    var emojiIds = [];
-    var match = re.exec(s);
+/*
+ * !hoard                        Show a random item from a random hoard
+ * !hoard ??                     Show a random item from the given hoard
+ * !hoard ?? | 20                Show the indexed item from the given hoard
+ * !hoard Chocola#4832           Show a random item from someone else's random hoard
+ * !hoard ?? Chocola#4832        Show a random item from someone else's given hoard
+ * !hoard ?? Chocola#4832 | 20   Show the indexed item from someone else's given hoard
+ * !hoard add ??                 Add a new hoard
+ * !hoard remove ??              Remove a hoard
+ * !hoard remove ?? | 20         Remove an indexed item from a hoard
+ */
+
+// Find all the emojis in a string, both unicode and custom discord emojis
+function getEmojis(s) {
+    var customEmojiRegex = /<a?:([a-zA-Z0-9]+):[0-9]+>/g;
+    var standardEmojiRegex = emojiRegex();
+    var combinedRegex = new RegExp(`(?:${customEmojiRegex.source}|(${standardEmojiRegex.source}))`);
+    var emojis = [];
+
+    var match = combinedRegex.exec(s);
     while (match) {
-        emojiIds.push(match[1]);
-        match = re.exec(s);
+        emojis.push(match[0] || match[1]);
+        match = combinedRegex.exec(s);
     }
-    return emojiIds;
+
+    return emojis;
+}
+
+function loadHoards(userId) {
+    var userDb = dbs.user.load();
+    if (userDb[userId]) {
+        userDb[userId] = {};
+    }
+
+    var userData = userDb.people[userId];
+    if (!userData.hoard) {
+        userData.hoard = {};
+    }
+    var hoards = userData.hoard;
+    return { userDb, hoards };    // TODO: Replace with with better data management
+}
+
+function showHoardItem(m, member, emojis, itemIndex) {
+    if (emojis.length > 1) {
+        m.reply("Sorry, you can only lookup one hoard at a time.", 5000);
+        m.deleteIn(5000);
+        return;
+    }
+
+    var hoardName = emojis[0];
+
+    var { hoards } = loadHoards(member.id);
+
+    if (hoardName) {
+        if (!hoards[hoardName]) {
+            m.reply(`Cound not find ${hoardName} hoard for **${member.name}**`);
+            m.deleteIn(5000);
+            return;
+        }
+
+        if (Object.keys(hoards[hoardName]).length === 0) {
+            let message = "No items in this hoard!";
+            if (member.id === m.author.id) {
+                message += ` React to messages with ${hoardName} to pull them up in their own hoard.`;
+            }
+            m.reply(message, 5000);
+            m.deleteIn(5000);
+            return;
+        }
+    }
+    else {
+        // If they didn't provide a hoardName, then ignore the itemIndex
+        itemIndex = NaN;
+
+        var hoardNames = Object.keys(hoards);
+
+        if (hoardNames.length === 0) {
+            m.reply(`Could not find any hoards for **${member.name}**`, 5000);
+            m.deleteIn(5000);
+            return;
+        }
+
+        var nonEmptyHoardNames = hoardNames.filter(name => Object.keys(hoards[name]).length > 0); // Only select from hoards that have items
+
+        if (nonEmptyHoardNames.length === 0) {
+            let message = "No items in any hoards!";
+            if (member.id === m.author.id) {
+                message += " React to messages with your hoard emoji's to pull them up in their own hoard.";
+            }
+            m.reply(message, 5000);
+            m.deleteIn(5000);
+            return;
+        }
+
+        hoardName = utils.choose(nonEmptyHoardNames);
+    }
+
+    var hoard = hoards[hoardName];
+    var hoardItems = Object.keys(hoard);
+
+    var hoardItem;
+    if (utils.isNum(itemIndex)) {
+        if (itemIndex > hoardItems.length + 1) {
+            m.reply("Could not find that item in that hoard", 5000);
+            m.deleteIn(5000);
+            return;
+        }
+
+        hoardItem = hoardItems[itemIndex];
+    }
+    else {
+        hoardItem = utils.choose(hoardItems);
+    }
+
+    var imgURLMatch = hoardItem.match(/([a-z\-_0-9/:.]*\.(?:png|jpg|gif|svg|jpeg)[:orig]*)/i);
+    var imgURL = imgURLMatch && imgURLMatch[0];
+
+    var msg = {
+        content: `A Random piece, from **${member.name}**'s hoard`,
+        embed: {
+            color: 0xA260F6,
+            author: {
+                name: member.name,
+                icon_url: member.avatarURL
+            }
+        }
+    };
+
+    var srcUserId = hoard[hoardItem];
+    var srcUser = m.bot.users.get(srcUserId);
+    if (srcUser) {
+        msg.embed.footer = {
+            icon_url: srcUser.dynamicAvatarURL("jpg", 128),
+            text: `Original post by ${srcUser.username}`
+        };
+    }
+
+    var description = `Item ${hoardItems.indexOf(hoardItem) + 1} of ${hoardItems.length} from the ${hoardName} hoard`;
+    if (imgURL) {
+        msg.embed.description = description;
+        msg.embed.image = { url: imgURL };
+    }
+    else {
+        msg.embed.description = hoardItem;
+        msg.embed.title = description;
+    }
+
+    m.reply(msg);
+}
+
+function addHoard(m, member, emojis) {
+    if (emojis.length > 1) {
+        m.reply("Sorry, you can only make a hoard by using 1 emoji.", 5000);
+        m.deleteIn(5000);
+        return;
+    }
+
+    if (emojis.length === 0) {
+        m.reply("Which emoji do you want to create a hoard for?", 5000);
+        m.deleteIn(5000);
+        return;
+    }
+
+    var hoardName = emojis[0];
+
+    var { userDb, hoards } = loadHoards(member.id);
+
+    if (hoards[hoardName]) {
+        m.reply(hoardName + " is already one of your hoards", 5000);
+        m.deleteIn(5000);
+        return;
+    }
+
+    hoards[hoardName] = {};
+    dbs.user.save(userDb);
+    m.reply("Successfully added hoard: " + hoardName, 5000);
+    m.deleteIn(5000);
+}
+
+function removeHoard(m, member, emojis) {
+    if (emojis.length > 1) {
+        m.reply("Sorry, you can only remove 1 hoard at a time.", 5000);
+        m.deleteIn(5000);
+        return;
+    }
+
+    if (emojis.length === 0) {
+        m.reply("Which hoard do you want to remove?", 5000);
+        m.deleteIn(5000);
+        return;
+    }
+
+    var hoardName = emojis[0];
+
+    var { userDb, hoards } = loadHoards(member.id);
+
+    if (!hoards[hoardName]) {
+        m.reply("Count not find that hoard", 5000);
+        m.deleteIn(5000);
+        return;
+    }
+
+    delete hoards[hoardName];
+    dbs.user.save(userDb);
+    m.reply(hoardName + " Successfully deleted", 5000);
+    m.deleteIn(5000);
+}
+
+function removeHoardItem(m, member, emojis, itemIndex) {
+    if (emojis.length > 1) {
+        m.reply("Sorry, you can only remove items from 1 hoard at a time.", 5000);
+        m.deleteIn(5000);
+        return;
+    }
+
+    if (emojis.length === 0) {
+        m.reply("Which hoard do you want to remove items from?", 5000);
+        m.deleteIn(5000);
+        return;
+    }
+
+    var hoardName = emojis[0];
+
+    var { userDb, hoards } = loadHoards(member.id);
+
+    if (!hoards[hoardName]) {
+        m.reply("Could not find that hoard", 5000);
+        m.deleteIn(5000);
+        return;
+    }
+
+    var hoardItems = Object.keys(hoards[hoardName]);
+    if (itemIndex > hoardItems.length - 1) {
+        m.reply("Could not find that item in that hoard", 5000);
+        m.deleteIn(5000);
+        return;
+    }
+
+    var item = hoardItems[itemIndex];
+    delete hoards[hoardName][item];
+    dbs.user.save(userDb);
+    m.reply(`Successfully deleted item ${itemIndex + 1} from ${hoardName}`, 5000);
+    m.deleteIn(5000);
+}
+
+// Separate subcommand and subcommandArgs.
+// If no recognized subcommand is given, assume "show" is implied.
+function getSubcommand(args) {
+    var subcommandArgs = args.trim().split(" ");
+    if (subcommandArgs.length === 1 && subcommandArgs === "") {
+        subcommandArgs = [];
+    }
+    var subcommand = subcommandArgs[0];
+
+    if (["add", "remove"].includes(subcommand)) {
+        subcommandArgs.shift();
+    }
+    else {
+        subcommand = "show";
+    }
+
+    return { subcommand, subcommandArgs };
 }
 
 module.exports = {
-    main: async function(bot, m, args, prefix) {
+    main: function(bot, m, args, prefix) {
         utils.parseNameMentions(m);
 
-        var member = m.guild.members.get(m.mentions[0] || m.author);
+        var member = m.guild.members.get(m.mentions[0]) || m.member;
 
-        var splitArgs = m.fullArgs.split(" | ");
-        // Ignore an empty string from split ("".split(" | ") === [""])
-        if (splitArgs.length === 1 && splitArgs[0] === "") {
-            splitArgs = [];
+        var [mainArgs, itemIndexArg] = m.fullArgs.trim().split(" | ", 2);
+        // If no valid itemIndex is provided, then itemIndex is set to NaN, which returns false on all comparisons
+        var itemIndex = utils.toNum(itemIndexArg) - 1;
+        if (itemIndex < 0) {
+            itemIndex = NaN;
         }
 
-        var userDb = await dbs.user.load();
-        if (userDb[member.id]) {
-            userDb[member.id] = {};
-        }
-        var userData = userDb[member.id];
-        if (!userData.hoard) {
-            userData.hoard = {};
-        }
-        var hoard = userData.hoard;
+        var { subcommand, subcommandArgs } = getSubcommand(mainArgs);
 
-        var emojiIds = parseEmojis(m.fullArgs);
-        var emojiId = emojiIds[0];
-        var subcommandArgs = splitArgs[0] && splitArgs[0].trim().split(" ");
-        var subcommand = subcommandArgs && subcommandArgs.shift().trim();
-        //var subcommandFullArgs = splitArgs[0] && splitArgs[0].substring(m.prefix.length + subcommand.length).trim();
+        var emojis = getEmojis(subcommandArgs);
 
-        var url = member.avatarURL;
-
-        // TODO: These commands should NOT be allowed if you've mentioned someone other than yourself
         if (subcommand === "add") {
-            if (!emojiIds.length === 0) {
-                m.reply("Please provide an emoji to add", 5000);
-                m.deleteIn(5000);
-                return;
-            }
-
-            if (emojiIds.length > 1) {
-                m.reply("Sorry, you can only make a hoard by using 1 emoji", 5000);
-                m.deleteIn(5000);
-                return;
-            }
-
-            if (hoard[emojiId]) {
-                m.reply(emojiId + " is already one of your hoards", 5000);
-                m.deleteIn(5000);
-                return;
-            }
-
-            hoard[emojiId] = {};
-            await dbs.user.save(userDb);
-            m.reply("Successfully added hoard: " + emojiId, 5000);
-            m.deleteIn(5000);
-            return;
+            addHoard(m, member, emojis);
         }
         else if (subcommand === "remove") {
-            if (!emojiIds.length === 0) {
-                m.reply("Please provide an emoji to delete", 5000);
-                m.deleteIn(5000);
-                return;
-            }
-
-            if (emojiIds.length > 1) {
-                m.reply("Sorry, you can delete a hoard by using 1 emoji", 5000);
-                m.deleteIn(5000);
-                return;
-            }
-
-            var hoardItemNum = utils.toNum(subcommandArgs[1]);
-            if (!(hoardItemNum > 0)) {
-                hoardItemNum = null;
-            }
-
-            if (hoard[emojiId]) {
-                if (!hoardItemNum) {
-                    delete hoard[emojiId];
-                    await dbs.user.save(userDb);
-                    m.reply(emojiId + " Successfully deleted", 5000);
-                    m.deleteIn(5000);
-                }
-                else {
-                    if (!hoard[emojiId]) {
-                        m.reply("Could not find that hoard", 5000);
-                        m.deleteIn(5000);
-                        return;
-                    }
-                    var hoardLinks = Object.keys(hoard[emojiId]);
-                    if (!hoardItemNum > hoardLinks.length) {
-                        m.reply("Could not find that item in that hoard", 5000);
-                        m.deleteIn(5000);
-                        return;
-                    }
-
-                    // TODO: If you want to refer items by index, then hoard should be a list, not an object
-                    var link = hoardLinks[hoardItemNum - 1];
-                    delete hoard[emojiId][link];
-                    await dbs.user.save(userDb);
-                    m.reply(`Successfully deleted item ${hoardItemNum} from ${emojiId}`, 5000);
-                    m.deleteIn(5000);
-                }
-            }
-        }
-
-        var hoardEmojis = Object.keys(hoard);
-
-        if (hoardEmojis.length === 0) {
-            m.reply(`Could not find any hoard for **${member.name}**`, 5000);
-            m.deleteIn(5000);
-            return;
-        }
-
-        if (!hoardEmojis.includes(emojiId)) {
-            emojiId = utils.choose(hoardEmojis);
-        }
-
-        var emojiHoard = hoard[emojiId];
-        var indexLine = `Item ${emojiHoard.indexOf(rando) + 1} of ${hoard.length} from :heart_eyes: hoard`;
-        if (!origID || !origID.length) {
-            var hoardInnder = Object.keys(origID);
-            var hoardName = rando;
-            var randomNum = Math.floor(Math.random() * hoardInnder.length);
-            rando = hoardInnder[randomNum];
-            if (utils.isNum(splitArgs[1]) && utils.toNum(splitArgs[1]) > 0 && utils.toNum(splitArgs[1]) < hoardInnder.length + 1) {
-                var pass = true;
-                rando = hoardInnder[utils.toNum(splitArgs[1]) - 1];
-            }
-            indexLine = `Item ${hoardInnder.indexOf(rando) + 1} of ${hoardInnder.length} from the ${hoardName} hoard`;
-            origID = origID[rando];
-        }
-        var user = m.bot.users.filter(m => m.id === origID)[0];
-        if (!user) {
-            user = m.author;
-            origID = user.id;
-        }
-        var hash = user.avatar;
-        var og = `https://cdn.discordapp.com/avatars/${origID}/${hash}.jpg?size=128`;
-        if (!splitArgs) {
-            if (rando === undefined) {
-                var i = 0;
-                var newNumber = 0;
-                while (!rando.length && i < 4 && randomNum === newNumber) {
-                    newNumber = Math.floor(Math.random() * hoard.length);
-                    rando = hoard[newNumber];
-                    i++;
-                }
-            }
-        }
-        if (!rando) {
-            if (hoard[hoard.indexOf(splitArgs[0])]) {
-                m.reply("Please react to messages with " + hoard[hoard.indexOf(splitArgs[0])] + " to pull them up in their own hoard", 5000);
-                m.deleteIn(5000);
-                return;
+            if (utils.isNum(itemIndex)) {
+                removeHoardItem(m, member, emojis, itemIndex);
             }
             else {
-                m.reply("Please react to messages with your hoard emoji's to pull them up in their own hoard", 5000);
-                m.deleteIn(5000);
-                return;
-            }
-        }
-        var imgURL = /([a-z\-_0-9/:.]*\.(?:png|jpg|gif|svg|jpeg)[:orig]*)/i.exec(rando);
-        if (rando.includes("https://cdn.discordapp.com")) {
-            var msg = {
-                "content": `A Random piece, from **${member.name}**'s hoard`,
-                "embed": {
-                    "description": indexLine,
-                    "color": 0xA260F6,
-                    "image": {
-                        "url": rando
-                    },
-                    "author": {
-                        "name": member.name,
-                        "icon_url": url
-                    },
-                    "footer": {
-                        "icon_url": og,
-                        "text": `Original post by ${user.username}`
-                    }
-                }
-            };
-        }
-        if (imgURL) {
-            if (imgURL[0]) {
-                msg = {
-                    "content": `A Random piece, from **${member.name}**'s hoard`,
-                    "embed": {
-                        "description": indexLine,
-                        "color": 0xA260F6,
-                        "image": {
-                            "url": imgURL[0]
-                        },
-                        "author": {
-                            "name": member.name,
-                            "icon_url": url
-                        },
-                        "footer": {
-                            "icon_url": og,
-                            "text": `Original post by ${user.username}`
-                        }
-                    }
-                };
+                removeHoard(m, member, emojis);
             }
         }
         else {
-            msg = {
-                "content": `A Random piece, from **${member.name}**'s hoard`,
-                "embed": {
-                    "description": rando,
-                    "color": 0xA260F6,
-                    "title": indexLine,
-                    "author": {
-                        "name": member.name,
-                        "icon_url": url
-                    },
-                    "footer": {
-                        "icon_url": og,
-                        "text": `Original post by ${user.username}`
-                    }
-                }
-            };
+            showHoardItem(m, member, emojis, itemIndex);
         }
-        if (utils.isNum(splitArgs[1]) && !pass) {
-            msg.content = "That is not a valid index number for that hoard\n\n" + msg.content;
-        }
-        m.reply(msg);
-        return;
     },
     help: "View hoards. React with :heart_eyes: to add"
 };
