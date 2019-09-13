@@ -275,7 +275,7 @@ module.exports = {
     main: function(bot, m, args, prefix) {
         utils.parseNameMentions(m);
 
-        var member = m.guild.members.get(m.mentions[0]) || m.member;
+        var member = m.guild.members.get(m.mentions[0] && m.mentions[0].id) || m.member;
 
         var [mainArgs, itemIndexArg] = m.fullArgs.trim().split(" | ", 2);
         // If no valid itemIndex is provided, then itemIndex is set to NaN, which returns false on all comparisons

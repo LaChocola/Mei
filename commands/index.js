@@ -26,7 +26,7 @@ function logCommand(label, m, args, success) {
     var loghead = "CMD".black;
     loghead = success ? loghead.bgGreen : loghead.bgRed;
     var loguser = `${m.author.username}#${m.author.discriminator}`.magenta.bold;
-    var logserver = `${m.channel.guild.name}`.cyan.bold || "Direct Message".cyan.bold;
+    var logserver = `${m.guild.name}`.cyan.bold || "Direct Message".cyan.bold;
     var logchannel = `#${m.channel.name}`.green.bold;
     var logcmd = `${m.prefix}${label}`.bold;
     logcmd = success ? logcmd.blue : logcmd.red;

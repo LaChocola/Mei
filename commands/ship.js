@@ -8,8 +8,8 @@ module.exports = {
     main: async function(bot, m, args, prefix) {
         utils.parseNameMentions(m, " | ");
 
-        var member1 = m.guild.members.get(m.mentions[0].id);
-        var member2 = m.guild.members.get(m.mentions[1].id);
+        var member1 = m.guild.members.get(m.mentions[0] && m.mentions[0].id);
+        var member2 = m.guild.members.get(m.mentions[1] && m.mentions[1].id);
 
         if (member1 === m.author.id && !member2) { // If the user mentions only themself
             m.reply(`Lovely shi... Alone? Don't be like that ${m.author.username} ;-; *hugs you*\n~~only one user was detected~~`);

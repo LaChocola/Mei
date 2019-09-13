@@ -16,7 +16,7 @@ function getRoleName(role) {
     return name;
 }
 
-// roles = m.channel.guild.roles
+// roles = m.guild.roles
 function checkHasDuplicates(role, roles) {
     var hasDuplicates = roles.filter(r => utils.isSameRole(role, r)).length > 1;
     return hasDuplicates;
@@ -31,7 +31,7 @@ module.exports = {
             return;
         }
 
-        var guild = m.channel.guild;
+        var guild = m.guild;
         if (!guild) {
             return;
         }
@@ -186,7 +186,7 @@ module.exports = {
                         return;
                     }
                     const channelID = m.channelMentions[0];
-                    const channel = m.channel.guild.channels.get(channelID);
+                    const channel = m.guild.channels.get(channelID);
                     if (channel.permissionsOf(m.bot.user.id).json.sendMessages !== true) {
                         m.reply("I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;

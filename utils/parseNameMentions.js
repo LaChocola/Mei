@@ -11,10 +11,12 @@ function parseNameMentions(m, sep) {
     if (names.length === 1 && names[0] === "") {
         names = [];
     }
-    names = names.map(n => parseName(n)).filter(n => n);
+    names = names
+        .map(name => parseName(name))
+        .filter(name => name);
 
-    var members = names.map(function(n) {
-        return m.guild.members.find(m => m.name.toLowerCase().trim() === n);
+    var members = names.map(function(name) {
+        return m.guild.members.find(m => m.name.toLowerCase().trim() === name);
     });
 
     members.forEach(function(member) {

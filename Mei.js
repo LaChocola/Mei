@@ -177,14 +177,14 @@ function createFakeGuild(m) {
     console.debug(`${m.author.username}#${m.author.discriminator} (${m.author.id}): ${m.content}`);
 
     if (m.author.id !== conf.users.owner) {
-        console.debug("Guild 1:", m.channel.guild);
+        console.debug("Guild 1:", m.guild);
         var roles = new Eris.Collection(Eris.Role);
         var members = new Eris.Collection(Eris.User);
         var channels = new Eris.Collection(Eris.Channel);
         members.add(m.author, Eris.User, true);
         channels.add(m.channel, Eris.Channel, true);
         roles.add({ name: "fakeRole", id: "00001" }, Eris.Role, true);
-        console.debug("Guild 2:", m.channel.guild);
+        console.debug("Guild 2:", m.guild);
     }
 }
 */
@@ -232,7 +232,7 @@ bot.on("messageCreate", async function(m) {
             return;
         }
 
-        var guild = m.channel.guild;
+        var guild = m.guild;
         if (!guild) {
             // createFakeGuild(m);
             try {
@@ -293,7 +293,7 @@ bot.on("messageCreate", async function(m) {
             return;
         }
 
-        var guild = m.channel.guild;
+        var guild = m.guild;
         var guildDb = await dbs.guild.load();
         var guildData = guildDb[guild.id];
 
@@ -317,9 +317,9 @@ bot.on("messageCreate", async function(m) {
 // Automatically remove the "No channel access" role from users on r/Macrophilia
 bot.on("messageCreate", async function(m) {
     try {
-        if (m.channel.guild.id === conf.guilds.r_macrophilia) {
+        if (m.guild.id === conf.guilds.r_macrophilia) {
             if (m.content.includes("you joined") === true && m.author.id === conf.users.dyno) { // If shit bot says "you joined" in #welcome
-                m.channel.guild.removeMemberRole(m.mentions[0].id, conf.roles.role1, "Removed from role assign"); // remove the No channel access role
+                m.guild.removeMemberRole(m.mentions[0].id, conf.roles.role1, "Removed from role assign"); // remove the No channel access role
             }
         }
     }
