@@ -14,12 +14,12 @@ module.exports = {
 
         try {
             var out = safeEval(m.fullArgs);
-            m.reply(out);
-            console.log(`eval: \`${JSON.stringify(out, null, 4)}\``);
+            m.reply(`\`${JSON.stringify(out, null, 4)}\``);
+            console.log(`eval:`, out);
         }
         catch (err) {
-            m.reply("**Error:** " + err.message);
-            console.log("eval err: ", err);
+            m.reply(`**Error:** \`${err.message}\``);
+            console.log("eval err:", err);
         }
         
     },
