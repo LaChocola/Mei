@@ -623,7 +623,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
             userData.hoard = {};
         }
         if (!userData.hoard["😍"]) {
-            userData.hoard"😍" = {};
+            userData.hoard["😍"] = {};
         }
 
         // Load authorData with defaults
