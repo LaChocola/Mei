@@ -21,7 +21,7 @@ const dbs = require("../dbs");
 function getEmojis(s) {
     var customEmojiRegex = /<a?:([a-zA-Z0-9]+):[0-9]+>/g;
     var standardEmojiRegex = emojiRegex();
-    var combinedRegex = new RegExp(`(?:${customEmojiRegex.source}|(${standardEmojiRegex.source}))`);
+    var combinedRegex = new RegExp(`(?:${customEmojiRegex.source}|(${standardEmojiRegex.source}))`, "g");
     var emojis = [];
 
     var match = combinedRegex.exec(s);
