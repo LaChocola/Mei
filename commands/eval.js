@@ -14,8 +14,8 @@ module.exports = {
 
         try {
             var out = safeEval(m.fullArgs);
-            m.reply(`\`${JSON.stringify(out, null, 4)}\``);
-            console.log(`eval:`, out);
+            m.reply(`\`${JSON.stringify(out, null, 2)}\``);
+            console.log("eval:", out);
         }
         catch (err) {
             m.reply(`**Error:** \`${err.message}\``);
