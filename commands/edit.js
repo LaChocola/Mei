@@ -56,28 +56,26 @@ module.exports = {
 
         if (args.toLowerCase().includes("hoards")) {
             if (args.toLowerCase().includes("enable")) {
-                if (!guildData.hoards) {
-                    guildData.hoards = true;
-                    await dbs.guild.save(guildDb);
-                    m.reply("Hoards enabled for all reactions", 5000);
-                    m.deleteIn(5000);
-                    return;
-                }
-
                 if (guildData.hoards) {
                     m.reply("Hoards have already been enabled in this server", 5000);
                     m.deleteIn(5000);
                     return;
                 }
+
+                guildData.hoards = true;
+                await dbs.guild.save(guildDb);
+                m.reply("Hoards enabled for all reactions", 5000);
+                m.deleteIn(5000);
             }
             else {
                 guildData.hoards = false;
                 await dbs.guild.save(guildDb);
                 m.reply("Hoards set to :heart_eyes: only", 5000);
                 m.deleteIn(5000);
-                return;
             }
+            return;
         }
+
         if (args.toLowerCase().includes("notifications")) {
             if (args.toLowerCase().includes("banlog")) {
                 if (args.toLowerCase().includes("disable")) {

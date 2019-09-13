@@ -2,40 +2,11 @@
 
 const Jimp = require("jimp");
 
-function parseNameMentions(m) {
-    var names = m.fullArgs.split(" | ");
-    // Ignore an empty string
-    if (names.length === 1 && names[0] === "") {
-        names = [];
-    }
-    names = names.map(n => parseName(n)).filter(n => n);
-
-    var members = names.map(function(n) {
-        return m.guild.members.find(m => m.name.toLowerCase().trim() === n);
-    });
-
-    members.forEach(function(member) {
-        var alreadyMentioned = m.mentions.some(u => u.id === member.id);
-        if (!alreadyMentioned) {
-            m.mentions.push(member.user);
-        }
-    });
-}
-
-function parseName(s) {
-    if (!s) {
-        return;
-    }
-    if (s.startsWith("@")) {
-        s = s.slice(1);
-    }
-    s = s.toLowerCase().trim();
-    return s;
-}
+const utils = require("../utils");
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
-        parseNameMentions(m);
+        utils.parseNameMentions(m);
 
         var member1 = m.guild.members.get(m.mentions[0].id);
         var member2 = m.guild.members.get(m.mentions[1].id);

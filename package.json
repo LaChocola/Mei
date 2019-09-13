@@ -16,6 +16,7 @@
     "dot-env": "0.0.1",
     "dotenv": "^8.1.0",
     "dotenv-expand": "^5.1.0",
+    "emoji-regex": "^8.0.0",
     "eris": "^0.10.1",
     "escape-string-regexp": "^2.0.0",
     "glob": "^7.1.4",

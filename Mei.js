@@ -7,6 +7,7 @@ process.on("unhandledRejection", (err, promise) => {
     console.error(err ? err.stack : promise);
 });
 
+const _ = require("lodash");
 const moment = require("moment");
 // colors module extends string prototype
 const colors = require("colors");  // eslint-disable-line no-unused-vars
@@ -17,7 +18,6 @@ const Profiler = require("./utils/Profiler");
 const commands = require("./commands");
 
 const conf = require("./conf");
-const utils = require("./utils");
 const dbs = require("./dbs");
 
 console.log("Loading...");
@@ -514,378 +514,284 @@ bot.on("guildDelete", async function(guild) {
     }
 });
 
+// Giveaways
 bot.on("messageReactionAdd", async function(m, emoji, userID) {
     try {
+        // Ignore non-giveaway emojis
+        if (emoji.id === conf.emojis.giveaway) {
+            return;
+        }
+
         m = await m.channel.getMessage(m.id);   // fetch message if not cached
+        var user = await m.bot.users.get(userID);
+
+        // Ignore bots
+        if (user.bot) {
+            return;
+        }
 
         var guild = m.guild;
-
         var guildDb = await dbs.guild.load();
         var guildData = guildDb[guild.id];
 
-        if (emoji.name === "😍") {
-            var link;
-            if (m.attachments.length === 0 && m.embeds.length === 0) {
-                link = m.cleanContent;
-            }
-            else if (m.attachments[0] && m.attachments.length !== 0) {
-                if (m.attachments.length === 1) {
-                    link = m.attachments[0].url;
-                }
-                else if (m.attachments.length > 1) {
-                    var links = [];
-                    for (var attachment of m.attachments) {
-                        if (attachment.url) {
-                            links.push(attachment.url);
-                        }
-                    }
-                }
-            }
-            else if (m.embeds[0]) {
-                if (m.embeds[0].image) {
-                    link = m.embeds[0].image.url;
-                }
-            }
-            if (link || (links && links[0])) {
-                var userDb = await dbs.user.load();
-                if (!userDb.people[userID]) {
-                    userDb.people[userID] = {};
-                    await dbs.user.save(userDb);
-                }
-
-                var personData = userDb.people[userID];
-                if (!personData.hoard) {
-                    personData.hoard = {
-                        "😍": {}
-                    };
-                    await dbs.user.save(userDb);
-                }
-                userDb = await dbs.user.load();  // Why load it a second time?
-                personData = userDb.people[userID];
-
-                var authorData = userDb.people[m.author.id];
-                var hoard = personData.hoard["😍"];
-                // This should never be false?
-                if (hoard) {
-                    if (links && links[0]) {
-                        for (let link of links) {
-                            if (!hoard[link]) {
-                                hoard[link] = m.author.id;
-                                await dbs.user.save(userDb);
-                                if (!userDb.people[m.author.id]) {
-                                    userDb.people[m.author.id] = {};
-                                    await dbs.user.save(userDb);
-                                    userDb = await dbs.user.load();
-                                }
-                                if (!userDb.people[m.author.id].adds) {
-                                    userDb.people[m.author.id].adds = 0;
-                                    await dbs.user.save(userDb);
-                                    userDb = await dbs.user.load();
-                                }
-                                if (m.author.id !== userID) {
-                                    userDb.people[m.author.id].adds++;
-                                    await dbs.user.save(userDb);
-                                    if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== m.bot.user.id) {
-                                        var user = bot.users.filter(u => u.id === m.author.id)[0];
-                                        bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(userDb.people[m.author.id].adds)} hoard adds.`, 60000);
-                                    }
-                                }
-                            }
-                        }
-                        return;
-                    }
-                    if (!hoard[link] && !(links && links[0])) {
-                        hoard[link] = m.author.id;
-                        await dbs.user.save(userDb);
-                        if (!userDb.people[m.author.id]) {
-                            userDb.people[m.author.id] = {};
-                            await dbs.user.save(userDb);
-                            userDb = await dbs.user.load();
-                        }
-                        if (!userDb.people[m.author.id].adds) {
-                            userDb.people[m.author.id].adds = 0;
-                            await dbs.user.save(userDb);
-                            userDb = await dbs.user.load();
-                        }
-                        if (m.author.id !== userID) {
-                            userDb.people[m.author.id].adds++;
-                            await dbs.user.save(userDb);
-                            if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== m.bot.user.id) {
-                                let user = bot.users.filter(u => u.id === m.author.id)[0];
-                                bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(userDb.people[m.author.id].adds)} hoard adds.`, 60000);
-                            }
-                        }
-                        return;
-                    }
-                }
-            }
+        // No giveaways are running
+        if (!(guildData & guildData.giveaways && guildData.giveaways.running)) {
+            return;
         }
-        if (guildData) {
-            if (guildData.giveaways) {
-                if (guildData.giveaways.running && emoji.id === conf.emojis.giveaway && userID !== m.bot.user.id && userID !== guildData.giveaways.creator) {
-                    if (m.id === guildData.giveaways.mID) {
-                        guildData.giveaways.current.contestants[userID] = "entered";
-                        await dbs.guild.save(guildDb);
-                        return;
-                    }
-                }
-            }
-            userDb = await dbs.user.load();
-            if (guildData.hoards !== false && emoji.name !== "😍") {
-                if (userDb.people[userID] && userDb.people[userID].hoard && userDb.people[userID].hoard[emoji.name]) {
-                    if (m.attachments.length === 0 && m.embeds.length === 0) {
-                        link = m.cleanContent;
-                    }
-                    else if (m.attachments[0] && m.attachments.length !== 0) {
-                        if (m.attachments.length === 1) {
-                            link = m.attachments[0].url;
-                        }
-                        else if (m.attachments.length > 1) {
-                            var links = [];
-                            for (var attachment of m.attachments) {
-                                if (attachment.url) {
-                                    links.push(attachment.url);
-                                }
-                            }
-                        }
-                    }
-                    else if (m.embeds[0] && m.embeds[0].image) {
-                        link = m.embeds[0].image.url;
-                    }
-                    if (link || (links && links[0])) {
-                        var userDb = await dbs.user.load();
-                        var hoard = userDb.people[userID].hoard[emoji.name];
-                        if (hoard) {
-                            if (links && links[0]) {
-                                for (let link of links) {
-                                    if (!hoard[link]) {
-                                        hoard[link] = m.author.id;
-                                        await dbs.user.save(userDb);
-                                        if (!userDb.people[m.author.id]) {
-                                            userDb.people[m.author.id] = {};
-                                            await dbs.user.save(userDb);
-                                            userDb = await dbs.user.load();
-                                        }
-                                        if (!userDb.people[m.author.id].adds) {
-                                            userDb.people[m.author.id].adds = 0;
-                                            await dbs.user.save(userDb);
-                                            userDb = await dbs.user.load();
-                                        }
-                                        if (m.author.id !== userID) {
-                                            userDb.people[m.author.id].adds++;
-                                            await dbs.user.save(userDb);
-                                            if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== m.bot.user.id) {
-                                                let user = bot.users.filter(u => u.id === m.author.id)[0];
-                                                bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(userDb.people[m.author.id].adds)} hoard adds.`, 60000);
-                                            }
-                                        }
-                                    }
-                                }
-                                return;
-                            }
-                            if (!hoard[link] && !(links && links[0])) {
-                                hoard[link] = m.author.id;
-                                await dbs.user.save(userDb);
-                                if (!userDb.people[m.author.id]) {
-                                    userDb.people[m.author.id] = {};
-                                    await dbs.user.save(userDb);
-                                    userDb = await dbs.user.load();
-                                }
-                                if (!userDb.people[m.author.id].adds) {
-                                    userDb.people[m.author.id].adds = 0;
-                                    await dbs.user.save(userDb);
-                                    userDb = await dbs.user.load();
-                                }
-                                if (m.author.id !== userID) {
-                                    userDb.people[m.author.id].adds++;
-                                    await dbs.user.save(userDb);
-                                    if (utils.toNum(userDb.people[m.author.id].adds) % 10 === 0 && m.author.id !== m.bot.user.id) {
-                                        let user = bot.users.filter(u => u.id === m.author.id)[0];
-                                        bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${utils.toNum(userDb.people[m.author.id].adds)} hoard adds.`, 60000);
-                                    }
-                                }
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
+
+        var giveaway = guildData.giveaways;
+
+        // Ignore reactions to messages other than the giveaway message
+        if (m.id !== giveaway.mID) {
+            return;
         }
+
+        // Ignore the giveaway creator
+        if (userID === giveaway.creator) {
+            return;
+        }
+
+        guildData.giveaways.current.contestants[userID] = "entered";
+        await dbs.guild.save(guildDb);
     }
     catch (err) {
-        console.error("messageReactionAdd error\n", err);
+        console.error("messageReactionAdd (giveaways) error\n", err);
     }
 });
 
-bot.on("messageReactionRemove", async function(m, emoji, userID) {
+// Get all relevant links in a message
+function getLinks(m) {
+    // Get all attachment links
+    var attachmentLinks = m.attachments
+        .map(a => a.url);
+
+    // Get all embed links
+    var embedLinks = m.embeds
+        .map(e => e.image && e.image.url);
+
+    // Make an array of both, and filter out an empty links
+    var links = _.concat(attachmentLinks, embedLinks)
+        .filter(u => u);
+
+    // If the array of links is still empty, go ahead and add m.cleanContent
+    if (links.length === 0 && m.cleanContent) {
+        links.push(m.cleanContent);
+    }
+
+    return links;
+}
+
+// Hoard Add
+bot.on("messageReactionAdd", async function(m, emoji, userID) {
     try {
         m = await m.channel.getMessage(m.id);   // fetch message if not cached
+        var user = await m.bot.users.get(userID);
 
-        var guildDb = await dbs.guild.load();
-        var userDb = await dbs.user.load();
+        // Ignore bots
+        if (user.bot) {
+            return;
+        }
 
         var guild = m.guild;
+        var guildDb = await dbs.guild.load();
 
+        // Load guildData with defaults
+        if (!guildDb[guild.id]) {
+            guildDb[guild.id] = {};
+        }
         var guildData = guildDb[guild.id];
+        // if guildData.hoards === undefined, then assume hoards are enabled by default
+        if (guildData.hoards === undefined) {
+            guildData.hoards = true;
+        }
 
-        if (emoji.name === "😍") {
-            var link;
-            if (m.attachments.length === 0 && m.embeds.length === 0) {
-                link = m.cleanContent;
-            }
-            else if (m.attachments[0] && m.attachments.length !== 0) {
-                if (m.attachments.length === 1) {
-                    link = m.attachments[0].url;
-                }
-                else if (m.attachments.length > 1) {
-                    var links = [];
-                    for (var attachment of m.attachments) {
-                        if (attachment.url) {
-                            links.push(attachment.url);
-                        }
-                    }
-                }
-            }
-            else if (m.embeds[0]) {
-                if (m.embeds[0].image) {
-                    link = m.embeds[0].image.url;
-                }
-            }
-            if (userDb.people[userID]) {
-                if (userDb.people[userID].hoard) {
-                    var hoard = userDb.people[userID].hoard["😍"];
-                }
-            }
-            if (hoard) {
-                if (links && links[0]) {
-                    for (let link of links) {
-                        hoard = userDb.people[userID].hoard[emoji.name];
-                        if (hoard[link]) {
-                            delete hoard[link];
-                            await dbs.user.save(userDb);
-                            userDb = await dbs.user.load();
-                            if (userDb.people[m.author.id]) {
-                                if (!userDb.people[m.author.id].adds) {
-                                    userDb.people[m.author.id].adds = 0;
-                                }
-                                await dbs.user.save(userDb);
-                                userDb = await dbs.user.load();
-                            }
-                            if (m.author.id !== userID) {
-                                userDb.people[m.author.id].adds--;
-                                await dbs.user.save(userDb);
-                            }
-                        }
-                    }
-                    return;
-                }
-                if (hoard[link] && !(links && links[0])) {
-                    delete hoard[link];
-                    await dbs.user.save(userDb);
-                    userDb = await dbs.user.load();
-                    if (userDb.people[m.author.id]) {
-                        if (!userDb.people[m.author.id].adds) {
-                            userDb.people[m.author.id].adds = 0;
-                        }
-                        await dbs.user.save(userDb);
-                        userDb = await dbs.user.load();
-                    }
-                    if (m.author.id !== userID) {
-                        userDb.people[m.author.id].adds--;
-                        await dbs.user.save(userDb);
-                    }
-                }
+        // check if the guild enables hoards, 😍 emoji is always enabled
+        if (emoji.name !== "😍" && !guildData.hoards) {
+            return;
+        }
+
+        var userDb = await dbs.user.load();
+        // Load userData with defaults
+        if (!userDb.people[userID]) {
+            userDb.people[userID] = {};
+        }
+        var userData = userDb.people[userID];
+        if (!userData.hoard) {
+            userData.hoard = {};
+        }
+
+        // Load authorData with defaults
+        if (!userDb.people[m.author.id]) {
+            userDb.people[m.author.id] = {};
+        }
+        var authorData = userDb.people[m.author.id];
+        if (!authorData.adds) {
+            authorData.adds = 0;
+        }
+
+        var hoards = userData.hoard;
+        var hoard = hoards[emoji.name];
+
+        if (!hoard) {
+            return;
+        }
+
+        var links = getLinks(m);
+
+        var milestone = false;
+        var changed = false;
+        links.forEach(function(link) {
+            if (!hoard[link]) {
                 return;
             }
+
+            hoard[link] = m.author.id;
+            if (m.author.id !== userID) {
+                authorData.adds++;
+                if (authorData.adds % 10 === 0) {
+                    milestone = true;
+                }
+            }
+            changed = true;
+        });
+
+        if (changed) {
+            await dbs.user.save(userDb);
         }
-        if (guildData) {
-            if (guildData.giveaways) {
-                if (guildData.giveaways.running && emoji.id === conf.emojis.giveaway && userID !== m.bot.user.id && userID !== guildData.giveaways.creator) {
-                    if (m.id === guildData.giveaways.mID) {
-                        if (guildData.giveaways.current.contestants[userID]) {
-                            delete guildData.giveaways.current.contestants[userID];
-                            await dbs.guild.save(guildDb);
-                            return;
-                        }
-                    }
-                }
-            }
-            userDb = await dbs.user.load();
-            if (guildData.hoards !== false && emoji.name !== "😍") {
-                if (!userDb.people[userID]) {
-                    return;
-                }
-                if (!userDb.people[userID].hoard) {
-                    return;
-                }
-                if (userDb.people[userID].hoard[emoji.name]) {
-                    var link;
-                    if (m.attachments.length === 0 && m.embeds.length === 0) {
-                        link = m.cleanContent;
-                    }
-                    else if (m.attachments[0] && m.attachments.length !== 0) {
-                        if (m.attachments.length === 1) {
-                            link = m.attachments[0].url;
-                        }
-                        else if (m.attachments.length > 1) {
-                            var links = [];
-                            for (var attachment of m.attachments) {
-                                if (attachment.url) {
-                                    links.push(attachment.url);
-                                }
-                            }
-                        }
-                    }
-                    else if (m.embeds[0]) {
-                        link = m.embeds[0].image.url;
-                    }
-                    var hoard = userDb.people[userID].hoard[emoji.name];
-                    if (hoard) {
-                        if (links && links[0]) {
-                            for (let link of links) {
-                                hoard = userDb.people[userID].hoard[emoji.name];
-                                if (hoard[link]) {
-                                    delete hoard[link];
-                                    await dbs.user.save(userDb);
-                                    if (userDb.people[m.author.id]) {
-                                        if (!userDb.people[m.author.id].adds) {
-                                            userDb.people[m.author.id].adds = 0;
-                                        }
-                                        await dbs.user.save(userDb);
-                                        userDb = await dbs.user.load();
-                                    }
-                                    if (m.author.id !== userID) {
-                                        userDb.people[m.author.id].adds--;
-                                        await dbs.user.save(userDb);
-                                    }
-                                }
-                            }
-                            return;
-                        }
-                        if (hoard[link] && !(links && links[0])) {
-                            delete hoard[link];
-                            await dbs.user.save(userDb);
-                            userDb = await dbs.user.load();
-                            if (userDb.people[m.author.id]) {
-                                if (!userDb.people[m.author.id].adds) {
-                                    userDb.people[m.author.id].adds = 0;
-                                }
-                                await dbs.user.save(userDb);
-                                userDb = await dbs.user.load();
-                            }
-                            if (m.author.id !== userID) {
-                                userDb.people[m.author.id].adds--;
-                                await dbs.user.save(userDb);
-                            }
-                        }
-                        return;
-                    }
-                }
-            }
+
+        if (milestone) {
+            m.reply(`${m.author.username}#${m.author.discriminator} reached ${authorData.adds} hoard adds.`, 60000);
         }
     }
     catch (err) {
-        console.error("messageReactionRemove error\n", err);
+        console.error("messageReactionAdd (hoard) error\n", err);
+    }
+});
+
+// Giveaways
+bot.on("messageReactionRemove", async function(m, emoji, userID) {
+    try {
+        // Ignore non-giveaway emojis
+        if (emoji.id === conf.emojis.giveaway) {
+            return;
+        }
+
+        m = await m.channel.getMessage(m.id);   // fetch message if not cached
+        var user = await m.bot.users.get(userID);
+
+        // Ignore bots
+        if (user.bot) {
+            return;
+        }
+
+        var guild = m.guild;
+        var guildDb = await dbs.guild.load();
+        var guildData = guildDb[guild.id];
+
+        // No giveaways are running
+        if (!(guildData & guildData.giveaways && guildData.giveaways.running)) {
+            return;
+        }
+
+        var giveaway = guildData.giveaways;
+
+        // Ignore reactions to messages other than the giveaway message
+        if (m.id !== giveaway.mID) {
+            return;
+        }
+
+        // Ignore the giveaway creator
+        if (userID === giveaway.creator) {
+            return;
+        }
+
+        // If user is currently a giveaway participant, remove them
+        if (giveaway.current.contestants[userID]) {
+            delete giveaway.current.contestants[userID];
+            await dbs.guild.save(guildDb);
+        }
+    }
+    catch (err) {
+        console.error("messageReactionRemove (giveaways) error\n", err);
+    }
+});
+
+// Hoard Remove
+bot.on("messageReactionRemove", async function(m, emoji, userID) {
+    try {
+        m = await m.channel.getMessage(m.id);   // fetch message if not cached
+        var user = await m.bot.users.get(userID);
+
+        // Ignore bots
+        if (user.bot) {
+            return;
+        }
+
+        var guild = m.guild;
+        var guildDb = await dbs.guild.load();
+
+        // Load guildData with defaults
+        if (!guildDb[guild.id]) {
+            guildDb[guild.id] = {};
+        }
+        var guildData = guildDb[guild.id];
+        // if guildData.hoards === undefined, then assume hoards are enabled by default
+        if (guildData.hoards === undefined) {
+            guildData.hoards = true;
+        }
+
+        // check if the guild enables hoards, 😍 emoji is always enabled
+        if (emoji.name !== "😍" && !guildData.hoards) {
+            return;
+        }
+
+        var userDb = await dbs.user.load();
+        // Load userData with defaults
+        if (!userDb.people[userID]) {
+            userDb.people[userID] = {};
+        }
+        var userData = userDb.people[userID];
+        if (!userData.hoard) {
+            userData.hoard = {};
+        }
+
+        // Load authorData with defaults
+        if (!userDb.people[m.author.id]) {
+            userDb.people[m.author.id] = {};
+        }
+        var authorData = userDb.people[m.author.id];
+        if (!authorData.adds) {
+            authorData.adds = 0;
+        }
+
+        var hoards = userData.hoard;
+        var hoard = hoards[emoji.name];
+
+        if (!hoard) {
+            return;
+        }
+
+        var links = getLinks(m);
+
+        var changed = false;
+        links.forEach(function(link) {
+            if (!hoard[link]) {
+                return;
+            }
+
+            delete hoard[link];
+            if (m.author.id !== userID) {
+                authorData.adds--;
+            }
+            changed = true;
+        });
+
+        if (changed) {
+            await dbs.user.save(userDb);
+        }
+    }
+    catch (err) {
+        console.error("messageReactionRemove (hoard) error\n", err);
     }
 });
 
