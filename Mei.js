@@ -622,6 +622,9 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
         if (!userData.hoard) {
             userData.hoard = {};
         }
+        if (!userData.hoard["😍"]) {
+            userData.hoard"😍" = {};
+        }
 
         // Load authorData with defaults
         if (!userDb.people[m.author.id]) {
