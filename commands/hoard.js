@@ -17,7 +17,7 @@ function parseEmojis(s) {
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
-        utils.parseNameMentions();
+        utils.parseNameMentions(m);
 
         var member = m.guild.members.get(m.mentions[0] || m.author);
 
