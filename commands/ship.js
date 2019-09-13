@@ -6,7 +6,7 @@ const utils = require("../utils");
 
 module.exports = {
     main: async function(bot, m, args, prefix) {
-        utils.parseNameMentions(m);
+        utils.parseNameMentions(m, " | ");
 
         var member1 = m.guild.members.get(m.mentions[0].id);
         var member2 = m.guild.members.get(m.mentions[1].id);

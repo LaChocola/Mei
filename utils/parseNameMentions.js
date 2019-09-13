@@ -1,8 +1,12 @@
 ﻿"use strict";
 
 // Searches for member names in the command arguments, and adds their user objects to the m.mentions array
-function parseNameMentions(m) {
-    var names = m.fullArgs.split(" | ");
+function parseNameMentions(m, sep) {
+    if (!sep) {
+        sep = " ";
+    }
+
+    var names = m.fullArgs.split(sep);
     // Ignore an empty string from split ("".split(" | ") === [""])
     if (names.length === 1 && names[0] === "") {
         names = [];
