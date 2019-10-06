@@ -15,8 +15,14 @@ module.exports = {
             var dice2 = args2.split("d")[0].trim() || null
             var amount2 = args2.split("d")[1].trim() || null
         }
-        var dice = args.split("|")[0].split("d")[0].trim() || null
-        var amount = args.split("|")[0].split("d")[1].trim() || null
+        var dice = args.split("|")[0].split("d")[0] || null
+        var amount = args.split("|")[0].split("d")[1] || null
+        if (dice) {
+            dice = dice.trim()
+        }
+        if (amount) {
+            amount = amount.trim()
+        }
         if (+dice < 0 || +amount < 0 || (args2 && +dice2 < 0 || args2 && +amount2 < 0)) {
             Bot.createMessage(m.channel.id, "No negative numbers are allowed. Please put the roll in the format of `!d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.").then((msg) => {
                 return setTimeout(function() {
