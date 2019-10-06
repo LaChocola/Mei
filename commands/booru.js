@@ -9,7 +9,7 @@ const _ = require('../people.js');
 let people = _.load();
 
 module.exports = {
-	main(Bot, m, args, prefix) {
+	async main(Bot, m, args, prefix) {
 		function isNumeric(num) {
 			return !isNaN(Number(num));
 		}
@@ -1194,11 +1194,11 @@ module.exports = {
 					'みとん': 'dislike'
 				};
 				const fetishes = people.people[id].fetishes;
-				const lowerOther = Object.entries(fetishes).map(v => [v[0].toLowerCase(), v[1]]).reduce((map, val) => {
+				const lowerOther = await Object.entries(fetishes).map(v => [v[0].toLowerCase(), v[1]]).reduce((map, val) => {
 					map[val[0]] = val[1];
 					return map;
 				}, {});
-				const lowerMain = Object.entries(fetishes2).map(v => [v[0].toLowerCase(), v[1]]).reduce((map, val) => {
+				const lowerMain = await Object.entries(fetishes2).map(v => [v[0].toLowerCase(), v[1]]).reduce((map, val) => {
 					map[val[0]] = val[1];
 					return map;
 				}, {});
@@ -1247,7 +1247,7 @@ module.exports = {
 			j.setCookie(cookie3, 'http://giantessbooru.com');
 			j.setCookie(cookie4, 'http://giantessbooru.com');
 			j.setCookie(cookie5, 'http://giantessbooru.com');
-			request({url: pageToVisit, jar: j}, (error, response, body) => {
+			request({url: pageToVisit, jar: j}, async (error, response, body) => {
 				const link_array = [];
 				const post_array = [];
 				if (error) {
@@ -1255,7 +1255,7 @@ module.exports = {
 				}
 				if (response && response.statusCode === 200) {
 					// Parse the document body
-					const $ = cheerio.load(body);
+					const $ = await cheerio.load(body);
 					if (response.request.uri.href.startsWith('http://giantessbooru.com/post/view/') || response.request.uri.href.startsWith('https://giantessbooru.com/post/view/')) { // gtsbooru redirects to the result pic page immediately if only 1 result exists, so we have to handle that specifically
 							post_array.push(response.request.uri.path);
 							var match = body.match(/\/_images\/([0-9a-zA-Z]+)\//gm)
