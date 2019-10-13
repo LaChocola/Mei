@@ -11,6 +11,7 @@ module.exports = {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout")
                 }, 5000)
             })
+            return;
         }
         if (msg.length < 175 && m.content.toLowerCase().includes("response")) {
             Bot.createMessage(m.channel.id, "Sorry, but that message is too short to be a reply. Please add some more length or detail, and try again.").then((msg) => {
