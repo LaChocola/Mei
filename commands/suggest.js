@@ -9,7 +9,7 @@ module.exports = {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                }, 5000)
+                }, 30000)
             })
             return;
         }
@@ -17,7 +17,7 @@ module.exports = {
             Bot.createMessage(m.channel.id, "Sorry, but that message is too short to be a reply. Please add some more length or detail, and try again.").then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
-                }, 5000)
+                }, 10000)
             })
             return;
         }
@@ -37,7 +37,7 @@ module.exports = {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout")
-                }, 5000)
+                }, 10000)
             })
         }
     },
