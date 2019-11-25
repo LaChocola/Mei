@@ -18,9 +18,61 @@ module.exports = {
         var id = mentioned.id
         var url = m.channel.guild.members.get(id).avatarURL
         if (args[0]) {
+          if (args[0].toLowerCase().includes("list")) {
+            args[0] = args[0].replace(/list/i, "").replace(/\s/g, "")
+            args[0] = args[0].split(" ")
+            if (id != m.author.id) {
+              Bot.createMessage(m.channel.id, "You can only modify your own hoards").then((msg) => {
+                  return setTimeout(function() {
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                  }, 5000)
+              })
+              return;
+            }
+            if (data.people[id].hoard) {
+              var hoard = Object.keys(data.people[id].hoard)
+              var counter = [];
+              for (let item of hoard) {
+                if (data.people[id].hoard[item]) {
+                  var count = Object.keys(data.people[id].hoard[item]).length
+                }
+                counter.push(`${item}: ${count} items`);
+              }
+              Bot.createMessage(m.channel.id, {
+                embed: {
+                    color: 0xA260F6,
+                    title: hoard.length + " hoards used by **" + name + "**",
+                    description: " \n" + counter.join("\n"),
+                    author: {
+                        name: name,
+                        icon_url: mentioned.avatarURL
+                    }
+                }
+              });
+            }
+            else if (!data.people[id].hoard) {
+              Bot.createMessage(m.channel.id, "Please react to messages with your hoard emoji's to pull them up in their own hoard").then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                }, 5000)
+              })
+            }
+            return;
+          }
           if (args[0].toLowerCase().includes("add")) {
             args[0] = args[0].replace(/add/i, "").replace(/\s/g, "")
             args[0] = args[0].split(" ")
+            if (id != m.author.id) {
+              Bot.createMessage(m.channel.id, "You can only modify your own hoards").then((msg) => {
+                  return setTimeout(function() {
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                  }, 5000)
+              })
+              return;
+            }
             if (args[0].length > 1) {
               Bot.createMessage(m.channel.id, "Sorry, you can only make a hoard by using 1 emoji").then((msg) => {
                   return setTimeout(function() {
@@ -66,10 +118,20 @@ module.exports = {
               })
               return;
             }
+            return;
           }
           if (args[0].toLowerCase().includes("remove")) {
             args[0] = args[0].replace(/remove/i, "").replace(/\s/g, "")
             args[0] = args[0].split(" ")
+            if (id != m.author.id) {
+              Bot.createMessage(m.channel.id, "You can only modify your own hoards").then((msg) => {
+                  return setTimeout(function() {
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                  }, 5000)
+              })
+              return;
+            }
             if (args[0].length > 1) {
               Bot.createMessage(m.channel.id, "Sorry, you can only remove 1 hoard at a time").then((msg) => {
                   return setTimeout(function() {
@@ -128,6 +190,7 @@ module.exports = {
                 return;
               }
             }
+            return;
           }
         }
         if (!(data.people[id]) || !(data.people[id].hoard)) {
@@ -178,7 +241,7 @@ module.exports = {
         }
         if (!rando) {
           if (hoard[hoard.indexOf(args[0])]) {
-            Bot.createMessage(m.channel.id, "Please react to messages with "+hoard[hoard.indexOf(args[0])]+" to pull them up in their own hoard").then((msg) => {
+            Bot.createMessage(m.channel.id, `No items found in the ${hoard[hoard.indexOf(args[0])]} hoard. Please react to messages with ${hoard[hoard.indexOf(args[0])]} to pull them up in their own hoard`).then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout")
