@@ -2,13 +2,13 @@ var timeago = require("timeago.js");
 var timediff = require('timediff');
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var number = m.author.id
         if (m.mentions.length > 0) {
             var number = m.mentions[0].id
         }
         var guild = m.channel.guild
-        var name1 = m.cleanContent.replace(/!date /i, "")
+        var name1 = m.cleanContent.replace(prefix, "").replace(/date/i, "").trim()
         var isThisUsernameThatUsername = function(member) {
             var memberName = member.nick || member.username
             if (memberName.toLowerCase() == name1.toLowerCase()) {
@@ -17,33 +17,26 @@ module.exports = {
         }
 
         var member = m.guild.members.find(isThisUsernameThatUsername)
-        var mentioned = m.mentions[0] || member || m.author
+        var mentioned = m.mentions[0] || member
         var id = undefined
         var name = undefined
         if (mentioned) {
           id = mentioned.id
           name = mentioned.username
         }
+        var args2 = m.content.replace(prefix, "").replace("date","").replace("<@", "").replace(">", "").trim()
         if (!id) {
-          var args2 = m.cleanContent.replace("!date ","").replace("<@", "").replace(">", "").trim()
-          if (!isNaN(+args2)) {
-            var id = args2
+          if (!isNaN(+args2) && +args2.length > 1) {
+            id = args2
+          }
+          if (args2.length < 1) {
+            id = m.author.id
           }
         }
-
-        var mentioned = m.guild.members.find(isThisUsernameThatUsername)
-        var member = m.mentions[0] || mentioned || m.author
-        var args2 = m.content.replace("!date ","").replace("<@", "").replace(">", "").trim()
-        if (args2.length > 1) {
-          var id = args2
+        if (!mentioned && id) {
+          mentioned = await m.channel.guild.members.get(id)          
         }
-        if (id != undefined) {
-          member = m.channel.guild.members.get(id)
-        }
-        else if (!id) {
-          member = m.channel.guild.members.get(member.id)
-        }
-        if (!member) {
+        if (!mentioned && +args2.length > 1) {
           Bot.createMessage(m.channel.id, "I could not find that member or id in this server").then((msg) => {
               return setTimeout(function() {
                   Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
@@ -52,9 +45,12 @@ module.exports = {
           })
           return;
         }
-        var date = member.joinedAt;
-        var date2 = member.createdAt;
-        var name = member.nick || member.username
+        if (!mentioned.joinedAt) {
+          mentioned = await m.channel.guild.members.get(id)
+        }
+        var date = mentioned.joinedAt;
+        var date2 = mentioned.createdAt;
+        var name = mentioned.nick || mentioned.username
         var length = new Date(date).toDateString();
         var length2 = new Date(date2).toDateString();
         var ago = timeago.format(date);
