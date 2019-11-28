@@ -33,16 +33,18 @@ module.exports = {
             if (data.people[id].hoard) {
               var hoard = Object.keys(data.people[id].hoard)
               var counter = [];
+              var total = 0
               for (let item of hoard) {
                 if (data.people[id].hoard[item]) {
                   var count = Object.keys(data.people[id].hoard[item]).length
                 }
+                total = total + count
                 counter.push(`${item}: ${count} items`);
               }
               Bot.createMessage(m.channel.id, {
                 embed: {
                     color: 0xA260F6,
-                    title: hoard.length + " hoards used by **" + name + "**",
+                    title: `${hoard.length} hoards with ${total} items used by **${name}**`,
                     description: " \n" + counter.join("\n"),
                     author: {
                         name: name,
