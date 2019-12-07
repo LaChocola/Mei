@@ -1,5 +1,4 @@
 var timeago = require("timeago.js");
-var timediff = require('timediff');
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {
@@ -55,9 +54,10 @@ module.exports = {
         var length2 = new Date(date2).toDateString();
         var ago = timeago.format(date);
         var ago2 = timeago.format(date2);
-        var diff = timediff(date2, date, "D")
+        var diff = date-date2
         Bot.createMessage(m.channel.id, "**" + name + "**\nJoined: " + length + " | " + ago + "\nCreated: " + length2 + " | " + ago2)
-        if (diff.days < 2) {
+        
+        if (diff < 86400000) {
             Bot.createMessage(m.channel.id, ":warning: **" + name + "** Joined less than 24 hours after creating account");
         }
     },
