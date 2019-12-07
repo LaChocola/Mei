@@ -12,7 +12,6 @@ Object.defineProperty(bot.Message.prototype, 'guild', {
 var fs = require('fs');
 
 var reload = require('require-reload')(require);
-var timediff = require('timediff');
 var config = reload('./etc/config.json');
 var colors = require('colors');
 var _ = require('./data.js');
@@ -204,7 +203,7 @@ Bot.on('messageCreate', async function (m) {
     }
   }
 
-  if (m.content.toLowerCase().match(/\bchocola\b/i) || m.content.toLowerCase().match(/\bchoco\b/i) || m.content.toLowerCase().match(/\bchoc\b/i)) {
+  if (m.content.toLowerCase().match(/\bchocola\b/i) || m.content.toLowerCase().match(/\bchoco\b/i) || m.content.toLowerCase().match(/\bchoc\b/i) ||m.content.toLowerCase().match(/\bmei\b/i)) {
     var member = m.channel.guild.members.get('161027274764713984');
     var present = member.id || false;
     if (present !== '161027274764713984') {
@@ -361,7 +360,7 @@ Bot.on('guildMemberAdd', async function (guild, member) {
   var date = member.joinedAt;
   var date2 = member.createdAt;
   var name = member.nick || member.username;
-  var diff = timediff(date2, date, 'D');
+  var diff = date-date2
   if (server[guild.id]) {
     if (server[guild.id].notifications) {
       if (server[guild.id].notifications.updates) {
@@ -379,7 +378,7 @@ Bot.on('guildMemberAdd', async function (guild, member) {
         }).catch((err) => {
           console.log(err)
         });
-        if (diff.days < 2) {
+        if (diff < 86400000) {
           Bot.createMessage(channel, `:warning: **${name}** Joined less than 24 hours after creating their account`).catch((err) => {
             console.log(err)
           });
