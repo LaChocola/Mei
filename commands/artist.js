@@ -26,44 +26,95 @@ module.exports = {
 
         if (args.toLowerCase().includes('add ')) {
             if (mentioned.id !== m.author.id) {
-                Bot.createMessage(m.channel.id, 'Okay....but that isnt you');
+                Bot.createMessage(m.channel.id, 'Okay....but that isnt you').then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    }, 5000);
+                });
                 return;
             }
-            var incoming = name1.replace(/add /i, '').replace(': ', ' ').split(' ');
+            var split1 = name1.replace(/add /i, '').replace(': ', ' ').split(' ');
+            var split2 = name1.replace(/add /i, '').replace(': ', ' ').split(' | ');
+            var incoming = split1
+            if (split2.length > 1 && (split1.length > split2.length)) {
+                incoming = split2
+            }
             if (data.people[id].links[incoming[0]]) {
-                Bot.createMessage(m.channel.id, 'That\'s already been added, silly~');
+                Bot.createMessage(m.channel.id, incoming[0]+ ' has already been added, silly~').then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    }, 10000);
+                });
                 return;
             } else {
                 if (incoming.length > 2) {
-                    Bot.createMessage(m.channel.id, 'You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`!artist add Patreon <https://patreon.com/Chocola>`');
+                    Bot.createMessage(m.channel.id, 'You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`!artist add Patreon <https://patreon.com/Chocola>`').then((msg) => {
+                        return setTimeout(function() {
+                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        }, 15000);
+                    });
                     return;
                 }
                 data.people[id].links[incoming[0]] = incoming[1];
                 _.save(data);
-                Bot.createMessage(m.channel.id, 'Added **' + incoming[0] + '** ' + hand);
+                Bot.createMessage(m.channel.id, 'Added **' + incoming[0] + '** ' + hand).then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    }, 5000);
+                });
                 return;
             }
         }
 
         if (args.includes('remove')) {
             if (mentioned.id !== m.author.id) {
-                Bot.createMessage(m.channel.id, 'Okay....but that isnt you');
+                Bot.createMessage(m.channel.id, 'Okay....but that isnt you').then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    }, 5000);
+                });
                 return;
             }
-            var incoming = name1.replace('remove ', '').replace(': ', ' ').split(' ');
+            var split1 = name1.replace(/remove /i, '').replace(': ', ' ').split(' ');
+            var split2 = name1.replace(/remove /i, '').replace(': ', ' ').split(' | ');
+            var incoming = split1
+            if (data.people[id].links[split2[0]]) {
+                incoming = split2
+            }
+            
             if (data.people[id].links[incoming[0]]) {
                 delete data.people[id].links[incoming[0]];
                 _.save(data);
-                Bot.createMessage(m.channel.id, 'Removed: **' + incoming[0] + ':** from your links ' + hand);
+                Bot.createMessage(m.channel.id, 'Removed: **' + incoming[0] + ':** from your links ' + hand).then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    }, 5000);
+                });
                 return;
             } else {
-                Bot.createMessage(m.channel.id, 'Sorry, I couldnt find**' + incoming[0] + ':** `' + incoming[1] + ' in your links');
+                Bot.createMessage(m.channel.id, 'Sorry, I couldnt find** ' + incoming[0] + '** in your links').then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    }, 10000);
+                });
                 return;
             }
         }
 
         if (Object.keys(data.people[id].links).length === 0) {
-            Bot.createMessage(m.channel.id, 'I could find any links for **' + name + '** :(');
+            Bot.createMessage(m.channel.id, 'I could find any links for **' + name + '** :(').then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                }, 10000);
+            });
             return;
         } else {
             var links = data.people[id].links;
