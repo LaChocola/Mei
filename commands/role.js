@@ -30,17 +30,32 @@ module.exports = {
 			}
 		}
 		if (!roles) {
-			Bot.createMessage(m.channel.id, 'No roles have been set up yet. Use `!edit roles` to add and remove assignable roles. (Requires Moderator Permissions)');
+			Bot.createMessage(m.channel.id, 'No roles have been set up yet. Use `!edit roles` to add and remove assignable roles. (Requires Moderator Permissions)').then(msg => {
+				return setTimeout(() => {
+					Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+					Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+				}, 10000);
+			});
 			return;
 		}
 
 		if (m.mentions.length > 0 && m.mentions[0].id != m.author.id) {
-			Bot.createMessage(m.channel.id, 'You can only assign roles to yourself');
+			Bot.createMessage(m.channel.id, 'You can only assign roles to yourself').then(msg => {
+				return setTimeout(() => {
+					Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+					Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+				}, 1000);
+			});
 			return;
 		}
 		if (m.content.includes('list')) {
 			if (!data[guild.id].roles) {
-				Bot.createMessage(m.channel.id, 'There are no roles set up in this server, to add roles, please use `!edit roles add <rolename>`');
+				Bot.createMessage(m.channel.id, 'No roles have been set up yet. Use `!edit roles` to add and remove assignable roles. (Requires Moderator Permissions)').then(msg => {
+					return setTimeout(() => {
+						Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+						Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+					}, 10000);
+				});
 				return;
 			}
 			var roles = Object.keys(data[m.channel.guild.id].roles);
@@ -51,6 +66,7 @@ module.exports = {
 					_.save(data);
 					Bot.createMessage(m.channel.id, role + ' updated successfully').then(msg => {
 						return setTimeout(() => {
+							Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
 							Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
 						}, 1000);
 					});
