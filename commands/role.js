@@ -88,7 +88,7 @@ module.exports = {
 				if (roles[content]) {
 					var roleID = roles[content];
 					Bot.addGuildMemberRole(m.channel.guild.id, m.author.id, roleID, 'They...asked for it?').then(() => {
-						return Bot.createMessage(m.channel.id, hand + ' Successful added: ' + content).then(msg => {
+						return Bot.createMessage(m.channel.id, hand + ' Successfully added: ' + content).then(msg => {
 							return setTimeout(() => {
 								Bot.deleteMessage(msg.channel.id, msg.id, 'Timeout');
 							}, 7000) && setTimeout(() => {
@@ -130,7 +130,7 @@ module.exports = {
 					}
 				}
 				if (found.length > 0) {
-					Bot.createMessage(m.channel.id, hand + ' Successfuly added: ' + found.join(', ')).then(msg => {
+					Bot.createMessage(m.channel.id, hand + ' Successfully added: ' + found.join(', ')).then(msg => {
 						return setTimeout(() => {
 							Bot.deleteMessage(msg.channel.id, msg.id, 'Timeout');
 						}, 5000) && setTimeout(() => {
@@ -157,7 +157,7 @@ module.exports = {
 				if (roles[content]) {
 					var roleID = roles[content];
 					Bot.removeGuildMemberRole(m.channel.guild.id, m.author.id, roleID, 'They...asked for it?').then(() => {
-						return Bot.createMessage(m.channel.id, hand + ' Successful removed: ' + content).then(msg => {
+						return Bot.createMessage(m.channel.id, hand + ' Successfully removed: ' + content).then(msg => {
 							return setTimeout(() => {
 								Bot.deleteMessage(msg.channel.id, msg.id, 'Timeout');
 							}, 5000) && setTimeout(() => {
@@ -189,7 +189,7 @@ module.exports = {
 					}
 				}
 				if (found.length > 0) {
-					Bot.createMessage(m.channel.id, hand + ' Successfuly removed: ' + found.join(', ')).then(msg => {
+					Bot.createMessage(m.channel.id, hand + ' Successfully removed: ' + found.join(', ')).then(msg => {
 						return setTimeout(() => {
 							Bot.deleteMessage(msg.channel.id, msg.id, 'Timeout');
 						}, 5000) && setTimeout(() => {
