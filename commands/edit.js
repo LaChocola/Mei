@@ -2,7 +2,7 @@ const _ = require('../servers.js');
 
 const data = _.load();
 module.exports = {
-	async main(Bot, m, args) {
+	async main(Bot, m, args, prefix) {
 		const isMod = function (member, guild) {
 			if (data[guild.id]) {
 				if (data[guild.id].owner !== guild.ownerID) {
@@ -735,11 +735,11 @@ module.exports = {
 				}
 				return;
 			}
-			Bot.createMessage(m.channel.id, 'You can edit the roles, and do things like adding and removing roles that Mei can give to people, and creating and deleting roles.\n Simply say things like `!edit roles create tiny` to *create* a role called "tiny" or `!edit roles add giantess` to let users get the "giantess" role from Mei when they use the `!roles` command').then(msg => {
+			Bot.createMessage(m.channel.id, `You can edit the roles, and do things like adding and removing roles that Mei can give to people, and creating and deleting roles.\nSimply say things like \`${prefix}edit roles create tiny\` to *create* a role called "tiny" or \`${prefix}edit roles add giantess\` to let users get the "giantess" role from Mei when they use the \`${prefix}role\` command`).then(msg => {
 				return setTimeout(() => {
 					Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
 					Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
-				}, 15000);
+				}, 25000);
 			});
 			return;
 		}
