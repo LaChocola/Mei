@@ -1,7 +1,9 @@
 const _ = require("../people.js");
 var data = _.load();
+const fs = require("fs");
+
 module.exports = {
-    main: function(Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!hoard /i, "")
         var isThisUsernameThatUsername = function(member) {
             var memberName = member.nick || member.username
@@ -54,7 +56,7 @@ module.exports = {
               });
             }
             else if (!data.people[id].hoard) {
-              Bot.createMessage(m.channel.id, "Please react to messages with your hoard emoji's to pull them up in their own hoard").then((msg) => {
+              Bot.createMessage(m.channel.id, "You do not currently have a hoard. Please react to messages with your hoard emoji's in order to create a hoard").then((msg) => {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout")
@@ -192,6 +194,125 @@ module.exports = {
                 return;
               }
             }
+            return;
+          }
+          if (args[0].toLowerCase().includes("export")) {
+            if (id != m.author.id) {
+              Bot.createMessage(m.channel.id, "You can only export your own hoards").then((msg) => {
+                  return setTimeout(function() {
+                      Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                      Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                  }, 5000)
+              })
+              return;
+            }
+            if (!data.people[id].hoard) {
+              Bot.createMessage(m.channel.id, "You do not currently have a hoard. Please react to messages with your hoard emoji's in order to create a hoard").then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                }, 5000)
+              })
+              return;
+            }
+            var time = Date.now()
+            var placeHolder = 
+            `<!DOCTYPE html>
+            <html>
+            <style>
+              body {
+                background-color: black;
+                color: white;
+              }
+              p {
+                font-family: "Trebuchet MS", Helvetica, sans-serif;
+                font-size: 1.5vh;
+              }
+              body {
+                background-color: black;
+                color: white;
+              }
+              footer{
+                display: table;
+                text-align: center;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top:2em;
+              }
+              .hover_img a { }
+              .hover_img a span { position:fixed; right: 0; top: 0; height: 100vh; max-width: 70vw; display:none; z-index:99; }
+              .hover_img a:hover span { display:block; }
+            </style>
+            <head>
+              <title>Hoard Export</title>
+            </head>
+            <body>
+              <h2>Hoard Items:</h2>
+              XXX
+              <footer>
+                <p text-align="center"; font-size=0.5vh>
+                This site was automatically generated with the contents of your hoard by Mei#4980 on <script type="text/javascript">document.write(new Date(${time}).toDateString());</script>. Links are all hosted by Discord, and as such may not be available after they are deleted from their servers, if you find any dead links, that is likely the cause. If you enjoy this bot and her features, feel free to check out the links below to join my discord, see Mei's source code, become a patreon, or send a tip through paypal. Any help is much appreciated, and thanks for using my bot. Hope you Enjoy~
+                </p>
+                <p text-align="center"; font-size=0.5vh>
+                  ©Chocola <script type="text/javascript">document.write(new Date().getFullYear());</script> | <a href="https://github.com/LaChocola/Mei">Github</a> <a href="https://discord.gg/HmatPXj">Discord</a> <a href="https://www.patreon.com/Chocola">Patreon</a> <a href="https://www.paypal.me/ChocolaCodes">Paypal</a>
+                </p>
+              </footer>
+            </body>
+            </html>`
+            var exports = []
+            var hoard = data.people[id].hoard
+            var keys = Object.keys(data.people[id].hoard)
+            var y = 0
+            for (var i = 0; i < keys.length; i++) {
+              var category = keys[i]
+              if (Object.keys(hoard[category]).length > 0) {
+                y++
+                console.log(category);
+                var items = Object.keys(hoard[category])
+                var n = 1
+                for (var item of items) {
+                  if (!item.startsWith("http")) {
+                    exports.push(`<div class="hover_img"><p>${category} | ${n}: <a>"${item}"</a> posted by &lt;@${hoard[category][item]}&gt;</p></div>`);
+                  }
+                  if (item.startsWith("http")) {
+                    exports.push(`<div class="hover_img"><p>${category} | ${n}: <a href="${item}">${item}<span><img src="${item}" alt="image" height: 100vh; max-width: 70vw; span=""></span></a> posted by &lt;@${hoard[category][item]}&gt;</p></div>`);
+                  }
+                  n++
+                }
+              }
+            }
+            var eLength = exports.length
+            exports = placeHolder.replace("XXX", exports.join("\n"))
+            console.log(exports);
+            if (exports.length < 1) {
+              Bot.createMessage(m.channel.id, "You do not currently have any items in your hoard. Please react to messages with your hoard emoji's in order to create a hoard").then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                }, 5000)
+              })
+              return;
+            }
+            
+            await Bot.createMessage(m.channel.id, `Here is your hoard file as of right now. You have **${y}** active hoards, with **${eLength}** items total. (This message will self destruct in 60 seconds)`, {
+              "file": exports,
+              "name": `${id} Hoard Export (${new Date().toLocaleString().split(',')[0]}).html`
+            })
+            .then((msg) => {
+              return setTimeout(function() {
+                  Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                  Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+              }, 60000)
+            })
+            .catch((err) => {
+              console.log(err)
+              Bot.createMessage(m.channel.id, "Something went wrong while trying to export your hoard, please try again later.").then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                }, 5000)
+              })
+            });
             return;
           }
         }
