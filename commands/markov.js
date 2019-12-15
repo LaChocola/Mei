@@ -68,21 +68,29 @@ module.exports = {
                 });
                 return;
             }
+            if (sentence.length > 256) {
+                Bot.createMessage(m.channel.id, `Your markov is \`${sentence.length-256}\` characters too long to send, please try running ${prefix} markov again.`).then((msg) => {
+                    return setTimeout(function() {
+                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                        Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                    }, 10000)
+                })
+            }
             if (m.channel.guild.id == "187694240585744384" && m.mentions[0].id == "143906582235840512") {
-              Bot.createMessage(m.channel.id, `"${sentence}"\n    -${name} 2018`);
+              Bot.createMessage(m.channel.id, `"${sentence}"\n    -${name} ${new Date().getFullYear()}`);
               return;
             }
             Bot.createMessage(m.channel.id, {
                 embed: {
                     color: 0xA260F6,
-                    title: "\n \"" + sentence + "\"",
+                    description: "\n \"" + sentence + "\"",
                     timestamp: time,
                     author: {
                         name: name,
                         icon_url: mentioned.avatarURL
                     },
                     footer: {
-                        text: "-" + name + " 2018"
+                        text: `-${name} ${new Date().getFullYear()}`
                     }
                 }
             });
