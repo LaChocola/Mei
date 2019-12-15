@@ -36,8 +36,15 @@ module.exports = {
         }
         var channel = data[guild.id].art
         channel = Bot.getChannel(channel)
-        console.log(channel.nsfw);
-        console.log(m.channel.nsfw);
+        if (data[guild.id].art && !channel) {
+            Bot.createMessage(m.channel.id, `The selected art channel, <#${data[guild.id].art}>, has either been deleted, or I no longer have access to it. Please set the art channel to an existing channel that I have access to.`).then((msg) => {
+                return setTimeout(function() {
+                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
+                    Bot.deleteMessage(m.channel.id, m.id, "Timeout")
+                }, 15000)
+            })
+            return;
+        }
         var cName = channel.name
         var gName = channel.guild.name
         var icon = channel.guild.iconURL || null
