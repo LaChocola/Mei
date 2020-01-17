@@ -3,7 +3,7 @@
 const reload = require("require-reload")(require);
 const ordinal = require("ordinal");
 
-const miscl = reload("../misc");
+const misc = reload("../misc");
 const use = require("../data");
 
 var stats = use.load();
@@ -39,7 +39,7 @@ module.exports = {
 			usage = commands[mentioned.id]
 		}
 		if (args.indexOf("length") >= 0) {
-			var names = miscl.getcustomGTSNames(id)
+			var names = misc.getCustomGTSNames(id)
 			var resultstring = "";
 			var cleanishNames = names.join(", ")
 			for (var i = 0; i < names.length; i++) {
@@ -48,11 +48,11 @@ module.exports = {
 				}
 			}
 			var cleanNames = cleanishNames
-			resultstring += "**Names avaible: **" + names.length + "\n " + cleanishNames + "\n \n" + miscl.getLewdCounts("tf");
+			resultstring += "**Names avaible: **" + names.length + "\n " + cleanishNames + "\n \n" + misc.getLewdCounts("tf");
 			if (names.length < 1) {
-				names = miscl.getDefaultGTSNames(m.channel.guild.id)
+				names = misc.getDefaultGTSNames(m.channel.guild.id)
 				var resultstring = "";
-				resultstring += "**Names avaible: **" + names.totalnames + "\n " + names.cleannames + "\n \n" + miscl.getLewdCounts("tf");
+				resultstring += "**Names avaible: **" + names.totalnames + "\n " + names.cleannames + "\n \n" + misc.getLewdCounts("tf");
 			}
 
 			Bot.createMessage(m.channel.id, {
@@ -65,13 +65,13 @@ module.exports = {
 		}
 
 		if (args.indexOf("someone") >= 0) {
-			id = miscl.getSomeone(m);
+			id = misc.getSomeone(m);
 		}
 		var smallid = id;
 		var big = false;
 
-		var names = miscl.getDefaultGTSNames(m.channel.guild.id).names;
-		var cname = miscl.getcustomGTSNames(smallid);
+		var names = misc.getDefaultGTSNames(m.channel.guild.id).names;
+		var cname = misc.getCustomGTSNames(smallid);
 		names = names.concat(cname);
 		for (var i = 0; i < names.length; i++) {
 			if (args.includes(names[i].toLowerCase())) {
@@ -80,14 +80,14 @@ module.exports = {
 		}
 
 		var maintype = "tf";
-		var subtype = miscl.searchForLewd(args);
+		var subtype = misc.searchForLewd(args);
 
 		if (args.indexOf("invert") >= 0 || args.indexOf("inverse") >= 0) {
-			big = miscl.getTrueName(m.author.id, m);
+			big = misc.getTrueName(m.author.id, m);
 		}
 		var guildid = m.channel.guild.id;
 
-		var lewdmessage = miscl.generateLewdMessage(smallid, big, guildid, maintype, subtype)
+		var lewdmessage = misc.generateLewdMessage(smallid, big, guildid, maintype, subtype)
 		if (usage !== 0) {
 			usage = ordinal(+usage)
 		}
