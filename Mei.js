@@ -388,34 +388,38 @@ Bot.on('messageCreate', async function (m) {
     updateTimestamps()
     if (m.content.startsWith(prefix)) {
         var command = m.content.split(" ")[0].replace(prefix, "").toLowerCase();
-        if (commands.indexOf(command + ".js") > -1) {
-            updateTimestamps()
-            const commandContents = fs.readFileSync("./commands/" + command + ".js")
+        if (commands.includes(command + ".js")) {
+            updateTimestamps();
+            const commandContents = fs.readFileSync("./commands/" + command + ".js");
             if (commandContentsMap[command] !== commandContents) {
                 var cmd = reload("./commands/" + command + ".js");
-                commandContentsMap[command] = commandContents
-            } else {
-                var cmd = require("./commands/" + command + ".js")
+                commandContentsMap[command] = commandContents;
             }
-            if (m.author.id == "309220487957839872" && !cmd.self) {
+            else {
+                var cmd = require("./commands/" + command + ".js");
+            }
+            if (m.author.id === "309220487957839872" && !cmd.self) {
                 return;
             }
-            updateTimestamps()
-            var data = _.load(); // Track command usage in ../db/data.json
-            updateTimestamps()
-            data.commands.totalRuns++
-            if (!(data.commands[command])) {
+            updateTimestamps();
+
+            // Track command usage in ../db/data.json
+            var data = _.load();
+            updateTimestamps();
+            data.commands.totalRuns++;
+            if (!data.commands[command]) {
                 data.commands[command] = {};
-                data.commands[command].totalUses = 0
-                data.commands[command].users = {}
+                data.commands[command].totalUses = 0;
+                data.commands[command].users = {};
             }
-            if (!(data.commands[command].users[m.author.id])) {
-                data.commands[command].users[m.author.id] = 0
+            if (!data.commands[command].users[m.author.id]) {
+                data.commands[command].users[m.author.id] = 0;
             }
-            data.commands[command].users[m.author.id]++
-            data.commands[command].totalUses++
-            updateTimestamps()
+            data.commands[command].users[m.author.id]++;
+            data.commands[command].totalUses++;
+            updateTimestamps();
             _.save(data);
+
             var args = m.content.replace(/\[\?\]/ig, '').split(' ');
             args.splice(0, 1);
             args = args.join(' ');
