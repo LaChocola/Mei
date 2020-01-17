@@ -1,8 +1,7 @@
 "use strict";
 
-const sagiri = require("sagiri")(config.tokens.sauce);
-
 const config = require("../etc/config.json");
+const sagiri = require("sagiri")(config.tokens.sauce);
 
 module.exports = {
     main: async function (Bot, m, args, prefix) {
