@@ -1,4 +1,6 @@
-var _ = require('../data.js');
+"use strict";
+
+const _ = require("../data");
 
 var data = _.load();
 

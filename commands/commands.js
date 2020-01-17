@@ -1,4 +1,6 @@
-const fs = require('fs');
+"use strict";
+
+const fs = require("fs");
 
 module.exports = {
 	main(Bot, m, args, prefix) {
@@ -10,7 +12,7 @@ module.exports = {
 		const lines = [];
 		files.forEach(file => {
 			if (lines.length < 1800) {
-				const cmd = require('./' + file);
+				const cmd = require("./" + file);
 				if (!cmd.hidden) {
 					lines.push(format(file, cmd.help));
 				}

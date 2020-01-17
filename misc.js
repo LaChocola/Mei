@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 
-const _ = require("./people.js");
+const _ = require("./people");
 
 var data = _.load();
 

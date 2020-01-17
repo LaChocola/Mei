@@ -1,5 +1,9 @@
-const _ = require("../servers.js");
+"use strict";
+
+const _ = require("../servers");
+
 var data = _.load();
+
 module.exports = {
     main: async function(Bot, m, args, prefix) {
         function isNumeric(num) {
@@ -160,4 +164,4 @@ module.exports = {
         }
     },
     help: "Clean stuff. `!clean @Chocola X` to delete the last X messages. Defaults to 100"
-}
+};

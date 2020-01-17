@@ -1,4 +1,7 @@
-var Haikudos = require('haikudos');
+"use strict";
+
+const Haikudos = require("haikudos");
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
       Haikudos(function(haiku) {
@@ -11,4 +14,4 @@ module.exports = {
       });
     },
     help: "Random Haiku's"
-}
+};

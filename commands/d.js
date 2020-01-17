@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var args = m.content.replace(`${prefix}d `, "")

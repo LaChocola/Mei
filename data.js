@@ -1,3 +1,5 @@
+"use strict";
+
 const fs = require("fs");
 
 module.exports = {
@@ -24,4 +26,4 @@ module.exports = {
     save: function(data) {
         fs.writeFileSync("./db/data.json", JSON.stringify(data, null, "\t"));
     }
-}
+};

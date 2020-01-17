@@ -1,5 +1,7 @@
-var request = require('request');
-var randomCat = require('random-cat');
+"use strict";
+
+const request = require("request");
+const randomCat = require("random-cat");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -44,4 +46,4 @@ module.exports = {
         });
     },
     help: "Random Cats"
-}
+};

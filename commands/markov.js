@@ -1,4 +1,7 @@
-const MarkovGen = require('markov-generator');
+"use strict";
+
+const MarkovGen = require("markov-generator");
+
 var time = new Date().toISOString();
 
 module.exports = {
@@ -97,4 +100,4 @@ module.exports = {
         });
     },
     help: "Markov maker"
-}
+};

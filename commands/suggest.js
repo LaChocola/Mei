@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var msg = m.cleanContent.replace(`${prefix}suggest `, "");
@@ -42,4 +44,4 @@ module.exports = {
         }
     },
     help: "Suggest something"
-}
+};

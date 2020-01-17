@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var list = m.cleanContent.replace(prefix, "").replace(/choose/i, "");
@@ -18,4 +20,4 @@ module.exports = {
         Bot.createMessage(m.channel.id, msg);
     },
     help: "This or that?"
-}
+};

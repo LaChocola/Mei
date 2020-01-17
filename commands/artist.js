@@ -1,5 +1,9 @@
-const _ = require('../people.js');
+"use strict";
+
+const _ = require("../people");
+
 var data = _.load();
+
 module.exports = {
     main: function (Bot, m, args) {
         var name1 = m.cleanContent.replace(/!artist /i, '');

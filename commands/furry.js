@@ -1,4 +1,7 @@
-const Jimp = require('jimp');
+"use strict";
+
+const Jimp = require("jimp");
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var isThisUsernameThatUsername = function(member) {
@@ -41,4 +44,4 @@ module.exports = {
     },
     help: "idk",
     type: "Image Command"
-}
+};

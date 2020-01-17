@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         if (m.mentions.length > 2) {
@@ -59,4 +61,4 @@ module.exports = {
         });
     },
     help: ":3"
-}
+};

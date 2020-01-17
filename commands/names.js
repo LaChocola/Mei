@@ -1,5 +1,9 @@
-const _ = require("../people.js");
+"use strict";
+
+const _ = require("../people");
+
 var data = _.load();
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(prefix, "").replace(/names /i, "")
@@ -131,4 +135,4 @@ module.exports = {
 
     },
     help: "Add custom names for !v, !g and !tf"
-}
+};

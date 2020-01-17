@@ -1,5 +1,9 @@
-const _ = require("../data.js");
+"use strict";
+
+const _ = require("../data");
+
 var data = _.load();
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(`${prefix}stats `, "")
@@ -37,4 +41,4 @@ module.exports = {
         });
     },
     help: "Stats"
-}
+};

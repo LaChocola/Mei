@@ -1,6 +1,8 @@
-const _ = require("../people.js");
+"use strict";
+
+const _ = require("../people");
+
 var data = _.load();
-const fs = require("fs");
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {
@@ -449,4 +451,4 @@ module.exports = {
           return;
     },
     help: "View hoards. React with :heart_eyes: to add"
-}
+};

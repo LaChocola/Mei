@@ -1,6 +1,9 @@
-var apiai = require('apiai');
-var config = require("../etc/config.json");
-var app = apiai(config.tokens.apiai);
+"use strict";
+
+const apiai = require("apiai");
+const config = require("../etc/config.json");
+
+const app = apiai(config.tokens.apiai);
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -24,4 +27,4 @@ module.exports = {
         }
     },
     help: "Lets talk~"
-}
+};

@@ -1,4 +1,6 @@
-const _ = require('../servers.js');
+"use strict";
+
+const _ = require("../servers");
 
 const data = _.load();
 module.exports = {

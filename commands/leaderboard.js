@@ -1,5 +1,9 @@
-const _ = require("../people.js");
+"use strict";
+
+const _ = require("../people");
+
 var data = _.load();
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
       function rank(obj) {
@@ -144,4 +148,4 @@ module.exports = {
       }
     },
     help: "Shows hoard leaderboards"
-}
+};

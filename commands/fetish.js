@@ -1,6 +1,11 @@
-const _ = require("../people.js");
+"use strict";
+
+const unidecode = require("unidecode");
+
+const _ = require("../people");
+
 var data = _.load();
-var unidecode = require("unidecode")
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!fetish /i, "")
@@ -315,4 +320,4 @@ module.exports = {
 
     },
     help: "Add custom fetishes"
-}
+};

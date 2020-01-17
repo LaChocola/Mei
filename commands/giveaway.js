@@ -1,9 +1,13 @@
-const _ = require("../servers.js");
+"use strict";
+
+const _ = require("../servers");
+
 var data = _.load();
 
 function promiseTimeout(time) {
     return new Promise(resolve => setTimeout(() => resolve(), time));
 }
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         return new Promise((resolve, reject) => {
@@ -80,4 +84,4 @@ module.exports = {
         });
     },
     help: "Makes me say something"
-}
+};

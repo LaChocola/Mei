@@ -1,12 +1,10 @@
 "use strict";
 
-const booru = require('booru');
+const booru = require("booru");
+const request = require("request").defaults({jar: true});
+const cheerio = require("cheerio");
 
-let request = require('request');
-
-request = request.defaults({jar: true});
-const cheerio = require('cheerio');
-const _ = require('../people.js');
+const _ = require("../people");
 
 let people = _.load();
 

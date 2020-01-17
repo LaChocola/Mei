@@ -1,4 +1,6 @@
-const Jimp = require('jimp');
+"use strict";
+
+const Jimp = require("jimp");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -43,4 +45,4 @@ module.exports = {
         });
     },
     help: "This is beautiful"
-}
+};

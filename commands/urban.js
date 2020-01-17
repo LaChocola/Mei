@@ -1,5 +1,7 @@
-const request = require('request');
-const esc = require('unidecode');
+"use strict";
+
+const request = require("request");
+const esc = require("unidecode");
 
 module.exports = {
     main: function (Bot, m, args, prefix) {

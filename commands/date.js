@@ -1,4 +1,6 @@
-var timeago = require("timeago.js");
+"use strict";
+
+const timeago = require("timeago");
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {
@@ -62,4 +64,4 @@ module.exports = {
         }
     },
     help: "Date a user joined the server"
-}
+};

@@ -1,22 +1,27 @@
-'use strict';
+"use strict";
+
 process.on('unhandledRejection', (err, promise) => {
   console.error("== Node detected an unhandled rejection! ==");
   console.error(err ? err.stack : promise);
 });
-var bot = require('eris');
+
+const bot = require("eris");
+
 Object.defineProperty(bot.Message.prototype, 'guild', {
     get: function guild() {
         return this.channel.guild;
     }
 });
-var fs = require('fs');
 
-var reload = require('require-reload')(require);
-var config = reload('./etc/config.json');
-var colors = require('colors');
-var _ = require('./data.js');
-var ppl = require('./people.js');
-var servers = reload('./servers.js');
+require("colors");
+const fs = require("fs");
+const reload = require("require-reload")(require);
+
+const config = reload("./etc/config.json");
+const _ = require("./data");
+const ppl = require("./people");
+const servers = reload("./servers");
+
 var Bot = bot(config.tokens.mei);
 var hands = [ ':ok_hand::skin-tone-1:', ':ok_hand::skin-tone-2:', ':ok_hand::skin-tone-3:', ':ok_hand::skin-tone-4:', ':ok_hand::skin-tone-5:', ':ok_hand:']
 var hand = hands[Math.floor(Math.random() * hands.length)]
@@ -289,14 +294,14 @@ Bot.on('messageCreate', async function (m) {
     }
     if (m.content.includes('disable')) {
       var command = m.content.replace("pls", "").replace("disable", "").replace("!", "").trim()      
-      var commands = fs.readdirSync('./commands/');
-      if (commands.indexOf(command+'.js') > -1) {
-        const commandContents = fs.readFileSync('./commands/'+command+'.js')
+      var commands = fs.readdirSync("./commands/");
+      if (commands.indexOf(command + ".js") > -1) {
+        const commandContents = fs.readFileSync("./commands/" + command + ".js");
         if (commandContentsMap[command] !== commandContents) {
-          var cmd = await reload('./commands/'+command+'.js');
+          var cmd = await reload("./commands/" + command + ".js");
           commandContentsMap[command] = commandContents
         } else {
-          var cmd = await require('./commands/'+command+'.js')
+          var cmd = await require("./commands/" + command + ".js");
         }
         console.log(cmd);     
         
@@ -332,14 +337,14 @@ Bot.on('messageCreate', async function (m) {
     }
     if (m.content.includes('enable')) {
       var command = m.content.replace("pls", "").replace("enable", "").replace("!", "").trim()
-      var commands = fs.readdirSync('./commands/');
-      if (commands.indexOf(command+'.js') > -1) {
-        const commandContents = fs.readFileSync('./commands/'+command+'.js')
+      var commands = fs.readdirSync("./commands/");
+      if (commands.indexOf(command + ".js") > -1) {
+        const commandContents = fs.readFileSync("./commands/" + command + ".js")
         if (commandContentsMap[command] !== commandContents) {
-          var cmd = await reload('./commands/'+command+'.js');
+          var cmd = await reload("./commands/" + command + ".js");
           commandContentsMap[command] = commandContents
         } else {
-          var cmd = await require('./commands/'+command+'.js')
+          var cmd = await require("./commands/" + command + ".js")
         }
         if (!cmd.disable) {
           Bot.createMessage(m.channel.id, `${command} is already enabled. Doing nothing.`).then((msg) => {
@@ -379,18 +384,18 @@ Bot.on('messageCreate', async function (m) {
 	var logserver = `${m.channel.guild.name}`.cyan.bold || 'Direct Message'.cyan.bold
 	var logchannel = `#${m.channel.name}`.green.bold;
 	var logdivs = [' > '.blue.bold, ' - '.blue.bold];
-	var commands = fs.readdirSync('./commands/');
+	var commands = fs.readdirSync("./commands/");
   updateTimestamps()
 	if (m.content.startsWith(prefix)) {
-		var command = m.content.split(' ')[0].replace(prefix, '').toLowerCase();
-		if (commands.indexOf(command+'.js') > -1) {
+		var command = m.content.split(" ")[0].replace(prefix, "").toLowerCase();
+		if (commands.indexOf(command + ".js") > -1) {
       updateTimestamps()
-      const commandContents = fs.readFileSync('./commands/'+command+'.js')
+      const commandContents = fs.readFileSync("./commands/" + command + ".js")
       if (commandContentsMap[command] !== commandContents) {
-        var cmd = reload('./commands/'+command+'.js');
+        var cmd = reload("./commands/" + command + ".js");
         commandContentsMap[command] = commandContents
       } else {
-        var cmd = require('./commands/'+command+'.js')
+        var cmd = require("./commands/" + command + ".js")
       }
       if (m.author.id == "309220487957839872" && !cmd.self) {
         return;

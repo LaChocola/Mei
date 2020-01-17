@@ -1,7 +1,8 @@
-var config = require("../etc/config.json");
-const sagiri = require('sagiri');
-const handler = sagiri(config.tokens.sauce);
-const qs = require('querystring')
+"use strict";
+
+const sagiri = require("sagiri")(config.tokens.sauce);
+
+const config = require("../etc/config.json");
 
 module.exports = {
     main: async function(Bot, m, args, prefix) {
@@ -14,7 +15,7 @@ module.exports = {
         } else {
             var link = m.cleanContent.replace(`${prefix}sauce `, "")
         }
-        handler(link).then(async (res) => {
+        sagiri(link).then(async (res) => {
             data = res[0];
             var desc = data.raw.data.title || data.site
             var image = String(data.raw.header.thumbnail.split(" ").join("%20"))
@@ -80,4 +81,4 @@ module.exports = {
         });
     },
     help: "sauce"
-}
+};

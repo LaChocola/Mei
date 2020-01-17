@@ -1,4 +1,4 @@
-const fs = require("fs");
+"use strict";
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -34,4 +34,4 @@ module.exports = {
         }
     },
     help: "Embed text"
-}
+};

@@ -1,4 +1,6 @@
-const aesthetics = require('aesthetics');
+"use strict";
+
+const aesthetics = require("aesthetics");
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -17,4 +19,4 @@ module.exports = {
         return;
     },
     help: "Vaporwave Text"
-}
+};

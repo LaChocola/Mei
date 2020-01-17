@@ -1,4 +1,6 @@
-const colors = require("colors");
+"use strict";
+
+require("colors");
 
 module.exports = {
     main: function(Bot, m, config) {
@@ -17,4 +19,4 @@ module.exports = {
         console.log("INF".bgBlue.magenta + " Currently seeing: " + `${Bot.users.size}`.green.bold + " users");
         console.log('');
     }
-}
+};

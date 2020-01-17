@@ -1,6 +1,9 @@
-const _ = require("../servers.js");
+"use strict";
+
+const _ = require("../servers");
+
 var data = _.load();
-var reload = require("require-reload")(require);
+
 module.exports = {
       main: async function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(/!names /i, "")
@@ -186,4 +189,4 @@ module.exports = {
         Bot.deleteMessage(m.channel.id, m.id, "Timeout")
     },
     help: "Ban someone..."
-}
+};

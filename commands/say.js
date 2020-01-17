@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var msg = m.cleanContent.replace(`${prefix}say `, "");
@@ -9,4 +11,4 @@ module.exports = {
         }
     },
     help: "Makes me say something"
-}
+};

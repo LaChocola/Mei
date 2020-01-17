@@ -1,9 +1,13 @@
+"use strict";
+
 const yt = require("ytdl-core");
-const fs = require("fs");
-const _ = require("../servers.js");
-const progress = require('progress-string')
-const ytsr = require('ytsr');
+const progress = require("progress-string");
+const ytsr = require("ytsr");
+
+const _ = require("../servers");
+
 var data = _.load();
+
 module.exports = {
     main: async function(Bot, m, args, prefix) {
         // this is so fucking long. Basically take the video code out of any form of youtube link
@@ -546,4 +550,4 @@ module.exports = {
         }
     },
     help: "`!play <YT URL>` | `!play <search>` to play | `!play stop` to stop"
-}
+};

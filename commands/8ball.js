@@ -1,4 +1,6 @@
-const eightball = require('8ball')()
+"use strict";
+
+const eightball = require("8ball")();
 
 module.exports = {
     main: function(Bot, m, args, prefix) {
@@ -10,4 +12,4 @@ module.exports = {
         }
     },
     help: "8ball"
-}
+};

@@ -1,10 +1,10 @@
 "use strict";
 
-var reload = require("require-reload")(require);
-var ordinal = require("ordinal");
+const reload = require("require-reload")(require);
+const ordinal = require("ordinal");
 
-var miscl = reload("../misc.js");
-const use = require("../data.js");
+const miscl = reload("../misc");
+const use = require("../data");
 
 var stats = use.load();
 
@@ -107,4 +107,4 @@ module.exports = {
 		return;
 	},
 	help: "A Violent Smush"
-}
+};

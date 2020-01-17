@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
     main: function(Bot, m, args, prefix) {
         var guild = m.channel.guild
@@ -22,4 +24,4 @@ module.exports = {
         Bot.createMessage(m.channel.id, roles.join("  |  "));
     },
     help: "Role list"
-}
+};
