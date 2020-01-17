@@ -1,9 +1,7 @@
 "use strict";
 
-const apiai = require("apiai");
 const config = require("../etc/config.json");
-
-const app = apiai(config.tokens.apiai);
+const app = require("apiai")(config.tokens.apiai);
 
 module.exports = {
     main: async function (Bot, m, args, prefix) {
