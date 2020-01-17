@@ -127,7 +127,7 @@ function getNamesSummary(uid, guildid, perLine) {
 }
 
 // Lewd Summary
-async function getLewdCountsString(type) {
+async function getLewdCountsSummary(type) {
     var friendlyTypes = {
         "violent": "Smushes",
         "tf": "TF's",
@@ -153,9 +153,9 @@ async function getLewdCountsString(type) {
 }
 
 async function getLewdSummary(uid, guildid, type) {
-    var namesString = getNamesSummary(uid, guildid);
-    var lewdCountsString = await getLewdCountsString(type);
-    var summaryString = namesString + "\n \n" + lewdCountsString;
+    var namesSummary = getNamesSummary(uid, guildid);
+    var lewdCountsSummary = await getLewdCountsSummary(type);
+    var summaryString = namesSummary + "\n \n" + lewdCountsSummary;
     return summaryString;
 }
 
@@ -373,8 +373,8 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
 
     var lewdmessage = await generateLewdMessage(smallid, bigNick, guildid, type, subtype);
 
-    var stats = datadb.load();
-    var usageCount = stats.commands[command].users[author.id];
+    var data = await datadb.load();
+    var usageCount = data.commands[command].users[author.id];
     var usageStr = ordinal(+usageCount);
 
     return {
