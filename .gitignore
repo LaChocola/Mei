@@ -1,0 +1,5 @@
+node_modules
+.vs
+.env
+*.sln
+*i.njsproj
