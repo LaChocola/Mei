@@ -29,7 +29,7 @@ module.exports = {
         }
         Bot.sendChannelTyping(m.channel.id).then(async () => {
             try {
-                const bg = await Jimp.read('https://buttsare.sexy/4Vp1MUG.png');
+                const bg = await Jimp.read('https://owo.whats-th.is/4Vp1MUG.png');
                 const avy = await Jimp.read(pic);
                 const nameFont = await Jimp.loadFont('https://raw.githubusercontent.com/LaChocola/Mei/master/db/fonts/trebuchetms/TrebuchetMS.fnt');
                 const timeFont = await Jimp.loadFont('https://raw.githubusercontent.com/LaChocola/Mei/master/db/fonts/timefont/timeFont.fnt');

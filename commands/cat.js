@@ -14,7 +14,7 @@ module.exports = {
                     },
                     "author": {
                         "name": "| Here is your random cat:",
-                        "icon_url": "https://buttsare.sexy/a5f22a.png"
+                        "icon_url": "https://owo.whats-th.is/a5f22a.png"
                     }
                 }
             };
@@ -31,7 +31,7 @@ module.exports = {
                         },
                         "author": {
                             "name": "| Here is your random cat:",
-                            "icon_url": "https://buttsare.sexy/a5f22a.png"
+                            "icon_url": "https://owo.whats-th.is/a5f22a.png"
                         }
                     }
                 };

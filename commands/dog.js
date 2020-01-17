@@ -12,7 +12,7 @@ module.exports = {
                         },
                         "author": {
                             "name": "| Here is your random dog:",
-                            "icon_url": "https://buttsare.sexy/7083a2.png"
+                            "icon_url": "https://owo.whats-th.is/7083a2.png"
                         }
                     }
                 };

@@ -24,7 +24,7 @@ module.exports = {
         }
         Bot.sendChannelTyping(m.channel.id).then(async () => {
             try {
-                const bg = await Jimp.read("https://buttsare.sexy/495acb.jpg");
+                const bg = await Jimp.read("https://owo.whats-th.is/495acb.jpg");
                 const avy = await Jimp.read(pic);
                 avy.resize(95, 106);
                 bg.clone()
