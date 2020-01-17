@@ -410,9 +410,6 @@ Bot.on("messageCreate", async function (m) {
             }
             updateTimestamps();
 
-            // Track command usage in ../db/data.json
-            var data = await datadb.load();
-            updateTimestamps();
             data.commands.totalRuns++;
             if (!data.commands[command]) {
                 data.commands[command] = {};
