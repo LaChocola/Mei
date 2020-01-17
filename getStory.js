@@ -66,15 +66,15 @@ function getSubtype(s) {
 }
 
 // Giantess names
-function getAllGTSNames(uid, guildid) {
-    var customNames = getCustomGTSNames(uid);
+async function getAllGTSNames(uid, guildid) {
+    var customNames = await getCustomGTSNames(uid);
     var defaultNames = getDefaultGTSNames(guildid);
     var allNames = customNames.concat(defaultNames);
     return allNames;
 }
 
-function getGTSNames(uid, guildid) {
-    var names = getCustomGTSNames(uid);
+async function getGTSNames(uid, guildid) {
+    var names = await getCustomGTSNames(uid);
     if (names.length === 0) {
         names = getDefaultGTSNames(guildid);
     }
@@ -103,16 +103,16 @@ function getDefaultGTSNames(guildid) {
     return names;
 }
 
-function getCustomGTSNames(uid) {
-    var data = peopledb.load();
+async function getCustomGTSNames(uid) {
+    var data = await peopledb.load();
     // TODO: This doesn't load data? It won't actually have updated user data.
     return data.people[uid]
         && data.people[uid].names
         && Object.keys(data.people[uid].names) || [];
 }
 
-function getNamesSummary(uid, guildid, perLine) {
-    var names = getGTSNames(uid, guildid);
+async function getNamesSummary(uid, guildid, perLine) {
+    var names = await getGTSNames(uid, guildid);
 
     if (perLine === undefined) {
         perLine = 4;
@@ -153,7 +153,7 @@ async function getLewdCountsSummary(type) {
 }
 
 async function getLewdSummary(uid, guildid, type) {
-    var namesSummary = getNamesSummary(uid, guildid);
+    var namesSummary = await getNamesSummary(uid, guildid);
     var lewdCountsSummary = await getLewdCountsSummary(type);
     var summaryString = namesSummary + "\n \n" + lewdCountsSummary;
     return summaryString;
@@ -165,11 +165,11 @@ async function loadLewdPool() {
 }
 
 async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
-    var data = peopledb.load();
+    var data = await peopledb.load();
 
     //=============get names==================
     if (!bigname) {
-        bigname = choose(getAllGTSNames(smallid, guildid));
+        bigname = choose(await getAllGTSNames(smallid, guildid));
     }
 
     var gender = data.people[smallid] && data.people[smallid].names && data.people[smallid].names[bigname] || "female";
@@ -365,7 +365,7 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
         bigNick = authorNick;
     }
     else {
-        var names = getAllGTSNames(guildid, smallid);
+        var names = await getAllGTSNames(guildid, smallid);
         bigNick = names.find(n => args.includes(n.toLowerCase()));
     }
 

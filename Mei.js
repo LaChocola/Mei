@@ -19,8 +19,8 @@ const reload = require("require-reload")(require);
 
 const config = reload("./etc/config.json");
 const datadb = require("./data");
-const ppl = require("./people");
-const servers = reload("./servers");
+const peopledb = require("./people");
+const serversdb = require("./servers");
 
 var Bot = bot(config.tokens.mei);
 var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
@@ -29,7 +29,7 @@ var commandContentsMap = {};
 
 function reply(m, text, timeout) {
     Bot.createMessage(m.channel, text)
-        .then(function(sendMessage) {
+        .then(function (sendMessage) {
             return setTimeout(function () {
                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 Bot.deleteMessage(m.channel.id, sendMessage.id, "Timeout");
@@ -42,7 +42,7 @@ function reply(m, text, timeout) {
 }
 
 Bot.on("guildBanAdd", async function (guild, user) {
-    var server = servers.load();
+    var server = await serversdb.load();
     if (server[guild.id]) {
         if (server[guild.id].notifications) {
             if (server[guild.id].notifications.banLog) {
@@ -104,7 +104,7 @@ Bot.on("guildBanAdd", async function (guild, user) {
 });
 
 Bot.on("guildBanRemove", async function (guild, user) {
-    var server = servers.load();
+    var server = await serversdb.load();
     if (server[guild.id]) {
         if (server[guild.id].notifications) {
             if (server[guild.id].notifications.banLog) {
@@ -221,7 +221,7 @@ Bot.on("messageCreate", async function (m) {
     }
     updateTimestamps();
     var config = reload("./etc/config.json");
-    var server = servers.load();
+    var server = await serversdb.load();
     var prefix = config.prefix;
     if (server[m.channel.guild.id] && server[m.channel.guild.id].game && server[m.channel.guild.id].game.channel === m.channel.id && server[m.channel.guild.id].game.player === m.author.id) {
         if (server[m.channel.guild.id].game.active && server[m.channel.guild.id].game.choices.includes(m.content)) {
@@ -461,7 +461,7 @@ Bot.on("messageCreate", async function (m) {
 });
 
 Bot.on("guildMemberAdd", async function (guild, member) {
-    var server = servers.load();
+    var server = await serversdb.load();
     var prefix = config[prefix];
     if (server[guild.id] && server[guild.id].prefix) {
         prefix = server[guild.id];
@@ -510,7 +510,7 @@ Bot.on("guildMemberAdd", async function (guild, member) {
 });
 
 Bot.on("guildMemberRemove", async function (guild, member) {
-    var server = servers.load();
+    var server = await serversdb.load();
     var count = guild.memberCount - guild.members.filter(m => m.bot).length;
     if (server[guild.id]) {
         if (server[guild.id].notifications) {
@@ -585,9 +585,11 @@ Bot.on("guildDelete", async function (guild) {
 });
 
 Bot.on("messageReactionAdd", async function (m, emoji, userID) {
-    var server = servers.load();
-    var id = userID;
-    var m = await Bot.getMessage(m.channel.id, m.id).then(async (m) => {
+    var server = await serversdb.load();
+    var people = await peopledb.load();
+    m = await Bot.getMessage(m.channel.id, m.id);
+
+    try {
         if (emoji.name === "😍") {
             if (m.attachments.length === 0 && m.embeds.length === 0) {
                 var link = m.cleanContent;
@@ -610,19 +612,18 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                     var link = m.embeds[0].image.url;
                 }
             }
+
             if (link || (links && links[0])) {
-                var people = ppl.load();
-                if (!people.people[id]) {
-                    people.people[id] = {};
-                    ppl.save(people);
+                if (!people.people[userID]) {
+                    people.people[userID] = {};
+                    await peopledb.save(people);
                 }
-                if (!people.people[id].hoard) {
-                    people.people[id].hoard = {};
-                    people.people[id].hoard["😍"] = {};
-                    ppl.save(people);
+                if (!people.people[userID].hoard) {
+                    people.people[userID].hoard = {};
+                    people.people[userID].hoard["😍"] = {};
+                    await peopledb.save(people);
                 }
-                var people = ppl.load();
-                var hoard = people.people[id].hoard["😍"];
+                var hoard = people.people[userID].hoard["😍"];
                 var adds = undefined;
                 if (server[m.channel.guild.id]) {
                     adds = server[m.channel.guild.id].adds;
@@ -632,20 +633,18 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                         for (var link of links) {
                             if (!hoard[link]) {
                                 hoard[link] = m.author.id;
-                                ppl.save(people);
+                                await peopledb.save(people);
                                 if (!people.people[m.author.id]) {
                                     people.people[m.author.id] = {};
-                                    ppl.save(people);
-                                    people = ppl.load();
+                                    await peopledb.save(people);
                                 }
                                 if (!people.people[m.author.id].adds) {
                                     people.people[m.author.id].adds = 0;
-                                    ppl.save(people);
-                                    people = ppl.load();
+                                    await peopledb.save(people);
                                 }
-                                if (m.author.id !== id) {
+                                if (m.author.id !== userID) {
                                     people.people[m.author.id].adds++;
-                                    ppl.save(people);
+                                    await peopledb.save(people);
                                     if (!adds) {
                                         if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
                                             var user = Bot.users.filter(u => u.id === m.author.id)[0];
@@ -681,20 +680,18 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                     }
                     if (!hoard[link] && !(links && links[0])) {
                         hoard[link] = m.author.id;
-                        ppl.save(people);
+                        await peopledb.save(people);
                         if (!people.people[m.author.id]) {
                             people.people[m.author.id] = {};
-                            ppl.save(people);
-                            people = ppl.load();
+                            await peopledb.save(people);
                         }
                         if (!people.people[m.author.id].adds) {
                             people.people[m.author.id].adds = 0;
-                            ppl.save(people);
-                            people = ppl.load();
+                            await peopledb.save(people);
                         }
-                        if (m.author.id !== id) {
+                        if (m.author.id !== userID) {
                             people.people[m.author.id].adds++;
-                            ppl.save(people);
+                            await peopledb.save(people);
                             if (!adds) {
                                 if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
                                     var user = Bot.users.filter(u => u.id === m.author.id)[0];
@@ -729,155 +726,152 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                 }
             }
         }
+
         if (server[m.channel.guild.id]) {
             if (server[m.channel.guild.id].giveaways) {
                 if (server[m.channel.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== "309220487957839872" && userID !== server[m.channel.guild.id].giveaways.creator) {
-                    if (m.id === server[guild.id].giveaways.mID) {
+                    if (m.id === server[m.channel.guild.id].giveaways.mID) {
                         server[m.channel.guild.id].giveaways.current.contestants[userID] = "entered";
-                        servers.save(server);
+                        await serversdb.save(server);
                         return;
                     }
                 }
             }
-            var people = ppl.load();
+
             if (server[m.channel.guild.id].hoards !== false && emoji.name !== "😍") {
-                if (people.people[id] && people.people[id].hoard && people.people[id].hoard[emoji.name]) {
-                    var m = await Bot.getMessage(m.channel.id, m.id).then((m) => {
-                        if (m.attachments.length === 0 && m.embeds.length === 0) {
-                            var link = m.cleanContent;
+                if (people.people[userID] && people.people[userID].hoard && people.people[userID].hoard[emoji.name]) {
+                    if (m.attachments.length === 0 && m.embeds.length === 0) {
+                        var link = m.cleanContent;
+                    }
+                    else if (m.attachments[0] && m.attachments.length !== 0) {
+                        if (m.attachments.length === 1) {
+                            var link = m.attachments[0].url;
                         }
-                        else if (m.attachments[0] && m.attachments.length !== 0) {
-                            if (m.attachments.length === 1) {
-                                var link = m.attachments[0].url;
-                            }
-                            else if (m.attachments.length > 1) {
-                                var links = [];
-                                for (var attachment of m.attachments) {
-                                    if (attachment.url) {
-                                        links.push(attachment.url);
-                                    }
+                        else if (m.attachments.length > 1) {
+                            var links = [];
+                            for (var attachment of m.attachments) {
+                                if (attachment.url) {
+                                    links.push(attachment.url);
                                 }
                             }
                         }
-                        else if (m.embeds[0] && m.embeds[0].image) {
-                            var link = m.embeds[0].image.url;
-                        }
-                        if (link || (links && links[0])) {
-                            var people = ppl.load();
-                            var hoard = people.people[id].hoard[emoji.name];
-                            if (hoard) {
-                                if (links && links[0]) {
-                                    for (var link of links) {
-                                        if (!hoard[link]) {
-                                            hoard[link] = m.author.id;
-                                            ppl.save(people);
-                                            if (!people.people[m.author.id]) {
-                                                people.people[m.author.id] = {};
-                                                ppl.save(people);
-                                                people = ppl.load();
-                                            }
-                                            if (!people.people[m.author.id].adds) {
-                                                people.people[m.author.id].adds = 0;
-                                                ppl.save(people);
-                                                people = ppl.load();
-                                            }
-                                            if (m.author.id !== id) {
-                                                people.people[m.author.id].adds++;
-                                                ppl.save(people);
-                                                if (!adds) {
-                                                    if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
-                                                        var user = Bot.users.filter(u => u.id === m.author.id)[0];
-                                                        Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                            return setTimeout(function () {
-                                                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                                            }, 60000);
-                                                        }).catch((err) => {
-                                                            console.log(err);
-                                                        });
-                                                    }
-                                                }
-                                                else if (adds) {
-                                                    if (!isNaN(Number(adds))) {
-                                                        if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
-                                                            var user = Bot.users.filter(u => u.id === m.author.id)[0];
-                                                            Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                                return setTimeout(function () {
-                                                                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                                                }, adds);
-                                                            }).catch((err) => {
-                                                                console.log(err);
-                                                            });
-                                                        }
-                                                    }
-                                                    return;
-                                                }
-                                            }
+                    }
+                    else if (m.embeds[0] && m.embeds[0].image) {
+                        var link = m.embeds[0].image.url;
+                    }
+
+                    if (link || (links && links[0])) {
+                        var hoard = people.people[userID].hoard[emoji.name];
+                        if (hoard) {
+                            if (links && links[0]) {
+                                for (var link of links) {
+                                    if (!hoard[link]) {
+                                        hoard[link] = m.author.id;
+                                        await peopledb.save(people);
+                                        if (!people.people[m.author.id]) {
+                                            people.people[m.author.id] = {};
+                                            await peopledb.save(people);
                                         }
-                                    }
-                                    return;
-                                }
-                                if (!hoard[link] && !(links && links[0])) {
-                                    hoard[link] = m.author.id;
-                                    ppl.save(people);
-                                    if (!people.people[m.author.id]) {
-                                        people.people[m.author.id] = {};
-                                        ppl.save(people);
-                                        people = ppl.load();
-                                    }
-                                    if (!people.people[m.author.id].adds) {
-                                        people.people[m.author.id].adds = 0;
-                                        ppl.save(people);
-                                        people = ppl.load();
-                                    }
-                                    if (m.author.id !== id) {
-                                        people.people[m.author.id].adds++;
-                                        ppl.save(people);
-                                        if (!adds) {
-                                            if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
-                                                var user = Bot.users.filter(u => u.id === m.author.id)[0];
-                                                Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                    return setTimeout(function () {
-                                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                                    }, 60000);
-                                                }).catch((err) => {
-                                                    console.log(err);
-                                                });
-                                            }
+                                        if (!people.people[m.author.id].adds) {
+                                            people.people[m.author.id].adds = 0;
+                                            await peopledb.save(people);
                                         }
-                                        else if (adds) {
-                                            if (!isNaN(Number(adds))) {
+                                        if (m.author.id !== userID) {
+                                            people.people[m.author.id].adds++;
+                                            await peopledb.save(people);
+                                            if (!adds) {
                                                 if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
                                                     var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                                     Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                                         return setTimeout(function () {
                                                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                                        }, adds);
+                                                        }, 60000);
                                                     }).catch((err) => {
                                                         console.log(err);
                                                     });
                                                 }
                                             }
-                                            return;
+                                            else if (adds) {
+                                                if (!isNaN(Number(adds))) {
+                                                    if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                                        var user = Bot.users.filter(u => u.id === m.author.id)[0];
+                                                        Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
+                                                            return setTimeout(function () {
+                                                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                                            }, adds);
+                                                        }).catch((err) => {
+                                                            console.log(err);
+                                                        });
+                                                    }
+                                                }
+                                                return;
+                                            }
                                         }
                                     }
-                                    return;
                                 }
+                                return;
+                            }
+                            if (!hoard[link] && !(links && links[0])) {
+                                hoard[link] = m.author.id;
+                                await peopledb.save(people);
+                                if (!people.people[m.author.id]) {
+                                    people.people[m.author.id] = {};
+                                    await peopledb.save(people);
+                                }
+                                if (!people.people[m.author.id].adds) {
+                                    people.people[m.author.id].adds = 0;
+                                    await peopledb.save(people);
+                                }
+                                if (m.author.id !== userID) {
+                                    people.people[m.author.id].adds++;
+                                    await peopledb.save(people);
+                                    if (!adds) {
+                                        if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                            var user = Bot.users.filter(u => u.id === m.author.id)[0];
+                                            Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
+                                                return setTimeout(function () {
+                                                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                                }, 60000);
+                                            }).catch((err) => {
+                                                console.log(err);
+                                            });
+                                        }
+                                    }
+                                    else if (adds) {
+                                        if (!isNaN(Number(adds))) {
+                                            if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                                var user = Bot.users.filter(u => u.id === m.author.id)[0];
+                                                Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
+                                                    return setTimeout(function () {
+                                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                                    }, adds);
+                                                }).catch((err) => {
+                                                    console.log(err);
+                                                });
+                                            }
+                                        }
+                                        return;
+                                    }
+                                }
+                                return;
                             }
                         }
-                    });
+                    }
                 }
             }
         }
-    }).catch((err) => {
+    }
+    catch (err) {
         console.log(err);
-    });
+    }
 });
 
 Bot.on("messageReactionRemove", async function (m, emoji, userID) {
-    var server = servers.load();
-    var m = await Bot.getMessage(m.channel.id, m.id).then(async (m) => {
-        var id = userID;
-        var people = ppl.load();
+    var server = await serversdb.load();
+    var people = await peopledb.load();
+    m = await Bot.getMessage(m.channel.id, m.id);
+
+    try {
         if (emoji.name === "😍") {
             if (m.attachments.length === 0 && m.embeds.length === 0) {
                 var link = m.cleanContent;
@@ -900,29 +894,27 @@ Bot.on("messageReactionRemove", async function (m, emoji, userID) {
                     var link = m.embeds[0].image.url;
                 }
             }
-            if (people.people[id]) {
-                if (people.people[id].hoard) {
-                    var hoard = people.people[id].hoard["😍"];
+            if (people.people[userID]) {
+                if (people.people[userID].hoard) {
+                    var hoard = people.people[userID].hoard["😍"];
                 }
             }
             if (hoard) {
                 if (links && links[0]) {
-                    for (var link of links) {
-                        hoard = people.people[id].hoard[emoji.name];
+                    for (let link of links) {
+                        hoard = people.people[userID].hoard[emoji.name];
                         if (hoard[link]) {
                             delete hoard[link];
-                            ppl.save(people);
-                            people = ppl.load();
+                            await peopledb.save(people);
                             if (people.people[m.author.id]) {
                                 if (!people.people[m.author.id].adds) {
                                     people.people[m.author.id].adds = 0;
                                 }
-                                ppl.save(people);
-                                people = ppl.load();
+                                await peopledb.save(people);
                             }
-                            if (m.author.id !== id) {
+                            if (m.author.id !== userID) {
                                 people.people[m.author.id].adds--;
-                                ppl.save(people);
+                                await peopledb.save(people);
                             }
                         }
                     }
@@ -930,112 +922,107 @@ Bot.on("messageReactionRemove", async function (m, emoji, userID) {
                 }
                 if (hoard[link] && !(links && links[0])) {
                     delete hoard[link];
-                    ppl.save(people);
-                    people = ppl.load();
+                    await peopledb.save(people);
                     if (people.people[m.author.id]) {
                         if (!people.people[m.author.id].adds) {
                             people.people[m.author.id].adds = 0;
                         }
-                        ppl.save(people);
-                        people = ppl.load();
+                        await peopledb.save(people);
                     }
-                    if (m.author.id !== id) {
+                    if (m.author.id !== userID) {
                         people.people[m.author.id].adds--;
-                        ppl.save(people);
+                        await peopledb.save(people);
                     }
                 }
                 return;
             }
         }
+
         if (server[m.channel.guild.id]) {
             if (server[m.channel.guild.id].giveaways) {
                 if (server[m.channel.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== "309220487957839872" && userID !== server[m.channel.guild.id].giveaways.creator) {
                     if (m.id === server[m.channel.guild.id].giveaways.mID) {
                         if (server[m.channel.guild.id].giveaways.current.contestants[userID]) {
                             delete server[m.channel.guild.id].giveaways.current.contestants[userID];
-                            servers.save(server);
+                            await serversdb.save(server);
                             return;
                         }
                     }
                 }
             }
-            var people = ppl.load();
+
             if (server[m.channel.guild.id].hoards !== false && emoji.name !== "😍") {
-                if (!people.people[id]) {
+                if (!people.people[userID]) {
                     return;
                 }
-                if (!people.people[id].hoard) {
+                if (!people.people[userID].hoard) {
                     return;
                 }
-                if (people.people[id].hoard[emoji.name]) {
-                    var m = await Bot.getMessage(m.channel.id, m.id).then(async (m) => {
-                        if (m.attachments.length === 0 && m.embeds.length === 0) {
-                            var link = m.cleanContent;
+                if (people.people[userID].hoard[emoji.name]) {
+                    if (m.attachments.length === 0 && m.embeds.length === 0) {
+                        var link = m.cleanContent;
+                    }
+                    else if (m.attachments[0] && m.attachments.length !== 0) {
+                        if (m.attachments.length === 1) {
+                            var link = m.attachments[0].url;
                         }
-                        else if (m.attachments[0] && m.attachments.length !== 0) {
-                            if (m.attachments.length === 1) {
-                                var link = m.attachments[0].url;
-                            }
-                            else if (m.attachments.length > 1) {
-                                var links = [];
-                                for (var attachment of m.attachments) {
-                                    if (attachment.url) {
-                                        links.push(attachment.url);
-                                    }
+                        else if (m.attachments.length > 1) {
+                            var links = [];
+                            for (var attachment of m.attachments) {
+                                if (attachment.url) {
+                                    links.push(attachment.url);
                                 }
                             }
                         }
-                        else if (m.embeds[0]) {
-                            var link = m.embeds[0].image.url;
-                        }
-                        var hoard = people.people[id].hoard[emoji.name];
-                        if (hoard) {
-                            if (links && links[0]) {
-                                for (var link of links) {
-                                    hoard = people.people[id].hoard[emoji.name];
-                                    if (hoard[link]) {
-                                        delete hoard[link];
-                                        ppl.save(people);
-                                        if (people.people[m.author.id]) {
-                                            if (!people.people[m.author.id].adds) {
-                                                people.people[m.author.id].adds = 0;
-                                            }
-                                            ppl.save(people);
-                                            people = ppl.load();
+                    }
+                    else if (m.embeds[0]) {
+                        var link = m.embeds[0].image.url;
+                    }
+                    var hoard = people.people[userID].hoard[emoji.name];
+                    if (hoard) {
+                        if (links && links[0]) {
+                            for (var link of links) {
+                                hoard = people.people[userID].hoard[emoji.name];
+                                if (hoard[link]) {
+                                    delete hoard[link];
+                                    await peopledb.save(people);
+                                    if (people.people[m.author.id]) {
+                                        if (!people.people[m.author.id].adds) {
+                                            people.people[m.author.id].adds = 0;
                                         }
-                                        if (m.author.id !== id) {
-                                            people.people[m.author.id].adds--;
-                                            ppl.save(people);
-                                        }
+                                        await peopledb.save(people);
                                     }
-                                }
-                                return;
-                            }
-                            if (hoard[link] && !(links && links[0])) {
-                                delete hoard[link];
-                                ppl.save(people);
-                                people = ppl.load();
-                                if (people.people[m.author.id]) {
-                                    if (!people.people[m.author.id].adds) {
-                                        people.people[m.author.id].adds = 0;
+                                    if (m.author.id !== userID) {
+                                        people.people[m.author.id].adds--;
+                                        await peopledb.save(people);
                                     }
-                                    ppl.save(people);
-                                    people = ppl.load();
-                                }
-                                if (m.author.id !== id) {
-                                    people.people[m.author.id].adds--;
-                                    ppl.save(people);
                                 }
                             }
                             return;
                         }
-                    });
+                        if (hoard[link] && !(links && links[0])) {
+                            delete hoard[link];
+                            await peopledb.save(people);
+                            if (people.people[m.author.id]) {
+                                if (!people.people[m.author.id].adds) {
+                                    people.people[m.author.id].adds = 0;
+                                }
+                                await peopledb.save(people);
+                            }
+                            if (m.author.id !== userID) {
+                                people.people[m.author.id].adds--;
+                                await peopledb.save(people);
+                            }
+                        }
+                        return;
+                    }
                 }
             }
         }
-    }).catch((err) => {
+    }
+    catch (err) {
         console.log(err);
-    });
+    }
 });
 
 Bot.connect();

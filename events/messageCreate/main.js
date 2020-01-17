@@ -1,5 +1,5 @@
 "use strict";
 
 module.exports = {
-    main: function(Bot, m, config) {}
+    main: async function(Bot, m, config) {}
 };

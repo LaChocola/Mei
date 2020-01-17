@@ -1,24 +1,24 @@
 "use strict";
 
 const request = require("request");
-const unidecode = require("unidecode")
+const unidecode = require("unidecode");
 
 module.exports = {
-    main: function(Bot, m, args, prefix) {
-        if (m.content == `${prefix}e`) {
-            Bot.createMessage(m.channel.id, "Please add something i.e. ``!e Whats cooler than being cool``")
+    main: async function (Bot, m, args, prefix) {
+        if (m.content === `${prefix}e`) {
+            Bot.createMessage(m.channel.id, "Please add something i.e. ``!e Whats cooler than being cool``");
             return;
         }
-        var args = unidecode(args)
+        args = unidecode(args);
         var base = "http://emoji.getdango.com/api/emoji?q=";
         var query = args.replace(/ /g, "+");
         request.get({
             url: base + query,
             json: true
-        }, function(error, res, data) {
+        }, function (error, res, data) {
             var emojis = [];
             var scores = [];
-            data.results.forEach(function(result) {
+            data.results.forEach(function (result) {
                 emojis.push(result.text);
                 scores.push(result.score);
             });

@@ -3,7 +3,7 @@
 const fs = require("fs").promises;
 
 module.exports = {
-    load: function () {
+    load: async function () {
         var data = await fs.readFile("./db/servers.json", "utf8");
         if (data.includes("161027274764713984")) {
             try {
@@ -26,7 +26,7 @@ module.exports = {
             }
         }
     },
-    save: function (data) {
+    save: async function (data) {
         await fs.writeFile("./db/servers.json", JSON.stringify(data, null, "\t"));
     }
 };

@@ -3,7 +3,7 @@
 require("colors");
 
 module.exports = {
-    main: function(Bot, m, config) {
+    main: async function(Bot, m, config) {
         Bot.editStatus('Online', {
             name: "with Tinies"
         })

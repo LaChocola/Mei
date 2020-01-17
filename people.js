@@ -3,16 +3,16 @@
 const fs = require("fs").promises;
 
 module.exports = {
-    load: function() {
+    load: async function () {
         var data = await fs.readFile("./db/people.json", "utf8");
         if (data.includes("161027274764713984")) {
             try {
                 return JSON.parse(await fs.readFile("./db/people.json"));
-            } 
+            }
             catch (err) {
                 console.log(err);
             }
-        } 
+        }
         else {
             console.log("JSON error, attempting restore");
             try {
@@ -21,12 +21,12 @@ module.exports = {
                 console.log("Restore Successful");
                 return JSON.parse(await fs.readFile("/home/badmin/Bots/Mei/db/people.json"));
             }
-             catch (err) {
+            catch (err) {
                 console.log(err);
             }
         }
     },
-    save: function(data) {
+    save: async function (data) {
         await fs.writeFile("./db/people.json", JSON.stringify(data, null, "\t"));
     }
 };
