@@ -27,6 +27,11 @@ var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin
 var hand = hands[Math.floor(Math.random() * hands.length)];
 var commandContentsMap = {};
 
+if (!fs) {
+    console.log("Mei requires Node.js version 10 or above");
+    return;
+}
+
 function reply(m, text, timeout) {
     Bot.createMessage(m.channel, text)
         .then(function (sendMessage) {
