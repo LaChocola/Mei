@@ -429,7 +429,7 @@ Bot.on('messageCreate', async function (m) {
                 if (args) {
                     console.log('ARG'.black.bgCyan + ' ' + logargs.blue.bold);
                 }
-                cmd.main(Bot, m, args, prefix);
+                await cmd.main(Bot, m, args, prefix);
             } catch (err) {
                 console.log(err);
                 Bot.createMessage(m.channel.id, 'An error has occured.').then((msg) => {
