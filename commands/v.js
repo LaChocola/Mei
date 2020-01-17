@@ -1,15 +1,19 @@
-'use strict';
-const _ = require("../people.js");
+"use strict";
+
 var reload = require("require-reload")(require);
-var miscl = reload('../misc.js');
-var data = _.load();
+var ordinal = require("ordinal");
+
+var miscl = reload("../misc.js");
 const use = require("../data.js");
+
 var stats = use.load();
+
 var time = new Date().toISOString();
-var ordinal = require('ordinal')
+
 module.exports = {
 	main: function (Bot, m, args, prefix) {
-		var args = args.toLowerCase()
+		var args = args.toLowerCase();
+
 		var mentioned = m.mentions[0] || m.author
 		var id = mentioned.id
 		if (m.channel.guild.id == "187694240585744384") {

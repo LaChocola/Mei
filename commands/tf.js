@@ -1,19 +1,18 @@
-'use strict';
+"use strict";
 
 var reload = require("require-reload")(require);
-var ordinal = require('ordinal')
+var ordinal = require("ordinal");
 
-const _ = require("../people.js");
-var miscl = reload('../misc.js');
+var miscl = reload("../misc.js");
 const use = require("../data.js");
 
-var data = _.load();
 var stats = use.load();
+
 var time = new Date().toISOString();
 
 module.exports = {
 	main: function (Bot, m, args, prefix) {
-		var args = args.toLowerCase()
+		var args = args.toLowerCase();
 
 		if (m.channel.guild.id == "187694240585744384") {
 			prefix = "?"
