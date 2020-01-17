@@ -79,7 +79,7 @@ module.exports = {
               }
               if (exOnly == true) {
                 var data = {
-                  "content": "Results on for **" + search + "**",
+                  "content": "Results on Exhentai for **" + search + "**",
                   "embed": {
                     "color": 0xA260F6,
                     "footer": {
@@ -109,7 +109,7 @@ module.exports = {
               }
               if (exOnly == false) {
                 var data = {
-                  "content": "Results on for **" + search + "**",
+                  "content": "Results on for Exhentai **" + search + "**",
                   "embed": {
                     "color": 0xA260F6,
                     "footer": {

@@ -487,6 +487,57 @@ module.exports = {
 			});
 			return;
 		}
+		if (args.toLowerCase().includes('adds')) {
+			if (args.toLowerCase().includes('enable')) {
+				data[guild.id].adds = true;
+				_.save(data);
+				var number = null
+				args = m.cleanContent.toLowerCase().replace(`${prefix}edit`, "").replace(`adds`, "").replace(`enable`, "").trim().split(" ");
+				console.log(args);
+				
+				args.filter(function(arg) {
+					if (arg) {
+						if (!isNaN(Number(arg))) {
+							number = Math.floor(Number(arg));
+							return true;
+						}
+					}
+				});
+				console.log(number);
+				
+				if (!isNaN(Number(number)) && number > 0 && number < 31) {
+					data[guild.id].adds = number*60000;
+					_.save(data);
+					Bot.createMessage(m.channel.id, `Hoard add counter enabled. Setting timeout to ${number} minutes.`).then(msg => {
+						return setTimeout(() => {
+							Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+							Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+						}, 5000);
+					});
+					return;
+				}
+				else {
+					Bot.createMessage(m.channel.id, 'Hoard add counter enabled').then(msg => {
+						return setTimeout(() => {
+							Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+							Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+						}, 5000);
+					});
+					return;
+				}
+			}
+			if (args.toLowerCase().includes('disable')) {
+				data[guild.id].adds = false;
+				_.save(data);
+				Bot.createMessage(m.channel.id, 'Hoard add counter disabled').then(msg => {
+					return setTimeout(() => {
+						Bot.deleteMessage(m.channel.id, m.id, 'Timeout');
+						Bot.deleteMessage(m.channel.id, msg.id, 'Timeout');
+					}, 5000);
+				});
+				return;
+			}
+		}
 		/*
         // soon tm
         if (args.toLowerCase().includes("ignore ")) {

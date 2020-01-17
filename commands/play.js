@@ -497,7 +497,15 @@ module.exports = {
                                 if (error) {
                                   console.log("Error: "+error);
                                 }
-                                Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` ["+msToHMS(+info.length_seconds*1000)+"m] requested by **" + requester +"**").then((msg) => {
+                                if (!info) {
+                                  var info = {
+                                    "title": "Unknown",
+                                    "length_seconds": 0
+                                  }
+                                }
+                                var title = info.title
+                                var time = info.length_seconds
+                                Bot.createMessage(m.channel.id, "Now playing: `" + title + "` ["+msToHMS(+time*1000)+"m] requested by **" + requester +"**").then((msg) => {
                                     return setTimeout(function() {
                                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout")
                                     }, 5000)

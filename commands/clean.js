@@ -77,7 +77,7 @@ module.exports = {
         }
         if (m.cleanContent.includes(" all")) {
           if (m.author.id == "161027274764713984" || m.author.id == m.channel.guild.ownerID || mod == true) {
-            m.delete()
+            await m.delete()
             var i = 0
             var count = 0
             var ids = []
@@ -88,7 +88,7 @@ module.exports = {
                   ids.push(msg.id)
                 }
                 var invalid = ids.find((messageID) => messageID < oldestAllowed);
-                if (invalid) {
+                if (invalid || ids.length > 100) {
                   method = 2
                 }
                 if (method == 1) {
