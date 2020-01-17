@@ -1,6 +1,6 @@
 "use strict";
 
-const timeago = require("timeago");
+const timeago = require("timeago.js");
 
 module.exports = {
     main: async function (Bot, m, args, prefix) {
