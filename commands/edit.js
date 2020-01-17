@@ -4,8 +4,8 @@ const _ = require("../servers");
 
 const data = _.load();
 module.exports = {
-	async main(Bot, m, args, prefix) {
-		const isMod = function (member, guild) {
+	main: async function (Bot, m, args, prefix) {
+		function isMod(member, guild) {
 			if (data[guild.id]) {
 				if (data[guild.id].owner !== guild.ownerID) {
 					Bot.createMessage(m.channel.id, 'New server owner detected, updating database.').then(msg => {
@@ -55,27 +55,27 @@ module.exports = {
 				}
 				return false;
 			}
-		};
-		const roleSearch = function (role) {
+		}
+		function roleSearch(role) {
 			const roleName = role.name.toLowerCase();
 			if (roleName !== 'undefined') {
 				return roleName;
 			}
-		};
-		const findRole = function (role) {
+		}
+		function findRole(role) {
 			if (role.name !== 'undefined' && args.toLowerCase().trim() === role.name.toLowerCase().trim()) {
 				const role2 = role.id;
 				return role2;
 			}
-		};
-		const hasDuplicates = function (name) {
+		}
+		function hasDuplicates(name) {
 			let duplicate = false;
 			const length = m.channel.guild.roles.filter(r => r.name.toLowerCase() === name.toLowerCase()).length;
 			if (length > 1) {
 				duplicate = true;
 			}
 			return duplicate;
-		};
+		}
 		const hands = [':ok_hand::skin-tone-1:', ':ok_hand::skin-tone-2:', ':ok_hand::skin-tone-3:', ':ok_hand::skin-tone-4:', ':ok_hand::skin-tone-5:', ':ok_hand:'];
 		const hand = hands[Math.floor(Math.random() * hands.length)];
 		const guild = m.channel.guild;
@@ -496,8 +496,8 @@ module.exports = {
 				var number = null
 				args = m.cleanContent.toLowerCase().replace(`${prefix}edit`, "").replace(`adds`, "").replace(`enable`, "").trim().split(" ");
 				console.log(args);
-				
-				args.filter(function(arg) {
+
+				args.filter(function (arg) {
 					if (arg) {
 						if (!isNaN(Number(arg))) {
 							number = Math.floor(Number(arg));
@@ -506,9 +506,9 @@ module.exports = {
 					}
 				});
 				console.log(number);
-				
+
 				if (!isNaN(Number(number)) && number > 0 && number < 31) {
-					data[guild.id].adds = number*60000;
+					data[guild.id].adds = number * 60000;
 					_.save(data);
 					Bot.createMessage(m.channel.id, `Hoard add counter enabled. Setting timeout to ${number} minutes.`).then(msg => {
 						return setTimeout(() => {
@@ -768,7 +768,7 @@ module.exports = {
 			if (args.toLowerCase().includes('update')) {
 				var roles = Object.keys(data[m.channel.guild.id].roles);
 				for (var role of roles) {
-					const exists = m.channel.guild.roles.find((r) => {if (r.id == data[m.channel.guild.id].roles[role]) {return true;}});
+					const exists = m.channel.guild.roles.find((r) => { if (r.id == data[m.channel.guild.id].roles[role]) { return true; } });
 					if (!exists) {
 						delete data[guild.id].roles[role];
 						_.save(data);

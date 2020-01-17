@@ -1,16 +1,16 @@
 "use strict";
 
-const fs = require("fs");
+const fs = require("fs").promises;
 
 module.exports = {
-	main(Bot, m, args, prefix) {
+	main: async function (Bot, m, args, prefix) {
 		function format(file, help) {
-			const line = '`' + prefix + file.replace('.js', '') + '` ' + help + '.';
+			const line = "`" + prefix + file.replace(".js", "") + "` " + help + ".";
 			return line;
 		}
-		const files = fs.readdirSync('./commands/');
+		const files = await fs.readdir("./commands/");
 		const lines = [];
-		files.forEach(file => {
+		files.forEach(function (file) {
 			if (lines.length < 1800) {
 				const cmd = require("./" + file);
 				if (!cmd.hidden) {
@@ -18,10 +18,10 @@ module.exports = {
 				}
 			}
 		});
-		const message = lines.join('\n');
+		const message = lines.join("\n");
 		console.log(message.length);
 		console.log(message);
-		
+
 		Bot.createMessage(m.channel.id, {
 			embed: {
 				color: 0x5A459C,
@@ -29,5 +29,5 @@ module.exports = {
 			}
 		});
 	},
-	help: 'List of commands'
+	help: "List of commands"
 };

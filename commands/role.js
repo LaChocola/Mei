@@ -5,7 +5,7 @@ const _ = require("../servers");
 const data = _.load();
 
 module.exports = {
-	main(Bot, m, args, prefix) {
+	main: async function(Bot, m, args, prefix) {
 		const hands = [':ok_hand::skin-tone-1:', ':ok_hand::skin-tone-2:', ':ok_hand::skin-tone-3:', ':ok_hand::skin-tone-4:', ':ok_hand::skin-tone-5:', ':ok_hand:'];
 		const hand = hands[Math.floor(Math.random() * hands.length)];
 		const downs = [':thumbsdown::skin-tone-1:', ':thumbsdown::skin-tone-2:', ':thumbsdown::skin-tone-3:', ':thumbsdown::skin-tone-4:', ':thumbsdown::skin-tone-5:', ':thumbsdown:'];

@@ -9,7 +9,7 @@ const _ = require("../people");
 let people = _.load();
 
 module.exports = {
-	async main(Bot, m, args, prefix) {
+	main: async function(Bot, m, args, prefix) {
 		function isNumeric(num) {
 			return !isNaN(Number(num));
 		}

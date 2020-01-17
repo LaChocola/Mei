@@ -14,7 +14,7 @@ Object.defineProperty(bot.Message.prototype, "guild", {
 });
 
 require("colors");
-const fs = require("fs");
+const fs = require("fs").promises;
 const reload = require("require-reload")(require);
 
 const config = reload("./etc/config.json");
@@ -299,9 +299,9 @@ Bot.on("messageCreate", async function (m) {
         }
         if (m.content.includes("disable")) {
             var command = m.content.replace("pls", "").replace("disable", "").replace("!", "").trim();
-            var commands = fs.readdirSync("./commands/");
+            var commands = await fs.readdir("./commands/");
             if (commands.indexOf(command + ".js") > -1) {
-                const commandContents = fs.readFileSync("./commands/" + command + ".js");
+                const commandContents = await fs.readFile("./commands/" + command + ".js");
                 if (commandContentsMap[command] !== commandContents) {
                     var cmd = await reload("./commands/" + command + ".js");
                     commandContentsMap[command] = commandContents;
@@ -322,7 +322,7 @@ Bot.on("messageCreate", async function (m) {
                 }
                 cmd.disable = true;
                 console.log(cmd);
-                fs.writeFileSync("./commands/" + command + ".js", JSON.stringify(cmd));
+                await fs.writeFile("./commands/" + command + ".js", JSON.stringify(cmd));
                 Bot.createMessage(m.channel.id, `${command} has been disabled.`).then((msg) => {
                     return setTimeout(async function () {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -343,9 +343,9 @@ Bot.on("messageCreate", async function (m) {
         }
         if (m.content.includes("enable")) {
             var command = m.content.replace("pls", "").replace("enable", "").replace("!", "").trim();
-            var commands = fs.readdirSync("./commands/");
+            var commands = await fs.readdir("./commands/");
             if (commands.indexOf(command + ".js") > -1) {
-                const commandContents = fs.readFileSync("./commands/" + command + ".js");
+                const commandContents = await fs.readFile("./commands/" + command + ".js");
                 if (commandContentsMap[command] !== commandContents) {
                     var cmd = await reload("./commands/" + command + ".js");
                     commandContentsMap[command] = commandContents;
@@ -363,7 +363,7 @@ Bot.on("messageCreate", async function (m) {
                     return;
                 }
                 cmd.disable = false;
-                fs.writeFileSync("./commands/" + command + ".js", JSON.stringify(cmd));
+                await fs.writeFile("./commands/" + command + ".js", JSON.stringify(cmd));
                 Bot.createMessage(m.channel.id, `${command} has been enabled.`).then((msg) => {
                     return setTimeout(async function () {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -391,13 +391,13 @@ Bot.on("messageCreate", async function (m) {
     var logserver = `${m.channel.guild.name}`.cyan.bold || "Direct Message".cyan.bold;
     var logchannel = `#${m.channel.name}`.green.bold;
     var logdivs = [" > ".blue.bold, " - ".blue.bold];
-    var commands = fs.readdirSync("./commands/");
+    var commands = await fs.readdir("./commands/");
     updateTimestamps();
     if (m.content.startsWith(prefix)) {
         var command = m.content.split(" ")[0].replace(prefix, "").toLowerCase();
         if (commands.includes(command + ".js")) {
             updateTimestamps();
-            const commandContents = fs.readFileSync("./commands/" + command + ".js");
+            const commandContents = await fs.readFile("./commands/" + command + ".js");
             if (commandContentsMap[command] !== commandContents) {
                 var cmd = reload("./commands/" + command + ".js");
                 commandContentsMap[command] = commandContents;
@@ -435,7 +435,7 @@ Bot.on("messageCreate", async function (m) {
             try {
                 updateTimestamps();
                 timestamps.pop();
-                fs.appendFileSync("db/timestamps.txt", timestamps.reduce((a, b) => a + b) + "ms | " + timestamps.join(", ") + "\n");
+                await fs.appendFile("db/timestamps.txt", timestamps.reduce((a, b) => a + b) + "ms | " + timestamps.join(", ") + "\n");
                 console.log("CMD".black.bgGreen + " " + loguser + logdivs[1] + logserver + logdivs[0] + logchannel + " " + logcmd.blue);
                 if (args) {
                     console.log("ARG".black.bgCyan + " " + logargs.blue.bold);
