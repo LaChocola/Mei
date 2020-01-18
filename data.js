@@ -1,7 +1,7 @@
 "use strict";
 
 const fs = require("fs").promises;
-const ids = require("../ids");
+const ids = require("./ids");
 
 module.exports = {
     load: async function () {
