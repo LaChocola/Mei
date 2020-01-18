@@ -46,6 +46,10 @@ function reply(m, text, timeout) {
         });
 }
 
+Bot.on("ready", async function() {
+    console.log(`${Bot.user.username} (${Bot.user.id}) is now online.`);
+});
+
 Bot.on("guildBanAdd", async function (guild, user) {
     var server = await serversdb.load();
     if (server[guild.id]) {
