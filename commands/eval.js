@@ -3,6 +3,7 @@
 const safeEval = require("safe-eval");
 
 const misc = require("../misc");
+const ids = require("../ids");
 
 async function runEval(args, unsafe) {
     var result;
@@ -18,8 +19,8 @@ async function runEval(args, unsafe) {
 
 module.exports = {
     main: async function (Bot, m, args, prefix) {
-        var coolkids = ["176975815072808960", "147383057844797441", "103832588556193792", "196026737019191296"];
-        var isAdmin = m.author.id === "161027274764713984";
+        var coolkids = [ids.users.whosthis2, ids.users.whosthis3, ids.users.whosthis4, ids.users.whosthis5, ids.users.natalie];
+        var isAdmin = m.author.id === ids.users.chocola;
         var isCoolKid = coolkids.includes(m.author.id);
 
         if (!isAdmin && !isCoolKid) {
