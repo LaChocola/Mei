@@ -15,9 +15,14 @@ module.exports = {
 
         var choice = "`" + misc.choose(choiceList).trim() + "`";
 
-        var comments = ["I think " + choice + " is the best choice", "It's " + choice + " obviously", "Is that even a choice?  " + choice + " Duh", "I may be wrong, but I'm not, " + choice + " is the right answer"];
+        var comments = [
+            "I think {choice} is the best choice",
+            "It's {choice} obviously",
+            "Is that even a choice? {choice} Duh",
+            "I may be wrong, but I'm not, {choice} is the right answer"
+        ];
 
-        var msg = comments[Math.floor(Math.random() * comments.length)];
+        var msg = misc.choose(comments).replace("{choice}", choice);
 
         Bot.createMessage(m.channel.id, msg);
     },
