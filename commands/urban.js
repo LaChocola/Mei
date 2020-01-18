@@ -22,6 +22,7 @@ module.exports = {
 
         if (!result) {
             Bot.createMessage(m.channel.id, "Not found");
+            return;
         }
 
         var message =
