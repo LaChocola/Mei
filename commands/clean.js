@@ -49,7 +49,7 @@ function isMod(guildData, member, guild) {
         return true;
     }
 
-    var hasModRole = guildData.modRoles && member.roles.forEach(roleId => guildData.modRoles[roleId]);
+    var hasModRole = guildData.modRoles && member.roles.some(roleId => guildData.modRoles[roleId]);
     if (hasModRole) {
         return true;
     }
