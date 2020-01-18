@@ -60,7 +60,7 @@ function getSubtype(s) {
         return s.match(new RegExp("\\b" + alias + "\\b", "i"));
     });
 
-    var subtype = subtypeAliasMap[foundAlias];
+    var subtype = subtypeAliasMap[foundAlias] || "Random";
     var emoji = subtypeEmojis[subtype];
 
     return { subtype, emoji };
@@ -280,9 +280,8 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
         "singular": singular
     };
 
-    Object.entries(replacements).forEach(function (oldVal, newVal) {
-        var re = new RegExp(`\\[${oldVal}]`);
-        lewdmessage.replace(re, newVal);
+    Object.entries(replacements).forEach(function ([oldVal, newVal]) {
+        lewdmessage = lewdmessage.replace(`[${oldVal}]`, newVal);
     });
 
     var genderReplacements = {
@@ -320,9 +319,9 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
         toReplace = {};
     }
 
-    Object.entries(toReplace).forEach(function (oldVal, newVal) {
+    Object.entries(toReplace).forEach(function ([oldVal, newVal]) {
         var re = new RegExp(`\\b${oldVal}\\b`, "ig");
-        lewdmessage.replace(re, newVal);
+        lewdmessage = lewdmessage.replace(re, newVal);
     });
 
     return smallname + lewdmessage;
@@ -349,6 +348,10 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
     }
     else {
         smallid = getMentionedId(m, args) || author.id;
+    }
+
+    if (!smallid) {
+        smallid = author.id;
     }
 
     // Lewd Summary

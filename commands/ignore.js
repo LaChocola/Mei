@@ -65,8 +65,8 @@ module.exports = {
                 }, 2500);
             });
         }
-        var args = args.split(" ");
-        if (args.indexOf("undo") > -1) {
+        var argsArray = args.split(" ");
+        if (argsArray.includes("undo")) {
             if (!data.banned.global[id]) {
                 Bot.createMessage(m.channel.id, `The ID "${id}" was not found in the list of ignored users. Nothing to undo.`).then((msg) => {
                     return setTimeout(function () {

@@ -8,7 +8,7 @@ module.exports = {
 		var data = await serversdb.load();
 
 		var name1 = m.cleanContent.replace(/!names /i, "");
-		args = args.split(" ");
+		var argsArray = args.split(" ");
 		async function isMod(member, guild) {
 			if (data[guild.id]) {
 				if (data[guild.id].owner !== guild.ownerID) {
@@ -78,7 +78,7 @@ module.exports = {
 		if (m.mentions[0] && m.mentions.length < 2) {
 			name = mentioned.username;
 		}
-		if (args.indexOf("undo") > -1) {
+		if (argsArray.indexOf("undo") > -1) {
 			undo = true;
 		}
 		var args2 = m.content.replace(prefix + "ban ", "").replace(/\bundo\b/, "").split(" | ");

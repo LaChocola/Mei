@@ -1,6 +1,6 @@
 "use strict";
 
-const ids = require("../ids")'
+const ids = require("../ids");
 
 module.exports = {
     main: async function (Bot, m, args, prefix) {

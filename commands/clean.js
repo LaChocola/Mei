@@ -7,6 +7,9 @@ const ids = require("../ids");
 // If the guild owner has changed, then update the guild data
 async function updateGuildData(Bot, m, data) {
     var guildData = data[m.guild.id];
+    if (!guildData) {
+        return;
+    }
     if (guildData.owner !== m.guild.ownerID) {
         Bot.createMessage(m.channel.id, "New server owner detected, updating database.")
             .then(misc.deleteIn(5000));
@@ -16,40 +19,39 @@ async function updateGuildData(Bot, m, data) {
 }
 
 /*  
-*  Check if user is a mod
+ * Check if user is a mod
  *
-*  If Mei does not have settings for this guild, user must have one of the following permissions:
- *  - banMembers
- *  - administrator
- *  - manageChannels
- *  - manageGuild
- *  - manageMessages
- * 
-*  If Mei does have settings for this guild, user must be one of the following:
+ * User must be at least one of the following:
  *  - Guild owner
- *  - Listed as a mod in Mei
- *  - Have a role listed as a mod role in Mei
+ *  - Have at least one of the following permissions:
+ *      - banMembers
+ *      - administrator
+ *      - manageChannels
+ *      - manageGuild
+ *      - manageMessages
+ *  - Configured as a guild mod in Mei (!edit mod add @role)
+ *  - Have a role that is configured as a guild mod role in Mei (!edit mod add @role)
  */
 function isMod(guildData, member, guild) {
-    if (!guildData) {
-        var perms = member.permission.json;
-        var pArray = ["banMembers", "administrator", "manageChannels", "manageGuild", "manageMessages"];
-        // var pArray = ["banMembers", "administrator", "manageChannels", "manageGuild", "manageMessages", "kickMembers"];
-        var hasPerms = pArray.some(p => perms[p]);
-        return hasPerms;
-    }
-
     var isOwner = member.id === guild.ownerID;
     if (isOwner) {
         return true;
     }
 
-    var userIsMod = guildData.mods && guildData.mods[member.id];
+    var perms = member.permission.json;
+    var pArray = ["banMembers", "administrator", "manageChannels", "manageGuild", "manageMessages"];
+    // var pArray = ["banMembers", "administrator", "manageChannels", "manageGuild", "manageMessages", "kickMembers"];
+    var hasPerms = pArray.some(p => perms[p]);
+    if (hasPerms) {
+        return true;
+    }
+
+    var userIsMod = guildData && guildData.mods && guildData.mods[member.id];
     if (userIsMod) {
         return true;
     }
 
-    var hasModRole = guildData.modRoles && member.roles.some(roleId => guildData.modRoles[roleId]);
+    var hasModRole = guildData && guildData.modRoles && member.roles.some(roleId => guildData.modRoles[roleId]);
     if (hasModRole) {
         return true;
     }
@@ -102,7 +104,7 @@ module.exports = {
     main: async function (Bot, m, args, prefix) {
         await m.delete();
 
-        args = m.cleanContent.replace(`${prefix}clean `, "").split(" ");
+        var argsArray = m.cleanContent.replace(`${prefix}clean `, "").split(" ");
 
         var data = await serversdb.load();
         await updateGuildData(Bot, m, data);
@@ -110,11 +112,11 @@ module.exports = {
         var member = m.guild.members.get(m.author.id);
 
         // If a number is included in args, delete that many message
-        var intArg = args.find(arg => misc.isNum(arg));
+        var intArg = argsArray.find(arg => misc.isNum(arg));
         var deleteCount = misc.toNum(intArg) || 10;
 
         // If "all" is included in args, delete messages from everyone
-        var argAll = args.include("all");
+        var argAll = argsArray.includes("all");
 
         // If a user is mentioned, delete messages from that user
         var mentionedId = m.mentions[0] && m.mentions[0].id;
@@ -153,7 +155,7 @@ module.exports = {
         }
 
         var progressMsg = await Bot.createMessage(m.channel.id, `Cleaning ${msgIds.length} messages`);
-        await deleteMessages(Bot, m.channel.id, msgIds, `${msgIds.length} messages cleaned. Approved by ${m.author.username}#${m.author.discriminator}`);
+        await deleteMessages(Bot, m.channel.id, msgIds, encodeURIComponent(`${msgIds.length} messages cleaned. Approved by ${m.author.username}#${m.author.discriminator}`));
         await progressMsg.delete();
         Bot.createMessage(m.channel.id, `Cleaned ${msgIds.length} messages`)
             .then(misc.deleteIn(5000));

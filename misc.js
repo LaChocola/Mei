@@ -27,11 +27,22 @@ function chooseMember(members) {
     return member && member.id;
 }
 
+// Find the id of a mentioned user
 function getMentionedId(m, args) {
-    var guildMembers = m.guild.members;
-    var member = guildMembers.find(mbr => (mbr.nick || mbr.username).toLowerCase() === args);
-    var mentionedId = (member || m.mentions[0]).id;
-    return mentionedId;
+    var mentionedId = m.mentions[0] && m.mentions[0].id;
+    if (mentionedId) {
+        return mentionedId;
+    }
+
+    var member = m.guild.members.find(function (mbr) {
+        return (new RegExp("\\b" + mbr.username + "\\b", "i")).test(args)
+            || (new RegExp("\\b" + mbr.nick + "\\b", "i")).test(args);
+    });
+    if (member) {
+        return member.id;
+    }
+
+    return undefined;
 }
 
 function isNum(num) {
@@ -53,7 +64,7 @@ function toNum(num) {
 
 // Because javascript bit-wise operations are limited to 32 bits :P
 function leftShift(n, s) {
-    n * (2 ** s);
+    return n * (2 ** s);
 }
 
 function timestampToSnowflake(d) {
@@ -66,7 +77,7 @@ function timestampToSnowflake(d) {
 function splitArray(arr, predicate) {
     var trueArr = [];
     var falseArr = [];
-    arr.forEach(function(i) {
+    arr.forEach(function (i) {
         if (predicate(i)) {
             trueArr.push(i);
         }
