@@ -1,5 +1,7 @@
 "use strict";
 
+const ids = require("../ids")'
+
 module.exports = {
     main: async function (Bot, m, args, prefix) {
         var msg = m.cleanContent.replace(`${prefix}suggest `, "");
@@ -30,7 +32,7 @@ module.exports = {
             });
         }
         else {
-            Bot.createMessage("446548104704032768", {
+            Bot.createMessage(ids.channels.suggestions, {
                 embed: {
                     color: 0x5A459C,
                     description: msg,

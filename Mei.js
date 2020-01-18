@@ -22,6 +22,7 @@ const datadb = require("./data");
 const peopledb = require("./people");
 const serversdb = require("./servers");
 const misc = require("./misc");
+const ids = require("./ids");
 
 var Bot = bot(config.tokens.mei);
 var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
@@ -184,7 +185,7 @@ Bot.on("messageCreate", async function (m) {
             console.log(err);
         });
         /*
-        if (m.author.id !== "161027274764713984") {
+        if (m.author.id !== ids.users.chocola) {
           console.log("Guild 1:",m.channel.guild)
           var roles = new Collection(bot.Role)
           var members = new Collection(bot.User)
@@ -207,14 +208,14 @@ Bot.on("messageCreate", async function (m) {
         return;
     }
     if (m.content.toLowerCase().match(/\bchocola\b/i) || m.content.toLowerCase().match(/\bchoco\b/i) || m.content.toLowerCase().match(/\bchoc\b/i) || m.content.toLowerCase().match(/\bmei\b/i)) {
-        var present = await m.channel.guild.members.get("161027274764713984");
+        var present = await m.channel.guild.members.get(ids.users.chocola);
         if (!present) {
             return;
         }
-        if (m.author.id === "161027274764713984" || m.author.id === "309220487957839872") {
+        if (m.author.id === ids.users.chocola || m.author.id === Bot.user.id) {
             return;
         }
-        Bot.getDMChannel("161027274764713984").then(async function (DMchannel) {
+        Bot.getDMChannel(ids.users.chocola).then(async function (DMchannel) {
             Bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`).then(function (msg) {
                 Bot.createMessage(DMchannel.id, m.content);
             }).catch((err) => {
@@ -242,12 +243,12 @@ Bot.on("messageCreate", async function (m) {
     if (server[m.channel.guild.id] && server[m.channel.guild.id].prefix) {
         prefix = server[m.channel.guild.id].prefix;
     }
-    if (m.guild.id === "373589430448947200") {
-        if (m.content.includes("you joined") === true && m.author.id === "155149108183695360") { // If shit bot says "you joined" in #welcome
-            Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "375633311449481218", "Removed from role assign"); // remove the No channel access role
+    if (m.guild.id === ids.guilds.r_macrophilia) {
+        if (m.content.includes("you joined") === true && m.author.id === ids.users.dyno) { // If shit bot says "you joined" in #welcome
+            Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, ids.roles.role1, "Removed from role assign"); // remove the No channel access role
         }
     }
-    if (m.author.id === "161027274764713984" && m.content.includes("pls")) {
+    if (m.author.id === ids.users.chocola && m.content.includes("pls")) {
         if (m.content.includes("stop")) {
             Bot.createMessage(m.channel.id, "Let me rest my eyes for a moment").then((msg) => {
                 return setTimeout(function () {
@@ -261,12 +262,12 @@ Bot.on("messageCreate", async function (m) {
         if (m.content.includes("override")) {
             reply(m, "Chocola Recognized. Permission overrides engaged. I am at your service~", 2000);
         }
-        if (m.channel.guild.id === "354709664509853708") {
+        if (m.channel.guild.id === ids.guilds.smallworld) {
             if (m.content.includes(" mute") && m.mentions.length > 0) {
                 if (m.mentions.length > 1) {
                     var mentions = m.mentions;
                     for (const mention of mentions) {
-                        Bot.addGuildMemberRole(m.channel.guild.id, mention.id, "363854631035469825", "Daddy said shush").then(() => {
+                        Bot.addGuildMemberRole(m.channel.guild.id, mention.id, ids.roles.role2, "Daddy said shush").then(() => {
                             return Bot.createMessage(m.channel.id, hand).then((m) => {
                                 return setTimeout(function () {
                                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -276,7 +277,7 @@ Bot.on("messageCreate", async function (m) {
                     }
                     return;
                 }
-                Bot.addGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "363854631035469825", "Daddy said shush").then(() => {
+                Bot.addGuildMemberRole(m.channel.guild.id, m.mentions[0].id, ids.roles.role2, "Daddy said shush").then(() => {
                     return Bot.createMessage(m.channel.id, hand).then((m) => {
                         return setTimeout(function () {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -288,7 +289,7 @@ Bot.on("messageCreate", async function (m) {
                 if (m.mentions.length > 1) {
                     var mentions = m.mentions;
                     for (const mention of mention) {
-                        Bot.removeGuildMemberRole(m.channel.guild.id, mention.id, "363854631035469825", "Daddy said speak").then(() => {
+                        Bot.removeGuildMemberRole(m.channel.guild.id, mention.id, ids.roles.role2, "Daddy said speak").then(() => {
                             return Bot.createMessage(m.channel.id, hand).then((m) => {
                                 return setTimeout(function () {
                                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -298,7 +299,7 @@ Bot.on("messageCreate", async function (m) {
                     }
                     return;
                 }
-                Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, "363854631035469825", "Daddy said speak").then(() => {
+                Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, ids.roles.role2, "Daddy said speak").then(() => {
                     return Bot.createMessage(m.channel.id, hand).then((m) => {
                         return setTimeout(function () {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -393,7 +394,7 @@ Bot.on("messageCreate", async function (m) {
             }
         }
     }
-    if (m.channel.guild.id === "196027622944145408" && m.content.startsWith(`${prefix}play`)) {
+    if (m.channel.guild.id === ids.guilds.guild2 && m.content.startsWith(`${prefix}play`)) {
         return;
     }
     updateTimestamps();
@@ -415,7 +416,7 @@ Bot.on("messageCreate", async function (m) {
             else {
                 var cmd = require("./commands/" + command + ".js");
             }
-            if (m.author.id === "309220487957839872" && !cmd.self) {
+            if (m.author.id === Bot.user.id && !cmd.self) {
                 return;
             }
             updateTimestamps();
@@ -550,7 +551,7 @@ Bot.on("guildMemberRemove", async function (guild, member) {
 });
 
 Bot.on("guildCreate", async function (guild) {
-    Bot.getDMChannel("161027274764713984").then(function (DMchannel) {
+    Bot.getDMChannel(ids.users.chocola).then(function (DMchannel) {
         Bot.createMessage(DMchannel.id, {
             embed: {
                 color: 0xA260F6,
@@ -571,7 +572,7 @@ Bot.on("guildCreate", async function (guild) {
 });
 
 Bot.on("guildDelete", async function (guild) {
-    Bot.getDMChannel("161027274764713984").then(function (DMchannel) {
+    Bot.getDMChannel(ids.users.chocola).then(function (DMchannel) {
         Bot.createMessage(DMchannel.id, {
             embed: {
                 color: 0xA260F6,
@@ -653,7 +654,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                     people.people[m.author.id].adds++;
                                     await peopledb.save(people);
                                     if (!adds) {
-                                        if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                        if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                             var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                             Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                                 return setTimeout(function () {
@@ -667,7 +668,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                     }
                                     else if (adds) {
                                         if (!isNaN(Number(adds))) {
-                                            if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                            if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                                 var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                                 Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                                     return setTimeout(function () {
@@ -700,7 +701,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                             people.people[m.author.id].adds++;
                             await peopledb.save(people);
                             if (!adds) {
-                                if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                     var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                     Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                         return setTimeout(function () {
@@ -714,7 +715,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                             }
                             else if (adds) {
                                 if (!isNaN(Number(adds))) {
-                                    if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                    if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                         var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                         Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                             return setTimeout(function () {
@@ -736,7 +737,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
 
         if (server[m.channel.guild.id]) {
             if (server[m.channel.guild.id].giveaways) {
-                if (server[m.channel.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== "309220487957839872" && userID !== server[m.channel.guild.id].giveaways.creator) {
+                if (server[m.channel.guild.id].giveaways.running && emoji.id === ids.emojis.giveaway && userID !== Bot.user.id && userID !== server[m.channel.guild.id].giveaways.creator) {
                     if (m.id === server[m.channel.guild.id].giveaways.mID) {
                         server[m.channel.guild.id].giveaways.current.contestants[userID] = "entered";
                         await serversdb.save(server);
@@ -787,7 +788,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                             people.people[m.author.id].adds++;
                                             await peopledb.save(people);
                                             if (!adds) {
-                                                if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                                if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                                     var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                                     Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                                         return setTimeout(function () {
@@ -800,7 +801,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                             }
                                             else if (adds) {
                                                 if (!isNaN(Number(adds))) {
-                                                    if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                                    if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                                         var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                                         Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                                             return setTimeout(function () {
@@ -833,7 +834,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                     people.people[m.author.id].adds++;
                                     await peopledb.save(people);
                                     if (!adds) {
-                                        if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                        if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                             var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                             Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                                 return setTimeout(function () {
@@ -846,7 +847,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                     }
                                     else if (adds) {
                                         if (!isNaN(Number(adds))) {
-                                            if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== "309220487957839872") {
+                                            if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                                 var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                                 Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
                                                     return setTimeout(function () {
@@ -947,7 +948,7 @@ Bot.on("messageReactionRemove", async function (m, emoji, userID) {
 
         if (server[m.channel.guild.id]) {
             if (server[m.channel.guild.id].giveaways) {
-                if (server[m.channel.guild.id].giveaways.running && emoji.id === "367892951780818946" && userID !== "309220487957839872" && userID !== server[m.channel.guild.id].giveaways.creator) {
+                if (server[m.channel.guild.id].giveaways.running && emoji.id === ids.emojis.giveaway && userID !== Bot.user.id && userID !== server[m.channel.guild.id].giveaways.creator) {
                     if (m.id === server[m.channel.guild.id].giveaways.mID) {
                         if (server[m.channel.guild.id].giveaways.current.contestants[userID]) {
                             delete server[m.channel.guild.id].giveaways.current.contestants[userID];

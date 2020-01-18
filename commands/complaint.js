@@ -1,13 +1,17 @@
 "use strict";
 
+const ids = require("../ids");
+
 module.exports = {
     main: async function (Bot, m, args, prefix) {
-        if (m.author.id === "161027274764713984") {
-            Bot.createMessage(m.channel.id, ":ok_hand:");
+        var response;
+        if (m.author.id === ids.users.chocola) {
+            response = ":ok_hand:";
         }
         else {
-            Bot.createMessage(m.channel.id, "Stop Whining");
+            response = "Stop Whining";
         }
+        Bot.createMessage(m.channel.id, response);
     },
     help: "No"
 };

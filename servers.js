@@ -1,11 +1,12 @@
 "use strict";
 
 const fs = require("fs").promises;
+const ids = require("../ids");
 
 module.exports = {
     load: async function () {
         var data = await fs.readFile("./db/servers.json", "utf8");
-        if (data.includes("161027274764713984")) {
+        if (data.includes(ids.users.chocola)) {
             try {
                 return JSON.parse(await fs.readFile("./db/servers.json"));
             }

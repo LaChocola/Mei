@@ -5,6 +5,7 @@ const request = require("request-promise").defaults({ jar: true });
 const cheerio = require("cheerio");
 
 const peopledb = require("../people");
+const ids = require("../ids");
 
 module.exports = {
 	main: async function (Bot, m, args, prefix) {
@@ -13,7 +14,7 @@ module.exports = {
 		function isNumeric(num) {
 			return !isNaN(Number(num));
 		}
-		if (m.author.id === "187368906493526017") {
+		if (m.author.id === ids.users.whosthis1) {
 			return;
 		}
 		if (!m.channel.nsfw) {

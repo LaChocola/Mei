@@ -11,7 +11,7 @@ function getLeaderboard(m, sorted, users, userCount, title) {
 
     for (let person of sorted) {
         var user = users.find(m => m.id === person.key);
-        if (user && user.id !== "309220487957839872" && user.id !== "444791634966740993") {
+        if (user && !user.bot) {
             y++;
             if (i === 1) {
                 leader = user.id;

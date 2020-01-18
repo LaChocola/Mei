@@ -7,6 +7,7 @@ const ordinal = require("ordinal");
 
 const datadb = require("./data");
 const peopledb = require("./people");
+const ids = require("./ids");
 
 // Subtype Aliases
 function getSubtypeAliasMap() {
@@ -85,17 +86,17 @@ function getDefaultGTSNames(guildid) {
     var defaultNames = ["Mei", "Sucy", "2B", "Mt. Lady", "Vena", "Miku", "Lexi", "Baiken", "Ryuko", "Sombra", "Wolfer", "Gwen", "Mercy", "Gwynevere", "Tracer", "Aqua", "Megumin", "Cortana", "Yuna", "Lulu", "Rikku", "Rosalina", "Samus", "Princess Peach", "Palutena", "Shin", "Kimmy", "Zoey", "Camilla", "Lillian", "Narumi", "D.va"];
     var guildNames = {
         // Krumbly's ant farm only
-        "261599167695159298": ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Lucy", "Ryuko", "Krumbly"],
+        [ids.guilds.krumblysantfarm]: ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Lucy", "Ryuko", "Krumbly"],
         // r/Macrophilia Only
-        "373589430448947200": ["Miau"],
+        [ids.guilds.r_macrophilia]: ["Miau"],
         // Giantess Archive
-        "420402860027805696": ["Brittany", "Bethany", "Alicia", "Katie", "Cali", "Asuna", "Cat", "Brianna", "Emily", "Alice", "Yuri", "Monica", "Brie", "Sierra"],
+        [ids.guilds.giantessarchive]: ["Brittany", "Bethany", "Alicia", "Katie", "Cali", "Asuna", "Cat", "Brianna", "Emily", "Alice", "Yuri", "Monica", "Brie", "Sierra"],
         // The Big House Only
-        "319534510318551041": defaultNames.concat(["Zem", "Ardy", "Vas"]),
+        [ids.guilds.bighouse]: defaultNames.concat(["Zem", "Ardy", "Vas"]),
         // Small World Only
-        "354709664509853708": defaultNames.concat(["Docop", "Mikki", "Spellgirl"]),
+        [ids.guilds.smallworld]: defaultNames.concat(["Docop", "Mikki", "Spellgirl"]),
         // The Giantess Club Only
-        "345390985150201859": ["Yami", "Mikan", "Momo", "Nana", "Yui", "May", "Dawn", "Hilda", "Rosa", "Serena", "Palutena", "Wii Fit Trainer", "Lucina", "Robin", "Corrin", "Bayonetta", "Zelda", "Sheik", "Tifa", "Chun-li", "R. Mika", "Daisy", "Misty", "Gardevoir", "Lyn", "Cammy", "Angewomon", "Liara", "Samara", "Tali", "Miranda", "Cus", "Marcarita", "Vados", "Wendy", "Sabrina", "Cana", "Erza", "Levy", "Lucy", "Wendy Marvell"]
+        [ids.guilds.giantessclub]: ["Yami", "Mikan", "Momo", "Nana", "Yui", "May", "Dawn", "Hilda", "Rosa", "Serena", "Palutena", "Wii Fit Trainer", "Lucina", "Robin", "Corrin", "Bayonetta", "Zelda", "Sheik", "Tifa", "Chun-li", "R. Mika", "Daisy", "Misty", "Gardevoir", "Lyn", "Cammy", "Angewomon", "Liara", "Samara", "Tali", "Miranda", "Cus", "Marcarita", "Vados", "Wendy", "Sabrina", "Cana", "Erza", "Levy", "Lucy", "Wendy Marvell"]
     };
 
     var names = guildNames[guildid] || defaultNames;

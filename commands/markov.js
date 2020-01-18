@@ -1,11 +1,11 @@
 "use strict";
 
 const MarkovGen = require("markov-generator");
-
-var time = new Date().toISOString();
+const ids = require("../ids");
 
 module.exports = {
     main: async function (Bot, m, args, prefix) {
+        var time = new Date().toISOString();
         var name1 = m.cleanContent.replace(`${prefix}markov `, "");
         if (m.content.length < 8) {
             name1 = m.author.username;
@@ -33,7 +33,7 @@ module.exports = {
             });
             return;
         }
-        if (channelFull.permissionsOf("309220487957839872").json.readMessages !== true) {
+        if (channelFull.permissionsOf(Bot.user.id).json.readMessages !== true) {
             Bot.createMessage(m.channel.id, "I do not have permission to read that channel, please try a different one.").then(function (msg) {
                 return setTimeout(function () {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -79,7 +79,7 @@ module.exports = {
                 }, 10000);
             });
         }
-        if (m.channel.guild.id === "187694240585744384" && m.mentions[0].id === "143906582235840512") {
+        if (m.channel.guild.id === ids.guilds.guild1 && m.mentions[0].id === ids.users.catclancer) {
             Bot.createMessage(m.channel.id, `"${sentence}"\n    -${name} ${new Date().getFullYear()}`);
             return;
         }

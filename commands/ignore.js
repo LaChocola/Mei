@@ -1,12 +1,13 @@
 "use strict";
 
 const datadb = require("../data");
+const ids = require("../ids");
 
 module.exports = {
     main: async function (Bot, m, args, prefix) {
         var data = await datadb.load();
 
-        if (m.author.id !== "161027274764713984") {
+        if (m.author.id !== ids.users.chocola) {
             return;
         }
         var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
