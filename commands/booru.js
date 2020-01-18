@@ -1,7 +1,7 @@
 "use strict";
 
 const booru = require("booru");
-const request = require("request").defaults({ jar: true });
+const request = require("request-promise").defaults({ jar: true });
 const cheerio = require("cheerio");
 
 const peopledb = require("../people");

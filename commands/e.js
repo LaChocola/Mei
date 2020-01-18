@@ -1,6 +1,6 @@
 "use strict";
 
-const request = require("request");
+const request = require("request-promise");
 const unidecode = require("unidecode");
 
 module.exports = {
@@ -12,19 +12,17 @@ module.exports = {
         args = unidecode(args);
         var base = "http://emoji.getdango.com/api/emoji?q=";
         var query = args.replace(/ /g, "+");
-        request.get({
+        var data = await request({
             url: base + query,
             json: true
-        }, function (error, res, data) {
-            var emojis = [];
-            var scores = [];
-            data.results.forEach(function (result) {
-                emojis.push(result.text);
-                scores.push(result.score);
-            });
-            emojis.splice(5, 5);
-            Bot.createMessage(m.channel.id, emojis.join(" "));
         });
+
+        var emojis = data.results
+            .slice(0, 5)
+            .map(r => r.text)
+            .join(" ");
+
+        Bot.createMessage(m.channel.id, emojis);
     },
     help: "Emojify text"
 };
