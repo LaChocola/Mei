@@ -27,7 +27,7 @@ module.exports = {
             embed: {
                 color: 0xA260F6,
                 image: {
-                    url: catURL2
+                    url: catURL
                 },
                 author: {
                     name: "| Here is your random cat:",
