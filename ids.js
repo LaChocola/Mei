@@ -37,4 +37,4 @@ var ids = {
     }
 };
 
-module.export = ids;
+module.exports = ids;
