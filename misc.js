@@ -20,8 +20,7 @@ function capitalize(string) {
 function chooseMember(members) {
     var choices = members.filter(m =>
         !m.bot
-        && m.status !== "offline"
-        && m.user.id !== "309220487957839872");
+        && m.status !== "offline");
 
     var member = choose(choices);
 
@@ -35,10 +34,67 @@ function getMentionedId(m, args) {
     return mentionedId;
 }
 
+function isNum(num) {
+    if (typeof num === "number") {
+        return num - num === 0;
+    }
+    if (typeof num === "string" && num.trim() !== "") {
+        return Number.isFinite ? Number.isFinite(+num) : isFinite(+num);
+    }
+    return false;
+}
+
+function toNum(num) {
+    if (!isNum(num)) {
+        return NaN;
+    }
+    return Number(num);
+}
+
+// Because javascript bit-wise operations are limited to 32 bits :P
+function leftShift(n, s) {
+    n * (2 ** s);
+}
+
+function timestampToSnowflake(d) {
+    var epoch = 1421280000000;
+    var dateFieldOffset = 22;
+    var snowflake = leftShift(Date.now() - epoch, dateFieldOffset);
+    return snowflake;
+}
+
+function splitArray(arr, predicate) {
+    var trueArr = [];
+    var falseArr = [];
+    arr.forEach(function(i) {
+        if (predicate(i)) {
+            trueArr.push(i);
+        }
+        else {
+            falseArr.push(i);
+        }
+    });
+    return [trueArr, falseArr];
+}
+
+function deleteIn(timeout) {
+    return function (sentMsg) {
+        setTimeout(function () {
+            sentMsg.delete("Timeout");
+        }, timeout);
+    };
+}
+
 module.exports = {
     choose,
     chunkArray,
     capitalize,
     chooseMember,
-    getMentionedId
+    getMentionedId,
+    isNum,
+    toNum,
+    leftShift,
+    timestampToSnowflake,
+    splitArray,
+    deleteIn
 };

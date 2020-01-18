@@ -1,163 +1,162 @@
 "use strict";
 
 const serversdb = require("../servers");
+const misc = require("../misc");
+const ids = require("../ids");
+
+// If the guild owner has changed, then update the guild data
+async function updateGuildData(Bot, m, data) {
+    var guildData = data[m.guild.id];
+    if (guildData.owner !== m.guild.ownerID) {
+        Bot.createMessage(m.channel.id, "New server owner detected, updating database.")
+            .then(misc.deleteIn(5000));
+        guildData.owner = m.guild.ownerID;
+        await serversdb.save(data);
+    }
+}
+
+/*  
+*  Check if user is a mod
+ *
+*  If Mei does not have settings for this guild, user must have one of the following permissions:
+ *  - banMembers
+ *  - administrator
+ *  - manageChannels
+ *  - manageGuild
+ *  - manageMessages
+ * 
+*  If Mei does have settings for this guild, user must be one of the following:
+ *  - Guild owner
+ *  - Listed as a mod in Mei
+ *  - Have a role listed as a mod role in Mei
+ */
+function isMod(guildData, member, guild) {
+    if (!guildData) {
+        var perms = member.permission.json;
+        var pArray = ["banMembers", "administrator", "manageChannels", "manageGuild", "manageMessages"];
+        // var pArray = ["banMembers", "administrator", "manageChannels", "manageGuild", "manageMessages", "kickMembers"];
+        var hasPerms = pArray.some(p => perms[p]);
+        return hasPerms;
+    }
+
+    var isOwner = member.id === guild.ownerID;
+    if (isOwner) {
+        return true;
+    }
+
+    var userIsMod = guildData.mods && guildData.mods[member.id];
+    if (userIsMod) {
+        return true;
+    }
+
+    var hasModRole = guildData.modRoles && member.roles.forEach(roleId => guildData.modRoles[roleId]);
+    if (hasModRole) {
+        return true;
+    }
+
+    return false;
+}
+
+// Get recent messages from a channel
+async function getMessages(Bot, channelId, messageCount, userId) {
+    var msgIds;
+    if (userId) {
+        var maxHistoryCount = 102;
+        var msgHistory = await Bot.getMessages(channelId, maxHistoryCount);
+        msgIds = msgHistory
+            .filter(msg => msg.author.id === userId)
+            .slice(0, messageCount)
+            .map(msg => msg.id);
+    }
+    else {
+        var msgs = await Bot.getMessages(channelId, messageCount);
+        msgIds = msgs.map(msg => msg.id);
+    }
+    return msgIds;
+}
+
+// Bulk delete messages
+async function deleteMessages(Bot, channelId, msgIds, message) {
+    // Only messages less than two weeks old can be bulk deleted
+    var twoWeeksAgo = Date.now() - 1421280000000;
+    var twoWeeksAgoId = misc.timestampToSnowflake(twoWeeksAgo);
+    var [bulkDelete, singleDelete] = misc.splitArray(msgIds, id => id > twoWeeksAgoId);
+
+    while (bulkDelete.length >= 2) {
+        // Only 2-100 messages can be bulk deleted at a time
+        var toDelete = bulkDelete.splice(0, 100);
+        await Bot.deleteMessages(channelId, toDelete, message);
+    }
+
+    // If there is a remaining message we couldn't bulk delete, then just single delete it
+    if (bulkDelete[0]) {
+        singleDelete.push(bulkDelete[0]);
+    }
+
+    for (let id of singleDelete) {
+        await Bot.deleteMessage(channelId, id, message);
+    }
+}
 
 module.exports = {
     main: async function (Bot, m, args, prefix) {
-        var data = await serversdb.load();
+        await m.delete();
 
-        function isNumeric(num) {
-            return !isNaN(num);
-        }
-        var number = 102;
         args = m.cleanContent.replace(`${prefix}clean `, "").split(" ");
-        var argsIterator = args.entries();
-        for (let e of argsIterator) {
-            if (isNumeric(+e[1])) {
-                var int = +e[1];
-            }
-        }
-        if (!int) {
-            int = 10;
-        }
-        async function isMod(member, guild) {
-            if (data[guild.id]) {
-                if (data[guild.id].owner !== guild.ownerID) {
-                    Bot.createMessage(m.channel.id, "New server owner detected, updating database.").then(function (msg) {
-                        return setTimeout(function () {
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                        }, 5000);
-                    });
-                    data[guild.id].owner = guild.ownerID;
-                    await serversdb.save(data);
-                }
-                if (data[guild.id].mods) {
-                    if (data[guild.id].mods[member.id]) {
-                        return true;
-                    }
-                }
-                if (m.author.id === data[guild.id].owner || m.author.id === guild.ownerID) {
-                    return true;
-                }
-                if (data[guild.id].modRoles) {
-                    var memberRoles = member.roles;
-                    var mod = false;
-                    for (let role of memberRoles) {
-                        if (data[guild.id].modRoles[role]) {
-                            mod = true;
-                        }
-                    }
-                    if (mod) {
-                        return true;
-                    }
-                }
-            }
-            else {
-                var perms = guild.members.get(member.id).permission.json;
-                var pArray = ["banMembers", "administrator", "manageChannels", "manageGuild", "manageMessages"];
-                if (perms[pArray[0]] || perms[pArray[1]] || perms[pArray[2]] || perms[pArray[3]] || perms[pArray[4]]) {
-                    return true;
-                }
-                return false;
-            }
-        }
-        var modCheck = await isMod(m.channel.guild.members.get(m.author.id), m.channel.guild);
-        var responses = ["Are you a real villan?", "Have you ever caught a good guy? \nLike a real super hero?", "Have you ever tried a disguise?", "What are you doing?!?!?!", "*NO!*, Don't touch that!", "Fuck Off", "Roses are red\nfuck me ;) "];
-        var response = responses[Math.floor(Math.random() * responses.length)];
-        if (modCheck !== true && m.author.id !== "161027274764713984") {
-            Bot.createMessage(m.channel.id, response);
-            return;
-        }
-        if (!m.mentions[0] && m.cleanContent.includes(" all") === false) {
-            Bot.createMessage(m.channel.id, "Please mention who you want to clean or say 'all', and optionally, a number of messages to delete from them");
-            return;
-        }
-        var perms = m.channel.guild.members.get(m.author.id).permission.json;
-        var pArray = ["kickMembers", "banMembers", "administrator", "manageChannels", "manageGuild", "manageMessages"];
-        var mod = false;
-        if (perms[pArray[0]] || perms[pArray[1]] || perms[pArray[2]] || perms[pArray[3]] || perms[pArray[4]] || perms[pArray[5]]) {
-            mod = true;
-        }
-        if (m.cleanContent.includes(" all")) {
-            if (m.author.id === "161027274764713984" || m.author.id === m.channel.guild.ownerID || mod) {
-                await m.delete();
-                var ids = [];
-                let msgs = await Bot.getMessages(m.channel.id, parseInt(int, 10));
-                var method = 1;
-                var oldestAllowed = (Date.now() - 1421280000000) * 4194304;
-                for (let msg of msgs) {
-                    ids.push(msg.id);
-                }
-                var invalid = ids.find((messageID) => messageID < oldestAllowed);
-                if (invalid || ids.length > 100) {
-                    method = 2;
-                }
-                if (method === 1) {
-                    Bot.createMessage(m.channel.id, `Cleaning ${ids.length} messages`).then(a => {
-                        Bot.deleteMessages(m.channel.id, ids, `${ids.length} messages cleaned. Approved by ${m.author.username}#${m.author.discriminator}`).then(() => {
-                            a.delete();
-                            Bot.createMessage(m.channel.id, `Cleaned ${ids.length} messages`).then(b => {
-                                return setTimeout(function () {
-                                    b.delete();
-                                }, 3000);
-                            });
-                        });
-                    });
-                    return;
-                }
 
-                if (method === 2) {
-                    for (let id of ids) {
-                        Bot.deleteMessage(m.channel.id, id, `${ids.length} messages cleaned. Approved by ${m.author.username}#${m.author.discriminator}`);
-                    }
-                    Bot.createMessage(m.channel.id, `Cleaning ${ids.length} messages`).then(a => {
-                        return setTimeout(function () {
-                            a.delete();
-                        }, 3000);
-                    });
-                }
-                return;
-            }
+        var data = await serversdb.load();
+        await updateGuildData(Bot, m, data);
+        var guildData = data[m.guild.id];
+        var member = m.guild.members.get(m.author.id);
+
+        // If a number is included in args, delete that many message
+        var intArg = args.find(arg => misc.isNum(arg));
+        var deleteCount = misc.toNum(intArg) || 10;
+
+        // If "all" is included in args, delete messages from everyone
+        var argAll = args.include("all");
+
+        // If a user is mentioned, delete messages from that user
+        var mentionedId = m.mentions[0] && m.mentions[0].id;
+
+        // Only Chocola or mods can run this command
+        var userIsMod = isMod(guildData, member, m.guild);
+        var isChocola = m.author.id === ids.users.chocola;
+
+        if (!(userIsMod || isChocola)) {
+            var rejectResponses = [
+                "Are you a real villan?",
+                "Have you ever caught a good guy?\nLike a real super hero?",
+                "Have you ever tried a disguise?",
+                "What are you doing?!?!?!",
+                "*NO!*, Don't touch that!",
+                "Fuck Off",
+                "Roses are red\nfuck me ;)"
+            ];
+            var rejectResponse = misc.choose(rejectResponses);
+            Bot.createMessage(m.channel.id, rejectResponse);
+            return;
         }
-        if (m.mentions[0]) {
-            if (data[m.channel.guild.id]) {
-                if (data[m.channel.guild.id].mods) {
-                    if (data[m.channel.guild.id].mods[m.author.id]) {
-                        mod = true;
-                    }
-                }
-            }
-            if (m.author.id === "161027274764713984" || m.author.id === m.channel.guild.ownerID || mod === true) {
-                m.delete();
-                Bot.createMessage(m.channel.id, "Time to clean up").then(a => {
-                    return setTimeout(function () {
-                        a.delete();
-                    }, 5000);
-                });
-                let msgs = Bot.getMessages(m.channel.id, parseInt(number, 10));
-                var i = 0;
-                var count = 0;
-                while (i < int) {
-                    if (msgs[count] !== undefined && msgs[count].author.id === m.mentions[0].id) {
-                        Bot.deleteMessage(msgs[count].channel.id, msgs[count].id);
-                        i++;
-                    }
-                    if (i === int || count === msgs.length) {
-                        Bot.createMessage(m.channel.id, "All Done~").then(die => {
-                            return setTimeout(function () {
-                                die.delete();
-                            }, 5000);
-                        });
-                        return;
-                    }
-                    count++;
-                }
-                return;
-            }
+
+        if (!(mentionedId || argAll)) {
+            Bot.createMessage(m.channel.id, "Please mention who you want to clean or say 'all', and optionally, a number of messages to delete from them")
+                .then(misc.deleteIn(5000));
+            return;
         }
-        else {
-            Bot.createMessage(m.channel.id, response);
+
+        var msgIds = await getMessages(Bot, m.channel.id, deleteCount, mentionedId);
+
+        if (msgIds.length === 0) {
+            Bot.createMessage(m.channel.id, "Nothing to clean up")
+                .then(misc.deleteIn(5000));
+            return;
         }
+
+        var progressMsg = await Bot.createMessage(m.channel.id, `Cleaning ${msgIds.length} messages`);
+        await deleteMessages(Bot, m.channel.id, msgIds, `${msgIds.length} messages cleaned. Approved by ${m.author.username}#${m.author.discriminator}`);
+        await progressMsg.delete();
+        Bot.createMessage(m.channel.id, `Cleaned ${msgIds.length} messages`)
+            .then(misc.deleteIn(5000));
     },
     help: "Clean stuff. `!clean @Chocola X` to delete the last X messages. Defaults to 100"
 };
