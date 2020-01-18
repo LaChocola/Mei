@@ -6,9 +6,6 @@ const querystring = require("querystring");
 
 const config = require("../etc/config.json");
 
-async function fallbackHTMLScraper(args, message) {
-}
-
 async function searchGoogleApi(args) {
     var key = config.tokens.google;
     var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=013652921652433515166:cnlmax0k6mu&q=" + encodeURI(args);
@@ -38,6 +35,7 @@ async function searchGoogleScraper(args) {
         simple: true
     });
 
+    // It looks like google is obfuscating the classes to prevent scraping
     var $ = cheerio.load(body);
     try {
         var href = $(".r").first().find("a").first().attr("href");
@@ -62,7 +60,7 @@ async function searchGoogleScraper(args) {
 module.exports = {
     main: async function (Bot, m, args, prefix) {
         args = m.cleanContent.replace(`${prefix}search `, "").trim();
-        var message = Bot.createMessage(m.channel.id, "`Searching...`");
+        var message = await Bot.createMessage(m.channel.id, "`Searching...`");
 
         try {
             try {
@@ -88,12 +86,12 @@ module.exports = {
             return;
         }
 
-        if (result) {
-            message.edit(result);
-        }
-        else {
+        if (!result) {
             message.edit("`No results found`");
+            return;
         }
+
+        message.edit(result);
     },
     help: "Google Stuff" // add description
 };
