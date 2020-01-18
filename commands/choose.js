@@ -1,5 +1,7 @@
 "use strict";
 
+const misc = require("../misc");
+
 module.exports = {
     main: async function (Bot, m, args, prefix) {
         var list = m.cleanContent.replace(prefix, "").replace(/choose/i, "");
@@ -11,7 +13,7 @@ module.exports = {
 
         var choiceList = list.split("|");
 
-        var choice = "`'" + choiceList[Math.floor(Math.random() * choiceList.length)] + "`";
+        var choice = "`" + misc.choose(choiceList) + "`";
 
         var comments = ["I think " + choice + " is the best choice", "It's " + choice + " obviously", "Is that even a choice?  " + choice + " Duh", "I may be wrong, but I'm not, " + choice + " is the right answer"];
 

@@ -21,10 +21,11 @@ const config = reload("./etc/config.json");
 const datadb = require("./data");
 const peopledb = require("./people");
 const serversdb = require("./servers");
+const misc = require("./misc");
 
 var Bot = bot(config.tokens.mei);
 var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-var hand = hands[Math.floor(Math.random() * hands.length)];
+var hand = misc.choose(hands);
 var commandContentsMap = {};
 
 if (!fs) {
