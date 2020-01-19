@@ -281,7 +281,9 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
     };
 
     Object.entries(replacements).forEach(function ([oldVal, newVal]) {
-        lewdmessage = lewdmessage.replace(`[${oldVal}]`, newVal);
+        // Regex to allow global replacement
+        var re = RegExp(`\\[${oldVal}\\]`, "g");
+        lewdmessage = lewdmessage.replace(re, newVal);
     });
 
     var genderReplacements = {
