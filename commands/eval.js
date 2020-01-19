@@ -26,7 +26,7 @@ async function runEval(Bot, m, code, unsafe) {
 module.exports = {
     main: async function (Bot, m, args, prefix) {
         var isAdmin = m.author.id === ids.users.chocola;
-        var coolkids = [ids.users.whosthis2, ids.users.whosthis3, ids.users.whosthis4, ids.users.whosthis5, ids.users.digiduncan];
+        var coolkids = [ids.users.whosthis2, ids.users.whosthis3, ids.users.whosthis4, ids.users.whosthis5];
         var isCoolKid = coolkids.includes(m.author.id);
 
         if (!isAdmin && !isCoolKid) {
