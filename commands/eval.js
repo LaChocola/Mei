@@ -5,11 +5,17 @@ const safeEval = require("safe-eval");
 const misc = require("../misc");
 const ids = require("../ids");
 
-async function runEval(args, unsafe) {
+// Bot and m are added to give eval access to them
+async function runEval(Bot, m, code, unsafe) {
+    code = "(async () => " + code + ")()";
     var result;
     try {
-        var evalFunc = unsafe ? eval : safeEval;
-        result = await evalFunc(args);
+        if (unsafe) {
+            result = await eval(code);
+        }
+        else {
+            result = await safeEval(code, { Bot: Bot, m: m });
+        }
     }
     catch (err) {
         result = err;
@@ -19,8 +25,8 @@ async function runEval(args, unsafe) {
 
 module.exports = {
     main: async function (Bot, m, args, prefix) {
-        var coolkids = [ids.users.whosthis2, ids.users.whosthis3, ids.users.whosthis4, ids.users.whosthis5, ids.users.natalie];
         var isAdmin = m.author.id === ids.users.chocola;
+        var coolkids = [ids.users.whosthis2, ids.users.whosthis3, ids.users.whosthis4, ids.users.whosthis5, ids.users.natalie, ids.users.digiduncan];
         var isCoolKid = coolkids.includes(m.author.id);
 
         if (!isAdmin && !isCoolKid) {
@@ -43,8 +49,8 @@ module.exports = {
             return;
         }
 
-        var result = await runEval(args, isAdmin);
-        Bot.createMessage(m.channel.id, result);
+        var result = await runEval(Bot, m, args, isAdmin);
+        Bot.createMessage(m.channel.id, "`" + result + "`");
         console.log(result);
     },
     help: "Just don't",
