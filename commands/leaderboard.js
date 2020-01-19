@@ -33,7 +33,7 @@ function getLeaderboard(m, sorted, users, userCount, title) {
                 icon_url: m.channel.guild.iconURL
             },
             thumbnail: {
-                url: users.find(m => m.id === leader).avatarURL
+                url: leader && users.find(m => m.id === leader).avatarURL || null
             },
             color: 0xA260F6,
             description: leaders.join("\n") + personalRank

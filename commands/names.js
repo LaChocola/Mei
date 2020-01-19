@@ -32,7 +32,7 @@ module.exports = {
         }
         if (args.search(/remove /i) !== -1) {
             if (mentioned.id !== m.author.id) {
-                Bot.createMessage(m.channel.id, "Okay....but that isnt you");
+                Bot.createMessage(m.channel.id, "Okay....but that isn't you");
                 return;
             }
             var incomingEntries = name1.replace(/remove /i, "").replace(": ", " ").split(" | ");
@@ -50,7 +50,7 @@ module.exports = {
                     });
                 }
                 else {
-                    Bot.createMessage(m.channel.id, "Sorry, I couldnt find **" + e[1] + "** in your names list");
+                    Bot.createMessage(m.channel.id, "Sorry, I couldn't find **" + e[1] + "** in your names list");
                 }
             }
             return;
@@ -58,7 +58,7 @@ module.exports = {
         if (args.search(/add /i) !== -1) {
             if (mentioned.id !== m.author.id) {
                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                Bot.createMessage(m.channel.id, "Okay....but that isnt you");
+                Bot.createMessage(m.channel.id, "Okay....but that isn't you");
                 return;
             }
             var incomingEntries = name1.replace(/add /i, "").replace(": ", " ").split(" | ");

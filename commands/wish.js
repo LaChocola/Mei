@@ -28,7 +28,7 @@ module.exports = {
             pic = `https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`;
         }
         else if (m.mentions.length > 1) {
-            Bot.createMessage(m.channel.id, "This Command cant be used with more than one mention");
+            Bot.createMessage(m.channel.id, "This Command can't be used with more than one mention");
             return;
         }
         Bot.sendChannelTyping(m.channel.id).then(async function () {

@@ -8,10 +8,10 @@ module.exports = {
             Bot.createMessage(m.channel.id, "Please add someone to spray. i.e. ``!spray @Chocola``");
         }
         else {
-            var message1 = [", and only made them wetter.", ", causing them to melt.", ", and only managed to iritate them.", ", it wasnt very effective.", ", I dont know why tho."];
+            var message1 = [", and only made them wetter.", ", causing them to melt.", ", and only managed to iritate them.", ", it wasn't very effective.", ", I don't know why tho."];
             var message = misc.choose(message1);
             if (m.author.id === m.mentions[0].id) {
-                var message2 = [", thats kinda weird.", ", maybe thats a fetish thing?", ", what a weirdo.", ", I guess everyone likes something.", ", I dont know why tho."];
+                var message2 = [", that's kinda weird.", ", maybe that's a fetish thing?", ", what a weirdo.", ", I guess everyone likes something.", ", I don't know why tho."];
                 var messagefinal = misc.choose(message2);
                 Bot.createMessage(m.channel.id, ":sweat_drops: " + m.author.username + " sprayed " + m.mentions[0].username + messagefinal);
             }

@@ -25,5 +25,5 @@ module.exports = {
             request.end();
         }
     },
-    help: "Lets talk~"
+    help: "Let's talk~"
 };

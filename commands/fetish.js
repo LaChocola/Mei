@@ -91,7 +91,7 @@ module.exports = {
         }
         if (args.toLowerCase().includes("remove ")) {
             if (mentioned.id !== m.author.id) {
-                Bot.createMessage(m.channel.id, "Okay....but that isnt you");
+                Bot.createMessage(m.channel.id, "Okay....but that isn't you");
                 return;
             }
             var incoming = name1.replace(/\bremove\b/i, "").replace(" ", "").split("|");
@@ -107,7 +107,7 @@ module.exports = {
                 return;
             }
             else {
-                Bot.createMessage(m.channel.id, "Sorry, I couldnt find **" + incoming[0] + "** in your fetish list").then((msg) => {
+                Bot.createMessage(m.channel.id, "Sorry, I couldn't find **" + incoming[0] + "** in your fetish list").then((msg) => {
                     setTimeout(function () {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -118,7 +118,7 @@ module.exports = {
         }
         if (args.toLowerCase().includes("add")) {
             if (mentioned.id !== m.author.id) {
-                Bot.createMessage(m.channel.id, "Okay....but that isnt you");
+                Bot.createMessage(m.channel.id, "Okay....but that isn't you");
                 return;
             }
             var incomingEntries = name1.replace(/\badd\b/i, "").replace(/^[ \t]+/, "").replace(/[ \t]+$/, "").split("|");

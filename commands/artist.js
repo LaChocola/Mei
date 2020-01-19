@@ -30,7 +30,7 @@ module.exports = {
 
         if (args.toLowerCase().includes("add ")) {
             if (mentioned.id !== m.author.id) {
-                Bot.createMessage(m.channel.id, "Okay....but that isnt you").then((msg) => {
+                Bot.createMessage(m.channel.id, "Okay....but that isn't you").then((msg) => {
                     return setTimeout(function () {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -77,7 +77,7 @@ module.exports = {
 
         if (args.includes("remove")) {
             if (mentioned.id !== m.author.id) {
-                Bot.createMessage(m.channel.id, "Okay....but that isnt you").then((msg) => {
+                Bot.createMessage(m.channel.id, "Okay....but that isn't you").then((msg) => {
                     return setTimeout(function () {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -104,7 +104,7 @@ module.exports = {
                 return;
             }
             else {
-                Bot.createMessage(m.channel.id, "Sorry, I couldnt find** " + incoming[0] + "** in your links").then((msg) => {
+                Bot.createMessage(m.channel.id, "Sorry, I couldn't find** " + incoming[0] + "** in your links").then((msg) => {
                     return setTimeout(function () {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

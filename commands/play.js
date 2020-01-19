@@ -313,7 +313,7 @@ module.exports = {
                                     }
                                 }
                                 if (!valid) {
-                                    Bot.createMessage(m.channel.id, `Sorry, I wasnt able to play a video with the code: ${code}`).then(function (msg) {
+                                    Bot.createMessage(m.channel.id, `Sorry, I wasn't able to play a video with the code: ${code}`).then(function (msg) {
                                         return setTimeout(function () {
                                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -436,7 +436,7 @@ module.exports = {
                             yt.getInfo("https://www.youtube.com/watch?v=" + code, async function (error, info) {
                                 if (error) {
                                     console.log("Erorr: " + error);
-                                    Bot.createMessage(m.channel.id, `Sorry, I wasnt able to play a video with the code: ${code}`).then(function (msg) {
+                                    Bot.createMessage(m.channel.id, `Sorry, I wasn't able to play a video with the code: ${code}`).then(function (msg) {
                                         return setTimeout(function () {
                                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -459,7 +459,7 @@ module.exports = {
                             });
                         }
                     }
-                    else { // User is in different Voice Channel and shouldnt be doing anything
+                    else { // User is in different Voice Channel and shouldn't be doing anything
                         Bot.createMessage(m.channel.id, "You must be in the same Voice Channel as me to play a song").then(function (msg) {
                             return setTimeout(function () {
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

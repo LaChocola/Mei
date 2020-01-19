@@ -100,7 +100,7 @@ module.exports = {
 						});
 					}).catch((err) => {
 						if (err.code === 50013) {
-							Bot.createMessage(m.channel.id, "I dont have permission to give assign that role to you. Please make sure I have `Manage Roles` permissions, and that the role you are trying to assign is under my highest role").then(msg => {
+							Bot.createMessage(m.channel.id, "I don't have permission to give assign that role to you. Please make sure I have `Manage Roles` permissions, and that the role you are trying to assign is under my highest role").then(msg => {
 								return setTimeout(() => {
 									Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
 									Bot.deleteMessage(m.channel.id, m.id, "Timeout");

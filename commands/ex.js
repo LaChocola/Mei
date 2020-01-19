@@ -40,7 +40,6 @@ async function checkehentai(pairs) {
 
 module.exports = {
     main: async function (Bot, m, args, prefix) {
-
         if (!m.channel.nsfw) {
             Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
             return;

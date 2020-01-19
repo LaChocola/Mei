@@ -160,7 +160,7 @@ module.exports = {
 						return;
 					}
 
-					Bot.createMessage(m.channel.id, "No ban log is currently set, I cant disable what isnt there.").then(function (msg) {
+					Bot.createMessage(m.channel.id, "No ban log is currently set, I can't disable what isn't there.").then(function (msg) {
 						return setTimeout(function () {
 							Bot.deleteMessage(m.channel.id, m.id, "Timeout");
 							Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -219,7 +219,7 @@ module.exports = {
 						return;
 					}
 
-					Bot.createMessage(m.channel.id, "Update messages are not currently enabled, I cant disable what isnt there.").then(function (msg) {
+					Bot.createMessage(m.channel.id, "Update messages are not currently enabled, I can't disable what isn't there.").then(function (msg) {
 						return setTimeout(function () {
 							Bot.deleteMessage(m.channel.id, m.id, "Timeout");
 							Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -278,7 +278,7 @@ module.exports = {
 						return;
 					}
 
-					Bot.createMessage(m.channel.id, "No welcome message was found, I cant remove what isn't there.").then(function (msg) {
+					Bot.createMessage(m.channel.id, "No welcome message was found, I can't remove what isn't there.").then(function (msg) {
 						return setTimeout(function () {
 							Bot.deleteMessage(m.channel.id, m.id, "Timeout");
 							Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -352,7 +352,7 @@ module.exports = {
 						await serversdb.save(data);
 						return;
 					}
-					Bot.createMessage(m.channel.id, "No leave message was found, I cant remove what isnt there.").then(function (msg) {
+					Bot.createMessage(m.channel.id, "No leave message was found, I can't remove what isn't there.").then(function (msg) {
 						return setTimeout(function () {
 							Bot.deleteMessage(m.channel.id, m.id, "Timeout");
 							Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -442,7 +442,7 @@ module.exports = {
 					return;
 				}
 
-				Bot.createMessage(m.channel.id, "No art channel was found, I cant remove what isnt there.").then(function (msg) {
+				Bot.createMessage(m.channel.id, "No art channel was found, I can't remove what isn't there.").then(function (msg) {
 					return setTimeout(function () {
 						Bot.deleteMessage(m.channel.id, m.id, "Timeout");
 						Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -454,7 +454,7 @@ module.exports = {
 				const channelID = m.channelMentions[0] || m.content.replace("!edit ", "").replace("art", "").replace("add", "").replace("<#", "").replace(">", "").trim();
 				const channel = Bot.getChannel(channelID);
 				if (channel === undefined || !channel.id) {
-					Bot.createMessage(m.channel.id, "I couldnt find the channel you were looking to add, please make sure it is somewhere I can see, and try again.").then(function (msg) {
+					Bot.createMessage(m.channel.id, "I couldn't find the channel you were looking to add, please make sure it is somewhere I can see, and try again.").then(function (msg) {
 						return setTimeout(function () {
 							Bot.deleteMessage(m.channel.id, m.id, "Timeout");
 							Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -585,7 +585,7 @@ module.exports = {
 					}
 					var role = foundRoles[0];
 					if (!role.id) {
-						Bot.createMessage(m.channel.id, "I couldnt find the role you were looking for").then(function (msg) {
+						Bot.createMessage(m.channel.id, "I couldn't find the role you were looking for").then(function (msg) {
 							return setTimeout(function () {
 								Bot.deleteMessage(m.channel.id, m.id, "Timeout");
 								Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -738,7 +738,7 @@ module.exports = {
 				if (serverRoles.indexOf(selectedRole) > -1) {
 					const role = m.guild.roles.find(findRole);
 					if (!role.id) {
-						Bot.createMessage(m.channel.id, "I couldnt find the role you were looking for").then(function (msg) {
+						Bot.createMessage(m.channel.id, "I couldn't find the role you were looking for").then(function (msg) {
 							return setTimeout(function () {
 								Bot.deleteMessage(m.channel.id, m.id, "Timeout");
 								Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -853,7 +853,7 @@ module.exports = {
 						});
 					}
 					else {
-						Bot.createMessage(m.channel.id, "That role is not currently a registered moderator role, and cant be removed");
+						Bot.createMessage(m.channel.id, "That role is not currently a registered moderator role, and can't be removed");
 						return;
 					}
 					return;
@@ -874,7 +874,7 @@ module.exports = {
 						return;
 					}
 
-					Bot.createMessage(m.channel.id, "That currently is not currently a registered moderator, and cant be removed");
+					Bot.createMessage(m.channel.id, "That currently is not currently a registered moderator, and can't be removed");
 				}
 			}
 		}
