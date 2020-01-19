@@ -69,7 +69,7 @@ module.exports = {
             ]
           }
         if (args2) {
-            rolls2 = [];
+            var rolls2 = [];
             for (var i = 0; i < dice2; i++) {
                 var roll = Math.floor(Math.random() * amount2+1)
                 rolls2.push(`Roll ${i+1}: **${roll}**`)
