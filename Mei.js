@@ -708,6 +708,10 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                         }, 60000);
                                     }).catch((err) => {
+                                        if (err.code === 50013) {
+                                            console.log(`Missing Permissions for update in <#${m.channel.id}> of ${Bot.guilds.get(m.channel.guild.name)}`)
+                                            return;
+                                        }
                                         console.log(err);
                                     });
                                 }
@@ -722,7 +726,11 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                             }, adds);
                                         }).catch((err) => {
-                                            console.log(err);
+                                        if (err.code === 50013) {
+                                            console.log(`Missing Permissions for update in <#${m.channel.id}> of ${Bot.guilds.get(m.channel.guild.name)}`)
+                                            return;
+                                        }
+                                        console.log(err);
                                         });
                                     }
                                 }
@@ -795,6 +803,10 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                         }, 60000);
                                                     }).catch((err) => {
+                                                        if (err.code === 50013) {
+                                                            console.log(`Missing Permissions for update in <#${m.channel.id}> of ${Bot.guilds.get(m.channel.guild.name)}`)
+                                                            return;
+                                                        }
                                                         console.log(err);
                                                     });
                                                 }
@@ -808,6 +820,10 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                             }, adds);
                                                         }).catch((err) => {
+                                                            if (err.code === 50013) {
+                                                                console.log(`Missing Permissions for update in <#${m.channel.id}> of ${Bot.guilds.get(m.channel.guild.name)}`)
+                                                                return;
+                                                            }
                                                             console.log(err);
                                                         });
                                                     }
@@ -841,6 +857,10 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                 }, 60000);
                                             }).catch((err) => {
+                                                if (err.code === 50013) {
+                                                    console.log(`Missing Permissions for update in <#${m.channel.id}> of ${Bot.guilds.get(m.channel.guild.name)}`)
+                                                    return;
+                                                }
                                                 console.log(err);
                                             });
                                         }
@@ -854,6 +874,10 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                     }, adds);
                                                 }).catch((err) => {
+                                                    if (err.code === 50013) {
+                                                        console.log(`Missing Permissions for update in <#${m.channel.id}> of ${Bot.guilds.get(m.channel.guild.name)}`)
+                                                        return;
+                                                    }
                                                     console.log(err);
                                                 });
                                             }
