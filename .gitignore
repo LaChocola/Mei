@@ -21,3 +21,4 @@ package-lock.json
 .env
 *.sln
 *.njsproj
+*.code-workspace
