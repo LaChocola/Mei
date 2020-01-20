@@ -1,5 +1,7 @@
 "use strict";
 
+const escapeStringRegexp = require("escape-string-regexp");
+
 // Misc functions
 function choose(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -35,8 +37,8 @@ function getMentionedId(m, args) {
     }
 
     var member = m.guild.members.find(function (mbr) {
-        return mbr.username === args
-            || mbr.nick === args
+        return (new RegExp("\\b" + escapeStringRegexp(mbr.username) + "\\b", "i")).test(args)
+            || (new RegExp("\\b" + escapeStringRegexp(mbr.nick) + "\\b", "i")).test(args);
     });
     if (member) {
         return member.id;

@@ -14,6 +14,7 @@
     "crypto": "^1.0.1",
     "eris": "^0.11.2",
     "erlpack": "^0.1.3",
+    "escape-string-regexp": "^2.0.0",
     "eventemitter3": "^4.0.0",
     "fs": "^0.0.1-security",
     "haikudos": "^1.0.7",
