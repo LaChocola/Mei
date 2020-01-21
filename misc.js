@@ -38,7 +38,7 @@ function getMentionedId(m, args) {
 
     var member = m.guild.members.find(function (mbr) {
         return (new RegExp("\\b" + escapeStringRegexp(mbr.username) + "\\b", "i")).test(args)
-            || (new RegExp("\\b" + escapeStringRegexp(mbr.nick || "") + "\\b", "i")).test(args);
+            || (mbr.nick && (new RegExp("\\b" + escapeStringRegexp(mbr.nick) + "\\b", "i")).test(args));
     });
     if (member) {
         return member.id;
