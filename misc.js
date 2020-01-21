@@ -2,6 +2,10 @@
 
 const escapeStringRegexp = require("escape-string-regexp");
 
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Misc functions
 function choose(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -91,10 +95,9 @@ function splitArray(arr, predicate) {
 }
 
 function deleteIn(timeout) {
-    return function (sentMsg) {
-        setTimeout(function () {
-            sentMsg.delete("Timeout");
-        }, timeout);
+    return async function (sentMsg) {
+        await delay(timeout);
+        sentMsg.delete("Timeout");
     };
 }
 
@@ -109,5 +112,6 @@ module.exports = {
     leftShift,
     timestampToSnowflake,
     splitArray,
+    delay,
     deleteIn
 };
