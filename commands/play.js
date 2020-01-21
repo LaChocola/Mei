@@ -104,13 +104,14 @@ async function processQueue(Bot, guildid, textChannel) {
     var data = await serversdb.load();
     var guildData = data[guildid];
     var voiceConnection = Bot.voiceConnections.get(guildid);
-    var voiceChannel = Bot.getChannel(voiceConnection.channelID);
 
     // We are no longer connected to a voice channel
     if (!voiceConnection) {
         console.warn("TRIED TO PROCESS QUEUE WHILE NOT CONNECTED");
         return;
     }
+    
+    var voiceChannel = Bot.getChannel(voiceConnection.channelID);
 
     // We are already playing something (this shouldn't happen)
     if (voiceConnection.playing) {
