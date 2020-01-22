@@ -552,7 +552,7 @@ module.exports = {
         // Clear the queue if the bot got disconnected
         if (!(voiceConnection && voiceConnection.playing)) {
             guildData.music.queue = {};
-            serversdb.save(data);
+            await serversdb.save(data);
         }
 
         // User is in different Voice Channel and shouldn't be doing anything
