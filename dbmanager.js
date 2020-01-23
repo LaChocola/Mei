@@ -1,8 +1,10 @@
 "use strict";
 
 const fs = require("fs").promises;
-const ids = require("./ids");
 
+const lockfile = require("proper-lockfile");
+
+const ids = require("./ids");
 const dbprefix = "./db/";
 const backupprefix = "../../backup/Mei/db/";
 
@@ -55,7 +57,14 @@ async function load(dbname) {
 // Save a db by name
 async function save(dbname, data) {
     var dbpath = getdbpath(dbname);
-    await fs.writeFile(dbpath, JSON.stringify(data, null, "\t"));
+    try {
+        var release = await lockfile.lock(dbpath);
+        await fs.writeFile(dbpath, JSON.stringify(data, null, "\t"));
+        await release();
+    }
+    catch (e) {
+        console.error(e);
+    }
 }
 
 module.exports = {

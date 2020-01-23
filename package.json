@@ -20,6 +20,7 @@
     "pokemontcgsdk": "^1.1.0",
     "pretty-ms": "^5.1.0",
     "progress-string": "^1.2.2",
+    "proper-lockfile": "^4.1.1",
     "random-cat": "^1.0.1",
     "random-hex-color": "^1.0.1",
     "random-puppy": "^1.1.0",
