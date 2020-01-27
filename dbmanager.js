@@ -2,11 +2,13 @@
 
 const fs = require("fs").promises;
 
-const lockfile = require("proper-lockfile");
+const AsyncLock = require("async-lock");
 
 const ids = require("./ids");
+
 const dbprefix = "./db/";
 const backupprefix = "../../backup/Mei/db/";
+var lock = new AsyncLock();
 
 function getdbpath(dbname) {
     return `${dbprefix}${dbname}.json`;
@@ -57,14 +59,9 @@ async function load(dbname) {
 // Save a db by name
 async function save(dbname, data) {
     var dbpath = getdbpath(dbname);
-    try {
-        var release = await lockfile.lock(dbpath);
+    await lock.acquire(dbpath, async function() {
         await fs.writeFile(dbpath, JSON.stringify(data, null, "\t"));
-        await release();
-    }
-    catch (e) {
-        console.error(e);
-    }
+    });
 }
 
 module.exports = {
