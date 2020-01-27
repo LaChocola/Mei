@@ -38,8 +38,9 @@ async function loadFrom(path) {
 async function load(dbname) {
     var dbpath = getdbpath(dbname);
     var backupath = getbackuppath(dbname);
+    var data;
     await lock.acquire(dbpath, async function() {
-        var data = loadFrom(dbpath);
+        data = loadFrom(dbpath);
         // If we failed to load the db, try loading and saving the backup copy
         if (!data) {
             console.log("JSON error, attempting restore");
@@ -50,12 +51,12 @@ async function load(dbname) {
                 console.log("Restore Successful");
             }
         }
-        // If we weren't able to load the data OR the backup, then throw an error
-        if (!data) {
-            throw "Unable to load db";
-        }
-        return data;
     });
+    // If we weren't able to load the data OR the backup, then throw an error
+    if (!data) {
+        throw "Unable to load db";
+    }
+    return data;
 }
 
 // Save a db by name
