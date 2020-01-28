@@ -422,7 +422,7 @@ Bot.on("messageCreate", async function(m) {
     var logserver = `${m.channel.guild.name}`.cyan.bold || "Direct Message".cyan.bold;
     var logchannel = `#${m.channel.name}`.green.bold;
     var logdivs = [" > ".blue.bold, " - ".blue.bold];
-    let commands = await fs.readdir(path.join(__dirname, "commands");
+    let commands = await fs.readdir(path.join(__dirname, "commands"));
     updateTimestamps();
     if (m.content.startsWith(prefix)) {
         let command = m.content.split(" ")[0].replace(prefix, "").toLowerCase();
