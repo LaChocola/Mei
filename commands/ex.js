@@ -88,9 +88,9 @@ module.exports = {
         var searchTerms = cleanArgs.toLowerCase().split(",").map(t => t.trim());
         var searchString = searchTerms.join(" ");
 
-        var results = searchExHentai(searchString);
+        var results = await searchExHentai(searchString);
 
-        if (results.length < 1) {
+        if (results.length === 0) {
             Bot.createMessage(m.channel.id, "No results found :(");
             return;
         }
@@ -102,7 +102,7 @@ module.exports = {
         var exHentaiUrl = result.link;
 
         var eHentaiUrl = exHentaiUrl.replace("exhentai", "e-hentai");
-        var hasEHentai = checkEHentai(eHentaiUrl);
+        var hasEHentai = await checkEHentai(eHentaiUrl);
 
         var eHentaiLink = "N/A (sad panda only)";
         if (hasEHentai) {
