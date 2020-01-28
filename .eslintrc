@@ -8,6 +8,7 @@
     "parserOptions": {
         "ecmaVersion": 2019
     },
+    "ignorePatterns": ["docs/"],
     "rules": {
         "eqeqeq": [
             1,
