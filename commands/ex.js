@@ -45,7 +45,7 @@ async function searchExHentai(searchString) {
     }
     catch(err) {
         console.log("Error: " + err);
-        return;
+        return [];
     }
 
     var results = [];
