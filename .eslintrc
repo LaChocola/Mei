@@ -12,21 +12,30 @@
         "eqeqeq": [
             1,
             "always",
-            { "null": "ignore" }
+            {
+                "null": "ignore"
+            }
         ],
-        "comma-dangle": [ 1, "never" ],
+        "comma-dangle": [
+            1,
+            "never"
+        ],
         "no-console": 0,
         "no-debugger": 1,
         "no-extra-semi": 1,
         "no-extra-parens": [
             1,
             "all",
-            { "nestedBinaryExpressions": false }
+            {
+                "nestedBinaryExpressions": false
+            }
         ],
         "no-irregular-whitespace": 1,
         "no-unused-vars": [
             1,
-            { "args": "all" }
+            {
+                "args": "all"
+            }
         ],
         "semi": 2,
         "semi-spacing": 1,
@@ -39,27 +48,54 @@
             }
         ],
         "eol-last": 1,
-        "brace-style": [ 1, "stroustrup" ],
+        "brace-style": [
+            1,
+            "stroustrup"
+        ],
         "curly": 2,
         "max-statements-per-line": 1,
         "no-array-constructor": 2,
         "no-floating-decimal": 2,
         "no-self-compare": 2,
-        "func-call-spacing": [ 2, "never" ],
+        "func-call-spacing": [
+            2,
+            "never"
+        ],
         "no-undef": 2,
         "no-warning-comments": [
             2,
-            { "terms": [ "@bug" ] }
+            {
+                "terms": [
+                    "@bug"
+                ]
+            }
         ],
         "quotes": 2,
         "radix": 2,
         "space-unary-ops": 2,
         "strict": 2,
-        "func-style": [ 2, "declaration" ],
-        "one-var": [ 2, "never" ],
-        "dot-location": [ 2, "property" ],
+        "func-style": [
+            2,
+            "declaration"
+        ],
+        "one-var": [
+            2,
+            "never"
+        ],
+        "dot-location": [
+            2,
+            "property"
+        ],
         "dot-notation": 1,
         "no-path-concat": 2,
-        "function-paren-newline": [ 1, "never" ]
+        "function-paren-newline": [
+            1,
+            "never"
+        ],
+        "space-before-function-paren": [
+            1,
+            "never"
+        ],
+        "indent": 1
     }
 }
