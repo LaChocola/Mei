@@ -96,6 +96,7 @@
             1,
             "never"
         ],
-        "indent": 1
+        "indent": 1,
+        "no-trailing-spaces": 1
     }
 }
