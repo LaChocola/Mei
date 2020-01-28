@@ -1,5 +1,6 @@
 "use strict";
 
+const path = require("path");
 const fs = require("fs").promises;
 
 module.exports = {
@@ -7,9 +8,9 @@ module.exports = {
     main: async function(Bot, m, args, prefix) {
         args = args.replace(prefix, "");
         if (args !== "") {
-            var commands = await fs.readdir("./commands/");
+            var commands = await fs.readdir(path.join(__dirname));
             if (commands.indexOf(args + ".js") > -1) {
-                var cmd = require("./" + args + ".js");
+                var cmd = require(path.join(__dirname, args + ".js"));
                 if (!cmd.hidden) {
                     Bot.createMessage(m.channel.id, "`" + prefix + args + "`, " + cmd.help);
                     return;

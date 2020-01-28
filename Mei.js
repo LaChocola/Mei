@@ -14,6 +14,7 @@ Object.defineProperty(bot.Message.prototype, "guild", {
 });
 
 require("colors");
+const path = require("path");
 const fs = require("fs").promises;
 const reload = require("require-reload")(require);
 
@@ -327,9 +328,9 @@ Bot.on("messageCreate", async function(m) {
         }
         if (m.content.includes("disable")) {
             let command = m.content.replace("pls", "").replace("disable", "").replace("!", "").trim();
-            let commands = await fs.readdir("./commands/");
+            let commands = await fs.readdir(path.join(__dirname, "commands"));
             if (commands.indexOf(command + ".js") > -1) {
-                const commandContents = await fs.readFile("./commands/" + command + ".js");
+                const commandContents = await fs.readFile(path.join(__dirname, "commands", command + ".js"));
                 let cmd;
                 if (commandContentsMap[command] !== commandContents) {
                     cmd = await reload("./commands/" + command + ".js");
@@ -351,7 +352,7 @@ Bot.on("messageCreate", async function(m) {
                 }
                 cmd.disable = true;
                 console.log(cmd);
-                await fs.writeFile("./commands/" + command + ".js", JSON.stringify(cmd));
+                await fs.writeFile(path.join(__dirname, "commands", command + ".js"), JSON.stringify(cmd));
                 Bot.createMessage(m.channel.id, `${command} has been disabled.`).then((msg) => {
                     return setTimeout(async function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -372,16 +373,16 @@ Bot.on("messageCreate", async function(m) {
         }
         if (m.content.includes("enable")) {
             let command = m.content.replace("pls", "").replace("enable", "").replace("!", "").trim();
-            let commands = await fs.readdir("./commands/");
+            let commands = await fs.readdir(path.join(__dirname, "commands"));
             if (commands.indexOf(command + ".js") > -1) {
-                const commandContents = await fs.readFile("./commands/" + command + ".js");
+                const commandContents = await fs.readFile(path.join(__dirname, "commands", command + ".js"));
                 let cmd;
                 if (commandContentsMap[command] !== commandContents) {
-                    cmd = await reload("./commands/" + command + ".js");
+                    cmd = await reload(path.join(__dirname, "commands", command + ".js"));
                     commandContentsMap[command] = commandContents;
                 }
                 else {
-                    cmd = await require("./commands/" + command + ".js");
+                    cmd = await require(path.join(__dirname, "commands", command + ".js"));
                 }
                 if (!cmd.disable) {
                     Bot.createMessage(m.channel.id, `${command} is already enabled. Doing nothing.`).then((msg) => {
@@ -393,7 +394,7 @@ Bot.on("messageCreate", async function(m) {
                     return;
                 }
                 cmd.disable = false;
-                await fs.writeFile("./commands/" + command + ".js", JSON.stringify(cmd));
+                await fs.writeFile(path.join(__dirname, "commands", command + ".js"), JSON.stringify(cmd));
                 Bot.createMessage(m.channel.id, `${command} has been enabled.`).then((msg) => {
                     return setTimeout(async function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -421,13 +422,13 @@ Bot.on("messageCreate", async function(m) {
     var logserver = `${m.channel.guild.name}`.cyan.bold || "Direct Message".cyan.bold;
     var logchannel = `#${m.channel.name}`.green.bold;
     var logdivs = [" > ".blue.bold, " - ".blue.bold];
-    let commands = await fs.readdir("./commands/");
+    let commands = await fs.readdir(path.join(__dirname, "commands");
     updateTimestamps();
     if (m.content.startsWith(prefix)) {
         let command = m.content.split(" ")[0].replace(prefix, "").toLowerCase();
         if (commands.includes(command + ".js")) {
             updateTimestamps();
-            const commandContents = await fs.readFile("./commands/" + command + ".js");
+            const commandContents = await fs.readFile(path.join(__dirname, "commands", command + ".js"));
             let cmd;
             if (commandContentsMap[command] !== commandContents) {
                 cmd = reload("./commands/" + command + ".js");

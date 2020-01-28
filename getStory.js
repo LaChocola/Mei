@@ -1,10 +1,11 @@
 "use strict";
 
-const { choose, capitalize, chunkArray, chooseMember, getMentionedId } = require("./misc");
+const path = require("path");
 const fs = require("fs").promises;
 
 const ordinal = require("ordinal");
 
+const { choose, capitalize, chunkArray, chooseMember, getMentionedId } = require("./misc");
 const datadb = require("./data");
 const peopledb = require("./people");
 const ids = require("./ids");
@@ -162,7 +163,7 @@ async function getLewdSummary(uid, guildid, type) {
 
 // Generate Lewd Story
 async function loadLewdPool() {
-    return JSON.parse(await fs.readFile("./db/lewds.json"));
+    return JSON.parse(await fs.readFile(path.join(__dirname, "db", "lewds.json")));
 }
 
 async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {

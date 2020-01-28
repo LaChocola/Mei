@@ -1,5 +1,6 @@
 "use strict";
 
+const path = require("path");
 const fs = require("fs").promises;
 
 module.exports = {
@@ -9,11 +10,11 @@ module.exports = {
             const line = "`" + prefix + file.replace(".js", "") + "` " + help + ".";
             return line;
         }
-        const files = await fs.readdir("./commands/");
+        const files = await fs.readdir(path.join(__dirname));
         const lines = [];
         files.forEach(function(file) {
             if (lines.length < 1800) {
-                const cmd = require("./" + file);
+                const cmd = require(path.join(__dirname, file));
                 if (!cmd.hidden) {
                     lines.push(format(file, cmd.help));
                 }
