@@ -49,7 +49,20 @@ function reply(m, text, timeout) {
 }
 
 Bot.on("ready", async function() {
-    console.log(`${Bot.user.username} (${Bot.user.id}) is now online.`);
+    Bot.editStatus('Online', {
+        name: "with Tinies"
+    })
+    var i = 0;
+    Bot.guilds.map(g => g.channels.size).forEach(c => {
+        i += c;
+    });
+    console.log('');
+    console.log("BOT".bgMagenta.yellow.bold + " Logged in as " + `${Bot.user.username}#${Bot.user.discriminator}`.cyan.bold);
+    console.log('');
+    console.log("INF".bgBlue.magenta + " Currently seeing: " + `${Bot.guilds.size}`.green.bold + " guilds");
+    console.log("INF".bgBlue.magenta + " Currently seeing: " + `${i}`.green.bold + " channels");
+    console.log("INF".bgBlue.magenta + " Currently seeing: " + `${Bot.users.size}`.green.bold + " users");
+    console.log('');
 });
 
 Bot.on("guildBanAdd", async function (guild, user) {
@@ -661,6 +674,10 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                 }, 60000);
                                             }).catch((err) => {
+                                                if (err.code === 50013) {
+                                                    console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
+                                                    return;
+                                                }
                                                 console.log(err);
                                             });
                                         }
@@ -675,6 +692,10 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                     }, adds);
                                                 }).catch((err) => {
+                                                    if (err.code === 50013) {
+                                                        console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
+                                                        return;
+                                                    }
                                                     console.log(err);
                                                 });
                                             }
@@ -709,7 +730,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                         }, 60000);
                                     }).catch((err) => {
                                         if (err.code === 50013) {
-                                            console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
+                                            console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
                                             return;
                                         }
                                         console.log(err);
@@ -727,7 +748,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                             }, adds);
                                         }).catch((err) => {
                                         if (err.code === 50013) {
-                                            console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
+                                            console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
                                             return;
                                         }
                                         console.log(err);
@@ -804,7 +825,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                         }, 60000);
                                                     }).catch((err) => {
                                                         if (err.code === 50013) {
-                                                            console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
+                                                            console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
                                                             return;
                                                         }
                                                         console.log(err);
@@ -821,7 +842,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                             }, adds);
                                                         }).catch((err) => {
                                                             if (err.code === 50013) {
-                                                                console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
+                                                                console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
                                                                 return;
                                                             }
                                                             console.log(err);
@@ -858,7 +879,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                 }, 60000);
                                             }).catch((err) => {
                                                 if (err.code === 50013) {
-                                                    console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
+                                                    console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
                                                     return;
                                                 }
                                                 console.log(err);
@@ -875,7 +896,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                     }, adds);
                                                 }).catch((err) => {
                                                     if (err.code === 50013) {
-                                                        console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
+                                                        console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
                                                         return;
                                                     }
                                                     console.log(err);
