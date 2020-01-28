@@ -1,12 +1,21 @@
 "use strict";
 
 const qs = require("querystring");
+
 const request = require("request-promise").defaults({
     jar: true
 });
-const j = request.jar();
 const cheerio = require("cheerio");
+
 var config = require("../etc/config.json");
+
+class SiteUnavailableError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "SiteUnavailableError";
+    }
+}
+
 const defaultQuery = {
     f_doujinshi: 0,
     f_manga: 0,
@@ -30,6 +39,7 @@ async function searchExHentai(searchString) {
         f_search: searchString
     }, defaultQuery));
 
+    var j = request.jar();
     var searchUrl = `https://exhentai.org/?${q}`;
     j.setCookie(request.cookie("ipb_member_id=" + config.tokens.exhentai.id), searchUrl);
     j.setCookie(request.cookie("ipb_pass_hash=" + config.tokens.exhentai.hash), searchUrl);
@@ -44,12 +54,15 @@ async function searchExHentai(searchString) {
         });
     }
     catch(err) {
-        console.log("Error: " + err);
-        return [];
+        throw SiteUnavailableError(err);
+    }
+
+    var $ = cheerio.load(body);
+    if ($(".itg").length === 0) {
+        throw SiteUnavailableError();
     }
 
     var results = [];
-    var $ = cheerio.load(body);
     $(".itg .gl1t").each(function() {
         results.push({
             name: $("a .glname", this).text(),
@@ -88,7 +101,16 @@ module.exports = {
         var searchTerms = cleanArgs.toLowerCase().split(",").map(t => t.trim());
         var searchString = searchTerms.join(" ");
 
-        var results = await searchExHentai(searchString);
+        try {
+            var results = await searchExHentai(searchString);
+        }
+        catch(err) {
+            if (err instanceof SiteUnavailableError) {
+                Bot.createMessage(m.channel.id, "Cannot access sad panda 🐼");
+                return;
+            }
+            throw err;
+        }
 
         if (results.length === 0) {
             Bot.createMessage(m.channel.id, "No results found :(");
