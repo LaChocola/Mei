@@ -58,7 +58,7 @@ async function searchExHentai(searchString) {
     }
 
     var $ = cheerio.load(body);
-    if ($(".itg").length === 0) {
+    if ($(".ido").length === 0) {
         throw new SiteUnavailableError();
     }
 
