@@ -371,7 +371,7 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
         bigNick = authorNick;
     }
     else {
-        var names = await getAllGTSNames(guildid, smallid);
+        var names = await getAllGTSNames(smallid, guildid);
         bigNick = names.find(n => args.includes(n.toLowerCase()));
     }
 
