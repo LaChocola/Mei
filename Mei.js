@@ -333,11 +333,11 @@ Bot.on("messageCreate", async function(m) {
                 const commandContents = await fs.readFile(path.join(__dirname, "commands", command + ".js"));
                 let cmd;
                 if (commandContentsMap[command] !== commandContents) {
-                    cmd = await reload("./commands/" + command + ".js");
+                    cmd = await reload(path.join(__dirname, "commands", command + ".js"));
                     commandContentsMap[command] = commandContents;
                 }
                 else {
-                    cmd = await require("./commands/" + command + ".js");
+                    cmd = await require(path.join(__dirname, "commands", command + ".js"));
                 }
                 console.log(cmd);
 
@@ -431,11 +431,11 @@ Bot.on("messageCreate", async function(m) {
             const commandContents = await fs.readFile(path.join(__dirname, "commands", command + ".js"));
             let cmd;
             if (commandContentsMap[command] !== commandContents) {
-                cmd = reload("./commands/" + command + ".js");
+                cmd = reload(path.join(__dirname, "commands", command + ".js"));
                 commandContentsMap[command] = commandContents;
             }
             else {
-                cmd = require("./commands/" + command + ".js");
+                cmd = require(path.join(__dirname, "commands", command + ".js"));
             }
             if (m.author.id === Bot.user.id && !cmd.self) {
                 return;
