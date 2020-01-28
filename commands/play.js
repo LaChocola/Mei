@@ -4,542 +4,587 @@ const yt = require("ytdl-core");
 const progress = require("progress-string");
 const ytsr = require("ytsr");
 
+const misc = require("../misc");
 const serversdb = require("../servers");
 
-module.exports = {
-    main: async function (Bot, m, args, prefix) {
-        var data = await serversdb.load();
+var hands = [":wave::skin-tone-1:", ":wave::skin-tone-2:", ":wave::skin-tone-3:", ":wave::skin-tone-4:", ":wave::skin-tone-5:", ":wave:"];
 
+function parseCode(args) {
+    args = args || "";
+    var code = undefined;
+
+    var urlCode = yt.getVideoID(args);
+    if (!(urlCode instanceof Error)) {
+        // handle error
+        code = urlCode;
+    }
+
+    if (!code) {
         // this is so fucking long. Basically take the video code out of any form of youtube link
         var codeMatch = /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/.exec(args);
-        var code = codeMatch && codeMatch[1] || undefined;
-        var args = m.cleanContent.replace(`${prefix}play `, "");
-        console.log(args);
-        if (m.content === `${prefix}play`) {
-            Bot.createMessage(m.channel.id, `Please say what you want to do. e.g. \`${prefix}play <youtube link>\`, \`${prefix}play queue\`, \`${prefix}play current\`, or \`${prefix}play stop\``);
+        if (codeMatch && codeMatch[1] && yt.validateID(codeMatch[1])) {
+            code = codeMatch[1];
+        }
+    }
+
+    return code;
+}
+
+async function searchCode(args) {
+    var code = undefined;
+    try {
+        var filters = await ytsr.getFilters(args);
+        var filter = filters.get("Type").find(f => f.name === "Video");
+        var results = await ytsr(null, {
+            limit: 1,
+            nextpageRef: filter.ref
+        });
+        var resultUrl = results.items[0] && results.items[0].link;
+        code = parseCode(resultUrl);
+    }
+    catch (err) {
+        console.error(`Error searching youtube for "${args}": ${err}`);
+    }
+    return code;
+}
+
+function msToHMS(ms) {
+    // Get hours
+    let h = Math.floor(ms / (1000 * 60 * 60));
+    // Get minutes
+    let m = Math.floor(ms / (1000 * 60)) - h * 60;
+    // Get seconds
+    let s = Math.floor(ms / 1000) - m * 60 - h * 60 * 60;
+    let time = [m, s];
+    // Use hours if there are hours
+    if (h) {
+        time.unshift(h);
+    }
+    return time.map(n => n.toString().padStart(2, "0")).join(":");
+}
+
+async function loadGuildData(m, data) {
+    var guild = m.guild;
+    var guildChanged = false;
+    if (!data[guild.id]) {
+        data[guild.id] = {
+            name: guild.name,
+            owner: guild.ownerID
+        };
+        m.channel.createMessage(`Server: ${guild.name} added to database. Populating information ${misc.choose(hands)}`)
+            .then(async function(sentMsg) {
+                await misc.delay(5000);
+                sentMsg.delete("Timeout");
+            });
+        guildChanged = true;
+    }
+    var guildData = data[guild.id];
+    // I am bad with storage, I know
+    if (!guildData.music) {
+        guildData.music = {};
+        guildChanged = true;
+    }
+    if (!guildData.music.queue) {
+        guildData.music.queue = {};
+        guildChanged = true;
+    }
+    if (!guildData.music.current) {
+        guildData.music.current = {};
+        guildChanged = true;
+    }
+
+    if (guildChanged) {
+        await serversdb.save(data);
+    }
+
+    return guildData;
+}
+
+async function processQueue(Bot, guildid, textChannel) {
+    var data = await serversdb.load();
+    var guildData = data[guildid];
+    var voiceConnection = Bot.voiceConnections.get(guildid);
+
+    // We are no longer connected to a voice channel
+    if (!voiceConnection) {
+        console.warn("TRIED TO PROCESS QUEUE WHILE NOT CONNECTED");
+        return;
+    }
+    
+    var voiceChannel = Bot.getChannel(voiceConnection.channelID);
+
+    // We are already playing something (this shouldn't happen)
+    if (voiceConnection.playing) {
+        console.warn("TRIED TO PROCESS QUEUE WHILE ALREADY PLAYING");
+        return;
+    }
+
+    // if there is no other song in the queue, leave the voice channel and have a wonderful day
+    var queueLength = Object.keys(guildData.music.queue).length;
+    if (queueLength === 0) {
+        await misc.delay(5000);
+        data = await serversdb.load();
+        guildData = data[guildid];
+        queueLength = Object.keys(guildData.music.queue).length;
+        if (queueLength > 0) {
+            // If songs have been added to the queue, process the next item
+            await processQueue(Bot, guildid, textChannel);
+        }
+        else if (!voiceConnection.playing) {
+            // If songs have not been added to the queue AND we are not currently playing anything, disconnect from voice channel
+            if (voiceConnection.channelID) {
+                voiceChannel.leave();
+            }
+
+            textChannel.createMessage(`Thanks for Listening ${misc.choose(hands)}`)
+                .then(async function(sentMsg) {
+                    await misc.delay(20000);
+                    sentMsg.delete("Timeout");
+                });
+        }
+        return;
+    }
+
+    // Pop the first item off the queue
+    var [code, requester] = Object.entries(guildData.music.queue)[0];
+    delete guildData.music.queue[code];
+    await serversdb.save(data);
+
+    // Empty item in the queue (this shouldn't happen)
+    if (!code) {
+        console.warn("EMPTY ITEM IN THE QUEUE");
+        // Just try to process the next item in the queue
+        await processQueue(Bot, guildid, textChannel);
+        return;
+    }
+
+    // if there is another song in the queue, try to play that song
+    var info = await getInfo(code);
+    if (!info) {
+        textChannel.createMessage(`Sorry, I wasn't able to play a video with the code: ${code}`)
+            .then(async function(sentMsg) {
+                await misc.delay(5000);
+                sentMsg.delete("Timeout");
+            });
+        // Just try to process the next item in the queue
+        await processQueue(Bot, guildid, textChannel);
+        return;
+    }
+
+    var song = yt.downloadFromInfo(info, {
+        filter: "audioonly"
+    });
+    voiceConnection.play(song, {
+        inlineVolume: true
+    });
+    voiceConnection.setVolume(0.3);
+
+    textChannel.createMessage("Now playing: `" + info.title + "` [" + msToHMS(+info.length_seconds * 1000) + "m] requested by **" + requester + "**")
+        .then(async function(sentMsg) {
+            await misc.delay(5000);
+            sentMsg.delete("Timeout");
+        });
+
+    guildData.music.current = {
+        code: code,
+        player: requester
+    };
+    await serversdb.save(data);
+}
+
+async function getInfo(code) {
+    var info;
+    try {
+        info = await yt.getInfo("https://www.youtube.com/watch?v=" + code);
+    }
+    catch (err) {
+        console.warning(`Failed to get info for ${code}: ${err}`);
+    }
+    return info;
+}
+
+async function addToQueue(m, args, isPlaying) {
+    var guildid = m.guild.id;
+    var data = await serversdb.load();
+    var guildData = data[guildid];
+
+    var code = parseCode(args);
+    console.log("code:", code);
+
+    // Could not find code in queue. Try a youtube search instead.
+    if (!code) {
+        m.channel.sendTyping();
+        m.channel.createMessage("Searching youtube for: `" + args + "`")
+            .then(async function(sentMsg) {
+                await misc.delay(5000);
+                sentMsg.delete("Timeout");
+            });
+        code = await searchCode(args);
+    }
+
+    // Invalid code
+    if (!code) {
+        m.channel.createMessage(`Sorry, I wasn't able to play a video with the code: ${code}`)
+            .then(async function(sentMsg) {
+                await misc.delay(5000);
+                sentMsg.delete("Timeout");
+            });
+        return;
+    }
+
+    // Song is already in the queue
+    if (guildData.music.queue[code]) {
+        var codes = Object.keys(guildData.music.queue);
+        var position = codes.indexOf(code) + 1;
+        var existingRequester = guildData.music.queue[code];
+        m.channel.createMessage("That song has already been requested by: **" + existingRequester + "**. It is at queue position: `" + position + "`")
+            .then(async function(sentMsg) {
+                await misc.delay(5000);
+                sentMsg.delete("Timeout");
+            });
+        return;
+    }
+
+    // Too many items already in queue
+    var queueLength = Object.keys(guildData.music.queue).length;
+    if (queueLength >= 15) {
+        m.channel.createMessage("Sorry, only 15 songs are allowed in the queue at a time")
+            .then(async function(sentMsg) {
+                await misc.delay(5000);
+                sentMsg.delete("Timeout");
+            });
+        return;
+    }
+
+    // Add the song to the queue
+    var requester = `${m.author.username + "#" + m.author.discriminator}`;
+    guildData.music.queue[code] = requester;
+    await serversdb.save(data);
+
+    console.log("final code:", code);
+
+    var info = await getInfo(code);
+    if (!info) {
+        return;
+    }
+
+    // If we are starting a new queue, skip the "added to queue" message, since the queue processor is about to show a "now playing" message.
+    if (isPlaying) {
+        m.channel.createMessage("Added: `" + info.title + "` [" + msToHMS(+info.length_seconds * 1000) + "m] to queue. Requested by **" + requester + "**")
+            .then(async function(sentMsg) {
+                await misc.delay(5000);
+                sentMsg.delete("Timeout");
+            });
+    }
+}
+
+async function resumeCommand(m, voiceConnection) {
+    var isPlaying = voiceConnection && voiceConnection.playing;
+    if (!isPlaying || !voiceConnection.paused) {
+        m.channel.createMessage("Nothing is currently playing");
+        return;
+    }
+    m.channel.createMessage("Resuming music.");
+    voiceConnection.resume();
+}
+
+async function stopCommand(m, voiceConnection) {
+    var isPlaying = voiceConnection && voiceConnection.playing;
+    if (!isPlaying) {
+        m.channel.createMessage("Nothing is currently playing");
+        return;
+    }
+    m.channel.createMessage("Stopping song.")
+        .then(async function(sentMsg) {
+            await misc.delay(5000);
+            sentMsg.delete("Timeout");
+        });
+    voiceConnection.stopPlaying();
+}
+
+async function pauseCommand(m, voiceConnection) {
+    var isPlaying = voiceConnection && voiceConnection.playing;
+    // someone asks to pause the song
+    if (!isPlaying || voiceConnection.paused) {
+        m.channel.createMessage("Nothing is currently playing");
+        return;
+    }
+    m.channel.createMessage("Pausing music.")
+        .then(async function(sentMsg) {
+            await misc.delay(5000);
+            sentMsg.delete("Timeout");
+        });
+    voiceConnection.pause();
+}
+
+async function currentCommand(m, voiceConnection, guildData, cmdList) {
+    var isPlaying = voiceConnection && voiceConnection.playing;
+    // someone asks for current song info
+    if (!isPlaying) {
+        m.channel.createMessage("Nothing is currently playing");
+        return;
+    }
+
+    var info = await getInfo(guildData.music.current.code);
+    if (!info) {
+        return;
+    }
+    var currentCode;
+    var currentRequester;
+    if (guildData.music.current) {
+        currentCode = guildData.music.current.code;
+        currentRequester = guildData.music.current.player;
+    }
+
+    if (!(currentCode && currentRequester)) {
+        m.channel.createMessage("Nothing is currently playing");
+        return;
+    }
+
+    var start = voiceConnection.current.playTime;
+    var end = +info.length_seconds * 1000;
+    var bar = progress({
+        total: end,
+        style: function(complete, incomplete) {
+            return "+".repeat(complete.length) + incomplete;
+        }
+    });
+
+    m.channel.createMessage({
+            embed: {
+                title: `:musical_note:  ${info.title} :musical_note:`,
+                url: `https://youtu.be/${currentCode}?t=${msToHMS(start).replace(":", "m")}s`,
+                color: 0xA260F6,
+                footer: {
+                    text: `Requested by: ${currentRequester}`
+                },
+                thumbnail: {
+                    url: `https://i.ytimg.com/vi/${currentCode}/hqdefault.jpg`
+                },
+                author: {
+                    name: (cmdList ? "Nothing Else is Queued.\n" : "") + "Currently Playing"
+                },
+                fields: [{
+                    name: `${msToHMS(start)}/${msToHMS(end)}`,
+                    value: `[${bar(start)}]`,
+                    inline: true
+                }]
+            }
+        })
+        .then(async function(sentMsg) {
+            await misc.delay(end - start);
+            sentMsg.delete("Timeout");
+        });
+}
+
+async function listCommand(m, voiceConnection, guildData) {
+    var isPlaying = voiceConnection && voiceConnection.playing;
+    // display queue of songs if it exists
+    if (!isPlaying) {
+        m.channel.createMessage("Nothing is currently playing");
+        return;
+    }
+
+    // Display queue of songs if it exists
+    await m.channel.sendTyping();
+    console.log(guildData.music.queue);
+
+    if (!Object.entries(guildData.music.queue)) {
+        m.channel.createMessage("The queue is empty right now");
+        return;
+    }
+
+    // Load the info for all the songs
+    var songs = await Promise.all(Object.entries(guildData.music.queue).map(async function([code, requester], i) {
+        let info = await getInfo(code);
+        if (!info) {
+            // If we can't get info for a video, provide a basic entry (this shouldn't happen)
+            return `${i + 1}. https://www.youtube.com/watch?v=${code}  |  Requested by: ${requester}`;
+        }
+        return `${i + 1}. [${info.title}](https://www.youtube.com/watch?v=${code}) [${msToHMS(+info.length_seconds * 1000)}]  |  Requested by: ${requester}`;
+    }));
+
+    try {
+        await m.channel.createMessage({
+            embed: {
+                color: 0xA260F6,
+                title: `${songs.length} songs currently queued`,
+                description: "\n\n" + songs.join("\n")
+            }
+        });
+    }
+    catch (err) {
+        if (err.code === 50013) {
+            m.channel.createMessage("I do not have permisson to embed links in this channel. Please make sure I have the `embed links` permission on my highest role, and that the channel permissions are not overriding it.")
+                .then(async function(sentMsg) {
+                    await misc.delay(5000);
+                    sentMsg.delete("Timeout");
+                });
+        }
+    }
+}
+
+async function volumeCommand(m, voiceConnection, volumeArg) {
+    var isPlaying = voiceConnection && voiceConnection.playing;
+    if (!isPlaying) {
+        return;
+    }
+    // someone asks to set the volume to a specific percentage
+    if (misc.isNum(volumeArg)) {
+        let newVolumePerc = misc.toNum(volumeArg);
+        let newVolume = newVolumePerc / 100;
+        newVolume = Math.min(Math.max(0, newVolume), 1.5);
+
+        if (newVolume === voiceConnection.volume) {
             return;
         }
-        var hands = [":wave::skin-tone-1:", ":wave::skin-tone-2:", ":wave::skin-tone-3:", ":wave::skin-tone-4:", ":wave::skin-tone-5:", ":wave:"];
-        var hand = hands[Math.floor(Math.random() * hands.length)];
-        var isNewQueue = false;
-        var close = false;
-        function msToHMS(ms) {
-            // Get hours
-            let h = Math.floor(ms / (1000 * 60 * 60));
-            // Get minutes
-            let m = Math.floor(ms / (1000 * 60)) - h * 60;
-            // Get seconds
-            let s = Math.floor(ms / 1000) - m * 60 - h * 60 * 60;
-            let time = [m, s];
-            // Use hours if there are hours
-            if (h) {
-                time.unshift(h);
-            }
-            return time.map(n => n.toString().padStart(2, "0")).join(":");
-        }
-        var guild = m.channel.guild;
-        if (!data[guild.id]) {
-            data[guild.id] = {};
-            data[guild.id].name = guild.name;
-            data[guild.id].owner = guild.ownerID;
-            Bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${hand}`).then(function (msg) {
-                setTimeout(function () {
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                }, 5000);
-            });
-            await serversdb.save(data);
-        }
-        // I am bad with storage, I know
-        if (!data[guild.id].music) {
-            data[guild.id].music = {};
-            await serversdb.save(data);
-        }
-        if (!data[guild.id].music.queue) {
-            data[guild.id].music.queue = {};
-            await serversdb.save(data);
-        }
-        if (!data[guild.id].music.current) {
-            data[guild.id].music.current = {};
-            await serversdb.save(data);
-        }
-        if (m.member.voiceState.channelID) { // User is in Voice Channel
-            Bot.joinVoiceChannel(m.member.voiceState.channelID).then(async function (voiceConnection) { // Join user voice channel
-                var BotVoiceState = m.channel.guild.members.get(Bot.user.id).voiceState;
-                if (BotVoiceState.channelID) { // Bot is in Voice Channel
-                    var voiceConnection = Bot.voiceConnections.get(m.channel.guild.id);
-                    if (BotVoiceState.channelID === m.member.voiceState.channelID) { // User is in the same Voice Channel
-                        if (args.toLowerCase().includes("resume")) {
-                            Bot.createMessage(m.channel.id, "Resuming music.");
-                            voiceConnection.resume();
-                            return;
-                        }
-                        if (voiceConnection.playing) { // Bot is actively playing something
-                            if (args.toLowerCase().includes("stop") || args.toLowerCase().includes("cancel")) {
-                                Bot.createMessage(m.channel.id, "Stopping song.").then(function (msg) {
-                                    setTimeout(function () {
-                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                    }, 5000);
-                                });
-                                voiceConnection.stopPlaying();
-                                return;
-                            }
-                            if (args.toLowerCase().includes("current") || ((args.toLowerCase().includes("queue") || args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list=")) && Object.entries(data[guild.id].music.queue).length < 1)) { // someone asks for current song info
-                                var playTime = voiceConnection.current.playTime;
-                                var endTime = yt.getInfo("https://www.youtube.com/watch?v=" + data[guild.id].music.current.code).then(async function (info) {
-                                    info = await info;
-                                    var start = playTime;
-                                    var end = +info.length_seconds * 1000;
-                                    console.log(await info.length_seconds);
-                                    console.log(end);
-                                    var bar = progress({
-                                        total: end,
-                                        style: function (complete, incomplete) {
-                                            return "+".repeat(complete.length) + "" + incomplete;
-                                        }
-                                    });
-                                    if (data[guild.id].music.current.code) {
-                                        var code3 = data[guild.id].music.current.code;
-                                    }
-                                    if (data[guild.id].music.current.player) {
-                                        var player = data[guild.id].music.current.player;
-                                    }
-                                    if (!player || !code3) {
-                                        Bot.createMessage(m.channel.id, "Nothing is currently playing");
-                                        return;
-                                    }
-                                    var msg = {
-                                        "embed": {
-                                            "title": `:musical_note:  ${info.title} :musical_note:`,
-                                            "url": `https://youtu.be/${code3}?t=${msToHMS(start).replace(":", "m")}s`,
-                                            "color": 0xA260F6,
-                                            "footer": {
-                                                "text": `Requested by: ${player}`
-                                            },
-                                            "thumbnail": {
-                                                "url": `https://i.ytimg.com/vi/${code3}/hqdefault.jpg`
-                                            },
-                                            "author": {
-                                                "name": "Currently Playing"
-                                            },
-                                            "fields": [
-                                                {
-                                                    "name": `${msToHMS(start)}/${msToHMS(end)}`,
-                                                    "value": `[${bar(start)}]`,
-                                                    "inline": true
-                                                }
-                                            ]
-                                        }
-                                    };
-                                    if ((args.toLowerCase().includes("queue") || args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list=")) && Object.entries(data[guild.id].music.queue).length < 1) {
-                                        console.log(msg.embed.author.name);
-                                        msg.embed.author.name = "Nothing Else is Queued.\nCurrently Playing:";
-                                        console.log(msg.embed.author.name);
-                                    }
-                                    Bot.createMessage(m.channel.id, msg).then(function (mesg) {
-                                        return setTimeout(function () {
-                                            Bot.deleteMessage(m.channel.id, mesg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, end - start);
-                                    });
-                                    return;
-                                }).catch(function (err) {
-                                    console.log(err);
-                                    return;
-                                });
-                                return;
-                            }
-                            if (args.toLowerCase().includes("pause")) { // someone asks to pause the song
-                                Bot.createMessage(m.channel.id, "Pausing music.").then(function (msg) {
-                                    setTimeout(function () {
-                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                    }, 5000);
-                                });
-                                voiceConnection.pause();
-                                return;
-                            }
-                            if (args.toLowerCase().includes("queue") || args.toLowerCase().includes("list") && !args.toLowerCase().includes("&list=")) { // display queue of songs if it exists
-                                let index = 1;
-                                const songs = [];
 
-                                // Display queue of songs if it exists
-                                await Bot.sendChannelTyping(m.channel.id);
-                                try {
-                                    console.log(data[guild.id].music.queue);
-                                    if (!Object.entries(data[guild.id].music.queue)) {
-                                        Bot.createMessage(m.channel.id, "The queue is empty right now");
-                                    }
-                                    else {
-                                        for (const [id, queuer] of Object.entries(data[guild.id].music.queue)) {
-                                            var info = await yt.getInfo(`https://www.youtube.com/watch?v=${id}`);
-                                            var title = info.title;
-                                            songs.push(`${index++}. [${title}](https://www.youtube.com/watch?v=${id}) [${msToHMS(+info.length_seconds * 1000)}]  |  Requested by: ${queuer}`);
-                                        }
-                                        Bot.createMessage(m.channel.id, {
-                                            embed: {
-                                                color: 0xA260F6,
-                                                title: `${songs.length} songs currently queued`,
-                                                description: " \n\n" + songs.join("\n")
-                                            }
-                                        }).catch(function (err) {
-                                            if (err.code === 50013) {
-                                                Bot.createMessage(m.channel.id, "I do not have permisson to embed links in this channel. Please make sure I have the `embed links` permission on my highest role, and that the channel permissions are not overriding it.").then(function (msg) {
-                                                    return setTimeout(function () {
-                                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                                    }, 5000);
-                                                });
-                                                return;
-                                            }
-                                        });
-                                    }
-                                }
-                                catch (e) {
-                                    console.log(e);
-                                    Bot.createMessage(m.channel.id, "An error has occured.");
-                                }
-                                return;
-                            }
-                            if (args.toLowerCase().includes("volume") || args.toLowerCase().includes("turn it") || args.toLowerCase().includes("turn")) { // someone asks to change the volume to a specific percentage
-                                if (/\b[0-9]+\b/.exec(args)) {
-                                    var volume = /\b[0-9]+\b/.exec(args)[0];
-                                    volume = +volume / 100;
-                                    if (volume > 1.5) { // no ear rape
-                                        Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(+volume * 100).toFixed(0)}%`).then(function (msg) {
-                                            setTimeout(function () {
-                                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                            }, 5000);
-                                        });
-                                        return;
-                                    }
-                                    Bot.createMessage(m.channel.id, `Setting Volume to ${(+volume * 100).toFixed(0)}%`).then(function (msg) {
-                                        setTimeout(function () {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 5000);
-                                    });
-                                    voiceConnection.setVolume(volume);
-                                    return;
-                                }
-                                if (args.toLowerCase().includes("down")) { // someone asks to turn volume down 10%
-                                    let volume = voiceConnection.volume;
-                                    volume = +voiceConnection.volume - 0.1;
-                                    volume = Math.round(+volume * 100) / 100;
-                                    if (+volume < 0) {
-                                        Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume * 100).toFixed(0)}%`).then(function (msg) {
-                                            setTimeout(function () {
-                                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                            }, 5000);
-                                        });
-                                        return;
-                                    }
-                                    Bot.createMessage(m.channel.id, `Setting Volume to ${(volume * 100).toFixed(0)}%`).then(function (msg) {
-                                        setTimeout(function () {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 5000);
-                                    });
-                                    voiceConnection.setVolume(volume);
-                                    return;
-                                }
-                                if (args.toLowerCase().includes("up")) { // someone asks to turn volume up 10%
-                                    let volume = voiceConnection.volume;
-                                    volume = +voiceConnection.volume + 0.1;
-                                    volume = Math.round(volume * 100) / 100;
-                                    if (volume > 1.5) {
-                                        Bot.createMessage(m.channel.id, `Sorry, but I can not set the volume to ${(volume * 100).toFixed(0)}%`).then(function (msg) {
-                                            return setTimeout(function () {
-                                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                            }, 5000);
-                                        });
-                                        return;
-                                    }
-                                    Bot.createMessage(m.channel.id, `Setting Volume to ${(volume * 100).toFixed(0)}%`).then(function (msg) {
-                                        return setTimeout(function () {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 5000);
-                                    });
-                                    voiceConnection.setVolume(volume);
-                                    return;
-                                }
-                                else { // show current volume level
-                                    Bot.createMessage(m.channel.id, `Volume is set to ${voiceConnection.volume * 100}%`).then(function (msg) {
-                                        return setTimeout(function () {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 5000);
-                                    });
-                                }
-                            }
-                            else { // add the song to the queue since there is currently something playing
-                                var youtubeMatch = /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/.exec(args);
-                                var code = youtubeMatch && youtubeMatch[1] || undefined;
-                                if (!code) {
-                                    if (yt.validateURL(args)) {
-                                        code = yt.getURLVideoID(args);
-                                    }
-                                }
-                                var valid = await yt.validateURL(args);
-                                console.log("code:", code);
-                                console.log("valid code:", yt.validateID(code));
-                                if (!code && !yt.validateID(code)) {
-                                    valid = undefined;
-                                }
-                                if (!valid) {
-                                    Bot.sendChannelTyping(m.channel.id);
-                                    Bot.createMessage(m.channel.id, "Searching youtube for: `" + args + "`").then(function (msg) {
-                                        return setTimeout(function () {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                        }, 5000);
-                                    });
-                                    var search = await ytsr(args);
-                                    try {
-                                        var target = search.items[Object.keys(search.items)[0]];
-                                        if (!target.type === "video") {
-                                            target = search.items[Object.keys(search.items)[1]];
-                                        }
-                                        if (yt.validateURL(target.link)) {
-                                            code = await yt.getURLVideoID(target.link);
-                                            valid = true;
-                                        }
-                                    }
-                                    catch (e) {
-                                        console.log(e);
-                                    }
-                                }
-                                if (!valid) {
-                                    Bot.createMessage(m.channel.id, `Sorry, I wasn't able to play a video with the code: ${code}`).then(function (msg) {
-                                        return setTimeout(function () {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 5000);
-                                    });
-                                }
-                                if (data[guild.id].music.queue) {
-                                    if (data[guild.id].music.queue[code]) {
-                                        var queue = Object.keys(data[guild.id].music.queue);
-                                        var position = queue.indexOf(code);
-                                        if (data[guild.id].music.queue[position] !== code) {
-                                            Bot.createMessage(m.channel.id, "Unable to add that video to the queue at this time.").then(function (msg) {
-                                                setTimeout(function () {
-                                                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                                }, 5000);
-                                            });
-                                            return;
-                                        }
-                                        position++;
-                                        Bot.createMessage(m.channel.id, "That song has already been requested by: **" + data[guild.id].music.queue[code] + "**. It is at queue position: `" + position + "`").then(function (msg) {
-                                            return setTimeout(function () {
-                                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                            }, 7000);
-                                        });
-                                        return;
-                                    }
-
-                                    var queue = Object.keys(data[guild.id].music.queue);
-                                    queue = queue.length;
-                                    if (queue > 14) {
-                                        Bot.createMessage(m.channel.id, "Sorry, only 15 songs are allowed in the queue at a time").then(function (msg) {
-                                            setTimeout(function () {
-                                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                            }, 5000);
-                                        });
-                                        return;
-                                    }
-                                    if (code) {
-                                        var queue = data[guild.id].music.queue;
-                                        queue[code] = `${m.author.username + "#" + m.author.discriminator}`;
-                                        await serversdb.save(data);
-                                    }
-                                }
-                                console.log("final code:", code);
-                                yt.getInfo("https://www.youtube.com/watch?v=" + code, function (error, info) {
-                                    if (error) {
-                                        console.log(error);
-                                        return;
-                                    }
-                                    Bot.createMessage(m.channel.id, "Added: `" + info.title + "` [" + msToHMS(+info.length_seconds * 1000) + "m] to queue. Requested by **" + m.author.username + "#" + m.author.discriminator + "**").then(function (msg) {
-                                        return setTimeout(function () {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 10000);
-                                    });
-                                    return;
-                                });
-                            }
-                        }
-                        else { // start a song since the bot is not currently playing anything, and the voice connection should be ready
-                            isNewQueue = true;
-                            if (code) {
-                                var valid = await yt.validateID(code);
-                            }
-                            if (valid) {
-                                var valid = await yt.validateURL("https://www.youtube.com/watch?v=" + code);
-                            }
-                            console.log("valid: " + valid);
-                            console.log("code: " + code);
-                            if (!code) {
-                                if (yt.validateURL(args)) {
-                                    code = yt.getURLVideoID(args);
-                                }
-                            }
-                            if (!code) {
-                                var search = await ytsr(args);
-                                Bot.sendChannelTyping(m.channel.id);
-                                try {
-                                    var target = search.items[Object.keys(search.items)[0]];
-                                    if (!target.type === "video") {
-                                        target = search.items[Object.keys(search.items)[1]];
-                                    }
-                                    if (yt.validateURL(target.link)) {
-                                        code = await yt.getURLVideoID(target.link);
-                                        valid = true;
-                                    }
-                                }
-                                catch (e) {
-                                    console.log(e);
-                                }
-                            }
-                            if (!valid && code === undefined) {
-                                Bot.createMessage(m.channel.id, `Sorry, I wasn't able to play a video with the code: ${code}`).then(async function (msg) {
-                                    if (BotVoiceState.channelID) {
-                                        Bot.leaveVoiceChannel(m.member.voiceState.channelID);
-                                        data[guild.id].music.current = {};
-                                        await serversdb.save(data);
-                                    }
-                                    return setTimeout(function () {
-                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                    }, 5000);
-                                });
-                                return;
-                            }
-                            var song = yt("https://www.youtube.com/watch?v=" + code, {
-                                filter: "audioonly"
-                            });
-                            voiceConnection.play(song, {
-                                inlineVolume: true
-                            });
-                            voiceConnection.setVolume(0.3);
-                            data[guild.id].music.current = {};
-                            data[guild.id].music.current.code = code;
-                            data[guild.id].music.current.player = `${m.author.username + "#" + m.author.discriminator}`;
-                            await serversdb.save(data);
-                            yt.getInfo("https://www.youtube.com/watch?v=" + code, async function (error, info) {
-                                if (error) {
-                                    console.log("Erorr: " + error);
-                                    Bot.createMessage(m.channel.id, `Sorry, I wasn't able to play a video with the code: ${code}`).then(function (msg) {
-                                        return setTimeout(function () {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                        }, 5000);
-                                    });
-                                    if (BotVoiceState.channelID) {
-                                        Bot.leaveVoiceChannel(m.member.voiceState.channelID);
-                                        data[guild.id].music.current = {};
-                                        await serversdb.save(data);
-                                    }
-                                    return;
-                                }
-                                var info = await info;
-                                Bot.createMessage(m.channel.id, "Now playing: `" + info.title + "` [" + msToHMS(+info.length_seconds * 1000) + "m] requested by **" + m.author.username + "#" + m.author.discriminator + "**").then(function (msg) {
-                                    return setTimeout(function () {
-                                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                    }, 15000);
-                                });
-                            });
-                        }
-                    }
-                    else { // User is in different Voice Channel and shouldn't be doing anything
-                        Bot.createMessage(m.channel.id, "You must be in the same Voice Channel as me to play a song").then(function (msg) {
-                            return setTimeout(function () {
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            }, 7000);
-                        });
-                    }
-                    if (isNewQueue) {
-                        // pls ignore all the extra console logs, they are for debugging this
-                        voiceConnection.on("end", async function () { // when the song ends
-                            var data = await serversdb.load();
-                            var queue = Object.keys(data[guild.id].music.queue);
-                            if (queue.length > 0 && !voiceConnection.playing) { // if there is another song in the queue, try to play that song
-                                code = queue[0];
-                                var leave = false;
-                                voiceConnection.playing = true;
-                                console.log(code);
-                                var valid = yt.validateID(code);
-                                if (!valid || code === undefined) {
-                                    delete data[guild.id].music.queue[queue[0]];
-                                    await serversdb.save(data);
-                                    return;
-                                }
-                                var requester = data[guild.id].music.queue[code];
-                                var song = yt("https://www.youtube.com/watch?v=" + code, {
-                                    filter: "audioonly"
-                                });
-                                voiceConnection.play(song, {
-                                    inlineVolume: true
-                                });
-                                voiceConnection.setVolume(0.3);
-                                yt.getInfo("https://www.youtube.com/watch?v=" + code, function (error, info) {
-                                    if (error) {
-                                        console.log("Error: " + error);
-                                    }
-                                    if (!info) {
-                                        var info = {
-                                            "title": "Unknown",
-                                            "length_seconds": 0
-                                        };
-                                    }
-                                    var title = info.title;
-                                    var time = info.length_seconds;
-                                    Bot.createMessage(m.channel.id, "Now playing: `" + title + "` [" + msToHMS(+time * 1000) + "m] requested by **" + requester + "**").then(function (msg) {
-                                        return setTimeout(function () {
-                                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                        }, 5000);
-                                    });
-                                });
-                                data[guild.id].music.current = {};
-                                data[guild.id].music.current.code = code;
-                                data[guild.id].music.current.player = `${m.author.username + "#" + m.author.discriminator}`;
-                                delete data[guild.id].music.queue[queue[0]];
-                                await serversdb.save(data);
-                                return;
-                            }
-                            else if (queue.length < 1 && !voiceConnection.playing && close !== true) {
-                                setTimeout(async function () {
-                                    if (queue.length === 0 && !voiceConnection.playing) { // if there is no other song in the queue, leave the voice channel and have a wonderful day
-                                        if (BotVoiceState.channelID) {
-                                            Bot.leaveVoiceChannel(m.member.voiceState.channelID);
-                                            data[guild.id].music.current = {};
-                                            await serversdb.save(data);
-                                            Bot.createMessage(m.channel.id, "Thanks for Listening " + hand).then(function (msg) {
-                                                close = true;
-                                                return setTimeout(function () {
-                                                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                                }, 20000);
-                                            });
-                                        }
-                                    }
-                                }, 5000);
-                            }
-                        });
-                    }
-                }
+        m.channel.createMessage(`Setting Volume to ${newVolumePerc.toFixed(0)}%`)
+            .then(async function(sentMsg) {
+                await misc.delay(5000);
+                sentMsg.delete("Timeout");
             });
+
+        voiceConnection.setVolume(newVolume);
+    }
+    else if (volumeArg === "down") {
+        // someone asks to turn volume down 10%
+        let newVolume = voiceConnection.volume - 0.1;
+        newVolume = Math.min(Math.max(0, newVolume), 1.5);
+        if (newVolume === voiceConnection.volume) {
+            return;
         }
-        else { // User isn't in a Voice Channel
-            Bot.createMessage(m.channel.id, "You must be in a Voice Channel to play a song");
+        let newVolumePerc = newVolume * 100;
+        m.channel.createMessage(`Setting Volume to ${newVolumePerc.toFixed(0)}%`)
+            .then(async function(sentMsg) {
+                await misc.delay(5000);
+                sentMsg.delete("Timeout");
+            });
+        voiceConnection.setVolume(newVolume);
+    }
+    else if (volumeArg === "up") {
+        // someone asks to turn volume up 10%
+        let newVolume = voiceConnection.volume + 0.1;
+        newVolume = Math.min(Math.max(0, newVolume), 1.5);
+        if (newVolume === voiceConnection.volume) {
+            return;
+        }
+        let newVolumePerc = newVolume * 100;
+        m.channel.createMessage(`Setting Volume to ${newVolumePerc.toFixed(0)}%`)
+            .then(async function(sentMsg) {
+                await misc.delay(5000);
+                sentMsg.delete("Timeout");
+            });
+        voiceConnection.setVolume(newVolume);
+    }
+    else { // show current volume level
+        let volumePerc = voiceConnection.volume * 100;
+        m.channel.createMessage(`Volume is set to ${volumePerc}%`)
+            .then(async function(sentMsg) {
+                await misc.delay(5000);
+                sentMsg.delete("Timeout");
+            });
+    }
+}
+
+async function playCommand(Bot, m, voiceConnection, cleanArgs) {
+    var isPlaying = voiceConnection && voiceConnection.playing;
+
+    await addToQueue(m, cleanArgs, isPlaying);
+
+    // start a song since the bot is not currently playing anything, and the voice connection should be ready
+    if (isPlaying) {
+        return;
+    }
+
+    // Join user voice channel
+    var voiceChannel = Bot.getChannel(m.member.voiceState.channelID);
+    voiceConnection = await voiceChannel.join();
+
+    // Bot is not in Voice Channel
+    if (!voiceConnection.channelID) {
+        return;
+    }
+
+    // when the song ends
+    voiceConnection.on("end", async function() {
+        await processQueue(Bot, m.guild.id, m.channel);
+    });
+    voiceConnection.on("error", function(err) {
+        console.error(`VoiceConnection error: ${err}`);
+    });
+    // Start the first call to the queue
+    await processQueue(Bot, m.guild.id, m.channel);
+}
+
+module.exports = {
+    main: async function(Bot, m, args, prefix) {
+        // Delete the user's message in 5 seconds
+        misc.delay(5000).then(() => m.delete("Timeout"));
+
+        var data = await serversdb.load();
+        var cleanArgs = m.cleanContent.slice(`${prefix}play`.length).trim();
+        console.log("ARGS: " + cleanArgs);
+        if (cleanArgs === "") {
+            m.channel.createMessage(`Please say what you want to do. e.g. \`${prefix}play <youtube link>\`, \`${prefix}play queue\`, \`${prefix}play current\`, or \`${prefix}play stop\``);
+            return;
+        }
+
+        var cmdResume = /^resume$/i.test(cleanArgs);
+        var cmdStop = /^(?:stop|cancel)$/i.test(cleanArgs);
+        var cmdCurrent = /^(?:current)$/i.test(cleanArgs);
+        var cmdList = /^(?:queue|list)$/i.test(cleanArgs);
+        var cmdPause = /^(?:pause)$/i.test(cleanArgs);
+        var volumeMatch = cleanArgs.match(/^(?:volume|turn it|turn)(?: +(up|down|\d+))?$/i);
+        var cmdVolume = Boolean(volumeMatch);
+        var volumeArg = volumeMatch && volumeMatch[0];
+
+        var guildData = await loadGuildData(m, data);
+
+        // User isn't in a Voice Channel
+        if (!m.member.voiceState.channelID) {
+            m.channel.createMessage("You must be in a Voice Channel to play a song");
+            return;
+        }
+
+        var voiceConnection = Bot.voiceConnections.get(m.guild.id);
+
+        // Clear the queue if the bot got disconnected
+        if (!(voiceConnection && voiceConnection.playing)) {
+            guildData.music.queue = {};
+            await serversdb.save(data);
+        }
+
+        // User is in different Voice Channel and shouldn't be doing anything
+        if (voiceConnection && voiceConnection.channelID !== m.member.voiceState.channelID) {
+            m.channel.createMessage("You must be in the same Voice Channel as me to play a song")
+                .then(async function(sentMsg) {
+                    await misc.delay(5000);
+                    sentMsg.delete("Timeout");
+                });
+            return;
+        }
+
+        if (cmdResume) {
+            await resumeCommand(m, voiceConnection);
+        }
+        else if (cmdStop) {
+            await stopCommand(m, voiceConnection);
+        }
+        else if (cmdPause) {
+            await pauseCommand(m, voiceConnection);
+        }
+        else if (cmdCurrent || (cmdList && Object.entries(guildData.music.queue).length === 0)) {
+            await currentCommand(m, voiceConnection, guildData, cmdList);
+        }
+        else if (cmdList) {
+            await listCommand(m, voiceConnection, guildData);
+        }
+        else if (cmdVolume) {
+            await volumeCommand(m, voiceConnection, cleanArgs, volumeArg);
+        }
+        else {
+            await playCommand(Bot, m, voiceConnection, cleanArgs);
         }
     },
     help: "`!play <YT URL>` | `!play <search>` to play | `!play stop` to stop"

@@ -7,6 +7,7 @@
     "8ball": "^1.0.6",
     "aesthetics": "^2.1.0",
     "apiai": "^4.0.3",
+    "async-lock": "^1.2.2",
     "booru": "^2.0.5",
     "cheerio": "^1.0.0-rc.3",
     "colors": "^1.4.0",
@@ -48,7 +49,9 @@
     "sodium-native": "^2.4.6",
     "zlib-sync": "^0.1.6"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^6.8.0"
+  },
   "engines": {
     "node": ">=10.0.0 <12.0.0"
   },
