@@ -4,7 +4,7 @@ const getStory = require("../getStory");
 
 const command = "g";
 const type = "gentle";
-const isNSFW = true;
+const isNSFW = false;
 const responseColor = 0xFF00DC;
 
 module.exports = {
