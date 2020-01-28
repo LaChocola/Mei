@@ -4,10 +4,10 @@ const request = require("request-promise");
 const cheerio = require("cheerio");
 const querystring = require("querystring");
 
-const config = require("../etc/config.json");
+const conf = require("./conf");
 
 async function searchGoogleApi(args) {
-    var key = config.tokens.google;
+    var key = conf.tokens.google;
     var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=013652921652433515166:cnlmax0k6mu&q=" + encodeURI(args);
     try {
         var body = await request({

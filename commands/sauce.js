@@ -1,7 +1,7 @@
 "use strict";
 
-const config = require("../etc/config.json");
-const sagiri = require("sagiri")(config.tokens.sauce);
+const conf = require("./conf");
+const sagiri = require("sagiri")(conf.tokens.sauce);
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars

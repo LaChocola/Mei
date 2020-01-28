@@ -17,14 +17,16 @@ require("colors");
 const fs = require("fs").promises;
 const reload = require("require-reload")(require);
 
-const config = reload("./etc/config.json");
+const conf = require("./conf");
 const datadb = require("./data");
 const peopledb = require("./people");
 const serversdb = require("./servers");
 const misc = require("./misc");
 const ids = require("./ids");
 
-var Bot = bot(config.tokens.mei);
+conf.load();
+
+var Bot = bot(conf.tokens.mei);
 var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
 var hand = misc.choose(hands);
 var commandContentsMap = {};
@@ -246,9 +248,9 @@ Bot.on("messageCreate", async function(m) {
         return;
     }
     updateTimestamps();
-    var config = reload("./etc/config.json");
+    conf.load();
     var server = await serversdb.load();
-    var prefix = config.prefix;
+    var prefix = conf.prefix;
     if (server[m.channel.guild.id] && server[m.channel.guild.id].game && server[m.channel.guild.id].game.channel === m.channel.id && server[m.channel.guild.id].game.player === m.author.id) {
         if (server[m.channel.guild.id].game.active && server[m.channel.guild.id].game.choices.includes(m.content)) {
             m.content = prefix + "t " + m.content;
@@ -488,10 +490,6 @@ Bot.on("messageCreate", async function(m) {
 
 Bot.on("guildMemberAdd", async function(guild, member) {
     var server = await serversdb.load();
-    var prefix = config[prefix];
-    if (server[guild.id] && server[guild.id].prefix) {
-        prefix = server[guild.id];
-    }
     var count = guild.memberCount - guild.members.filter(m => m.bot).length;
     var date = member.joinedAt;
     var date2 = member.createdAt;

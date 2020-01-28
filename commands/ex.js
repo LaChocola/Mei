@@ -7,7 +7,7 @@ const request = require("request-promise").defaults({
 });
 const cheerio = require("cheerio");
 
-var config = require("../etc/config.json");
+const conf = require("./conf");
 
 class SiteUnavailableError extends Error {
     constructor(message) {
@@ -41,8 +41,8 @@ async function searchExHentai(searchString) {
 
     var j = request.jar();
     var searchUrl = `https://exhentai.org/?${q}`;
-    j.setCookie(request.cookie("ipb_member_id=" + config.tokens.exhentai.id), searchUrl);
-    j.setCookie(request.cookie("ipb_pass_hash=" + config.tokens.exhentai.hash), searchUrl);
+    j.setCookie(request.cookie("ipb_member_id=" + conf.tokens.exhentai.id), searchUrl);
+    j.setCookie(request.cookie("ipb_pass_hash=" + conf.tokens.exhentai.hash), searchUrl);
     j.setCookie(request.cookie("sl=dm_1"), searchUrl);
 
     //await Bot.sendChannelTyping(m.channel.id);

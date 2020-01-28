@@ -1,7 +1,7 @@
 "use strict";
 
-const config = require("../etc/config.json");
-const app = require("apiai")(config.tokens.apiai);
+const conf = require("./conf");
+const app = require("apiai")(conf.tokens.apiai);
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
