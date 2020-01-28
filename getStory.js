@@ -170,7 +170,7 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
 
     //=============get names==================
     if (!bigname) {
-        bigname = choose(await getAllGTSNames(smallid, guildid));
+        bigname = choose(await getGTSNames(smallid, guildid));
     }
 
     var gender = data.people[smallid] && data.people[smallid].names && data.people[smallid].names[bigname] || "female";
