@@ -76,7 +76,7 @@ function leftShift(n, s) {
 function timestampToSnowflake(d) {
     var epoch = 1421280000000;
     var dateFieldOffset = 22;
-    var snowflake = leftShift(Date.now() - epoch, dateFieldOffset);
+    var snowflake = leftShift(d - epoch, dateFieldOffset);
     return snowflake;
 }
 
