@@ -361,7 +361,7 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
         return {
             embed: {
                 "color": 0xA260F6,
-                "description": getLewdSummary(smallid, guildid, type)
+                "description": await getLewdSummary(smallid, guildid, type)
             }
         };
     }
