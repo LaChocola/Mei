@@ -1,7 +1,7 @@
 "use strict";
 
 const qs = require("querystring");
-const request = require("request").defaults({
+const request = require("request-promise").defaults({
     jar: true
 });
 const j = request.jar();
@@ -21,130 +21,122 @@ const defaultQuery = {
     f_apply: "Apply Filter"
 };
 
+async function searchExHentai(searchString) {
+    if (!searchString) {
+        searchString = "giantess";
+    }
+
+    var q = qs.encode(Object.assign({
+        f_search: searchString
+    }, defaultQuery));
+
+    var searchUrl = `https://exhentai.org/?${q}`;
+    j.setCookie(request.cookie("ipb_member_id=" + config.tokens.exhentai.id), searchUrl);
+    j.setCookie(request.cookie("ipb_pass_hash=" + config.tokens.exhentai.hash), searchUrl);
+    j.setCookie(request.cookie("sl=dm_1"), searchUrl);
+
+    //await Bot.sendChannelTyping(m.channel.id);
+
+    try {
+        var body = await request({
+            url: searchUrl,
+            jar: j
+        });
+    }
+    catch(err) {
+        console.log("Error: " + err);
+        return;
+    }
+
+    var results = [];
+    var $ = cheerio.load(body);
+    $(".itg .gl1t").each(function() {
+        results.push({
+            name: $("a .glname", this).text(),
+            link: $("a", this).attr("href"),
+            pic: $("img", this).attr("src")
+        });
+    });
+
+    return results;
+}
+
+async function checkEHentai(url) {
+    try {
+        var body = await request({ url: url });
+    }
+    catch (err) {
+        return false;
+    }
+    var $$ = cheerio.load(body);
+    if ($$(".d").text().toLowerCase().includes("this gallery has been removed or is unavailable.")) {
+        return false;
+    }
+
+    return true;
+}
+
 module.exports = {
-    main: function(Bot, m, args, prefix) {
-        if (m.channel.nsfw == false) {
-            Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
+    main: async function(Bot, m, args, prefix) {
+        if (!m.channel.nsfw) {
+            await Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
             return;
         }
-        var name = m.author.nick || m.author.username;
-        var args = m.cleanContent.replace(`${prefix}ex`, "").replace(`${prefix}ex `, "").toLowerCase().split(", ");
-        var search = args.join(" ");
-        if (!search) {
-            search = "giantess";
+
+        var cmdString = `${prefix}ex`;
+        var cleanArgs = m.cleanContent.slice(cmdString.length).trim();
+        var searchTerms = cleanArgs.toLowerCase().split(",").map(t => t.trim());
+        var searchString = searchTerms.join(" ");
+
+        var results = searchExHentai(searchString);
+
+        if (results.length < 1) {
+            Bot.createMessage(m.channel.id, "No results found :(");
+            return;
         }
-        var q = qs.encode(Object.assign({
-            f_search: search
-        }, defaultQuery));
-        var pageToVisit = `https://exhentai.org/?${q}`;
-        var cookie1 = request.cookie(config.tokens.exhentai.id);
-        var cookie2 = request.cookie(config.tokens.exhentai.hash);
-        var cookie3 = request.cookie("sl=dm_1");
-        j.setCookie(cookie1, pageToVisit);
-        j.setCookie(cookie2, pageToVisit);
-        j.setCookie(cookie3, pageToVisit);
-        Bot.sendChannelTyping(m.channel.id).then(async() => {
-            request({
-                url: pageToVisit,
-                jar: j
-            }, (error, response, body) => {
-                var link_array = [];
-                if (error) {
-                    console.log("Error: " + error);
-                }
-                else if (response.statusCode === 200) {
-                    var $ = cheerio.load(body);
-                    $(".itg .gl1t").each(function() {
-                        link_array.push({
-                            name: $("a .glname", this).text(),
-                            link: $("a", this).attr("href"),
-                            pic: $("img", this).attr("src")
-                        });
-                    });
-                    if (link_array.length < 1) {
-                        Bot.createMessage(m.channel.id, "No results found :(");
-                        return;
+
+        const index = Math.floor(Math.random() * results.length);
+        var number = index + 1;
+        var result = results[index];
+
+        var exHentaiUrl = result.link;
+
+        var eHentaiUrl = exHentaiUrl.replace("exhentai", "e-hentai");
+        var hasEHentai = checkEHentai(eHentaiUrl);
+
+        var eHentaiLink = "N/A (sad panda only)";
+        if (hasEHentai) {
+            eHentaiLink = `[Link](${eHentaiUrl})`;
+        }
+
+        var name = m.author.nick || m.author.username;
+        await Bot.createMessage(m.channel.id, {
+            "content": "Results on Exhentai for **" + searchString + "**",
+            "embed": {
+                "color": 0xA260F6,
+                "footer": {
+                    "icon_url": m.channel.guild.members.get(m.author.id).avatarURL.replace(".jpg", ".webp?size=1024"),
+                    "text": "Searched by: " + name + ". Result " + number + " of " + results.length
+                },
+                "image": {
+                    "url": result.pic.replace("exhentai", "ehgt")
+                },
+                "author": {
+                    "name": result.name
+                },
+                "fields": [
+                    {
+                        "name": "Exhentai:",
+                        "value": `[Link](${exHentaiUrl})`,
+                        "inline": true
+                    },
+                    {
+                        "name": "E-hentai:",
+                        "value": eHentaiLink,
+                        "inline": true
                     }
-                    const maths = Math.floor(Math.random() * link_array.length);
-                    var number = maths + 1;
-                    var pairs = link_array[maths];
-                    var $ = cheerio.load(body);
-                    var exOnly = false;
-                    var newPage = pairs.link.replace("exhentai", "e-hentai");
-                    request({ url: newPage }, (error, response, body) => {
-                        if (response.statusCode != 200) {
-                            exOnly = true;
-                        }
-                        if (response.statusCode == 200) {
-                            var $$ = cheerio.load(body);
-                            if ($$(".d").text().toLowerCase().includes("this gallery has been removed or is unavailable.")) {
-                                exOnly = true;
-                            }
-                        }
-                        if (exOnly == true) {
-                            var data = {
-                                "content": "Results on Exhentai for **" + search + "**",
-                                "embed": {
-                                    "color": 0xA260F6,
-                                    "footer": {
-                                        "icon_url": m.channel.guild.members.get(m.author.id).avatarURL.replace(".jpg", ".webp?size=1024"),
-                                        "text": "Searched by: " + name + ". Result " + number + " of " + link_array.length
-                                    },
-                                    "image": {
-                                        "url": pairs.pic.replace("exhentai", "ehgt")
-                                    },
-                                    "author": {
-                                        "name": pairs.name
-                                    },
-                                    "fields": [
-                                        {
-                                            "name": "Exhentai:",
-                                            "value": `[Link](${pairs.link})`,
-                                            "inline": true
-                                        },
-                                        {
-                                            "name": "E-hentai:",
-                                            "value": "N/A (sad panda only)",
-                                            "inline": true
-                                        }
-                                    ]
-                                }
-                            };
-                        }
-                        if (exOnly == false) {
-                            var data = {
-                                "content": "Results on for Exhentai **" + search + "**",
-                                "embed": {
-                                    "color": 0xA260F6,
-                                    "footer": {
-                                        "icon_url": m.channel.guild.members.get(m.author.id).avatarURL.replace(".jpg", ".webp?size=1024"),
-                                        "text": "Searched by: " + name + ". Result " + number + " of " + link_array.length
-                                    },
-                                    "image": {
-                                        "url": pairs.pic.replace("exhentai", "ehgt")
-                                    },
-                                    "author": {
-                                        "name": pairs.name
-                                    },
-                                    "fields": [
-                                        {
-                                            "name": "Exhentai:",
-                                            "value": `[Link](${pairs.link})`,
-                                            "inline": true
-                                        },
-                                        {
-                                            "name": "E-hentai:",
-                                            "value": `[Link](${pairs.link.replace("exhentai", "e-hentai")})`,
-                                            "inline": true
-                                        }
-                                    ]
-                                }
-                            };
-                        }
-                        Bot.createMessage(m.channel.id, data);
-                    });
-                }
-            });
+                ]
+            }
         });
     },
     help: "Search Exhentai"
