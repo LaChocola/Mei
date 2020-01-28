@@ -3,7 +3,7 @@
 const misc = require("../misc");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         if (m.mentions.length > 2) {
             Bot.createMessage(m.channel.id, "That's too many pats to give :angry:");
             return;

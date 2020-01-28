@@ -3,7 +3,7 @@
 const ids = require("../ids");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var response;
         if (m.author.id === ids.users.chocola) {
             response = ":ok_hand:";

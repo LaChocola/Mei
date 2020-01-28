@@ -3,7 +3,7 @@
 const timeago = require("timeago.js");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(prefix, "").replace(/date/i, "").trim();
         function isThisUsernameThatUsername(member) {
             var memberName = member.nick || member.username;
@@ -32,7 +32,7 @@ module.exports = {
         }
         if (!mentioned && +args2.length > 1) {
             Bot.createMessage(m.channel.id, "I could not find that member or id in this server").then((msg) => {
-                return setTimeout(function () {
+                return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 }, 5000);

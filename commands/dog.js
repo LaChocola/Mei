@@ -3,7 +3,7 @@
 const randomPuppy = require("random-puppy");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var url = await randomPuppy();
         Bot.createMessage(m.channel.id, {
             embed: {

@@ -5,7 +5,7 @@ const unidecode = require("unidecode");
 const peopledb = require("../people");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var data = await peopledb.load();
 
         var name1 = m.cleanContent.replace(/!fetish /i, "");
@@ -99,7 +99,7 @@ module.exports = {
                 delete data.people[id].fetishes[capFirstLetter(incoming[0])];
                 await peopledb.save(data);
                 Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your fetish list" + hand).then((msg) => {
-                    setTimeout(function () {
+                    setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -108,7 +108,7 @@ module.exports = {
             }
             else {
                 Bot.createMessage(m.channel.id, "Sorry, I couldn't find **" + incoming[0] + "** in your fetish list").then((msg) => {
-                    setTimeout(function () {
+                    setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -132,7 +132,7 @@ module.exports = {
             }
             if (incoming.length === 0) {
                 Bot.createMessage(m.channel.id, "Please say which fetish you would like to add, for example `!fetish add Butts`").then((msg) => {
-                    setTimeout(function () {
+                    setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -141,7 +141,7 @@ module.exports = {
             }
             if (data.people[id].fetishes[incoming[0]]) {
                 Bot.createMessage(m.channel.id, "That's already been added, silly~").then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -153,7 +153,7 @@ module.exports = {
                 incoming[0] = capFirstLetter(incoming[0].trim());
                 if (!incoming[0]) {
                     Bot.createMessage(m.channel.id, "Please say which fetish you would like to dislike, for example `!fetish add Death dislike`").then((msg) => {
-                        setTimeout(function () {
+                        setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
@@ -163,7 +163,7 @@ module.exports = {
                 data.people[id].fetishes[incoming[0]] = "dislike";
                 await peopledb.save(data);
                 Bot.createMessage(m.channel.id, "Added Dislike: **" + incoming[0] + "** " + hand).then((msg) => {
-                    setTimeout(function () {
+                    setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -174,7 +174,7 @@ module.exports = {
                 data.people[id].fetishes[incoming[0]] = "like";
                 await peopledb.save(data);
                 Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand).then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);

@@ -13,7 +13,7 @@ function choose(arr) {
 
 function chunkArray(arr, chunkSize) {
     var chunkCount = Math.ceil(arr.length / chunkSize);
-    return Array(chunkCount).fill().map(function (_, index) {
+    return Array(chunkCount).fill().map(function(_, index) {
         var begin = index * chunkSize;
         return arr.slice(begin, begin + chunkSize);
     });
@@ -40,9 +40,9 @@ function getMentionedId(m, args) {
         return mentionedId;
     }
 
-    var member = m.guild.members.find(function (mbr) {
-        return (new RegExp("\\b" + escapeStringRegexp(mbr.username) + "\\b", "i")).test(args)
-            || (mbr.nick && (new RegExp("\\b" + escapeStringRegexp(mbr.nick) + "\\b", "i")).test(args));
+    var member = m.guild.members.find(function(mbr) {
+        return new RegExp("\\b" + escapeStringRegexp(mbr.username) + "\\b", "i").test(args)
+            || (mbr.nick && new RegExp("\\b" + escapeStringRegexp(mbr.nick) + "\\b", "i").test(args));
     });
     if (member) {
         return member.id;
@@ -83,7 +83,7 @@ function timestampToSnowflake(d) {
 function splitArray(arr, predicate) {
     var trueArr = [];
     var falseArr = [];
-    arr.forEach(function (i) {
+    arr.forEach(function(i) {
         if (predicate(i)) {
             trueArr.push(i);
         }
@@ -95,7 +95,7 @@ function splitArray(arr, predicate) {
 }
 
 function deleteIn(timeout) {
-    return async function (sentMsg) {
+    return async function(sentMsg) {
         await delay(timeout);
         sentMsg.delete("Timeout");
     };

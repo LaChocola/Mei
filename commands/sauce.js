@@ -4,7 +4,7 @@ const config = require("../etc/config.json");
 const sagiri = require("sagiri")(config.tokens.sauce);
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         if (m.content.length < 7 && !m.attachments || m.content === `${prefix}sauce` && m.attachments.length === 0) {
             Bot.createMessage(m.channel.id, "Please add an image, or image url");
             return;
@@ -21,7 +21,7 @@ module.exports = {
         try {
             var res = await sagiri(link);
             var data = res[0];
-            
+
             var desc = data.raw.data.title || data.site;
             var image = String(data.raw.header.thumbnail.split(" ").join("%20"));
             var fields = [{

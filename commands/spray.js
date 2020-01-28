@@ -3,7 +3,7 @@
 const misc = require("../misc");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         if (m.content === `${prefix}spray` || !m.mentions[0]) {
             Bot.createMessage(m.channel.id, "Please add someone to spray. i.e. ``!spray @Chocola``");
         }

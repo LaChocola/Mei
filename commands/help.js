@@ -3,7 +3,7 @@
 const fs = require("fs").promises;
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         args = args.replace(prefix, "");
         if (args !== "") {
             var commands = await fs.readdir("./commands/");

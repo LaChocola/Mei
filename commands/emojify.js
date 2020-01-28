@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         args = args.replace(/(\w|\d|\*|\?|!| )/g, "$1");
         args = args.toLowerCase();
         args = args.split("");
@@ -49,7 +49,7 @@ module.exports = {
         emojis = emojis.replace(/:exclamation::question:/g, ":interrobang:");
         if (emojis.length > 2000) {
             Bot.createMessage(m.channel.id, `Your message is \`${emojis.length - 2000}\` characters too long to send in emojified form, please reduce the amount of characters, and try again. (Keep in mind, one letter becomes approximately 20 characters when emojified)`).then((msg) => {
-                return setTimeout(function () {
+                return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 }, 10000);

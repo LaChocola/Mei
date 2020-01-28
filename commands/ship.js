@@ -3,7 +3,7 @@
 const Jimp = require("jimp");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var names = m.cleanContent.replace(/^[ !ship\t]+[^a-zA-Z]+|[!ship \t]+[^a-zA-Z]$|!ship/i, "").split(" | ");
         if (names[0] !== undefined) {
             if (names[0].startsWith("@")) {
@@ -11,7 +11,7 @@ module.exports = {
             }
             var name1 = names[0];
 
-            var member = m.guild.members.find(function (member) {
+            var member = m.guild.members.find(function(member) {
                 var memberName = member.nick || member.username;
                 return memberName.toLowerCase() === name1.toLowerCase();
             });
@@ -28,7 +28,7 @@ module.exports = {
                 }
                 var name2 = names[1];
 
-                var member2 = m.guild.members.find(function (member) {
+                var member2 = m.guild.members.find(function(member) {
                     var memberName = member.nick || member.username;
                     return memberName.toLowerCase() === name2.toLowerCase();
                 });
@@ -52,7 +52,7 @@ module.exports = {
             return;
         }
 
-        Bot.sendChannelTyping(m.channel.id).then(async function () {
+        Bot.sendChannelTyping(m.channel.id).then(async function() {
             try {
                 var firstName = m.channel.guild.members.get(m.mentions[0].id).nick || m.mentions[0].username;
                 var lastName = m.channel.guild.members.get(m.mentions[1].id).nick || m.mentions[1].username;
@@ -72,7 +72,7 @@ module.exports = {
                 bg.clone()
                     .blit(user1, 0, 0)
                     .blit(user2, 256, 0)
-                    .getBuffer(Jimp.MIME_PNG, function (err, buffer) {
+                    .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
                         Bot.createMessage(m.channel.id, `Lovely shipping~\nIntroducing: **${firstPart}${lastPart}**`, {
                             "file": buffer,
                             "name": "ship.png"

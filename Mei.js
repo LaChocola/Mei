@@ -36,8 +36,8 @@ if (!fs) {
 
 function reply(m, text, timeout) {
     Bot.createMessage(m.channel, text)
-        .then(function (sendMessage) {
-            return setTimeout(function () {
+        .then(function(sendMessage) {
+            return setTimeout(function() {
                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 Bot.deleteMessage(m.channel.id, sendMessage.id, "Timeout");
             }, timeout);
@@ -49,23 +49,23 @@ function reply(m, text, timeout) {
 }
 
 Bot.on("ready", async function() {
-    Bot.editStatus('Online', {
+    Bot.editStatus("Online", {
         name: "with Tinies"
     });
     var i = 0;
     Bot.guilds.map(g => g.channels.size).forEach(c => {
         i += c;
     });
-    console.log('');
+    console.log("");
     console.log("BOT".bgMagenta.yellow.bold + " Logged in as " + `${Bot.user.username}#${Bot.user.discriminator}`.cyan.bold);
-    console.log('');
+    console.log("");
     console.log("INF".bgBlue.magenta + " Currently seeing: " + `${Bot.guilds.size}`.green.bold + " guilds");
     console.log("INF".bgBlue.magenta + " Currently seeing: " + `${i}`.green.bold + " channels");
     console.log("INF".bgBlue.magenta + " Currently seeing: " + `${Bot.users.size}`.green.bold + " users");
-    console.log('');
+    console.log("");
 });
 
-Bot.on("guildBanAdd", async function (guild, user) {
+Bot.on("guildBanAdd", async function(guild, user) {
     var server = await serversdb.load();
     if (server[guild.id]) {
         if (server[guild.id].notifications) {
@@ -127,7 +127,7 @@ Bot.on("guildBanAdd", async function (guild, user) {
     }
 });
 
-Bot.on("guildBanRemove", async function (guild, user) {
+Bot.on("guildBanRemove", async function(guild, user) {
     var server = await serversdb.load();
     if (server[guild.id]) {
         if (server[guild.id].notifications) {
@@ -178,7 +178,7 @@ Bot.on("guildBanRemove", async function (guild, user) {
     }
 });
 
-Bot.on("messageCreate", async function (m) {
+Bot.on("messageCreate", async function(m) {
     const timestamps = [Date.now()];
     function updateTimestamps() {
         const latest = timestamps[timestamps.length - 1];
@@ -188,7 +188,7 @@ Bot.on("messageCreate", async function (m) {
     }
     if (!m.channel.guild) {
         console.log(`${m.author.username}#${m.author.discriminator} (${m.author.id}): ${m.content}`);
-        Bot.getDMChannel(m.author.id).then(function (DMchannel) {
+        Bot.getDMChannel(m.author.id).then(function(DMchannel) {
             Bot.createMessage(DMchannel.id, "Your messages do not serve me here, bug.");
             return;
         }).catch((err) => {
@@ -228,8 +228,8 @@ Bot.on("messageCreate", async function (m) {
         if (m.author.id === ids.users.chocola || m.author.id === Bot.user.id) {
             return;
         }
-        Bot.getDMChannel(ids.users.chocola).then(async function (DMchannel) {
-            Bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`).then(function (msg) {
+        Bot.getDMChannel(ids.users.chocola).then(async function(DMchannel) {
+            Bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`).then(function(msg) {
                 Bot.createMessage(DMchannel.id, m.content);
             }).catch((err) => {
                 if (err.code === 50007) {
@@ -264,7 +264,7 @@ Bot.on("messageCreate", async function (m) {
     if (m.author.id === ids.users.chocola && m.content.includes("pls")) {
         if (m.content.includes("stop")) {
             Bot.createMessage(m.channel.id, "Let me rest my eyes for a moment").then((msg) => {
-                return setTimeout(function () {
+                return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout").then(() => {
                         process.exit(0);
@@ -282,7 +282,7 @@ Bot.on("messageCreate", async function (m) {
                     for (const mention of mentions) {
                         Bot.addGuildMemberRole(m.channel.guild.id, mention.id, ids.roles.role2, "Daddy said shush").then(() => {
                             return Bot.createMessage(m.channel.id, hand).then((m) => {
-                                return setTimeout(function () {
+                                return setTimeout(function() {
                                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                 }, 5000);
                             });
@@ -292,7 +292,7 @@ Bot.on("messageCreate", async function (m) {
                 }
                 Bot.addGuildMemberRole(m.channel.guild.id, m.mentions[0].id, ids.roles.role2, "Daddy said shush").then(() => {
                     return Bot.createMessage(m.channel.id, hand).then((m) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
                     });
@@ -304,7 +304,7 @@ Bot.on("messageCreate", async function (m) {
                     for (const mention of mention) {
                         Bot.removeGuildMemberRole(m.channel.guild.id, mention.id, ids.roles.role2, "Daddy said speak").then(() => {
                             return Bot.createMessage(m.channel.id, hand).then((m) => {
-                                return setTimeout(function () {
+                                return setTimeout(function() {
                                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                 }, 5000);
                             });
@@ -314,7 +314,7 @@ Bot.on("messageCreate", async function (m) {
                 }
                 Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, ids.roles.role2, "Daddy said speak").then(() => {
                     return Bot.createMessage(m.channel.id, hand).then((m) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
                     });
@@ -337,7 +337,7 @@ Bot.on("messageCreate", async function (m) {
 
                 if (cmd.disable) {
                     Bot.createMessage(m.channel.id, `${command} is already disabled. Doing nothing.`).then((msg) => {
-                        return setTimeout(async function () {
+                        return setTimeout(async function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
@@ -348,7 +348,7 @@ Bot.on("messageCreate", async function (m) {
                 console.log(cmd);
                 await fs.writeFile("./commands/" + command + ".js", JSON.stringify(cmd));
                 Bot.createMessage(m.channel.id, `${command} has been disabled.`).then((msg) => {
-                    return setTimeout(async function () {
+                    return setTimeout(async function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -357,7 +357,7 @@ Bot.on("messageCreate", async function (m) {
             }
             else {
                 Bot.createMessage(m.channel.id, `${command} is not a valid command, please try again.`).then((msg) => {
-                    return setTimeout(async function () {
+                    return setTimeout(async function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -379,7 +379,7 @@ Bot.on("messageCreate", async function (m) {
                 }
                 if (!cmd.disable) {
                     Bot.createMessage(m.channel.id, `${command} is already enabled. Doing nothing.`).then((msg) => {
-                        return setTimeout(async function () {
+                        return setTimeout(async function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
@@ -389,7 +389,7 @@ Bot.on("messageCreate", async function (m) {
                 cmd.disable = false;
                 await fs.writeFile("./commands/" + command + ".js", JSON.stringify(cmd));
                 Bot.createMessage(m.channel.id, `${command} has been enabled.`).then((msg) => {
-                    return setTimeout(async function () {
+                    return setTimeout(async function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -398,7 +398,7 @@ Bot.on("messageCreate", async function (m) {
             }
             else {
                 Bot.createMessage(m.channel.id, `${command} is not a valid command, please try again.`).then((msg) => {
-                    return setTimeout(async function () {
+                    return setTimeout(async function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -466,7 +466,7 @@ Bot.on("messageCreate", async function (m) {
             catch (err) {
                 console.log(err);
                 Bot.createMessage(m.channel.id, "An error has occured.").then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     }, 5000);
@@ -481,7 +481,7 @@ Bot.on("messageCreate", async function (m) {
     }
 });
 
-Bot.on("guildMemberAdd", async function (guild, member) {
+Bot.on("guildMemberAdd", async function(guild, member) {
     var server = await serversdb.load();
     var prefix = config[prefix];
     if (server[guild.id] && server[guild.id].prefix) {
@@ -530,7 +530,7 @@ Bot.on("guildMemberAdd", async function (guild, member) {
     }
 });
 
-Bot.on("guildMemberRemove", async function (guild, member) {
+Bot.on("guildMemberRemove", async function(guild, member) {
     var server = await serversdb.load();
     var count = guild.memberCount - guild.members.filter(m => m.bot).length;
     if (server[guild.id]) {
@@ -563,8 +563,8 @@ Bot.on("guildMemberRemove", async function (guild, member) {
     }
 });
 
-Bot.on("guildCreate", async function (guild) {
-    Bot.getDMChannel(ids.users.chocola).then(function (DMchannel) {
+Bot.on("guildCreate", async function(guild) {
+    Bot.getDMChannel(ids.users.chocola).then(function(DMchannel) {
         Bot.createMessage(DMchannel.id, {
             embed: {
                 color: 0xA260F6,
@@ -584,8 +584,8 @@ Bot.on("guildCreate", async function (guild) {
     });
 });
 
-Bot.on("guildDelete", async function (guild) {
-    Bot.getDMChannel(ids.users.chocola).then(function (DMchannel) {
+Bot.on("guildDelete", async function(guild) {
+    Bot.getDMChannel(ids.users.chocola).then(function(DMchannel) {
         Bot.createMessage(DMchannel.id, {
             embed: {
                 color: 0xA260F6,
@@ -605,7 +605,7 @@ Bot.on("guildDelete", async function (guild) {
     });
 });
 
-Bot.on("messageReactionAdd", async function (m, emoji, userID) {
+Bot.on("messageReactionAdd", async function(m, emoji, userID) {
     var server = await serversdb.load();
     var people = await peopledb.load();
     m = await Bot.getMessage(m.channel.id, m.id);
@@ -670,7 +670,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                         if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                             var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                             Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                return setTimeout(function () {
+                                                return setTimeout(function() {
                                                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                 }, 60000);
                                             }).catch((err) => {
@@ -688,7 +688,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                             if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                                 var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                                 Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                    return setTimeout(function () {
+                                                    return setTimeout(function() {
                                                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                     }, adds);
                                                 }).catch((err) => {
@@ -725,7 +725,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                 if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                     var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                     Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                        return setTimeout(function () {
+                                        return setTimeout(function() {
                                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                         }, 60000);
                                     }).catch((err) => {
@@ -743,15 +743,15 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                     if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                         var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                         Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                            return setTimeout(function () {
+                                            return setTimeout(function() {
                                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                             }, adds);
                                         }).catch((err) => {
-                                        if (err.code === 50013) {
-                                            console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
-                                            return;
-                                        }
-                                        console.log(err);
+                                            if (err.code === 50013) {
+                                                console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for update".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
+                                                return;
+                                            }
+                                            console.log(err);
                                         });
                                     }
                                 }
@@ -820,7 +820,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                 if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                                     var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                                     Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                        return setTimeout(function () {
+                                                        return setTimeout(function() {
                                                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                         }, 60000);
                                                     }).catch((err) => {
@@ -837,7 +837,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                                     if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                                         var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                                         Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                            return setTimeout(function () {
+                                                            return setTimeout(function() {
                                                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                             }, adds);
                                                         }).catch((err) => {
@@ -874,7 +874,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                         if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                             var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                             Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                return setTimeout(function () {
+                                                return setTimeout(function() {
                                                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                 }, 60000);
                                             }).catch((err) => {
@@ -891,7 +891,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
                                             if (Number(people.people[m.author.id].adds) % 10 === 0 && m.author.id !== Bot.user.id) {
                                                 var user = Bot.users.filter(u => u.id === m.author.id)[0];
                                                 Bot.createMessage(m.channel.id, `${user.username} #${user.discriminator} reached ${Number(people.people[m.author.id].adds)} hoard adds.`).then((m) => {
-                                                    return setTimeout(function () {
+                                                    return setTimeout(function() {
                                                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                                     }, adds);
                                                 }).catch((err) => {
@@ -919,7 +919,7 @@ Bot.on("messageReactionAdd", async function (m, emoji, userID) {
     }
 });
 
-Bot.on("messageReactionRemove", async function (m, emoji, userID) {
+Bot.on("messageReactionRemove", async function(m, emoji, userID) {
     var server = await serversdb.load();
     var people = await peopledb.load();
     m = await Bot.getMessage(m.channel.id, m.id);

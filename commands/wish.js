@@ -8,7 +8,7 @@ const Jimp = require("jimp");
 var time = new Date().toDateString().slice(4).replace(` ${new Date().getFullYear()}`, `, ${new Date().getFullYear()}`);
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         function isThisUsernameThatUsername(member) {
             var memberName = member.nick || member.username;
             return memberName.toLowerCase() === m.author.username.toLowerCase();
@@ -31,7 +31,7 @@ module.exports = {
             Bot.createMessage(m.channel.id, "This Command can't be used with more than one mention");
             return;
         }
-        Bot.sendChannelTyping(m.channel.id).then(async function () {
+        Bot.sendChannelTyping(m.channel.id).then(async function() {
             try {
                 const bg = await Jimp.read("https://owo.whats-th.is/4Vp1MUG.png");
                 const avy = await Jimp.read(pic);
@@ -42,7 +42,7 @@ module.exports = {
                     .blit(avy, 15, 12)
                     .print(nameFont, 215, 30, name)
                     .print(timeFont, 460, 37, time)
-                    .getBuffer(Jimp.MIME_PNG, function (err, buffer) {
+                    .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
                         Bot.createMessage(m.channel.id, "", {
                             file: buffer,
                             name: "wish.png"

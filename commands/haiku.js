@@ -3,8 +3,8 @@
 const Haikudos = require("haikudos");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
-        Haikudos(function (haiku) {
+    main: async function(Bot, m, args, prefix) {
+        Haikudos(function(haiku) {
             Bot.createMessage(m.channel.id, {
                 embed: {
                     color: 0xA260F6,

@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(`${prefix}avy `, "");
         function isThisUsernameThatUsername(member) {
             var memberName = member.nick || member.username;

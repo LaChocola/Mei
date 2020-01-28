@@ -3,7 +3,7 @@
 const Jimp = require("jimp");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         if (m.mentions.length > 1) {
             Bot.createMessage(m.channel.id, "This Command can't be used with more than one mention");
             return;
@@ -26,7 +26,7 @@ module.exports = {
             const nameFont = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
             bg.clone()
                 .print(nameFont, 550, 145, name)
-                .getBuffer(Jimp.MIME_PNG, function (err, buffer) {
+                .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
                     Bot.createMessage(m.channel.id, "Weirdo", {
                         file: buffer,
                         name: "furry.png"

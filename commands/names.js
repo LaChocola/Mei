@@ -3,7 +3,7 @@
 const peopledb = require("../people");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var data = await peopledb.load();
 
         var name1 = m.cleanContent.replace(prefix, "").replace(/names /i, "");
@@ -43,7 +43,7 @@ module.exports = {
                     delete data.people[id].names[e[1]];
                     await peopledb.save(data);
                     Bot.createMessage(m.channel.id, "Removed: **" + e[1] + "** from your names list" + hand).then(function(msg) {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
@@ -67,7 +67,7 @@ module.exports = {
                 e[1] = capFirstLetter(e[1]);
                 if (data.people[id].names[e[1]]) {
                     Bot.createMessage(m.channel.id, e[1] + "'s already been added, silly~").then(function(msg) {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
@@ -80,7 +80,7 @@ module.exports = {
                         data.people[id].names[cleanName] = "male";
                         await peopledb.save(data);
                         Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then(function(msg) {
-                            return setTimeout(function () {
+                            return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
@@ -92,7 +92,7 @@ module.exports = {
                         data.people[id].names[cleanName] = "futa";
                         await peopledb.save(data);
                         Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then(function(msg) {
-                            return setTimeout(function () {
+                            return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
@@ -103,7 +103,7 @@ module.exports = {
                         data.people[id].names[e[1]] = "female";
                         await peopledb.save(data);
                         Bot.createMessage(m.channel.id, "Added **" + e[1] + "** " + hand).then(function(msg) {
-                            return setTimeout(function () {
+                            return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
@@ -120,7 +120,7 @@ module.exports = {
         }
         else {
             var names = data.people[id].names;
-            Object.entries(names).forEach(function (key) {
+            Object.entries(names).forEach(function(key) {
                 nameArray.push(`${key[0]}: ${key[1]}`);
             });
             Bot.createMessage(m.channel.id, {

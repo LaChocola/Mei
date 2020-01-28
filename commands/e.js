@@ -4,7 +4,7 @@ const request = require("request-promise");
 const unidecode = require("unidecode");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         if (m.content === `${prefix}e`) {
             Bot.createMessage(m.channel.id, "Please add something i.e. ``!e Whats cooler than being cool``");
             return;

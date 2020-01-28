@@ -3,7 +3,7 @@
 const peopledb = require("../people");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var data = await peopledb.load();
 
         var name1 = m.cleanContent.replace(/!hoard /i, "");
@@ -25,7 +25,7 @@ module.exports = {
                 args[0] = args[0].split(" ");
                 if (id !== m.author.id) {
                     Bot.createMessage(m.channel.id, "You can only modify your own hoards").then((msg) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
@@ -57,7 +57,7 @@ module.exports = {
                 }
                 else if (!data.people[id].hoard) {
                     Bot.createMessage(m.channel.id, "You do not currently have a hoard. Please react to messages with your hoard emoji's in order to create a hoard").then((msg) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
@@ -70,7 +70,7 @@ module.exports = {
                 args[0] = args[0].split(" ");
                 if (id !== m.author.id) {
                     Bot.createMessage(m.channel.id, "You can only modify your own hoards").then((msg) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
@@ -79,7 +79,7 @@ module.exports = {
                 }
                 if (args[0].length > 1) {
                     Bot.createMessage(m.channel.id, "Sorry, you can only make a hoard by using 1 emoji").then((msg) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
@@ -97,7 +97,7 @@ module.exports = {
                     var hoard = Object.keys(data.people[id].hoard);
                     if (hoard[args[0]]) {
                         Bot.createMessage(m.channel.id, args[0] + " is already one of your hoards").then((msg) => {
-                            return setTimeout(function () {
+                            return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             }, 5000);
@@ -113,7 +113,7 @@ module.exports = {
                     data.people[id].hoard[args[0]] = {};
                     await peopledb.save(data);
                     Bot.createMessage(m.channel.id, "Successfully added hoard: " + args[0]).then((msg) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
@@ -127,7 +127,7 @@ module.exports = {
                 args[0] = args[0].split(" ");
                 if (id !== m.author.id) {
                     Bot.createMessage(m.channel.id, "You can only modify your own hoards").then((msg) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
@@ -136,7 +136,7 @@ module.exports = {
                 }
                 if (args[0].length > 1) {
                     Bot.createMessage(m.channel.id, "Sorry, you can only remove 1 hoard at a time").then((msg) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
@@ -159,7 +159,7 @@ module.exports = {
                                 delete data.people[id].hoard[args[0]][item];
                                 await peopledb.save(data);
                                 Bot.createMessage(m.channel.id, `Successfully deleted item ${args[1] + 1} from ${args[0]}`).then((msg) => {
-                                    return setTimeout(function () {
+                                    return setTimeout(function() {
                                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                     }, 5000);
@@ -167,7 +167,7 @@ module.exports = {
                                 return;
                             }
                             Bot.createMessage(m.channel.id, "Could not find that item in that hoard").then((msg) => {
-                                return setTimeout(function () {
+                                return setTimeout(function() {
                                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                 }, 5000);
@@ -182,7 +182,7 @@ module.exports = {
                         delete data.people[id].hoard[args[0]];
                         await peopledb.save(data);
                         Bot.createMessage(m.channel.id, args[0] + " Successfully deleted").then((msg) => {
-                            return setTimeout(function () {
+                            return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             }, 5000);
@@ -195,7 +195,7 @@ module.exports = {
             if (args[0].toLowerCase().includes("export")) {
                 if (id !== m.author.id) {
                     Bot.createMessage(m.channel.id, "You can only export your own hoards").then((msg) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
@@ -204,7 +204,7 @@ module.exports = {
                 }
                 if (!data.people[id].hoard) {
                     Bot.createMessage(m.channel.id, "You do not currently have a hoard. Please react to messages with your hoard emoji's in order to create a hoard").then((msg) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
@@ -282,7 +282,7 @@ module.exports = {
                 console.log(exports);
                 if (exports.length < 1) {
                     Bot.createMessage(m.channel.id, "You do not currently have any items in your hoard. Please react to messages with your hoard emoji's in order to create a hoard").then((msg) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
@@ -295,7 +295,7 @@ module.exports = {
                     "name": `${id} Hoard Export (${new Date().toLocaleString().split(",")[0]}).html`
                 })
                     .then((msg) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 60000);
@@ -303,7 +303,7 @@ module.exports = {
                     .catch((err) => {
                         console.log(err);
                         Bot.createMessage(m.channel.id, "Something went wrong while trying to export your hoard, please try again later.").then((msg) => {
-                            return setTimeout(function () {
+                            return setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             }, 5000);
@@ -314,7 +314,7 @@ module.exports = {
         }
         if (!data.people[id] || !data.people[id].hoard) {
             Bot.createMessage(m.channel.id, `Could not find any hoard for **${name}**`).then((msg) => {
-                return setTimeout(function () {
+                return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 }, 5000);
@@ -361,7 +361,7 @@ module.exports = {
         if (!rando) {
             if (hoard[hoard.indexOf(args[0])]) {
                 Bot.createMessage(m.channel.id, `No items found in the ${hoard[hoard.indexOf(args[0])]} hoard. Please react to messages with ${hoard[hoard.indexOf(args[0])]} to pull them up in their own hoard`).then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     }, 5000);
@@ -370,7 +370,7 @@ module.exports = {
             }
             else {
                 Bot.createMessage(m.channel.id, "Please react to messages with your hoard emoji's to pull them up in their own hoard").then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     }, 5000);

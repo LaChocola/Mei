@@ -28,9 +28,9 @@ function getSubtypeAliasMap() {
     };
 
     var subtypeAliasMap = {};
-    Object.keys(subtypeAliasTree).forEach(function (subtype) {
+    Object.keys(subtypeAliasTree).forEach(function(subtype) {
         subtypeAliasMap[subtype] = subtype;
-        subtypeAliasTree[subtype].forEach(function (alias) {
+        subtypeAliasTree[subtype].forEach(function(alias) {
             subtypeAliasMap[alias] = subtype;
         });
     });
@@ -56,7 +56,7 @@ function getSubtype(s) {
         "Random": ":question:"
     };
 
-    var foundAlias = Object.keys(subtypeAliasMap).find(function (alias) {
+    var foundAlias = Object.keys(subtypeAliasMap).find(function(alias) {
         return s.match(new RegExp("\\b" + alias + "\\b", "i"));
     });
 
@@ -120,7 +120,7 @@ async function getNamesSummary(uid, guildid, perLine) {
     }
 
     // Group names in groups of [perLine] per line
-    var namesString = chunkArray(names, perLine).map(function (chunk) {
+    var namesString = chunkArray(names, perLine).map(function(chunk) {
         return chunk.join(", ");
     }).join(", \n");
 
@@ -141,7 +141,7 @@ async function getLewdCountsSummary(type) {
     var total = 0;
     var lines = [];
     var typepool = pool[type];
-    Object.keys(typepool).forEach(function (subtype) {
+    Object.keys(typepool).forEach(function(subtype) {
         var subtypepool = typepool[subtype];
         var count = subtypepool.length;
         total += count;
@@ -255,7 +255,7 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
 
     var candidates = pool[type][subtype] || [];
     if (candidates.length === 0) {
-        Object.values(pool[type]).forEach(function (subpool) {
+        Object.values(pool[type]).forEach(function(subpool) {
             candidates = candidates.concat(subpool);
         });
     }
@@ -280,7 +280,7 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
         "singular": singular
     };
 
-    Object.entries(replacements).forEach(function ([oldVal, newVal]) {
+    Object.entries(replacements).forEach(function([oldVal, newVal]) {
         // Regex to allow global replacement
         var re = RegExp(`\\[${oldVal}\\]`, "g");
         lewdmessage = lewdmessage.replace(re, newVal);
@@ -321,7 +321,7 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
         toReplace = {};
     }
 
-    Object.entries(toReplace).forEach(function ([oldVal, newVal]) {
+    Object.entries(toReplace).forEach(function([oldVal, newVal]) {
         var re = new RegExp(`\\b${oldVal}\\b`, "ig");
         lewdmessage = lewdmessage.replace(re, newVal);
     });

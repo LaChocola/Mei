@@ -58,7 +58,7 @@ async function searchGoogleScraper(args) {
 }
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         args = m.cleanContent.replace(`${prefix}search `, "").trim();
         var message = await Bot.createMessage(m.channel.id, "`Searching...`");
 

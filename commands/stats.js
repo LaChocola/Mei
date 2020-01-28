@@ -3,7 +3,7 @@
 const datadb = require("../data");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var data = await datadb.load();
 
         var name1 = m.cleanContent.replace(`${prefix}stats `, "");

@@ -42,7 +42,7 @@ function getLeaderboard(m, sorted, users, userCount, title) {
 }
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var data = await peopledb.load();
 
         function rank(obj) {

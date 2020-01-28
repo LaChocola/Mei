@@ -7,7 +7,7 @@ function promiseTimeout(time) {
 }
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var data = await serversdb.load();
 
         var guild = m.channel.guild;
@@ -28,8 +28,8 @@ module.exports = {
             data[guild.id] = {};
             data[guild.id].name = guild.name;
             data[guild.id].owner = guild.ownerID;
-            Bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${hand}`).then(function (msg) {
-                promiseTimeout(5000).then(function () {
+            Bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${hand}`).then(function(msg) {
+                promiseTimeout(5000).then(function() {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                 });
@@ -64,7 +64,7 @@ module.exports = {
 
                 var contestants = [];
                 var entries = data[guild.id].giveaways.current.contestants;
-                Object.keys(entries).forEach(function (key) {
+                Object.keys(entries).forEach(function(key) {
                     contestants.push(key);
                 });
                 var winnerID = contestants[Math.floor(Math.random() * contestants.length)];

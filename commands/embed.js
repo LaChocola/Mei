@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         prefix = "!";
         args = m.content.slice(prefix.length).split(" ");
         args.shift();
@@ -10,7 +10,7 @@ module.exports = {
         if (args.includes("code")) {
             message = "```" + message + "```";
         }
-        
+
         if (!args.includes("blank")) {
             message = "**Embedded Text:**\n" + message;
         }

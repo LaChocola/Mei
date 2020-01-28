@@ -3,7 +3,7 @@
 const peopledb = require("../people");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var data = await peopledb.load();
 
         var name1 = m.cleanContent.replace(/!artist /i, "");
@@ -31,7 +31,7 @@ module.exports = {
         if (args.toLowerCase().includes("add ")) {
             if (mentioned.id !== m.author.id) {
                 Bot.createMessage(m.channel.id, "Okay....but that isn't you").then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -46,7 +46,7 @@ module.exports = {
             }
             if (data.people[id].links[incoming[0]]) {
                 Bot.createMessage(m.channel.id, incoming[0] + " has already been added, silly~").then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 10000);
@@ -56,7 +56,7 @@ module.exports = {
             else {
                 if (incoming.length > 2) {
                     Bot.createMessage(m.channel.id, "You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`!artist add Patreon <https://patreon.com/Chocola>`").then((msg) => {
-                        return setTimeout(function () {
+                        return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 15000);
@@ -66,7 +66,7 @@ module.exports = {
                 data.people[id].links[incoming[0]] = incoming[1];
                 await peopledb.save(data);
                 Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand).then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -78,7 +78,7 @@ module.exports = {
         if (args.includes("remove")) {
             if (mentioned.id !== m.author.id) {
                 Bot.createMessage(m.channel.id, "Okay....but that isn't you").then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -96,7 +96,7 @@ module.exports = {
                 delete data.people[id].links[incoming[0]];
                 await peopledb.save(data);
                 Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + ":** from your links " + hand).then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
@@ -105,7 +105,7 @@ module.exports = {
             }
             else {
                 Bot.createMessage(m.channel.id, "Sorry, I couldn't find** " + incoming[0] + "** in your links").then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 10000);
@@ -116,7 +116,7 @@ module.exports = {
 
         if (Object.keys(data.people[id].links).length === 0) {
             Bot.createMessage(m.channel.id, "I could find any links for **" + name + "** :(").then((msg) => {
-                return setTimeout(function () {
+                return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                 }, 10000);
@@ -125,7 +125,7 @@ module.exports = {
         }
         else {
             var links = data.people[id].links;
-            Object.keys(links).forEach(function (key) {
+            Object.keys(links).forEach(function(key) {
                 linkArray.push(key + ": " + links[key] + "\n");
             });
             Bot.createMessage(m.channel.id, {

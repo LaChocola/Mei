@@ -24,7 +24,7 @@ async function runEval(Bot, m, code, unsafe) {
 }
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var isAdmin = m.author.id === ids.users.chocola;
         var coolkids = [ids.users.whosthis2, ids.users.whosthis3, ids.users.whosthis4, ids.users.whosthis5];
         var isCoolKid = coolkids.includes(m.author.id);
@@ -41,7 +41,7 @@ module.exports = {
             ];
             var response = misc.choose(responses);
             Bot.createMessage(m.channel.id, response).then((msg) => {
-                return setTimeout(function () {
+                return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 }, 5000);

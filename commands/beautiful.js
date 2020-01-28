@@ -3,7 +3,7 @@
 const Jimp = require("jimp");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         function isThisUsernameThatUsername(member) {
             var memberName = member.nick || member.username;
             if (memberName.toLowerCase() === m.author.username.toLowerCase()) {
@@ -35,7 +35,7 @@ module.exports = {
             bg.clone()
                 .blit(avy, 253, 23)
                 .blit(avy, 258, 224)
-                .getBuffer(Jimp.MIME_PNG, function (err, buffer) {
+                .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
                     Bot.createMessage(m.channel.id, "", {
                         "file": buffer,
                         "name": name + "beautiful.png"

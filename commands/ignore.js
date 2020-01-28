@@ -4,7 +4,7 @@ const datadb = require("../data");
 const ids = require("../ids");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var data = await datadb.load();
 
         if (m.author.id !== ids.users.chocola) {
@@ -59,7 +59,7 @@ module.exports = {
         }
         if (!id) {
             Bot.createMessage(m.channel.id, "User or User ID not found. Please enter a user or user id, and try again").then((msg) => {
-                return setTimeout(function () {
+                return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 }, 2500);
@@ -69,7 +69,7 @@ module.exports = {
         if (argsArray.includes("undo")) {
             if (!data.banned.global[id]) {
                 Bot.createMessage(m.channel.id, `The ID "${id}" was not found in the list of ignored users. Nothing to undo.`).then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     }, 5000);
@@ -80,7 +80,7 @@ module.exports = {
                 delete data.banned.global[id];
                 await datadb.save(data);
                 Bot.createMessage(m.channel.id, `Welcome back, ${name} (${id}) ${hand}`).then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     }, 5000);
@@ -91,7 +91,7 @@ module.exports = {
         if (id) {
             if (data.banned.global[id]) {
                 Bot.createMessage(m.channel.id, `${name} (${id}) is already in the ignored users list. Nothing to add.`).then((msg) => {
-                    return setTimeout(function () {
+                    return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     }, 5000);
@@ -109,7 +109,7 @@ module.exports = {
 
         await datadb.save(data);
         Bot.createMessage(m.channel.id, `Goodbye, ${name} (${id}) ${hand}`).then((msg) => {
-            return setTimeout(function () {
+            return setTimeout(function() {
                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
             }, 5000);

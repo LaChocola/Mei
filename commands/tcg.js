@@ -5,7 +5,7 @@ const pokemon = require("pokemontcgsdk");
 const misc = require("../misc");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var cards = await pokemon.card.where({ supertype: "pokemon" });
         var chosen = misc.choose(cards);
 
@@ -13,7 +13,7 @@ module.exports = {
         var weakness = chosen.weaknesses && chosen.weaknesses[0];
         var resistance = chosen.resistances && chosen.resistances[0];
 
-        var attacks = attack && (attack.name + (attack.text ? (": " + attack.text) : "")) || "None";
+        var attacks = attack && (attack.name + (attack.text ? ": " + attack.text : "")) || "None";
         var weaknesses = weakness && (weakness.type + ": " + weakness.value) || "None";
         var resistances = resistance && (resistance.type + ": " + resistance.value) || "None";
 

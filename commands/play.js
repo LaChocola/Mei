@@ -110,7 +110,7 @@ async function processQueue(Bot, guildid, textChannel) {
         console.warn("TRIED TO PROCESS QUEUE WHILE NOT CONNECTED");
         return;
     }
-    
+
     var voiceChannel = Bot.getChannel(voiceConnection.channelID);
 
     // We are already playing something (this shouldn't happen)
@@ -351,26 +351,26 @@ async function currentCommand(m, voiceConnection, guildData, cmdList) {
     });
 
     m.channel.createMessage({
-            embed: {
-                title: `:musical_note:  ${info.title} :musical_note:`,
-                url: `https://youtu.be/${currentCode}?t=${msToHMS(start).replace(":", "m")}s`,
-                color: 0xA260F6,
-                footer: {
-                    text: `Requested by: ${currentRequester}`
-                },
-                thumbnail: {
-                    url: `https://i.ytimg.com/vi/${currentCode}/hqdefault.jpg`
-                },
-                author: {
-                    name: (cmdList ? "Nothing Else is Queued.\n" : "") + "Currently Playing"
-                },
-                fields: [{
-                    name: `${msToHMS(start)}/${msToHMS(end)}`,
-                    value: `[${bar(start)}]`,
-                    inline: true
-                }]
-            }
-        })
+        embed: {
+            title: `:musical_note:  ${info.title} :musical_note:`,
+            url: `https://youtu.be/${currentCode}?t=${msToHMS(start).replace(":", "m")}s`,
+            color: 0xA260F6,
+            footer: {
+                text: `Requested by: ${currentRequester}`
+            },
+            thumbnail: {
+                url: `https://i.ytimg.com/vi/${currentCode}/hqdefault.jpg`
+            },
+            author: {
+                name: (cmdList ? "Nothing Else is Queued.\n" : "") + "Currently Playing"
+            },
+            fields: [{
+                name: `${msToHMS(start)}/${msToHMS(end)}`,
+                value: `[${bar(start)}]`,
+                inline: true
+            }]
+        }
+    })
         .then(async function(sentMsg) {
             await misc.delay(end - start);
             sentMsg.delete("Timeout");

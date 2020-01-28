@@ -18,7 +18,7 @@ async function updateGuildData(Bot, m, data) {
     }
 }
 
-/*  
+/*
  * Check if user is a mod
  *
  * User must be at least one of the following:
@@ -101,7 +101,7 @@ async function deleteMessages(Bot, channelId, msgIds, message) {
 }
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         await m.delete();
 
         var argsArray = m.cleanContent.replace(`${prefix}clean `, "").split(" ");

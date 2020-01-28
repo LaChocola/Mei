@@ -3,7 +3,7 @@
 const misc = require("../misc");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var list = m.cleanContent.replace(prefix, "").replace(/choose/i, "");
 
         if (!list) {

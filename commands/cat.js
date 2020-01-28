@@ -4,7 +4,7 @@ const request = require("request-promise");
 const randomCat = require("random-cat");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var catURL;
         try {
             var body = await request("http://aws.random.cat/meow", { simple: true });

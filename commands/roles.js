@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var guild = m.channel.guild;
         var name1 = m.cleanContent.replace(`${prefix}roles `, "");
         if (m.content.length < 7) {

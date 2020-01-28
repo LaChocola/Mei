@@ -3,7 +3,7 @@
 const prettyMs = require("pretty-ms");
 
 module.exports = {
-    main: async function (Bot, m, args, prefix) {
+    main: async function(Bot, m, args, prefix) {
         var prettyUptime = prettyMs(Bot.uptime, {
             verbose: true
         });
