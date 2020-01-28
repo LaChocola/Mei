@@ -54,12 +54,12 @@ async function searchExHentai(searchString) {
         });
     }
     catch(err) {
-        throw SiteUnavailableError(err);
+        throw new SiteUnavailableError(err);
     }
 
     var $ = cheerio.load(body);
     if ($(".itg").length === 0) {
-        throw SiteUnavailableError();
+        throw new SiteUnavailableError();
     }
 
     var results = [];
