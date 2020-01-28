@@ -51,7 +51,7 @@ function reply(m, text, timeout) {
 Bot.on("ready", async function() {
     Bot.editStatus('Online', {
         name: "with Tinies"
-    })
+    });
     var i = 0;
     Bot.guilds.map(g => g.channels.size).forEach(c => {
         i += c;
