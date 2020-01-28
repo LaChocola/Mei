@@ -3,6 +3,7 @@
 const serversdb = require("../servers");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         const data = await serversdb.load();
 
@@ -10,7 +11,7 @@ module.exports = {
         const hand = hands[Math.floor(Math.random() * hands.length)];
         const downs = [":thumbsdown::skin-tone-1:", ":thumbsdown::skin-tone-2:", ":thumbsdown::skin-tone-3:", ":thumbsdown::skin-tone-4:", ":thumbsdown::skin-tone-5:", ":thumbsdown:"];
         const down = downs[Math.floor(Math.random() * downs.length)];
-        const guild = m.channel.guild;
+        const guild = m.guild;
         m.content = m.content.toLowerCase();
         if (m.content.trim() === `${prefix}role` || m.content.trim() === `${prefix}role `) {
             Bot.createMessage(m.channel.id, "What do you want to do? | `!role add <role name>` | `!role remove <role name>` | `!role list`");
@@ -24,14 +25,8 @@ module.exports = {
             Bot.createMessage(m.channel.id, "***One*** space Please");
             return;
         }
-        var roles;
-        if (data[guild.id]) {
-            if (data[guild.id].roles) {
-                if (Object.keys(data[guild.id].roles)[0]) {
-                    var roles = data[guild.id].roles;
-                }
-            }
-        }
+        var roles = data[guild.id] && data[guild.id].roles && Object.keys(data[guild.id].roles)[0] && data[guild.id].roles || undefined;
+
         if (!roles) {
             Bot.createMessage(m.channel.id, "No roles have been set up yet. Use `!edit roles` to add and remove assignable roles. (Requires Moderator Permissions)").then(msg => {
                 return setTimeout(() => {
@@ -51,6 +46,7 @@ module.exports = {
             });
             return;
         }
+
         if (m.content.includes("list")) {
             if (!data[guild.id].roles) {
                 Bot.createMessage(m.channel.id, "No roles have been set up yet. Use `!edit roles` to add and remove assignable roles. (Requires Moderator Permissions)").then(msg => {
@@ -61,9 +57,10 @@ module.exports = {
                 });
                 return;
             }
-            var roles = Object.keys(data[m.channel.guild.id].roles);
-            for (var role of roles) {
-                const exists = m.channel.guild.roles.find(r => r.id === data[m.channel.guild.id].roles[role]);
+
+            var rolesKeys = Object.keys(data[guild.id].roles);
+            for (var role of rolesKeys) {
+                const exists = guild.roles.find(r => r.id === data[guild.id].roles[role]);
                 if (!exists) {
                     delete data[guild.id].roles[role];
                     await serversdb.save(data);
@@ -75,22 +72,22 @@ module.exports = {
                     });
                 }
             }
-            var roles = Object.keys(data[guild.id].roles);
             Bot.createMessage(m.channel.id, {
                 content: "",
                 embed: {
                     color: 0xA260F6,
-                    title: roles.length + " roles are available:",
-                    description: " \n" + roles.join("\n")
+                    title: rolesKeys.length + " roles are available:",
+                    description: " \n" + rolesKeys.join("\n")
                 }
             });
         }
+
         if (m.content.includes("add")) {
             if (!m.content.includes(" | ")) {
-                var content = m.cleanContent.toLowerCase().replace(`${prefix}role add `, "").trim();
+                let content = m.cleanContent.toLowerCase().replace(`${prefix}role add `, "").trim();
                 if (roles[content]) {
-                    var roleID = roles[content];
-                    Bot.addGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
+                    let roleID = roles[content];
+                    Bot.addGuildMemberRole(guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
                         return Bot.createMessage(m.channel.id, hand + " Successfully added: " + content).then(msg => {
                             return setTimeout(() => {
                                 Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
@@ -120,14 +117,14 @@ module.exports = {
                 return;
             }
             if (m.content.includes(" | ")) {
-                var content = m.cleanContent.toLowerCase().replace(`${prefix}role add `, "").split(" | ");
-                var iterator = content.entries();
-                var found = [];
-                var notFound = [];
+                let content = m.cleanContent.toLowerCase().replace(`${prefix}role add `, "").split(" | ");
+                let iterator = content.entries();
+                let found = [];
+                let notFound = [];
                 for (const e of iterator) {
                     if (roles[e[1]]) {
-                        var roleID = roles[e[1]];
-                        Bot.addGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?");
+                        let roleID = roles[e[1]];
+                        Bot.addGuildMemberRole(guild.id, m.author.id, roleID, "They...asked for it?");
                         found.push(e[1]);
                     }
                     else if (!roles[e[1]]) {
@@ -156,12 +153,13 @@ module.exports = {
                 return;
             }
         }
+
         if (m.content.includes("remove")) {
             if (!m.content.includes(" | ")) {
-                var content = m.cleanContent.toLowerCase().replace(`${prefix}role remove `, "");
+                let content = m.cleanContent.toLowerCase().replace(`${prefix}role remove `, "");
                 if (roles[content]) {
-                    var roleID = roles[content];
-                    Bot.removeGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
+                    let roleID = roles[content];
+                    Bot.removeGuildMemberRole(guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
                         return Bot.createMessage(m.channel.id, hand + " Successfully removed: " + content).then(msg => {
                             return setTimeout(() => {
                                 Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
@@ -182,14 +180,14 @@ module.exports = {
                 }
             }
             else if (m.content.includes(" | ")) {
-                var content = m.cleanContent.toLowerCase().replace(`${prefix}role remove `, "").split(" | ");
-                var iterator = content.entries();
-                var found = [];
-                var notFound = [];
+                let content = m.cleanContent.toLowerCase().replace(`${prefix}role remove `, "").split(" | ");
+                let iterator = content.entries();
+                let found = [];
+                let notFound = [];
                 for (const e of iterator) {
                     if (roles[e[1]]) {
-                        var roleID = roles[e[1]];
-                        Bot.removeGuildMemberRole(m.channel.guild.id, m.author.id, roleID, "They...asked for it?");
+                        let roleID = roles[e[1]];
+                        Bot.removeGuildMemberRole(guild.id, m.author.id, roleID, "They...asked for it?");
                         found.push(e[1]);
                     }
                     else if (!roles[e[1]]) {

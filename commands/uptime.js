@@ -3,6 +3,7 @@
 const prettyMs = require("pretty-ms");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var prettyUptime = prettyMs(Bot.uptime, {
             verbose: true

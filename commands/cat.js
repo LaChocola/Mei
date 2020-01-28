@@ -4,6 +4,7 @@ const request = require("request-promise");
 const randomCat = require("random-cat");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var catURL;
         try {

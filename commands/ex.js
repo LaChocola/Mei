@@ -90,6 +90,7 @@ async function checkEHentai(url) {
 }
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         if (!m.channel.nsfw) {
             await Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");

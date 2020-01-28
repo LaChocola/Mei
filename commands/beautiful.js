@@ -3,6 +3,7 @@
 const Jimp = require("jimp");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         function isThisUsernameThatUsername(member) {
             var memberName = member.nick || member.username;
@@ -19,7 +20,7 @@ module.exports = {
             return;
         }
         if (m.mentions.length === 1) {
-            var pic = `https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`;
+            pic = `https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`;
         }
         else if (m.mentions.length > 1) {
             Bot.createMessage(m.channel.id, "This Command can't be used with more than one mention");

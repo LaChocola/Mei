@@ -4,6 +4,7 @@ const config = require("../etc/config.json");
 const app = require("apiai")(config.tokens.apiai);
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var msg = m.cleanContent.replace(`${prefix}c `, "");
         if (m.content === `${prefix}c`) {

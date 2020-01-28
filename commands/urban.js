@@ -4,6 +4,7 @@ const request = require("request-promise");
 const esc = require("unidecode");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var word = m.content.replace(`${prefix}urban `, "");
         var urbanJsonURL = "http://api.urbandictionary.com/v0/define?term=" + esc(word);

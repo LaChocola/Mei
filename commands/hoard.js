@@ -3,6 +3,7 @@
 const peopledb = require("../people");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var data = await peopledb.load();
 
@@ -33,7 +34,7 @@ module.exports = {
                     return;
                 }
                 if (data.people[id].hoard) {
-                    var hoard = Object.keys(data.people[id].hoard);
+                    let hoard = Object.keys(data.people[id].hoard);
                     var counter = [];
                     var total = 0;
                     for (let item of hoard) {
@@ -94,7 +95,7 @@ module.exports = {
                     args[0] = /<a:([a-zA-Z0-9]+):[0-9]+>/.exec(args[0])[1];
                 }
                 if (data.people[id].hoard) {
-                    var hoard = Object.keys(data.people[id].hoard);
+                    let hoard = Object.keys(data.people[id].hoard);
                     if (hoard[args[0]]) {
                         Bot.createMessage(m.channel.id, args[0] + " is already one of your hoards").then((msg) => {
                             return setTimeout(function() {
@@ -149,13 +150,12 @@ module.exports = {
                 }
                 if (!isNaN(+args[1]) && 0 < +args[1]) {
                     if (data.people[id].hoard) {
-                        var hoard = Object.keys(data.people[id].hoard);
+                        let hoard = Object.keys(data.people[id].hoard);
                         args[1] = +args[1];
                         --args[1];
                         if (hoard.indexOf(args[0]) > -1) {
-                            var index = hoard.indexOf(args[0]);
                             if (data.people[id].hoard[args[0]]) {
-                                var item = Object.keys(data.people[id].hoard[args[0]])[args[1]];
+                                let item = Object.keys(data.people[id].hoard[args[0]])[args[1]];
                                 delete data.people[id].hoard[args[0]][item];
                                 await peopledb.save(data);
                                 Bot.createMessage(m.channel.id, `Successfully deleted item ${args[1] + 1} from ${args[0]}`).then((msg) => {
@@ -177,7 +177,7 @@ module.exports = {
                     }
                 }
                 if (data.people[id].hoard) {
-                    var hoard = Object.keys(data.people[id].hoard);
+                    let hoard = Object.keys(data.people[id].hoard);
                     if (hoard.indexOf(args[0]) > -1) {
                         delete data.people[id].hoard[args[0]];
                         await peopledb.save(data);
@@ -256,17 +256,17 @@ module.exports = {
             </body>
             </html>`;
                 var exports = [];
-                var hoard = data.people[id].hoard;
+                let hoard = data.people[id].hoard;
                 var keys = Object.keys(data.people[id].hoard);
                 var y = 0;
-                for (var i = 0; i < keys.length; i++) {
+                for (let i = 0; i < keys.length; i++) {
                     var category = keys[i];
                     if (Object.keys(hoard[category]).length > 0) {
                         y++;
                         console.log(category);
                         var items = Object.keys(hoard[category]);
                         var n = 1;
-                        for (var item of items) {
+                        for (let item of items) {
                             if (!item.startsWith("http")) {
                                 exports.push(`<div class="hover_img"><p>${category} | ${n}: <a>"${item}"</a> posted by &lt;@${hoard[category][item]}&gt;</p></div>`);
                             }
@@ -321,13 +321,13 @@ module.exports = {
             });
             return;
         }
-        var hoard = Object.keys(data.people[id].hoard);
+        let hoard = Object.keys(data.people[id].hoard);
         var rando = hoard[Math.floor(Math.random() * hoard.length)];
         if (hoard.indexOf(args[0]) > -1) {
             rando = hoard[hoard.indexOf(args[0])];
         }
         var origID = data.people[id].hoard[rando];
-        var index = `Item ${hoard.indexOf(rando) + 1} of ${hoard.length} from :heart_eyes: hoard`;
+        let index = `Item ${hoard.indexOf(rando) + 1} of ${hoard.length} from :heart_eyes: hoard`;
         if (!origID || !origID.length) {
             var hoardInnder = Object.keys(origID);
             var hoardName = rando;
@@ -349,7 +349,7 @@ module.exports = {
         var og = `https://cdn.discordapp.com/avatars/${origID}/${hash}.jpg?size=128`;
         if (!args) {
             if (rando === undefined) {
-                var i = 0;
+                let i = 0;
                 var newNumber = 0;
                 while (!rando.length && i < 4 && randomNum === newNumber) {
                     newNumber = Math.floor(Math.random() * hoard.length);
@@ -379,8 +379,9 @@ module.exports = {
             }
         }
         var imgURL = /([a-z\-_0-9/:.]*\.(?:png|jpg|gif|svg|jpeg)[:orig]*)/i.exec(rando);
+        var msg;
         if (rando.includes("https://cdn.discordapp.com")) {
-            var msg = {
+            msg = {
                 "content": `A Random piece, from **${name}**'s hoard`,
                 "embed": {
                     "description": index,
@@ -401,7 +402,7 @@ module.exports = {
         }
         if (imgURL) {
             if (imgURL[0]) {
-                var msg = {
+                msg = {
                     "content": `A Random piece, from **${name}**'s hoard`,
                     "embed": {
                         "description": index,
@@ -422,7 +423,7 @@ module.exports = {
             }
         }
         else {
-            var msg = {
+            msg = {
                 "content": `A Random piece, from **${name}**'s hoard`,
                 "embed": {
                     "description": rando,

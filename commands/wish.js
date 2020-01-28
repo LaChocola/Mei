@@ -8,6 +8,7 @@ const Jimp = require("jimp");
 var time = new Date().toDateString().slice(4).replace(` ${new Date().getFullYear()}`, `, ${new Date().getFullYear()}`);
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         function isThisUsernameThatUsername(member) {
             var memberName = member.nick || member.username;

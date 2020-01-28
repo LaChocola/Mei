@@ -3,6 +3,7 @@
 const peopledb = require("../people");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var data = await peopledb.load();
 
@@ -38,9 +39,9 @@ module.exports = {
                 });
                 return;
             }
-            var split1 = name1.replace(/add /i, "").replace(": ", " ").split(" ");
-            var split2 = name1.replace(/add /i, "").replace(": ", " ").split(" | ");
-            var incoming = split1;
+            let split1 = name1.replace(/add /i, "").replace(": ", " ").split(" ");
+            let split2 = name1.replace(/add /i, "").replace(": ", " ").split(" | ");
+            let incoming = split1;
             if (split2.length > 1 && (split1.length > split2.length)) {
                 incoming = split2;
             }
@@ -85,9 +86,9 @@ module.exports = {
                 });
                 return;
             }
-            var split1 = name1.replace(/remove /i, "").replace(": ", " ").split(" ");
-            var split2 = name1.replace(/remove /i, "").replace(": ", " ").split(" | ");
-            var incoming = split1;
+            let split1 = name1.replace(/remove /i, "").replace(": ", " ").split(" ");
+            let split2 = name1.replace(/remove /i, "").replace(": ", " ").split(" | ");
+            let incoming = split1;
             if (data.people[id].links[split2[0]]) {
                 incoming = split2;
             }

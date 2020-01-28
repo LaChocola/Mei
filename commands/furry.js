@@ -3,6 +3,7 @@
 const Jimp = require("jimp");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         if (m.mentions.length > 1) {
             Bot.createMessage(m.channel.id, "This Command can't be used with more than one mention");

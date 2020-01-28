@@ -4,6 +4,7 @@ const serversdb = require("../servers");
 const ids = require("../ids");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var data = await serversdb.load();
 

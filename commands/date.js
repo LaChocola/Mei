@@ -3,6 +3,7 @@
 const timeago = require("timeago.js");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(prefix, "").replace(/date/i, "").trim();
         function isThisUsernameThatUsername(member) {

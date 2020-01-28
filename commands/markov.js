@@ -4,6 +4,7 @@ const MarkovGen = require("markov-generator");
 const ids = require("../ids");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var time = new Date().toISOString();
         var name1 = m.cleanContent.replace(`${prefix}markov `, "");

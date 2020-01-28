@@ -3,6 +3,7 @@
 const Jimp = require("jimp");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var names = m.cleanContent.replace(/^[ !ship\t]+[^a-zA-Z]+|[!ship \t]+[^a-zA-Z]$|!ship/i, "").split(" | ");
         if (names[0] !== undefined) {
@@ -42,7 +43,6 @@ module.exports = {
             }
         }
 
-        var mentioned = m.mentions[0] || member || m.author;
         if (m.mentions.length === 1 && m.author.id === m.mentions[0].id) { // If the user mentions only themself
             Bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; *hugs you*\n~~only one user was detected~~`);
             return;

@@ -4,6 +4,7 @@ const request = require("request-promise");
 const unidecode = require("unidecode");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         if (m.content === `${prefix}e`) {
             Bot.createMessage(m.channel.id, "Please add something i.e. ``!e Whats cooler than being cool``");

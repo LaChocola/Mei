@@ -5,6 +5,7 @@ const pokemon = require("pokemontcgsdk");
 const misc = require("../misc");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var cards = await pokemon.card.where({ supertype: "pokemon" });
         var chosen = misc.choose(cards);

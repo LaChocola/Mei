@@ -3,6 +3,7 @@
 const peopledb = require("../people");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var data = await peopledb.load();
 
@@ -35,8 +36,8 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "Okay....but that isn't you");
                 return;
             }
-            var incomingEntries = name1.replace(/remove /i, "").replace(": ", " ").split(" | ");
-            var iterator = incomingEntries.entries();
+            let incomingEntries = name1.replace(/remove /i, "").replace(": ", " ").split(" | ");
+            let iterator = incomingEntries.entries();
             for (let e of iterator) {
                 e[1] = capFirstLetter(e[1]);
                 if (data.people[id].names[e[1]]) {
@@ -61,8 +62,8 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "Okay....but that isn't you");
                 return;
             }
-            var incomingEntries = name1.replace(/add /i, "").replace(": ", " ").split(" | ");
-            var iterator = incomingEntries.entries();
+            let incomingEntries = name1.replace(/add /i, "").replace(": ", " ").split(" | ");
+            let iterator = incomingEntries.entries();
             for (let e of iterator) {
                 e[1] = capFirstLetter(e[1]);
                 if (data.people[id].names[e[1]]) {
@@ -76,7 +77,7 @@ module.exports = {
                 }
                 else {
                     if (e[1].search(/ male/i) !== -1) {
-                        var cleanName = e[1].replace(/ male/i, "");
+                        let cleanName = e[1].replace(/ male/i, "");
                         data.people[id].names[cleanName] = "male";
                         await peopledb.save(data);
                         Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then(function(msg) {
@@ -88,7 +89,7 @@ module.exports = {
                         continue;
                     }
                     if (e[1].search(/ futa/i) !== -1 || e[1].search(/ futanari/i) !== -1) {
-                        var cleanName = e[1].replace(/ futa/i, "").replace(/ futanari/i, "");
+                        let cleanName = e[1].replace(/ futa/i, "").replace(/ futanari/i, "");
                         data.people[id].names[cleanName] = "futa";
                         await peopledb.save(data);
                         Bot.createMessage(m.channel.id, "Added **" + cleanName + "** " + hand).then(function(msg) {

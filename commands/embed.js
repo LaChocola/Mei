@@ -1,6 +1,7 @@
 "use strict";
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         prefix = "!";
         args = m.content.slice(prefix.length).split(" ");

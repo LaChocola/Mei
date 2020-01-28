@@ -3,6 +3,7 @@
 const fs = require("fs").promises;
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         args = args.replace(prefix, "");
         if (args !== "") {

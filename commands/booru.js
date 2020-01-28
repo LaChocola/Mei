@@ -8,6 +8,7 @@ const peopledb = require("../people");
 const ids = require("../ids");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var people = await peopledb.load();
 

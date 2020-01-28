@@ -24,6 +24,7 @@ async function runEval(Bot, m, code, unsafe) {
 }
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var isAdmin = m.author.id === ids.users.chocola;
         var coolkids = [ids.users.whosthis2, ids.users.whosthis3, ids.users.whosthis4, ids.users.whosthis5];

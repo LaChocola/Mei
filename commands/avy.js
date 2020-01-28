@@ -1,6 +1,7 @@
 "use strict";
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(`${prefix}avy `, "");
         function isThisUsernameThatUsername(member) {

@@ -4,6 +4,7 @@ const config = require("../etc/config.json");
 const sagiri = require("sagiri")(config.tokens.sauce);
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         if (m.content.length < 7 && !m.attachments || m.content === `${prefix}sauce` && m.attachments.length === 0) {
             Bot.createMessage(m.channel.id, "Please add an image, or image url");
@@ -73,12 +74,12 @@ module.exports = {
         }
         catch (err) {
             console.log(err);
-            var err = err.toString();
-            if (err.includes("You need an image") || err.includes("Supplied URL is not usable") || err.includes("Error: Got HTML response while expecting JSON")) {
+            var errString = err.toString();
+            if (errString.includes("You need an image") || errString.includes("Supplied URL is not usable") || errString.includes("Error: Got HTML response while expecting JSON")) {
                 Bot.createMessage(m.channel.id, "No sauce found, please try uploading an image");
                 return;
             }
-            if (err.includes("No Results")) {
+            if (errString.includes("No Results")) {
                 Bot.createMessage(m.channel.id, "No Results found, sorry :sob:");
                 return;
             }

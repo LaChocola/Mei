@@ -6,6 +6,7 @@ const hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::sk
 const hand = hands[Math.floor(Math.random() * hands.length)];
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var data = await serversdb.load();
 

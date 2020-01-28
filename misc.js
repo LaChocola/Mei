@@ -13,6 +13,7 @@ function choose(arr) {
 
 function chunkArray(arr, chunkSize) {
     var chunkCount = Math.ceil(arr.length / chunkSize);
+    // eslint-disable-next-line no-unused-vars
     return Array(chunkCount).fill().map(function(_, index) {
         var begin = index * chunkSize;
         return arr.slice(begin, begin + chunkSize);

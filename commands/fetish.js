@@ -5,6 +5,7 @@ const unidecode = require("unidecode");
 const peopledb = require("../people");
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var data = await peopledb.load();
 
@@ -37,22 +38,22 @@ module.exports = {
         }
         if (args.toLowerCase().includes("search ")) {
             if (args.toLowerCase().includes("dislike")) {
-                var incomingEntries = name1.replace(/\bsearch\b/i, "").replace(/\bdislike\b/i, "").replace(": ", " ").split(" | ");
-                var incoming = [];
-                var iterator = incomingEntries.entries();
+                let incomingEntries = name1.replace(/\bsearch\b/i, "").replace(/\bdislike\b/i, "").replace(": ", " ").split(" | ");
+                let incoming = [];
+                let iterator = incomingEntries.entries();
                 for (let e of iterator) {
                     incoming.push(capFirstLetter(e[1].trim()));
                 }
-                var matches = Object.keys(data.people).filter(k => data.people[k].fetishes && data.people[k].fetishes[`${incoming[0]}`] === "dislike");
+                let matches = Object.keys(data.people).filter(k => data.people[k].fetishes && data.people[k].fetishes[`${incoming[0]}`] === "dislike");
                 if (matches.length < 1) {
                     Bot.createMessage(m.channel.id, "No matches found");
                     return;
                 }
                 else {
-                    var usernames = [];
+                    let usernames = [];
                     for (const match of matches) {
                         if (m.channel.guild.members.get(match)) {
-                            var properName = m.channel.guild.members.get(match).nick || m.channel.guild.members.get(match).username;
+                            let properName = m.channel.guild.members.get(match).nick || m.channel.guild.members.get(match).username;
                             usernames.push("***" + unidecode(properName) + "***");
                         }
                     }
@@ -65,22 +66,22 @@ module.exports = {
                 }
             }
             else {
-                var incomingEntries = name1.replace(/\bsearch\b\s/i, "").replace(": ", " ").split("|");
-                var incoming = [];
-                var iterator = incomingEntries.entries();
+                let incomingEntries = name1.replace(/\bsearch\b\s/i, "").replace(": ", " ").split("|");
+                let incoming = [];
+                let iterator = incomingEntries.entries();
                 for (let e of iterator) {
                     incoming.push(capFirstLetter(e[1].trim()));
                 }
-                var matches = Object.keys(data.people).filter(k => data.people[k].fetishes && data.people[k].fetishes[`${incoming[0]}`] === "like");
+                let matches = Object.keys(data.people).filter(k => data.people[k].fetishes && data.people[k].fetishes[`${incoming[0]}`] === "like");
                 if (matches.length < 1) {
                     Bot.createMessage(m.channel.id, "No matches found");
                     return;
                 }
                 else {
-                    var usernames = [];
+                    let usernames = [];
                     for (const match of matches) {
                         if (m.channel.guild.members.get(match)) {
-                            var properName = m.channel.guild.members.get(match).nick || m.channel.guild.members.get(match).username;
+                            let properName = m.channel.guild.members.get(match).nick || m.channel.guild.members.get(match).username;
                             usernames.push("***" + unidecode(properName) + "***");
                         }
                     }
@@ -94,7 +95,7 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "Okay....but that isn't you");
                 return;
             }
-            var incoming = name1.replace(/\bremove\b/i, "").replace(" ", "").split("|");
+            let incoming = name1.replace(/\bremove\b/i, "").replace(" ", "").split("|");
             if (data.people[id].fetishes[capFirstLetter(incoming[0])]) {
                 delete data.people[id].fetishes[capFirstLetter(incoming[0])];
                 await peopledb.save(data);
@@ -121,8 +122,8 @@ module.exports = {
                 Bot.createMessage(m.channel.id, "Okay....but that isn't you");
                 return;
             }
-            var incomingEntries = name1.replace(/\badd\b/i, "").replace(/^[ \t]+/, "").replace(/[ \t]+$/, "").split("|");
-            var incoming = [];
+            let incomingEntries = name1.replace(/\badd\b/i, "").replace(/^[ \t]+/, "").replace(/[ \t]+$/, "").split("|");
+            let incoming = [];
             var iterator = incomingEntries.entries();
             for (let e of iterator) {
                 if (!e[1]) {
@@ -203,8 +204,6 @@ module.exports = {
                     map[val[0]] = val[1];
                     return map;
                 }, {});
-                var commonDislikes = [];
-                var commonLikes = [];
                 for (let val in lowerMain) {
                     if (lowerOther[val] && lowerOther[val] === lowerMain[val]) {
                         if (lowerMain[val] === "like") {

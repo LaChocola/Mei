@@ -518,6 +518,7 @@ async function playCommand(Bot, m, voiceConnection, cleanArgs) {
 }
 
 module.exports = {
+    // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         // Delete the user's message in 5 seconds
         misc.delay(5000).then(() => m.delete("Timeout"));
