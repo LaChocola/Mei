@@ -18,6 +18,7 @@
     "markov-generator": "^1.2.2",
     "node-schedule": "^1.3.2",
     "ordinal": "^1.0.3",
+    "pixl-perf": "^1.0.6",
     "pokemontcgsdk": "^1.1.0",
     "pretty-ms": "^5.1.0",
     "progress-string": "^1.2.2",
