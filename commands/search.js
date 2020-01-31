@@ -4,7 +4,7 @@ const request = require("request-promise");
 const cheerio = require("cheerio");
 const querystring = require("querystring");
 
-const conf = require("./conf");
+const conf = require("../conf");
 
 async function searchGoogleApi(args) {
     var key = conf.tokens.google;

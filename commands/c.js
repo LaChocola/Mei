@@ -1,6 +1,6 @@
 "use strict";
 
-const conf = require("./conf");
+const conf = require("../conf");
 const app = require("apiai")(conf.tokens.apiai);
 
 module.exports = {

@@ -1,6 +1,6 @@
 "use strict";
 
-const conf = require("./conf");
+const conf = require("../conf");
 const sagiri = require("sagiri")(conf.tokens.sauce);
 
 module.exports = {

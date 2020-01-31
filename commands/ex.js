@@ -7,7 +7,7 @@ const request = require("request-promise").defaults({
 });
 const cheerio = require("cheerio");
 
-const conf = require("./conf");
+const conf = require("../conf");
 
 class SiteUnavailableError extends Error {
     constructor(message) {
