@@ -8,6 +8,9 @@
     "parserOptions": {
         "ecmaVersion": 2019
     },
+    "ignorePatterns": [
+        "docs/"
+    ],
     "rules": {
         "eqeqeq": [
             1,
@@ -98,6 +101,13 @@
         ],
         "indent": 1,
         "no-trailing-spaces": 1,
-        "no-redeclare": 1
+        "no-redeclare": 1,
+        "no-multi-spaces": [
+            1,
+            {
+                "ignoreEOLComments": true
+            }
+        ],
+        "space-infix-ops": 1
     }
 }
