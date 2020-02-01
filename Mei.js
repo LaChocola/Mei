@@ -705,7 +705,8 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
         var guildData = guildsdata[m.channel.guild.id];
 
         // If guild hoards are disabled and the emoji is not 😍, then skip adding to a hoard
-        if (guildData.hoards === false && emoji.name !== "😍") {
+        var hoardsDisabled = guildData && guildData.hoards === false;
+        if (hoardsDisabled && emoji.name !== "😍") {
             return;
         }
 
@@ -807,7 +808,8 @@ Bot.on("messageReactionRemove", async function(m, emoji, userID) {
         var guildData = guildsdata[m.channel.guild.id];
 
         // If guild hoards are disabled and the emoji is not 😍, then skip removing from a hoard
-        if (guildData.hoards === false && emoji.name !== "😍") {
+        var hoardsDisabled = guildData && guildData.hoards === false;
+        if (hoardsDisabled && emoji.name !== "😍") {
             return;
         }
 
