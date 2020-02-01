@@ -699,6 +699,7 @@ function getLinks(m) {
 // Hoard adds
 Bot.on("messageReactionAdd", async function(m, emoji, userID) {
     try {
+        // Load the guild data
         var guildsdata = await serversdb.load();
         var guildData = guildsdata[m.channel.guild.id];
 
@@ -708,6 +709,7 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
             return;
         }
 
+        // Load the message
         m = await Bot.getMessage(m.channel.id, m.id);
 
         // Get the links
@@ -716,6 +718,7 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
             return;
         }
 
+        // Load the people data
         var peopledata = await peopledb.load();
 
         // Save the hoard items
@@ -729,6 +732,8 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
         if (!peopledata.people[userID].hoard["😍"]) {
             peopledata.people[userID].hoard["😍"] = {};
         }
+
+        // If the user doesn't have this hoard, skip add
         var hoard = peopledata.people[userID].hoard[emoji.name];
         if (!hoard) {
             return;
@@ -743,6 +748,7 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
         // Add each link to the hoard
         newLinks.forEach(link => hoard[link] = m.author.id);
 
+        // Save the changes to the hoard
         await peopledb.save(peopledata);
 
         // Increment the author's adds
@@ -756,9 +762,11 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
         if (!authordata.adds) {
             authordata.adds = 0;
         }
+        // Save the oldAdds count so we can check if we triggered a milestone
         var oldAdds = authordata.adds;
         authordata.adds += newLinks.length;
 
+        // Save the changes to the author adds
         await peopledb.save(peopledata);
 
         // Milestone is reached every 10 hoard adds
@@ -777,6 +785,7 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
         if (guildAddsSetting === false) {
             return;
         }
+        // If set, use the guild's preferred milestone display time
         var displayTime = 60000;
         if (misc.isNum(guildAddsSetting)) {
             displayTime = misc.toNum(guildAddsSetting);
@@ -806,6 +815,7 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
 // Hoard adds
 Bot.on("messageReactionRemove", async function(m, emoji, userID) {
     try {
+        // Load guild data
         var guildsdata = await serversdb.load();
         var guildData = guildsdata[m.channel.guild.id];
 
@@ -815,35 +825,44 @@ Bot.on("messageReactionRemove", async function(m, emoji, userID) {
             return;
         }
 
+        // Load the message
         m = await Bot.getMessage(m.channel.id, m.id);
-        
+
+        // Get the links from the message
         var links = getLinks(m);
         if (links.length === 0) {
             return;
         }
 
+        // Load the people data
         var peopledata = await peopledb.load();
 
+        // If the user doesn't have this hoard, skip removal
         var hoard = peopledata.people[userID] && peopledata.people[userID].hoard && peopledata.people[userID].hoard[emoji.name];
         if (!hoard) {
             return;
         }
 
+        // Get a list of links that exist in the hoard
         var existingLinks = links.filter(link => hoard[link]);
         if (existingLinks.length === 0) {
             return;
         }
 
+        // Remove each link from the hoard
         existingLinks.forEach(function(link) {
             var authorId = hoard[link];
             var author = peopledata.people[authorId];
             if (!author.adds) {
                 author.adds = 0;
             }
+            // Decrement the author adds (minimum 0)
             author.adds = Math.max(0, author.adds - 1);
+            // Remove the link from the hoard
             delete hoard[link];
         });
 
+        // Save the peopledata
         await peopledb.save(peopledata);
     }
     catch (err) {
