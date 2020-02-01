@@ -683,7 +683,7 @@ Bot.on("messageReactionRemove", async function(m, emoji, userID) {
 function getLinks(m) {
     var links = [];
     if (m.attachments.length > 0) {
-        links = m.attachment
+        links = m.attachments
             .map(a => a.url)
             .filter(url => url);
     }
