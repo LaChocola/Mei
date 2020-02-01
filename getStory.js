@@ -70,10 +70,7 @@ function getSubtype(s) {
     var subtype = subtypeAliasMap[foundAlias] || "Random";
     var emoji = subtypeEmojis[subtype];
 
-    return {
-        subtype,
-        emoji
-    };
+    return { subtype, emoji };
 }
 
 // Giantess names
@@ -133,9 +130,9 @@ function getDefaultGTSNames(guildid) {
 async function getCustomGTSNames(uid) {
     var data = await peopledb.load();
     // TODO: This doesn't load data? It won't actually have updated user data.
-    return data.people[uid] &&
-        data.people[uid].names &&
-        Object.keys(data.people[uid].names) || [];
+    return data.people[uid]
+        && data.people[uid].names
+        && Object.keys(data.people[uid].names) || [];
 }
 
 async function getNamesSummary(uid, guildid, perLine) {
@@ -377,7 +374,6 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
 }
 
 async function getStory(m, args, command, type, isNSFW, responseColor) {
-    //perf.setScale( 1 );
     var tracker_getStory = perf.begin();
     perf.count("getStory");
     var guildid = m.guild.id;
@@ -434,10 +430,7 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
 
     var tracker_getSubtype = perf.begin("getSubtype");
     perf.count("getSubtype");
-    var {
-        subtype,
-        emoji
-    } = getSubtype(args);
+    var { subtype, emoji } = getSubtype(args);
     tracker_getSubtype.end();
 
     var tracker_generateLewdMessage = perf.begin("generateLewdMessage");
