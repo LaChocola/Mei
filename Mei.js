@@ -616,18 +616,22 @@ Bot.on("guildDelete", async function(guild) {
 // Giveaways
 Bot.on("messageReactionAdd", async function(m, emoji, userID) {
     try {
+        // Only react to giveaway emoji
         if (emoji.id !== ids.emojis.giveaway) {
             return;
         }
 
+        // Don't react to Mei
         if (userID === Bot.user.id) {
             return;
         }
 
+        // Load guild data and message
         var guildsdata = await serversdb.load();
         m = await Bot.getMessage(m.channel.id, m.id);
         var guildData = guildsdata[m.channel.guild.id];
 
+        // Ignore the giveaway creator
         if (userID === guildData.giveaways.creator) {
             return;
         }
@@ -649,18 +653,22 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
 // Giveaways
 Bot.on("messageReactionRemove", async function(m, emoji, userID) {
     try {
+        // Only react to giveaway emoji
         if (emoji.id !== ids.emojis.giveaway) {
             return;
         }
 
+        // Don't react to Mei
         if (userID === Bot.user.id) {
             return;
         }
 
+        // Load guild data and message
         var guildsdata = await serversdb.load();
         m = await Bot.getMessage(m.channel.id, m.id);
         var guildData = guildsdata[m.channel.guild.id];
 
+        // Ignore the giveaway creator
         if (userID === guildData.giveaways.creator) {
             return;
         }
@@ -680,6 +688,7 @@ Bot.on("messageReactionRemove", async function(m, emoji, userID) {
     }
 });
 
+// Get links for a hoard from a message
 function getLinks(m) {
     var links = [];
     if (m.attachments.length > 0) {
