@@ -633,9 +633,9 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
         }
 
         if (guildData
-        && guildData.giveaways
-        && guildData.giveaways.running
-        && m.id === guildData.giveaways.mID
+            && guildData.giveaways
+            && guildData.giveaways.running
+            && m.id === guildData.giveaways.mID
         ) {
             guildData.giveaways.current.contestants[userID] = "entered";
             await serversdb.save(guildsdata);
@@ -645,6 +645,56 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
         console.log(err);
     }
 });
+
+// Giveaways
+Bot.on("messageReactionRemove", async function(m, emoji, userID) {
+    try {
+        if (emoji.id !== ids.emojis.giveaway) {
+            return;
+        }
+
+        if (userID === Bot.user.id) {
+            return;
+        }
+
+        var guildsdata = await serversdb.load();
+        m = await Bot.getMessage(m.channel.id, m.id);
+        var guildData = guildsdata[m.channel.guild.id];
+
+        if (userID === guildData.giveaways.creator) {
+            return;
+        }
+
+        if (guildData
+            && guildData.giveaways
+            && guildData.giveaways.running
+            && m.id === guildData.giveaways.mID
+            && guildData.giveaways.current.contestants[userID]
+        ) {
+            delete guildData.giveaways.current.contestants[userID];
+            await serversdb.save(guildsdata);
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
+
+function getLinks(m) {
+    var links = [];
+    if (m.attachments.length > 0) {
+        links = m.attachment
+            .map(a => a.url)
+            .filter(url => url);
+    }
+    else if (m.embeds.length > 0 && m.embeds[0].image) {
+        links = [m.embeds[0].image.url];
+    }
+    else {
+        links = [m.cleanContent];
+    }
+    return links;
+}
 
 // Hoard adds
 Bot.on("messageReactionAdd", async function(m, emoji, userID) {
@@ -660,19 +710,7 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
         }
 
         // Get the links
-        var links = [];
-        if (m.attachments.length > 0) {
-            links = m.attachment
-                .map(a => a.url)
-                .filter(url => url);
-        }
-        else if (m.embeds.length > 0 && m.embeds[0].image) {
-            links = [m.embeds[0].image.url];
-        }
-        else {
-            links = [m.cleanContent];
-        }
-
+        var links = getLinks(m);
         if (links.length === 0) {
             return;
         }
@@ -681,21 +719,23 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
         if (!peopledata.people[userID]) {
             peopledata.people[userID] = {};
         }
-        var saverdata = peopledata.people[userID];
-        if (!saverdata.hoard) {
-            saverdata.hoard = {};
+        if (!peopledata.people[userID].hoard) {
+            peopledata.people[userID].hoard = {};
         }
         // Add 😍 hoard if it doesn't exist
-        if (!saverdata.hoard["😍"]) {
-            saverdata.hoard["😍"] = {};
+        if (!peopledata.people[userID].hoard["😍"]) {
+            peopledata.people[userID].hoard["😍"] = {};
         }
-        var hoard = saverdata.hoard[emoji.name];
+        var hoard = peopledata.people[userID].hoard[emoji.name];
         if (!hoard) {
             return;
         }
 
         // Get a list of links that are not yet in the hoard
         var newLinks = links.filter(link => !hoard[link]);
+        if (newLinks.length === 0) {
+            return;
+        }
 
         // Add each link to the hoard
         newLinks.forEach(link => hoard[link] = m.author.id);
@@ -712,7 +752,9 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
             authordata.adds = 0;
         }
         var oldAdds = authordata.adds;
-        authordata.adds += newLinks;
+        authordata.adds += newLinks.length;
+
+        await peopledb.save(peopledata);
 
         // Milestone is reached every 10 hoard adds
         var milestone = Math.floor(oldAdds / 10) !== Math.floor(authordata.adds / 10);
@@ -737,7 +779,7 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
 
         // Display milestone
         var authoruser = Bot.users.find(u => u.id === m.author.id);
-        Bot.createMessage(m.channel.id, `${authoruser.username}#${authoruser.discriminator} reached ${peopledata.people[m.author.id].adds} hoard adds.`)
+        Bot.createMessage(m.channel.id, `${authoruser.username}#${authoruser.discriminator} reached ${authordata.adds} hoard adds.`)
             .then(function(m) {
                 setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -756,159 +798,45 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
     }
 });
 
+// Hoard adds
 Bot.on("messageReactionRemove", async function(m, emoji, userID) {
-    var guildsdata = await serversdb.load();
-    var people = await peopledb.load();
-    m = await Bot.getMessage(m.channel.id, m.id);
-
-    var guildData = guildsdata[m.channel.guild.id];
-
     try {
-        if (emoji.name === "😍") {
-            let link;
-            if (m.attachments.length === 0 && m.embeds.length === 0) {
-                link = m.cleanContent;
-            }
-            else if (m.attachments[0] && m.attachments.length !== 0) {
-                if (m.attachments.length === 1) {
-                    link = m.attachments[0].url;
-                }
-                else if (m.attachments.length > 1) {
-                    links = [];
-                    for (let attachment of m.attachments) {
-                        if (attachment.url) {
-                            links.push(attachment.url);
-                        }
-                    }
-                }
-            }
-            else if (m.embeds[0]) {
-                if (m.embeds[0].image) {
-                    link = m.embeds[0].image.url;
-                }
-            }
-            let hoard = people.people[userID] && people.people[userID].hoard && people.people[userID].hoard["😍"] || undefined;
-            if (hoard) {
-                if (links && links[0]) {
-                    for (let link of links) {
-                        hoard = people.people[userID].hoard[emoji.name];
-                        if (hoard[link]) {
-                            delete hoard[link];
-                            await peopledb.save(people);
-                            if (people.people[m.author.id]) {
-                                if (!people.people[m.author.id].adds) {
-                                    people.people[m.author.id].adds = 0;
-                                }
-                                await peopledb.save(people);
-                            }
-                            if (m.author.id !== userID) {
-                                people.people[m.author.id].adds--;
-                                await peopledb.save(people);
-                            }
-                        }
-                    }
-                    return;
-                }
-                if (hoard[link] && !(links && links[0])) {
-                    delete hoard[link];
-                    await peopledb.save(people);
-                    if (people.people[m.author.id]) {
-                        if (!people.people[m.author.id].adds) {
-                            people.people[m.author.id].adds = 0;
-                        }
-                        await peopledb.save(people);
-                    }
-                    if (m.author.id !== userID) {
-                        people.people[m.author.id].adds--;
-                        await peopledb.save(people);
-                    }
-                }
-                return;
-            }
+        var guildsdata = await serversdb.load();
+        var peopledata = await peopledb.load();
+        m = await Bot.getMessage(m.channel.id, m.id);
+        var guildData = guildsdata[m.channel.guild.id];
+
+        // If guild hoards are disabled and the emoji is not 😍, then skip removing from a hoard
+        if (guildData.hoards === false && emoji.name !== "😍") {
+            return;
         }
 
-        if (guildData) {
-            if (guildData.giveaways) {
-                if (guildData.giveaways.running && emoji.id === ids.emojis.giveaway && userID !== Bot.user.id && userID !== guildData.giveaways.creator) {
-                    if (m.id === guildData.giveaways.mID) {
-                        if (guildData.giveaways.current.contestants[userID]) {
-                            delete guildData.giveaways.current.contestants[userID];
-                            await serversdb.save(guildsdata);
-                            return;
-                        }
-                    }
-                }
-            }
-
-            if (guildData.hoards !== false && emoji.name !== "😍") {
-                if (!people.people[userID]) {
-                    return;
-                }
-                if (!people.people[userID].hoard) {
-                    return;
-                }
-                if (people.people[userID].hoard[emoji.name]) {
-                    let link;
-                    if (m.attachments.length === 0 && m.embeds.length === 0) {
-                        link = m.cleanContent;
-                    }
-                    else if (m.attachments[0] && m.attachments.length !== 0) {
-                        if (m.attachments.length === 1) {
-                            link = m.attachments[0].url;
-                        }
-                        else if (m.attachments.length > 1) {
-                            var links = [];
-                            for (let attachment of m.attachments) {
-                                if (attachment.url) {
-                                    links.push(attachment.url);
-                                }
-                            }
-                        }
-                    }
-                    else if (m.embeds[0]) {
-                        link = m.embeds[0].image.url;
-                    }
-                    let hoard = people.people[userID].hoard[emoji.name];
-                    if (hoard) {
-                        if (links && links[0]) {
-                            for (let link of links) {
-                                hoard = people.people[userID].hoard[emoji.name];
-                                if (hoard[link]) {
-                                    delete hoard[link];
-                                    await peopledb.save(people);
-                                    if (people.people[m.author.id]) {
-                                        if (!people.people[m.author.id].adds) {
-                                            people.people[m.author.id].adds = 0;
-                                        }
-                                        await peopledb.save(people);
-                                    }
-                                    if (m.author.id !== userID) {
-                                        people.people[m.author.id].adds--;
-                                        await peopledb.save(people);
-                                    }
-                                }
-                            }
-                            return;
-                        }
-                        if (hoard[link] && !(links && links[0])) {
-                            delete hoard[link];
-                            await peopledb.save(people);
-                            if (people.people[m.author.id]) {
-                                if (!people.people[m.author.id].adds) {
-                                    people.people[m.author.id].adds = 0;
-                                }
-                                await peopledb.save(people);
-                            }
-                            if (m.author.id !== userID) {
-                                people.people[m.author.id].adds--;
-                                await peopledb.save(people);
-                            }
-                        }
-                        return;
-                    }
-                }
-            }
+        var links = getLinks(m);
+        if (links.length === 0) {
+            return;
         }
+
+        var hoard = peopledata.people[userID] && peopledata.people[userID].hoard && peopledata.people[userID].hoard[emoji.name];
+        if (!hoard) {
+            return;
+        }
+
+        var existingLinks = links.filter(link => hoard[link]);
+        if (existingLinks.length === 0) {
+            return;
+        }
+
+        existingLinks.forEach(function(link) {
+            var authorId = hoard[link];
+            var author = peopledata.people[authorId];
+            if (!author.adds) {
+                author.adds = 0;
+            }
+            author.adds = Math.max(0, author.adds - 1);
+            delete hoard[link];
+        });
+
+        await peopledb.save(peopledata);
     }
     catch (err) {
         console.log(err);
