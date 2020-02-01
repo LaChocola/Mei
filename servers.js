@@ -7,60 +7,60 @@ const dbname = "servers";
 /*
     Guild Data
     data = [
-        "guildid": {
-            "name": "guild name",
-            "owner": "guild ownerID",
-            "art": "art channelid",
+        "[guildid]": {
+            "name": "[guild name]",
+            "owner": "[guild ownerID]",
+            "art": "[art channelid]",
             "mods": {
-                "mod userid": true
+                "[mod userid]": true
             },
             "modRoles": [
-                "mod roleid": true
+                "[mod roleid]": true
             ],
             "hoards: true/false,
             "notifications": {
-                "banlog": "banlog channelid",
-                "updates": "updates channelid",
+                "banlog": "[banlog channelid]",
+                "updates": "[updates channelid]",
                 "welcome": {
-                    "welcome channelid": "message"
+                    "[welcome channelid]": "[message]"
                 },
                 "leave": {
-                    "leave channelid": "message"
+                    "[leave channelid]": "[message]"
                 }
             },
-            "prefix": "!",
+            "prefix": "[guild command prefix]",
             "adds": true/false/milliseconds,
             "roles": {
-                "rolename": "roleid"
+                "[rolename]": "[roleid]"
             },
             "giveaways": {
                 "running": true/false,
-                "item": "giveaway item description",
+                "item": "[giveaway item description]",
                 "current": {
                     "contestants": {
                         {
-                            "contestant userid": "entered"
+                            "[contestant userid]": "entered"
                         }
                     }
                 },
-                "creator": "creator userid",
-                "mID": "giveaway message id",
-                "channelID": "giveaway channel id"
+                "creator": "[creator userid]",
+                "mID": "[giveaway message id]",
+                "channelID": "[giveaway channel id]"
             },
             "music": {
                 "queue": {
-                    "youtube video id": "requester name"
+                    "[youtube video id]": "[requester name]"
                 },
                 "current": {
-                    "code": "youtube video id",
-                    "player": "requester name"
+                    "code": "[youtube video id]",
+                    "player": "[requester name]"
                 }
             },
             "game": {
-                "channel": "channel id",
-                "player": "player id",
+                "channel": "[channel id]",
+                "player": "[player id]",
                 "active": true/false,
-                "choices": ["choice"]
+                "choices": ["[choice]"]
             }
         }
     ]
