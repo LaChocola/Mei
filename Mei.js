@@ -741,6 +741,8 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
         // Add each link to the hoard
         newLinks.forEach(link => hoard[link] = m.author.id);
 
+        await peopledb.save(peopledata);
+
         // Increment the author's adds
         if (m.author.id === userID) {
             return;
