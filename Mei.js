@@ -700,8 +700,6 @@ function getLinks(m) {
 Bot.on("messageReactionAdd", async function(m, emoji, userID) {
     try {
         var guildsdata = await serversdb.load();
-        var peopledata = await peopledb.load();
-        m = await Bot.getMessage(m.channel.id, m.id);
         var guildData = guildsdata[m.channel.guild.id];
 
         // If guild hoards are disabled and the emoji is not 😍, then skip adding to a hoard
@@ -710,11 +708,15 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
             return;
         }
 
+        m = await Bot.getMessage(m.channel.id, m.id);
+
         // Get the links
         var links = getLinks(m);
         if (links.length === 0) {
             return;
         }
+
+        var peopledata = await peopledb.load();
 
         // Save the hoard items
         if (!peopledata.people[userID]) {
@@ -805,8 +807,6 @@ Bot.on("messageReactionAdd", async function(m, emoji, userID) {
 Bot.on("messageReactionRemove", async function(m, emoji, userID) {
     try {
         var guildsdata = await serversdb.load();
-        var peopledata = await peopledb.load();
-        m = await Bot.getMessage(m.channel.id, m.id);
         var guildData = guildsdata[m.channel.guild.id];
 
         // If guild hoards are disabled and the emoji is not 😍, then skip removing from a hoard
@@ -815,10 +815,14 @@ Bot.on("messageReactionRemove", async function(m, emoji, userID) {
             return;
         }
 
+        m = await Bot.getMessage(m.channel.id, m.id);
+        
         var links = getLinks(m);
         if (links.length === 0) {
             return;
         }
+
+        var peopledata = await peopledb.load();
 
         var hoard = peopledata.people[userID] && peopledata.people[userID].hoard && peopledata.people[userID].hoard[emoji.name];
         if (!hoard) {
