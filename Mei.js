@@ -9,9 +9,7 @@ const ErisPlus = require("./erisplus");
 const Eris = ErisPlus(require("eris"));
 
 require("colors");
-const path = require("path");
 const fs = require("fs").promises;
-const reload = require("require-reload")(require);
 
 const conf = require("./conf");
 const datadb = require("./data");
@@ -25,7 +23,6 @@ conf.load();
 commands.loadAll();
 
 var bot = Eris(conf.tokens.mei);
-var commandContentsMap = {};
 
 if (!fs) {
     console.log("Mei requires Node.js version 10 or above");
@@ -325,7 +322,6 @@ bot.on("messageCreate", async function(m) {
 
     timestamps.push(Date.now());
 
-    conf.load();
     var guildsdata = await serversdb.load();
     var guildData = guildsdata[m.guild.id];
     var prefix = guildData && guildData.prefix || conf.prefix;

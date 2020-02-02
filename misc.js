@@ -115,6 +115,13 @@ function deleteIn(timeout) {
     };
 }
 
+function removePrefix(prefix, s) {
+    if (s.startsWith(prefix)) {
+        s = s.slice(prefix.length).trim();
+    }
+    return s;
+}
+
 module.exports = {
     choose,
     chooseHand,
@@ -130,5 +137,6 @@ module.exports = {
     timestampToSnowflake,
     splitArray,
     delay,
-    deleteIn
+    deleteIn,
+    removePrefix
 };
