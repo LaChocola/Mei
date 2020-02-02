@@ -11,6 +11,11 @@ function choose(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function chooseHand() {
+    var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
+    return choose(hands);
+}
+
 function chunkArray(arr, chunkSize) {
     var chunkCount = Math.ceil(arr.length / chunkSize);
     // eslint-disable-next-line no-unused-vars
@@ -112,6 +117,7 @@ function deleteIn(timeout) {
 
 module.exports = {
     choose,
+    chooseHand,
     chunkArray,
     capitalize,
     chooseMember,

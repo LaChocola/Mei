@@ -87,26 +87,24 @@ function init(Eris) {
         value: async function(timeout) {
             var m = this;
 
-            if (!timeout) {
-                return m;
-            }
-
-            await misc.delay(timeout);
-            try {
-                await m.delete("Timeout");
-            }
-            catch (err) {
-                if (err.code === 50013) {
-                    console.warn("WRN".black.bgYellow
-                        + " Missing Permissions for update".magenta.bold
-                        + " - ".blue.bold + m.guild.name.cyan.bold
-                        + " > ".blue.bold + "#" + m.channel.name.green.bold
-                        + " (" `https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}`.bold.red
-                        + ")");
-                }
-                else {
-                    console.error(err);
-                }
+            if (timeout) {
+                misc.delay(timeout).then(async function() {
+                    try {
+                        await m.delete("Timeout");
+                    }
+                    catch (err) {
+                        if (err.code === 50013) {
+                            console.warn("WRN".black.bgYellow
+                                + " Missing Permissions for update".magenta.bold
+                                + " - ".blue.bold + m.guild.name.cyan.bold
+                                + " > ".blue.bold + "#" + m.channel.name.green.bold
+                                + " (" `https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}`.bold.red
+                                + ")");
+                            return;
+                        }
+                        console.error(err);
+                    }
+                });
             }
 
             return m;
@@ -135,6 +133,32 @@ function init(Eris) {
         get: function() {
             var user = this;
             return user.username;
+        }
+    });
+
+    /**
+     * The member's full name (username#discriminator)
+     *
+     * @memberOf external:Member#
+     * @member {String} fullname
+     */
+    Object.defineProperty(Eris.Member.prototype, "fullname", {
+        get: function() {
+            var member = this;
+            return member.user.fullname;
+        }
+    });
+
+    /**
+     * The user's full name (username#discriminator)
+     *
+     * @memberOf external:User#
+     * @member {String} fullname
+     */
+    Object.defineProperty(Eris.User.prototype, "fullname", {
+        get: function() {
+            var user = this;
+            return `${user.username}#${user.discriminator}`;
         }
     });
 
