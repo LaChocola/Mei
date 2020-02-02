@@ -19,8 +19,10 @@ const peopledb = require("./people");
 const serversdb = require("./servers");
 const misc = require("./misc");
 const ids = require("./ids");
+const commands = require("./commands");
 
 conf.load();
+commands.loadAll();
 
 var bot = Eris(conf.tokens.mei);
 var commandContentsMap = {};
@@ -210,67 +212,41 @@ bot.on("messageCreate", async function(m) {
         }
 
         if (m.content.includes("disable")) {
-            let command = m.content.replace("pls", "").replace("disable", "").replace("!", "").trim();
-            let commands = await fs.readdir(path.join(__dirname, "commands"));
-            if (commands.indexOf(command + ".js") > -1) {
-                const commandContents = await fs.readFile(path.join(__dirname, "commands", command + ".js"));
-                let cmd;
-                if (commandContentsMap[command] !== commandContents) {
-                    cmd = await reload(path.join(__dirname, "commands", command + ".js"));
-                    commandContentsMap[command] = commandContents;
-                }
-                else {
-                    cmd = await require(path.join(__dirname, "commands", command + ".js"));
-                }
-                console.log(cmd);
-
-                if (cmd.disable) {
-                    await m.reply(`${command} is already disabled. Doing nothing.`, 5000);
-                    await m.deleteIn(5000);
-                    return;
-                }
-                cmd.disable = true;
-                console.log(cmd);
-                await fs.writeFile(path.join(__dirname, "commands", command + ".js"), JSON.stringify(cmd));
-                await m.reply(`${command} has been disabled.`, 5000);
+            let commandName = m.content.replace("pls", "").replace("disable", "").replace("!", "").trim().toLowerCase();
+            let cmd = commands.commands[commandName];
+            if (!cmd) {
+                await m.reply(`${commandName} is not a valid command, please try again.`, 5000);
                 await m.deleteIn(5000);
+                return;
             }
-            else {
-                await m.reply(`${command} is not a valid command, please try again.`, 5000);
+            if (cmd.disable) {
+                await m.reply(`${commandName} is already disabled. Doing nothing.`, 5000);
                 await m.deleteIn(5000);
+                return;
             }
+            commands.disable(commandName);
+            await m.reply(`${commandName} has been disabled.`, 5000);
+            await m.deleteIn(5000);
             return;
         }
 
         if (m.content.includes("enable")) {
-            let command = m.content.replace("pls", "").replace("enable", "").replace("!", "").trim();
-            let commands = await fs.readdir(path.join(__dirname, "commands"));
-            if (commands.indexOf(command + ".js") > -1) {
-                const commandContents = await fs.readFile(path.join(__dirname, "commands", command + ".js"));
-                let cmd;
-                if (commandContentsMap[command] !== commandContents) {
-                    cmd = await reload(path.join(__dirname, "commands", command + ".js"));
-                    commandContentsMap[command] = commandContents;
-                }
-                else {
-                    cmd = await require(path.join(__dirname, "commands", command + ".js"));
-                }
-                if (!cmd.disable) {
-                    await m.reply(`${command} is already enabled. Doing nothing.`, 5000);
-                    await m.deleteIn(5000);
-                    return;
-                }
-                cmd.disable = false;
-                await fs.writeFile(path.join(__dirname, "commands", command + ".js"), JSON.stringify(cmd));
-                await m.reply(`${command} has been enabled.`, 5000);
+            let commandName = m.content.replace("pls", "").replace("enable", "").replace("!", "").trim().toLowerCase();
+            let cmd = commands.commands[commandName];
+            if (!cmd) {
+                await m.reply(`${commandName} is not a valid command, please try again.`, 5000);
                 await m.deleteIn(5000);
                 return;
             }
-            else {
-                await m.reply(`${command} is not a valid command, please try again.`, 5000);
+            if (!cmd.disable) {
+                await m.reply(`${commandName} is already enabled. Doing nothing.`, 5000);
                 await m.deleteIn(5000);
                 return;
             }
+            commands.enable(commandName);
+            await m.reply(`${commandName} has been enabled.`, 5000);
+            await m.deleteIn(5000);
+            return;
         }
     }
 });
@@ -377,53 +353,42 @@ bot.on("messageCreate", async function(m) {
     }
 
     timestamps.push(Date.now());
-    var commands = await fs.readdir(path.join(__dirname, "commands"));
 
     timestamps.push(Date.now());
-    var command = m.content.slice(prefix.length).split(" ", 1)[0].toLowerCase();
+    var commandName = m.content.slice(prefix.length).split(" ", 1)[0].toLowerCase();
+
+    var cmd = commands.commands[commandName];
     // Ignore non-existant commands
-    if (!commands.includes(command + ".js")) {
+    if (!cmd) {
         return;
     }
 
     timestamps.push(Date.now());
-    var cmdPath = path.join(__dirname, "commands", command + ".js");
-    const commandContents = await fs.readFile(cmdPath);
-    let cmd;
-    if (commandContentsMap[command] !== commandContents) {
-        cmd = reload(path.join(cmdPath));
-        commandContentsMap[command] = commandContents;
-    }
-    else {
-        cmd = require(path.join(cmdPath));
-    }
 
     timestamps.push(Date.now());
     data.commands.totalRuns++;
-    if (!data.commands[command]) {
-        data.commands[command] = {
+    if (!data.commands[commandName]) {
+        data.commands[commandName] = {
             totalUses: 0,
             users: {}
         };
     }
-    if (!data.commands[command].users[m.author.id]) {
-        data.commands[command].users[m.author.id] = 0;
+    if (!data.commands[commandName].users[m.author.id]) {
+        data.commands[commandName].users[m.author.id] = 0;
     }
-    data.commands[command].users[m.author.id]++;
-    data.commands[command].totalUses++;
+    data.commands[commandName].users[m.author.id]++;
+    data.commands[commandName].totalUses++;
 
     timestamps.push(Date.now());
     await datadb.save(data);
 
-    var args = m.content.replace(/\[\?\]/ig, "").split(" ");
-    args.splice(0, 1);
-    args = args.join(" ");
+    var args = m.content.replace(/\[\?\]/ig, "").slice(`${prefix}${commandName}`.length).trim();
     var loguser = `${m.author.fullname}`.magenta.bold;
     var logserver = `${m.guild.name}`.cyan.bold;
     var logchannel = `#${m.channel.name}`.green.bold;
     var logdivArrow = " > ".blue.bold;
     var logdivDash = " - ".blue.bold;
-    var logcmd = `${prefix}${command}`.bold;
+    var logcmd = `${prefix}${commandName}`.bold;
     var logargs = `${args}`.bold;
 
     timestamps.push(Date.now());
