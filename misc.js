@@ -52,6 +52,14 @@ function getMentionedId(m, args) {
     return undefined;
 }
 
+function isObject(value) {
+    return value && typeof value === "object" && value.constructor === Object;
+}
+
+function isString(value) {
+    return typeof value === "string" || value instanceof String;
+}
+
 function isNum(num) {
     if (typeof num === "number") {
         return num - num === 0;
@@ -108,6 +116,8 @@ module.exports = {
     capitalize,
     chooseMember,
     getMentionedId,
+    isObject,
+    isString,
     isNum,
     toNum,
     leftShift,

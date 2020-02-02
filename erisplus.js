@@ -54,9 +54,25 @@ function init(Eris) {
      * @returns {Promise<Message>}
      */
     Object.defineProperty(Eris.Message.prototype, "reply", {
-        value: async function(content, file) {
+        value: async function(content, timeout) {
             var m = this;
-            var sentMsg = m.bot.createMessage(m.channel.id, content, file);
+
+            var file = null;
+            if (content.file) {
+                file = {
+                    file: content.file,
+                    name: content.name
+                };
+                delete content.file;
+                delete content.name;
+            }
+
+            var sentMsg = m.channel.createMessage(content, file);
+
+            if (timeout) {
+                sentMsg.then(m => m.deleteIn(timeout));
+            }
+
             return sentMsg;
         }
     });
