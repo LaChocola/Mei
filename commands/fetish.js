@@ -1,5 +1,6 @@
 "use strict";
 
+const escapeStringRegexp = require("escape-string-regexp");
 const unidecode = require("unidecode");
 
 const peopledb = require("../people");
@@ -9,7 +10,7 @@ module.exports = {
     main: async function(Bot, m, args, prefix) {
         var data = await peopledb.load();
 
-        var name1 = m.cleanContent.replace(/!fetish /i, "");
+        var name1 = m.cleanContent.replace(new RegExp(escapeStringRegexp(prefix) + "fetish", "i"), "");
 
         function capFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
@@ -132,7 +133,7 @@ module.exports = {
                 incoming.push(capFirstLetter(e[1]));
             }
             if (incoming.length === 0) {
-                Bot.createMessage(m.channel.id, "Please say which fetish you would like to add, for example `!fetish add Butts`").then((msg) => {
+                Bot.createMessage(m.channel.id, "Please say which fetish you would like to add, for example `" + prefix + "fetish add Butts`").then((msg) => {
                     setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -153,7 +154,7 @@ module.exports = {
                 incoming[0] = incoming[0].replace(/\bdislike\b/ig, "");
                 incoming[0] = capFirstLetter(incoming[0].trim());
                 if (!incoming[0]) {
-                    Bot.createMessage(m.channel.id, "Please say which fetish you would like to dislike, for example `!fetish add Death dislike`").then((msg) => {
+                    Bot.createMessage(m.channel.id, "Please say which fetish you would like to dislike, for example `" + prefix + "fetish add Death dislike`").then((msg) => {
                         setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");

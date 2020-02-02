@@ -137,5 +137,5 @@ module.exports = {
             });
         }
     },
-    help: "Add custom names for !v, !g and !tf"
+    help: "Add custom names for [prefix]v, [prefix]g and [prefix]tf"
 };

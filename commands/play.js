@@ -588,5 +588,5 @@ module.exports = {
             await playCommand(Bot, m, voiceConnection, cleanArgs);
         }
     },
-    help: "`!play <YT URL>` | `!play <search>` to play | `!play stop` to stop"
+    help: "`[prefix]play <YT URL>` | `[prefix]play <search>` to play | `[prefix]play stop` to stop"
 };

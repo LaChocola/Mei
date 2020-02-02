@@ -1,5 +1,6 @@
 "use strict";
 
+const escapeStringRegexp = require("escape-string-regexp");
 const path = require("path");
 const fs = require("fs").promises;
 
@@ -16,7 +17,7 @@ module.exports = {
             if (lines.length < 1800) {
                 const cmd = require(path.join(__dirname, file));
                 if (!cmd.hidden) {
-                    lines.push(format(file, cmd.help));
+                    lines.push(format(file, cmd.help.replace(new RegExp(escapeStringRegexp("[prefix]"), "g"), prefix)));
                 }
             }
         });

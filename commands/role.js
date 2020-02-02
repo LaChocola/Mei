@@ -14,7 +14,7 @@ module.exports = {
         const guild = m.guild;
         m.content = m.content.toLowerCase();
         if (m.content.trim() === `${prefix}role` || m.content.trim() === `${prefix}role `) {
-            Bot.createMessage(m.channel.id, "What do you want to do? | `!role add <role name>` | `!role remove <role name>` | `!role list`");
+            Bot.createMessage(m.channel.id, "What do you want to do? | `" + prefix + "role add <role name>` | `" + prefix + "role remove <role name>` | `" + prefix + "role list`");
             return;
         }
         if (m.content.includes(`${prefix}role  `)) {
@@ -28,7 +28,7 @@ module.exports = {
         var roles = data[guild.id] && data[guild.id].roles && Object.keys(data[guild.id].roles)[0] && data[guild.id].roles || undefined;
 
         if (!roles) {
-            Bot.createMessage(m.channel.id, "No roles have been set up yet. Use `!edit roles` to add and remove assignable roles. (Requires Moderator Permissions)").then(msg => {
+            Bot.createMessage(m.channel.id, "No roles have been set up yet. Use `" + prefix + "edit roles` to add and remove assignable roles. (Requires Moderator Permissions)").then(msg => {
                 return setTimeout(() => {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -49,7 +49,7 @@ module.exports = {
 
         if (m.content.includes("list")) {
             if (!data[guild.id].roles) {
-                Bot.createMessage(m.channel.id, "No roles have been set up yet. Use `!edit roles` to add and remove assignable roles. (Requires Moderator Permissions)").then(msg => {
+                Bot.createMessage(m.channel.id, "No roles have been set up yet. Use `" + prefix + "edit roles` to add and remove assignable roles. (Requires Moderator Permissions)").then(msg => {
                     return setTimeout(() => {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -215,5 +215,5 @@ module.exports = {
             }
         }
     },
-    help: "Assign roles. `!role add XXX` seperate with `|` to add multiple"
+    help: "Assign roles. `[prefix]role add XXX` seperate with `|` to add multiple"
 };

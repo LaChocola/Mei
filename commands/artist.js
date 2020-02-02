@@ -1,5 +1,7 @@
 "use strict";
 
+const escapeStringRegexp = require("escape-string-regexp");
+
 const peopledb = require("../people");
 
 module.exports = {
@@ -7,7 +9,7 @@ module.exports = {
     main: async function(Bot, m, args, prefix) {
         var data = await peopledb.load();
 
-        var name1 = m.cleanContent.replace(/!artist /i, "");
+        var name1 = m.cleanContent.replace(new RegExp(escapeStringRegexp(prefix) + "artist ", "i"), "");
         function isThisUsernameThatUsername(member) {
             var memberName = member.nick || member.username;
             if (memberName.toLowerCase() === name1.toLowerCase()) {
@@ -56,7 +58,7 @@ module.exports = {
             }
             else {
                 if (incoming.length > 2) {
-                    Bot.createMessage(m.channel.id, "You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`!artist add Patreon <https://patreon.com/Chocola>`").then((msg) => {
+                    Bot.createMessage(m.channel.id, "You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`" + prefix + "artist add Patreon <https://patreon.com/Chocola>`").then((msg) => {
                         return setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -143,5 +145,5 @@ module.exports = {
             });
         }
     },
-    help: "Show artist links. `!artist | !artist <mention> | !artist add <name of link> <actual link> | !artist remove <name of link>`"
+    help: "Show artist links. `[prefix]artist | [prefix]artist <mention> | [prefix]artist add <name of link> <actual link> | [prefix]artist remove <name of link>`"
 };

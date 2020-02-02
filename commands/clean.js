@@ -161,5 +161,5 @@ module.exports = {
         Bot.createMessage(m.channel.id, `Cleaned ${msgIds.length} messages`)
             .then(misc.deleteIn(5000));
     },
-    help: "Clean stuff. `!clean @Chocola X` to delete the last X messages. Defaults to 100"
+    help: "Clean stuff. `[prefix]clean @Chocola X` to delete the last X messages. Defaults to 100"
 };

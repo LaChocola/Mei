@@ -1,11 +1,12 @@
 "use strict";
 
+const escapeStringRegexp = require("escape-string-regexp");
 const Jimp = require("jimp");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
-        var names = m.cleanContent.replace(/^[ !ship\t]+[^a-zA-Z]+|[!ship \t]+[^a-zA-Z]$|!ship/i, "").split(" | ");
+        var names = m.cleanContent.replace(new RegExp("^[ " + escapeStringRegexp(prefix) + "ship\\t]+[^a-zA-Z]+|[" + escapeStringRegexp(prefix) + "ship \\t]+[^a-zA-Z]$|" + escapeStringRegexp(prefix) + "ship", "i"), "").split(" | ");
         if (names[0] !== undefined) {
             if (names[0].startsWith("@")) {
                 names[0] = names[0].slice(1);
@@ -48,7 +49,7 @@ module.exports = {
             return;
         }
         if (m.mentions.length !== 2) { // If there are not 2 people mentioned,
-            Bot.createMessage(m.channel.id, "Ship someone together~\n\nUse `!ship <@user1> <@user2>` or `!ship username1 | username2`");
+            Bot.createMessage(m.channel.id, "Ship someone together~\n\nUse `" + prefix + "ship <@user1> <@user2>` or `" + prefix + "ship username1 | username2`");
             return;
         }
 

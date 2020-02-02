@@ -22,7 +22,7 @@ module.exports = {
         }
         var msg = base[0];
         if (m.content === `${prefix}giveaway`) {
-            return await Bot.createMessage(m.channel.id, "Please add something to giveaway. \n\ni.e. `!giveaway Dragon Dildos` for giving away 'Dragon Dildos'\nor `!giveaway Dragon Dildos | 1` for giving away 'Dragon Dildos' in 1 hour (time defaults to 0.5 hours)");
+            return await Bot.createMessage(m.channel.id, "Please add something to giveaway. \n\ni.e. `" + prefix + "giveaway Dragon Dildos` for giving away 'Dragon Dildos'\nor `" + prefix + "giveaway Dragon Dildos | 1` for giving away 'Dragon Dildos' in 1 hour (time defaults to 0.5 hours)");
         }
 
         if (!data[guild.id]) {

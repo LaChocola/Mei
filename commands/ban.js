@@ -1,5 +1,7 @@
 "use strict";
 
+const escapeStringRegexp = require("escape-string-regexp");
+
 const serversdb = require("../servers");
 const ids = require("../ids");
 
@@ -8,7 +10,7 @@ module.exports = {
     main: async function(Bot, m, args, prefix) {
         var data = await serversdb.load();
 
-        var name1 = m.cleanContent.replace(/!names /i, "");
+        var name1 = m.cleanContent.replace(new RegExp(escapeStringRegexp(prefix) + "names ", "i"), "");
         var argsArray = args.split(" ");
         async function isMod(member, guild) {
             if (data[guild.id]) {

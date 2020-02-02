@@ -18,7 +18,7 @@ module.exports = {
             .replace("`", "'");
         var person = m.author;
         if (m.content === `${prefix}suggest`) {
-            Bot.createMessage(m.channel.id, "Please add your suggestion. i.e. ``!suggest 'You were smushed by XXX when she forgot to check her seat before sitting down'``, but maybe not that short :P").then(function(msg) {
+            Bot.createMessage(m.channel.id, "Please add your suggestion. i.e. ``" + prefix + "suggest 'You were smushed by XXX when she forgot to check her seat before sitting down'``, but maybe not that short :P").then(function(msg) {
                 setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");

@@ -5,6 +5,7 @@ const fs = require("fs").promises;
 
 const Perf = require("pixl-perf");
 const ordinal = require("ordinal");
+const escapeStringRegexp = require("escape-string-regexp");
 
 const { choose, capitalize, chunkArray, chooseMember, getMentionedId } = require("./misc");
 const datadb = require("./data");
@@ -64,7 +65,7 @@ function getSubtype(s) {
     };
 
     var foundAlias = Object.keys(subtypeAliasMap).find(function(alias) {
-        return s.match(new RegExp("\\b" + alias + "\\b", "i"));
+        return s.match(new RegExp("\\b" + escapeStringRegexp(alias) + "\\b", "i"));
     });
 
     var subtype = subtypeAliasMap[foundAlias] || "Random";
@@ -366,7 +367,7 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
     }
 
     Object.entries(toReplace).forEach(function([oldVal, newVal]) {
-        var re = new RegExp(`\\b${oldVal}\\b`, "ig");
+        var re = new RegExp("\\b" + escapeStringRegexp(oldVal) + "\\b", "ig");
         lewdmessage = lewdmessage.replace(re, newVal);
     });
 

@@ -35,5 +35,5 @@ module.exports = {
         }
         Bot.createMessage(m.channel.id, "Roles for: **" + mentioned.username + "#" + mentioned.discriminator + "**\n \n*" + arrayOfRoleNames.join("*, *") + "*\n \nPermissions: ```js\n" + msg + "```");
     },
-    help: "Role info. Use !role to assign roles"
+    help: "Role info. Use [prefix]role to assign roles"
 };

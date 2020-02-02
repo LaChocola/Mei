@@ -1,5 +1,6 @@
 "use strict";
 
+const escapeStringRegexp = require("escape-string-regexp");
 const path = require("path");
 const fs = require("fs").promises;
 
@@ -12,7 +13,7 @@ module.exports = {
             if (commands.indexOf(args + ".js") > -1) {
                 var cmd = require(path.join(__dirname, args + ".js"));
                 if (!cmd.hidden) {
-                    Bot.createMessage(m.channel.id, "`" + prefix + args + "`, " + cmd.help);
+                    Bot.createMessage(m.channel.id, "`" + prefix + args + "`, " + cmd.help.replace(new RegExp(escapeStringRegexp("[prefix]"), "g"), prefix));
                     return;
                 }
                 return;

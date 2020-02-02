@@ -1,5 +1,6 @@
 "use strict";
 
+const escapeStringRegexp = require("escape-string-regexp");
 const peopledb = require("../people");
 
 module.exports = {
@@ -7,7 +8,7 @@ module.exports = {
     main: async function(Bot, m, args, prefix) {
         var data = await peopledb.load();
 
-        var name1 = m.cleanContent.replace(/!hoard /i, "");
+        var name1 = m.cleanContent.replace(new RegExp(escapeStringRegexp(prefix) + "hoard", "i"), "");
         function isThisUsernameThatUsername(member) {
             var memberName = member.nick || member.username;
             if (memberName.toLowerCase() === name1.toLowerCase()) {

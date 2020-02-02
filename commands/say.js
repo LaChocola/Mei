@@ -5,7 +5,7 @@ module.exports = {
     main: async function(Bot, m, args, prefix) {
         var msg = m.cleanContent.replace(`${prefix}say `, "");
         if (m.content === `${prefix}say`) {
-            msg = "Please add something to say. i.e. ``!say <whatever>``";
+            msg = "Please add something to say. i.e. ``" + prefix + "say <whatever>``";
         }
         Bot.createMessage(m.channel.id, msg);
     },

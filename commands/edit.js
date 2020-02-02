@@ -1,5 +1,6 @@
 "use strict";
 
+const conf = require("../conf");
 const serversdb = require("../servers");
 const ids = require("../ids");
 
@@ -90,7 +91,7 @@ module.exports = {
         }
         const modCheck = await isMod(m.channel.guild.members.get(m.author.id), guild);
         if (m.author.id !== guild.ownerID && m.author.id !== ids.users.chocola && modCheck !== true) {
-            Bot.createMessage(m.channel.id, "You must be the server owner, or have moderator permissions to run this command. Have the server owner use `!edit mod add @you` or `!edit mod add @modRole`").then(function(msg) {
+            Bot.createMessage(m.channel.id, "You must be the server owner, or have moderator permissions to run this command. Have the server owner use `" + prefix + "edit mod add @you` or `" + prefix + "edit mod add @modRole`").then(function(msg) {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -198,7 +199,7 @@ module.exports = {
                     return;
                 }
 
-                Bot.createMessage(m.channel.id, "No ban log channel has been set yet. Use `!edit notifications banlog enable #channel` to add logs to that channel").then(function(msg) {
+                Bot.createMessage(m.channel.id, "No ban log channel has been set yet. Use `" + prefix + "edit notifications banlog enable #channel` to add logs to that channel").then(function(msg) {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -257,7 +258,7 @@ module.exports = {
                     return;
                 }
 
-                Bot.createMessage(m.channel.id, "No update message channel has been set yet. Use `!edit notifications updates enable <@channel>` to add update messages to that channel").then(function(msg) {
+                Bot.createMessage(m.channel.id, "No update message channel has been set yet. Use `" + prefix + "edit notifications updates enable <@channel>` to add update messages to that channel").then(function(msg) {
                     return setTimeout(function() {
                         Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -452,7 +453,7 @@ module.exports = {
                 return;
             }
             if (args.toLowerCase().includes("add")) {
-                const channelID = m.channelMentions[0] || m.content.replace("!edit ", "").replace("art", "").replace("add", "").replace("<#", "").replace(">", "").trim();
+                const channelID = m.channelMentions[0] || m.content.replace(prefix + "edit ", "").replace("art", "").replace("add", "").replace("<#", "").replace(">", "").trim();
                 const channel = Bot.getChannel(channelID);
                 if (channel === undefined || !channel.id) {
                     Bot.createMessage(m.channel.id, "I couldn't find the channel you were looking to add, please make sure it is somewhere I can see, and try again.").then(function(msg) {
@@ -487,7 +488,7 @@ module.exports = {
                 });
                 return;
             }
-            Bot.createMessage(m.channel.id, "No art channel has been set yet. You can set the art channel using the command: `!edit art add #channel`").then(function(msg) {
+            Bot.createMessage(m.channel.id, "No art channel has been set yet. You can set the art channel using the command: `" + prefix + "edit art add #channel`").then(function(msg) {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -880,7 +881,7 @@ module.exports = {
             }
         }
         else {
-            Bot.createMessage(m.channel.id, "These are the settings you can **edit** (Bold represents the default setting):\n\n`prefix`: <prefix>, Change the prefix Mei sues in this server, Default prefix is **`!`**\n\n`mod`: add | remove, <@person> | <@role>. Add a moderator, or a role for moderators to use Mei\"s admin features, and edit settings\n\n`roles`: add <role> | remove <role> | create <role> | delete <role>, Add or remove the roles Mei can give to users, or create and delete roles in the server. (Roles created by Mei will have no power and no color, and will be at the bottom of the role list)\n\n`notifications`: banlog | updates | welcome, enable <@channel> | disable, Allows you to enable, disable, or change channels that certain notifications appear in. Currently supports a log channel for all bans, a log of all users joining and leaving, and editing the welcome message that Mei gives when users join, and what channel each appears in.\n\n`art`: remove | add <#channel>, Adds a channel for Mei to use in the `!art` command");
+            Bot.createMessage(m.channel.id, "These are the settings you can **edit** (Bold represents the default setting):\n\n`prefix`: <prefix>, Change the prefix Mei uses in this server, Default prefix is **`" + conf.prefix + "`**\n\n`mod`: add | remove, <@person> | <@role>. Add a moderator, or a role for moderators to use Mei\"s admin features, and edit settings\n\n`roles`: add <role> | remove <role> | create <role> | delete <role>, Add or remove the roles Mei can give to users, or create and delete roles in the server. (Roles created by Mei will have no power and no color, and will be at the bottom of the role list)\n\n`notifications`: banlog | updates | welcome, enable <@channel> | disable, Allows you to enable, disable, or change channels that certain notifications appear in. Currently supports a log channel for all bans, a log of all users joining and leaving, and editing the welcome message that Mei gives when users join, and what channel each appears in.\n\n`art`: remove | add <#channel>, Adds a channel for Mei to use in the `" + prefix + "art` command");
         }
     },
     help: "Modify Server Settings (Admin only)"
