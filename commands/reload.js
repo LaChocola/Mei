@@ -21,7 +21,12 @@ module.exports = {
         }
 
         try {
-            commands.reload(commandName);
+            if (commandName === "all") {
+                commands.reloadAll();
+            }
+            else {
+                commands.reload(commandName);
+            }
         }
         catch (err) {
             if (err instanceof commands.CommandsError) {

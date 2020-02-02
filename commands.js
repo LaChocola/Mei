@@ -83,6 +83,12 @@ function reloadCommand(name) {
     loadCommand(name);
 }
 
+function reloadAllCommands() {
+    for (var name of Object.keys(commands)) {
+        reloadCommand(name);
+    }
+}
+
 function disableCommand(name) {
     name = name.toLowerCase();
     var command = commands[name];
@@ -108,6 +114,7 @@ module.exports = {
     load: loadCommand,
     unload: unloadCommand,
     reload: reloadCommand,
+    reloadAll: reloadAllCommands,
     disable: disableCommand,
     enable: enableCommand,
     commands: commands,
