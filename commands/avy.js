@@ -3,25 +3,41 @@
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
-        var name1 = m.cleanContent.replace(`${prefix}avy `, "");
-        function isThisUsernameThatUsername(member) {
-            var memberName = member.nick || member.username;
-            if (memberName.toLowerCase() === name1.toLowerCase()) {
-                return true;
-            }
+        var mentionedArg = m.cleanContent.slice(`${prefix}avy`.length).trim().toLowerCase();
+
+        var mentioned;
+        if (mentionedArg === "") {
+            mentioned = m.member;
         }
-        var member = m.guild.members.find(isThisUsernameThatUsername);
-        var mentioned = m.mentions[0] || member || m.author;
-        var avy = m.channel.guild.members.get(mentioned.id).avatarURL || mentioned.avatarURL;
-        if (avy.includes("null")) {
-            Bot.createMessage(m.channel.id, "You need an avatar to use this command");
+        else if (m.mentions.length > 0) {
+            mentioned = m.guild.members.get(m.mentions[0].id);
+        }
+        else {
+            mentioned = m.guild.members.find(m => m.name.toLowerCase() === mentionedArg);
+        }
+
+        if (!mentioned) {
+            await m.reply("I don't know who that is.");
             return;
         }
-        avy = avy.replace(/\.gif\?size=[0-9]+/ig, ".gif").replace(".jpg?size=128", ".png?size=1024");
-        Bot.createMessage(m.channel.id, {
+
+        if (mentioned.avatar === null) {
+            if (mentioned.id === m.member.id) {
+                await m.reply("You don't have an avatar.");
+            }
+            else {
+                await m.reply(`${mentioned.name} doesn't have an avatar.`);
+            }
+            return;
+        }
+
+        var format = mentioned.avatar.startsWith("a_") ? "gif" : "png";
+        var avy = mentioned.user.dynamicAvatarURL(format, 1024);
+
+        await m.reply({
             embed: {
                 color: 0xA260F6,
-                title: `${mentioned.nickname || mentioned.username}#${mentioned.discriminator}`,
+                title: `${mentioned.name}`,
                 description: "[Link](" + avy + ")",
                 image: {
                     url: avy
