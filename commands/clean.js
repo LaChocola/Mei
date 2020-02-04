@@ -6,14 +6,14 @@ const ids = require("../ids");
 
 // If the guild owner has changed, then update the guild data
 async function updateGuildData(Bot, m, data) {
-    var guildData = data[m.guild.id];
-    if (!guildData) {
+    var guilddata = data[m.guild.id];
+    if (!guilddata) {
         return;
     }
-    if (guildData.owner !== m.guild.ownerID) {
+    if (guilddata.owner !== m.guild.ownerID) {
         Bot.createMessage(m.channel.id, "New server owner detected, updating database.")
             .then(misc.deleteIn(5000));
-        guildData.owner = m.guild.ownerID;
+        guilddata.owner = m.guild.ownerID;
         await serversdb.save(data);
     }
 }
@@ -32,7 +32,7 @@ async function updateGuildData(Bot, m, data) {
  *  - Configured as a guild mod in Mei (!edit mod add @role)
  *  - Have a role that is configured as a guild mod role in Mei (!edit mod add @role)
  */
-function isMod(guildData, member, guild) {
+function isMod(guilddata, member, guild) {
     var isOwner = member.id === guild.ownerID;
     if (isOwner) {
         return true;
@@ -46,12 +46,12 @@ function isMod(guildData, member, guild) {
         return true;
     }
 
-    var userIsMod = guildData && guildData.mods && guildData.mods[member.id];
+    var userIsMod = guilddata && guilddata.mods && guilddata.mods[member.id];
     if (userIsMod) {
         return true;
     }
 
-    var hasModRole = guildData && guildData.modRoles && member.roles.some(roleId => guildData.modRoles[roleId]);
+    var hasModRole = guilddata && guilddata.modRoles && member.roles.some(roleId => guilddata.modRoles[roleId]);
     if (hasModRole) {
         return true;
     }
@@ -109,7 +109,7 @@ module.exports = {
 
         var data = await serversdb.load();
         await updateGuildData(Bot, m, data);
-        var guildData = data[m.guild.id];
+        var guilddata = data[m.guild.id];
         var member = m.guild.members.get(m.author.id);
 
         // If a number is included in args, delete that many message
@@ -123,7 +123,7 @@ module.exports = {
         var mentionedId = m.mentions[0] && m.mentions[0].id;
 
         // Only Chocola or mods can run this command
-        var userIsMod = isMod(guildData, member, m.guild);
+        var userIsMod = isMod(guilddata, member, m.guild);
         var isChocola = m.author.id === ids.users.chocola;
 
         if (!(userIsMod || isChocola)) {

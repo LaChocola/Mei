@@ -18,7 +18,6 @@ module.exports = {
         var base = m.cleanContent.replace(`${prefix}giveaway `, "").split(" | ");
         if (!isNaN(+base[1])) {
             time = +base[1];
-            base.pop();
         }
         var msg = base[0];
         if (m.content === `${prefix}giveaway`) {

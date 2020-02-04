@@ -20,6 +20,9 @@ var conf = {
         sauce: undefined,
         google: undefined
     },
+    mongo: {
+        uri: ""
+    },
     // TODO: Make async
     load: function() {
         var legacyConfig;

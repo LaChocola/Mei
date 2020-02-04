@@ -122,6 +122,16 @@ function removePrefix(prefix, s) {
     return s;
 }
 
+function split(s, sep, limit) {
+    var pieces = s.split(sep);
+    if (limit && limit < pieces.length - 1) {
+        var joinedPieces = pieces.slice(limit).join(sep);
+        pieces = pieces.slice(0, limit);
+        pieces.push(joinedPieces);
+    }
+    return pieces;
+}
+
 module.exports = {
     choose,
     chooseHand,
@@ -138,5 +148,6 @@ module.exports = {
     splitArray,
     delay,
     deleteIn,
-    removePrefix
+    removePrefix,
+    split
 };

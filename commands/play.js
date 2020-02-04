@@ -78,18 +78,18 @@ async function loadGuildData(m, data) {
             });
         guildChanged = true;
     }
-    var guildData = data[guild.id];
+    var guilddata = data[guild.id];
     // I am bad with storage, I know
-    if (!guildData.music) {
-        guildData.music = {};
+    if (!guilddata.music) {
+        guilddata.music = {};
         guildChanged = true;
     }
-    if (!guildData.music.queue) {
-        guildData.music.queue = {};
+    if (!guilddata.music.queue) {
+        guilddata.music.queue = {};
         guildChanged = true;
     }
-    if (!guildData.music.current) {
-        guildData.music.current = {};
+    if (!guilddata.music.current) {
+        guilddata.music.current = {};
         guildChanged = true;
     }
 
@@ -97,12 +97,12 @@ async function loadGuildData(m, data) {
         await serversdb.save(data);
     }
 
-    return guildData;
+    return guilddata;
 }
 
 async function processQueue(Bot, guildid, textChannel) {
     var data = await serversdb.load();
-    var guildData = data[guildid];
+    var guilddata = data[guildid];
     var voiceConnection = Bot.voiceConnections.get(guildid);
 
     // We are no longer connected to a voice channel
@@ -120,12 +120,12 @@ async function processQueue(Bot, guildid, textChannel) {
     }
 
     // if there is no other song in the queue, leave the voice channel and have a wonderful day
-    var queueLength = Object.keys(guildData.music.queue).length;
+    var queueLength = Object.keys(guilddata.music.queue).length;
     if (queueLength === 0) {
         await misc.delay(5000);
         data = await serversdb.load();
-        guildData = data[guildid];
-        queueLength = Object.keys(guildData.music.queue).length;
+        guilddata = data[guildid];
+        queueLength = Object.keys(guilddata.music.queue).length;
         if (queueLength > 0) {
             // If songs have been added to the queue, process the next item
             await processQueue(Bot, guildid, textChannel);
@@ -146,8 +146,8 @@ async function processQueue(Bot, guildid, textChannel) {
     }
 
     // Pop the first item off the queue
-    var [code, requester] = Object.entries(guildData.music.queue)[0];
-    delete guildData.music.queue[code];
+    var [code, requester] = Object.entries(guilddata.music.queue)[0];
+    delete guilddata.music.queue[code];
     await serversdb.save(data);
 
     // Empty item in the queue (this shouldn't happen)
@@ -185,7 +185,7 @@ async function processQueue(Bot, guildid, textChannel) {
             sentMsg.delete("Timeout");
         });
 
-    guildData.music.current = {
+    guilddata.music.current = {
         code: code,
         player: requester
     };
@@ -206,7 +206,7 @@ async function getInfo(code) {
 async function addToQueue(m, args, isPlaying) {
     var guildid = m.guild.id;
     var data = await serversdb.load();
-    var guildData = data[guildid];
+    var guilddata = data[guildid];
 
     var code = parseCode(args);
     console.log("code:", code);
@@ -233,10 +233,10 @@ async function addToQueue(m, args, isPlaying) {
     }
 
     // Song is already in the queue
-    if (guildData.music.queue[code]) {
-        var codes = Object.keys(guildData.music.queue);
+    if (guilddata.music.queue[code]) {
+        var codes = Object.keys(guilddata.music.queue);
         var position = codes.indexOf(code) + 1;
-        var existingRequester = guildData.music.queue[code];
+        var existingRequester = guilddata.music.queue[code];
         m.channel.createMessage("That song has already been requested by: **" + existingRequester + "**. It is at queue position: `" + position + "`")
             .then(async function(sentMsg) {
                 await misc.delay(5000);
@@ -246,7 +246,7 @@ async function addToQueue(m, args, isPlaying) {
     }
 
     // Too many items already in queue
-    var queueLength = Object.keys(guildData.music.queue).length;
+    var queueLength = Object.keys(guilddata.music.queue).length;
     if (queueLength >= 15) {
         m.channel.createMessage("Sorry, only 15 songs are allowed in the queue at a time")
             .then(async function(sentMsg) {
@@ -258,7 +258,7 @@ async function addToQueue(m, args, isPlaying) {
 
     // Add the song to the queue
     var requester = `${m.author.username + "#" + m.author.discriminator}`;
-    guildData.music.queue[code] = requester;
+    guilddata.music.queue[code] = requester;
     await serversdb.save(data);
 
     console.log("final code:", code);
@@ -317,7 +317,7 @@ async function pauseCommand(m, voiceConnection) {
     voiceConnection.pause();
 }
 
-async function currentCommand(m, voiceConnection, guildData, cmdList) {
+async function currentCommand(m, voiceConnection, guilddata, cmdList) {
     var isPlaying = voiceConnection && voiceConnection.playing;
     // someone asks for current song info
     if (!isPlaying) {
@@ -325,15 +325,15 @@ async function currentCommand(m, voiceConnection, guildData, cmdList) {
         return;
     }
 
-    var info = await getInfo(guildData.music.current.code);
+    var info = await getInfo(guilddata.music.current.code);
     if (!info) {
         return;
     }
     var currentCode;
     var currentRequester;
-    if (guildData.music.current) {
-        currentCode = guildData.music.current.code;
-        currentRequester = guildData.music.current.player;
+    if (guilddata.music.current) {
+        currentCode = guilddata.music.current.code;
+        currentRequester = guilddata.music.current.player;
     }
 
     if (!(currentCode && currentRequester)) {
@@ -377,7 +377,7 @@ async function currentCommand(m, voiceConnection, guildData, cmdList) {
         });
 }
 
-async function listCommand(m, voiceConnection, guildData) {
+async function listCommand(m, voiceConnection, guilddata) {
     var isPlaying = voiceConnection && voiceConnection.playing;
     // display queue of songs if it exists
     if (!isPlaying) {
@@ -387,15 +387,15 @@ async function listCommand(m, voiceConnection, guildData) {
 
     // Display queue of songs if it exists
     await m.channel.sendTyping();
-    console.log(guildData.music.queue);
+    console.log(guilddata.music.queue);
 
-    if (!Object.entries(guildData.music.queue)) {
+    if (!Object.entries(guilddata.music.queue)) {
         m.channel.createMessage("The queue is empty right now");
         return;
     }
 
     // Load the info for all the songs
-    var songs = await Promise.all(Object.entries(guildData.music.queue).map(async function([code, requester], i) {
+    var songs = await Promise.all(Object.entries(guilddata.music.queue).map(async function([code, requester], i) {
         let info = await getInfo(code);
         if (!info) {
             // If we can't get info for a video, provide a basic entry (this shouldn't happen)
@@ -540,7 +540,7 @@ module.exports = {
         var cmdVolume = Boolean(volumeMatch);
         var volumeArg = volumeMatch && volumeMatch[0];
 
-        var guildData = await loadGuildData(m, data);
+        var guilddata = await loadGuildData(m, data);
 
         // User isn't in a Voice Channel
         if (!m.member.voiceState.channelID) {
@@ -552,7 +552,7 @@ module.exports = {
 
         // Clear the queue if the bot got disconnected
         if (!(voiceConnection && voiceConnection.playing)) {
-            guildData.music.queue = {};
+            guilddata.music.queue = {};
             await serversdb.save(data);
         }
 
@@ -575,11 +575,11 @@ module.exports = {
         else if (cmdPause) {
             await pauseCommand(m, voiceConnection);
         }
-        else if (cmdCurrent || (cmdList && Object.entries(guildData.music.queue).length === 0)) {
-            await currentCommand(m, voiceConnection, guildData, cmdList);
+        else if (cmdCurrent || (cmdList && Object.entries(guilddata.music.queue).length === 0)) {
+            await currentCommand(m, voiceConnection, guilddata, cmdList);
         }
         else if (cmdList) {
-            await listCommand(m, voiceConnection, guildData);
+            await listCommand(m, voiceConnection, guilddata);
         }
         else if (cmdVolume) {
             await volumeCommand(m, voiceConnection, cleanArgs, volumeArg);
