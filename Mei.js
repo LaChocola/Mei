@@ -151,6 +151,10 @@ bot.on("guildBanRemove", async function(guild, user) {
 
 // Handle DMs
 bot.on("messageCreate", async function(m) {
+    if (m.author.bot) {
+        return;
+    }
+
     if (!m.guild) {
         console.log(`${m.author.fullname} (${m.author.id}): ${m.content}`);
         try {
