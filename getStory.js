@@ -373,7 +373,7 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
 }
 
 async function getStory(m, args, command, type, isNSFW, responseColor) {
-    var tracker_getStory = perf.begin();
+    perf.begin();
     perf.count("getStory");
     var guildid = m.guild.id;
     var guildMembers = m.guild.members;
@@ -441,7 +441,7 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
     var usageCount = data.commands[command].users[author.id];
     var usageStr = ordinal(+usageCount);
 
-    tracker_getStory.end();
+    perf.end();
     printMetrics();
     return {
         embed: {

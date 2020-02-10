@@ -178,6 +178,34 @@ Bot.on("guildBanRemove", async function (guild, user) {
     }
 });
 
+// Handle presence
+Bot.on("messageCreate", async function(m) {
+    if (m.author.bot) {
+        return;
+    }
+    if (!m.content.toLowerCase().match(/\b(chocola|choco|choc|mei)\b/i)) {
+        return;
+    }
+    if (!m.guild.members.has(ids.users.chocola)) {
+        return;
+    }
+    if (m.author.id === ids.users.chocola) {
+        return;
+    }
+
+    var DMchannel = await Bot.getDMChannel(ids.users.chocola);
+    try {
+        await Bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`);
+        await Bot.createMessage(DMchannel.id, m.content);
+    }
+    catch (err) {
+        if (err.code === 50007) {
+            return;
+        }
+        console.log(err);
+    }
+});
+
 Bot.on("messageCreate", async function (m) {
     const timestamps = [Date.now()];
     function updateTimestamps() {
@@ -186,6 +214,8 @@ Bot.on("messageCreate", async function (m) {
         timestamps[timestamps.length - 1] = now - latest;
         timestamps.push(now);
     }
+
+    // DMs
     if (!m.channel.guild) {
         console.log(`${m.author.username}#${m.author.discriminator} (${m.author.id}): ${m.content}`);
         Bot.getDMChannel(m.author.id).then(function (DMchannel) {
@@ -197,48 +227,10 @@ Bot.on("messageCreate", async function (m) {
             }
             console.log(err);
         });
-        /*
-        if (m.author.id !== ids.users.chocola) {
-          console.log("Guild 1:",m.channel.guild)
-          var roles = new Collection(bot.Role)
-          var members = new Collection(bot.User)
-          var channels = new Collection(bot.Channel)
-          members.add(m.author, bot.User, true)
-          channels.add(m.channel, bot.Channel, true)
-          roles.add({"name": "fakeRole", "id": "00001"}, bot.Role, true)
-          var fakeGuild = {
-            name: m.author.username,
-            ownerid: m.author.id,
-            id: m.channel.id,
-            iconURL: m.author.iconURL,
-            roles: roles,
-            members: members,
-            channels: channels
-          }
-          console.log(`Guild 2: ${m.channel.guild}`)
-        };
-        */
         return;
     }
-    if (m.content.toLowerCase().match(/\bchocola\b/i) || m.content.toLowerCase().match(/\bchoco\b/i) || m.content.toLowerCase().match(/\bchoc\b/i) || m.content.toLowerCase().match(/\bmei\b/i)) {
-        var present = await m.channel.guild.members.get(ids.users.chocola);
-        if (!present) {
-            return;
-        }
-        if (m.author.id === ids.users.chocola || m.author.id === Bot.user.id) {
-            return;
-        }
-        Bot.getDMChannel(ids.users.chocola).then(async function (DMchannel) {
-            Bot.createMessage(DMchannel.id, `You were mentioned in <#${m.channel.id}> by <@${m.author.id}>. Message: <https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}>`).then(function (msg) {
-                Bot.createMessage(DMchannel.id, m.content);
-            }).catch((err) => {
-                if (err.code === 50007) {
-                    return;
-                }
-                console.log(err);
-            });
-        });
-    }
+
+    // block banned users
     var data = await datadb.load();
     if (data.banned.global[m.author.id]) {
         return;
@@ -247,12 +239,15 @@ Bot.on("messageCreate", async function (m) {
     var config = reload("./etc/config.json");
     var server = await serversdb.load();
     var prefix = config.prefix;
+
+    // "game" support
     if (server[m.channel.guild.id] && server[m.channel.guild.id].game && server[m.channel.guild.id].game.channel === m.channel.id && server[m.channel.guild.id].game.player === m.author.id) {
         if (server[m.channel.guild.id].game.active && server[m.channel.guild.id].game.choices.includes(m.content)) {
             m.content = prefix + "t " + m.content;
         }
     }
     updateTimestamps();
+    // Guild specific prefix
     if (server[m.channel.guild.id] && server[m.channel.guild.id].prefix) {
         prefix = server[m.channel.guild.id].prefix;
     }
@@ -261,6 +256,7 @@ Bot.on("messageCreate", async function (m) {
             Bot.removeGuildMemberRole(m.channel.guild.id, m.mentions[0].id, ids.roles.role1, "Removed from role assign"); // remove the No channel access role
         }
     }
+    // pls command
     if (m.author.id === ids.users.chocola && m.content.includes("pls")) {
         if (m.content.includes("stop")) {
             Bot.createMessage(m.channel.id, "Let me rest my eyes for a moment").then((msg) => {
@@ -407,10 +403,12 @@ Bot.on("messageCreate", async function (m) {
             }
         }
     }
+    // Disable play command for specific guild
     if (m.channel.guild.id === ids.guilds.guild2 && m.content.startsWith(`${prefix}play`)) {
         return;
     }
     updateTimestamps();
+    // Commands
     var loguser = `${m.author.username}#${m.author.discriminator}`.magenta.bold;
     var logserver = `${m.channel.guild.name}`.cyan.bold || "Direct Message".cyan.bold;
     var logchannel = `#${m.channel.name}`.green.bold;
