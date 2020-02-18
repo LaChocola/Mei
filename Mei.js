@@ -186,8 +186,10 @@ Bot.on("messageCreate", async function(m) {
     if (!m.content.toLowerCase().match(/\b(chocola|choco|choc|mei)\b/i)) {
         return;
     }
-    if (!m.guild.members.has(ids.users.chocola)) {
-        return;
+    if (m.channel.guild) {
+        if (!m.guild.members.has(ids.users.chocola)) {
+            return;
+        }
     }
     if (m.author.id === ids.users.chocola) {
         return;
@@ -606,7 +608,13 @@ Bot.on("guildDelete", async function (guild) {
 Bot.on("messageReactionAdd", async function (m, emoji, userID) {
     var server = await serversdb.load();
     var people = await peopledb.load();
-    m = await Bot.getMessage(m.channel.id, m.id);
+    m = await Bot.getMessage(m.channel.id, m.id).catch((err) => {
+        if (err.code === 50013) {
+            console.log(`${"WRN".black.bgYellow} ${"Missing Permissions for getting message".magenta.bold} ${"-".blue.bold} ${m.channel.guild.name.cyan.bold} ${">".blue.bold} #${m.channel.name.green.bold} (${`https://discordapp.com/channels/${m.channel.guild.id}/${m.channel.id}/${m.id}${m.id}`.bold.red})`);
+            return;
+        }
+        console.log(err);
+    });
 
     try {
         if (emoji.name === "😍") {
