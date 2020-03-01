@@ -407,7 +407,7 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
     if (argLength) {
         var tracker_getLewdSummary = perf.begin("getLewdSummary");
         perf.count("getLewdSummary");
-        var lewdSummary = getLewdSummary(smallid, guildid, type);
+        var lewdSummary = await getLewdSummary(smallid, guildid, type);
         tracker_getLewdSummary.end();
         return {
             embed: {
