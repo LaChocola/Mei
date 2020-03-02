@@ -411,8 +411,8 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
         tracker_getLewdSummary.end();
         return {
             embed: {
-                "color": 0xA260F6,
-                "description": lewdSummary
+                color: 0xA260F6,
+                description: lewdSummary
             }
         };
     }
