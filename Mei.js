@@ -353,6 +353,7 @@ bot.on("messageCreate", async function(m) {
 
     timestamps.push(Date.now());
 
+    // Guild specific prefix
     conf.load();
     var guildsdata = await serversdb.load();
     var guildData = guildsdata[m.guild.id];
@@ -419,6 +420,7 @@ bot.on("messageCreate", async function(m) {
     timestamps.push(Date.now());
     await datadb.save(data);
 
+    // Commands
     var args = m.content.replace(/\[\?\]/ig, "").split(" ");
     args.splice(0, 1);
     args = args.join(" ");
