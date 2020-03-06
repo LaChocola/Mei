@@ -3,7 +3,6 @@
 const path = require("path");
 const fs = require("fs").promises;
 
-const Perf = require("pixl-perf");
 const ordinal = require("ordinal");
 const escapeStringRegexp = require("escape-string-regexp");
 
@@ -11,8 +10,6 @@ const { choose, capitalize, chunkArray, chooseMember, getMentionedId } = require
 const datadb = require("./data");
 const peopledb = require("./people");
 const ids = require("./ids");
-
-var perf = new Perf();
 
 // Subtype Aliases
 function getSubtypeAliasMap() {
@@ -44,10 +41,7 @@ function getSubtypeAliasMap() {
 }
 
 function getSubtype(s) {
-    var tracker_getSubtypeAliasMap = perf.begin("getSubtypeAliasMap");
-    perf.count("getSubtypeAliasMap");
     var subtypeAliasMap = getSubtypeAliasMap();
-    tracker_getSubtypeAliasMap.end();
     var subtypeEmojis = {
         "boob": ":melon:",
         "butt": ":peach:",
@@ -76,31 +70,19 @@ function getSubtype(s) {
 
 // Giantess names
 async function getAllGTSNames(uid, guildid) {
-    var tracker_getCustomGTSNames = perf.begin("getCustomGTSNames");
-    perf.count("getCustomGTSNames");
     var customNames = await getCustomGTSNames(uid);
-    tracker_getCustomGTSNames.end();
 
-    var tracker_getDefaultGTSNames = perf.begin("getDefaultGTSNames");
-    perf.count("getDefaultGTSNames");
     var defaultNames = getDefaultGTSNames(guildid);
-    tracker_getDefaultGTSNames.end();
 
     var allNames = customNames.concat(defaultNames);
     return allNames;
 }
 
 async function getGTSNames(uid, guildid) {
-    var tracker_getCustomGTSNames = perf.begin("getCustomGTSNames");
-    perf.count("getCustomGTSNames");
     var names = await getCustomGTSNames(uid);
-    tracker_getCustomGTSNames.end();
 
     if (names.length === 0) {
-        var tracker_getDefaultGTSNames = perf.begin("getDefaultGTSNames");
-        perf.count("getDefaultGTSNames");
         names = getDefaultGTSNames(guildid);
-        tracker_getDefaultGTSNames.end();
     }
 
     return names;
@@ -137,10 +119,7 @@ async function getCustomGTSNames(uid) {
 }
 
 async function getNamesSummary(uid, guildid, perLine) {
-    var tracker_getGTSNames = perf.begin("getGTSNames");
-    perf.count("getGTSNames");
     var names = await getGTSNames(uid, guildid);
-    tracker_getGTSNames.end();
 
     if (perLine === undefined) {
         perLine = 4;
@@ -163,10 +142,7 @@ async function getLewdCountsSummary(type) {
     };
     var friendlyType = friendlyTypes[type];
 
-    var tracker_loadLewdPool = perf.begin("loadLewdPool");
-    perf.count("loadLewdPool");
     var pool = await loadLewdPool();
-    tracker_loadLewdPool.end();
 
     var total = 0;
     var lines = [];
@@ -184,15 +160,9 @@ async function getLewdCountsSummary(type) {
 }
 
 async function getLewdSummary(uid, guildid, type) {
-    var tracker_getNamesSummary = perf.begin("getNamesSummary");
-    perf.count("getNamesSummary");
     var namesSummary = await getNamesSummary(uid, guildid);
-    tracker_getNamesSummary.end();
 
-    var tracker_getLewdCountsSummary = perf.begin("getLewdCountsSummary");
-    perf.count("getLewdCountsSummary");
     var lewdCountsSummary = await getLewdCountsSummary(type);
-    tracker_getLewdCountsSummary.end();
 
     var summaryString = namesSummary + "\n \n" + lewdCountsSummary;
     return summaryString;
@@ -209,10 +179,7 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
 
     //=============get names==================
     if (!bigname) {
-        var tracker_getGTSNames = perf.begin("getGTSNames");
-        perf.count("getGTSNames");
         bigname = choose(await getGTSNames(smallid, guildid));
-        tracker_getGTSNames.end();
     }
 
     var gender = data.people[smallid] && data.people[smallid].names && data.people[smallid].names[bigname] || "female";
@@ -293,10 +260,7 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
     var feet = choose(feets);
 
     //==========select from pool
-    var tracker_loadLewdPool = perf.begin("loadLewdPool");
-    perf.count("loadLewdPool");
     var pool = await loadLewdPool();
-    tracker_loadLewdPool.end();
 
     var candidates = pool[type][subtype] || [];
     if (candidates.length === 0) {
@@ -375,8 +339,6 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
 }
 
 async function getStory(m, args, command, type, isNSFW, responseColor) {
-    perf.begin();
-    perf.count("getStory");
     var guildid = m.guild.id;
     var guildMembers = m.guild.members;
     var author = m.author;
@@ -405,10 +367,7 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
 
     // Lewd Summary
     if (argLength) {
-        var tracker_getLewdSummary = perf.begin("getLewdSummary");
-        perf.count("getLewdSummary");
         var lewdSummary = await getLewdSummary(smallid, guildid, type);
-        tracker_getLewdSummary.end();
         return {
             embed: {
                 color: 0xA260F6,
@@ -422,29 +381,18 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
         bigNick = authorNick;
     }
     else {
-        var tracker_getAllGTSNames = perf.begin("getAllGTSNames");
-        perf.count("getAllGTSNames");
         var names = await getAllGTSNames(smallid, guildid);
-        tracker_getAllGTSNames.end();
         bigNick = names.find(n => args.includes(n.toLowerCase()));
     }
 
-    var tracker_getSubtype = perf.begin("getSubtype");
-    perf.count("getSubtype");
     var { subtype, emoji } = getSubtype(args);
-    tracker_getSubtype.end();
 
-    var tracker_generateLewdMessage = perf.begin("generateLewdMessage");
-    perf.count("generateLewdMessage");
     var lewdmessage = await generateLewdMessage(smallid, bigNick, guildid, type, subtype);
-    tracker_generateLewdMessage.end();
 
     var data = await datadb.load();
     var usageCount = data.commands[command].users[author.id];
     var usageStr = ordinal(+usageCount);
 
-    perf.end();
-    printMetrics();
     return {
         embed: {
             color: responseColor,
@@ -457,18 +405,6 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
             }
         }
     };
-}
-
-function printMetrics() {
-    var metrics = perf.metrics();
-    var avgmetrics = {};
-    for (var m in metrics.perf) {
-        avgmetrics[m] = metrics.perf[m] / (metrics.counters[m] || 1);
-    }
-    var metricsOutput = Object.entries(avgmetrics)
-        .map(([name, value]) => name + ": " + value + "ms")
-        .join("\n");
-    console.debug(metricsOutput);
 }
 
 module.exports = getStory;
