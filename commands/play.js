@@ -538,7 +538,7 @@ module.exports = {
         var cmdPause = /^(?:pause)$/i.test(cleanArgs);
         var volumeMatch = cleanArgs.match(/^(?:volume|turn it|turn)(?: +(up|down|\d+))?$/i);
         var cmdVolume = Boolean(volumeMatch);
-        var volumeArg = volumeMatch && volumeMatch[0];
+        var volumeArg = volumeMatch && volumeMatch[1];
 
         var guildData = await loadGuildData(m, data);
 
