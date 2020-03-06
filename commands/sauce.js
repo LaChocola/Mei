@@ -35,9 +35,7 @@ module.exports = {
                 value: `${data.site}`,
                 inline: true
             }];
-            console.log(data.raw.data);
             if (data.raw.data.creator) {
-                console.log("Pushing creator");
                 fields.push({
                     name: "Creator",
                     value: `${String(data.raw.data.creator)}`,
@@ -45,16 +43,12 @@ module.exports = {
                 });
             }
             if (data.raw.data.source) {
-                console.log("Pushing source");
                 fields.push({
                     name: "Source",
                     value: `${data.raw.data.source}`,
                     inline: true
                 });
             }
-            console.log(data);
-            console.log(fields);
-            console.log(image);
 
             const msg = {
                 color: 0xA260F6,
