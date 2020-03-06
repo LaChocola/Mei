@@ -238,6 +238,7 @@ module.exports = {
               }
               .hover_img a { }
               .hover_img a span { position:fixed; right: 0; top: 0; height: 100vh; max-width: 70vw; display:none; z-index:99; }
+              .hover_img a span img { height: 100%; max-width: 100%; }
               .hover_img a:hover span { display:block; }
             </style>
             <head>
