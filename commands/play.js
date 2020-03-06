@@ -582,7 +582,7 @@ module.exports = {
             await listCommand(m, voiceConnection, guildData);
         }
         else if (cmdVolume) {
-            await volumeCommand(m, voiceConnection, cleanArgs, volumeArg);
+            await volumeCommand(m, voiceConnection, volumeArg);
         }
         else {
             await playCommand(Bot, m, voiceConnection, cleanArgs);
