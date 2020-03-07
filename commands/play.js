@@ -13,10 +13,11 @@ function parseCode(args) {
     args = args || "";
     var code = undefined;
 
-    var urlCode = yt.getVideoID(args);
-    if (!(urlCode instanceof Error)) {
-        // handle error
-        code = urlCode;
+    try {
+        code = yt.getVideoID(args);
+    }
+    catch (err) {
+        // Ignore errors from getVideoID
     }
 
     if (!code) {
