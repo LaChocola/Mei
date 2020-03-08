@@ -619,9 +619,11 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
             return;
         }
 
+        // Load the message
+        m = await bot.getMessage(m.channel.id, m.id);
+
         // Load guild data and message
         var guildsdata = await serversdb.load();
-        m = await bot.getMessage(m.channel.id, m.id);
         var guildData = guildsdata[m.guild.id];
 
         // Ignore the giveaway creator
@@ -656,9 +658,11 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
             return;
         }
 
+        // Load the message
+        m = await bot.getMessage(m.channel.id, m.id);
+
         // Load guild data and message
         var guildsdata = await serversdb.load();
-        m = await bot.getMessage(m.channel.id, m.id);
         var guildData = guildsdata[m.guild.id];
 
         // Ignore the giveaway creator
@@ -701,6 +705,9 @@ function getLinks(m) {
 // Hoard adds
 bot.on("messageReactionAdd", async function(m, emoji, userID) {
     try {
+        // Load the message
+        m = await bot.getMessage(m.channel.id, m.id);
+
         // Load the guild data
         var guildsdata = await serversdb.load();
         var guildData = guildsdata[m.guild.id];
@@ -710,9 +717,6 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
         if (hoardsDisabled && emoji.name !== "😍") {
             return;
         }
-
-        // Load the message
-        m = await bot.getMessage(m.channel.id, m.id);
 
         // Get the links
         var links = getLinks(m);
@@ -805,6 +809,9 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
 // Hoard adds
 bot.on("messageReactionRemove", async function(m, emoji, userID) {
     try {
+        // Load the message
+        m = await bot.getMessage(m.channel.id, m.id);
+
         // Load guild data
         var guildsdata = await serversdb.load();
         var guildData = guildsdata[m.guild.id];
@@ -814,9 +821,6 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
         if (hoardsDisabled && emoji.name !== "😍") {
             return;
         }
-
-        // Load the message
-        m = await bot.getMessage(m.channel.id, m.id);
 
         // Get the links from the message
         var links = getLinks(m);
