@@ -20,7 +20,7 @@ module.exports = {
                 lines.push(format(file, cmd.help.replace(new RegExp(escapeStringRegexp("[prefix]"), "g"), prefix), prefix));
             }
         });
-        var middle = Math.floor(lines.length);
+        var middle = Math.floor(lines.length / 2);
         var pageOne = lines.slice(0, middle).join("\n");
         var pageTwo = lines.slice(middle).join("\n");
 
