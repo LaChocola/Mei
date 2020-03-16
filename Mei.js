@@ -159,10 +159,12 @@ bot.on("messageCreate", async function(m) {
         console.log(`${m.author.fullname} (${m.author.id}): ${m.content}`);
         try {
             await m.reply("Your messages do not serve me here, bug.");
+            return;
         }
         catch(err) {
             if (err.code !== 50007) {
                 console.log(err);
+                return;
             }
         }
     }
@@ -318,6 +320,13 @@ bot.on("messageCreate", async function(m) {
 
 // shit bot
 bot.on("messageCreate", async function(m) {
+    if (m.author.bot) {
+        return;
+    }
+
+    if (!m.guild) {
+        return;
+    }
     // If shit bot says "you joined" in #welcome
     if (m.guild.id === ids.guilds.r_macrophilia
         && m.author.id === ids.users.dyno
