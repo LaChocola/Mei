@@ -53,6 +53,16 @@ module.exports = {
             return;
         }
 
+        if (m.mentions[0].avatar == null) { // If there is no avatar
+            Bot.createMessage(m.channel.id, `Lovely shi... Where's your avatar? You should add one ${m.mentions[0].username} ;-; *winks*\n~~no avatar/profile pic was detected~~`);
+            return;
+        }
+
+        if (m.mentions[1].avatar == null) { // If there is no avatar
+            Bot.createMessage(m.channel.id, `Lovely shi... Where's your avatar? You should add one ${m.mentions[1].username} *winks*\n~~no avatar/profile pic was detected~~`);
+            return;
+        }
+
         Bot.sendChannelTyping(m.channel.id).then(async function() {
             try {
                 var firstName = m.channel.guild.members.get(m.mentions[0].id).nick || m.mentions[0].username;
@@ -63,22 +73,28 @@ module.exports = {
                 }
                 var firstPart = firstName.substring(0, firstName.length / 2);
                 var lastPart = lastName.substring(lastName.length / 2);
-
-                const bg = await Jimp.read("https://cdn.discordapp.com/attachments/356012822016163841/560222284606865450/b3e61a.png");
-                const user1 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`);
-                const user2 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[1].id}/${m.mentions[1].avatar}.png?size=1024`);
-                bg.resize(384, 128);
+                var bg = await Jimp.read("https://cdn.discordapp.com/attachments/356012822016163841/560222284606865450/b3e61a.png");
+                var file = "ship.png";
+                // Planned support for gif avatars
+                /*
+                if (m.mentions[0].avatarURL.includes(".gif") || m.mentions[1].avatarURL.includes(".gif")) {
+                    bg = await Jimp.read("https://cdn.discordapp.com/attachments/356012822016163841/689994984044232746/bg.gif");
+                    file = "ship.gif";
+                    console.log("Gif PFP detected");
+                }
+                const user1 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.${m.mentions[0].avatarURL.includes(".gif") ? "gif" : "png"}?size=1024`);
+                const user2 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[1].id}/${m.mentions[1].avatar}.${m.mentions[0].avatarURL.includes(".gif") ? "gif" : "png"}?size=1024`);
+                */
+                const user1 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`); // TODO Repalce with gif supporting detection
+                const user2 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[1].id}/${m.mentions[1].avatar}.png?size=1024`); // TODO Repalce with gif supporting detection
                 user1.resize(128, 128);
                 user2.resize(128, 128);
-                bg.clone()
-                    .blit(user1, 0, 0)
-                    .blit(user2, 256, 0)
-                    .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
-                        Bot.createMessage(m.channel.id, `Lovely shipping~\nIntroducing: **${firstPart}${lastPart}**`, {
-                            "file": buffer,
-                            "name": "ship.png"
-                        });
+                bg.resize(384, 128).composite(user1, 0, 0).composite(user2, 256, 0).getBuffer(Jimp.AUTO, function(err, buffer) {
+                    Bot.createMessage(m.channel.id, `Lovely shipping~\nIntroducing: **${firstPart}${lastPart}**`, {
+                        "file": buffer,
+                        "name": file
                     });
+                });
             }
             catch (error) {
                 console.log(error);
