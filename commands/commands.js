@@ -35,7 +35,6 @@ async function getCommands() {
 function formatHelpLine(command, prefix) {
     var help = command.help.replace(new RegExp(escapeStringRegexp("[prefix]"), "g"));
     var helpLine = "`" + prefix + command.name + "` " + help + ".";
-    helpLine = helpLine.slice(0, 1024);  // Limit each line to 1024 characters
     return helpLine;
 }
 
@@ -44,6 +43,7 @@ function getPages(lines, limit) {
     var pages = [lines.shift()];    // Initialize first page with first line
 
     lines.forEach(function(line) {
+        line = line.slice(0, limit);  // Limit each line to 1024 characters
         var appended = pages[pages.length - 1] + "\n" + line;
         if (appended.length <= limit) {
             // If appending the command help doesn't go past the page limit, then just append to the current page
