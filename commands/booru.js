@@ -18,10 +18,6 @@ module.exports = {
         if (m.author.id === ids.users.whosthis1) {
             return;
         }
-        if (!m.channel.nsfw) {
-            Bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
-            return;
-        }
         var name = m.author.nick || m.author.username;
         if (m.content.toLowerCase() === `${prefix}booru list`) {
             Bot.createMessage(m.channel.id, {
@@ -1459,5 +1455,6 @@ module.exports = {
                 }
             });
     },
-    help: "Search Boorus for images. `[prefix]booru list` for list"
+    help: "Search Boorus for images. `[prefix]booru list` for list",
+    nsfw: true
 };

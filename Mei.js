@@ -441,7 +441,13 @@ bot.on("messageCreate", async function(m) {
     }
 
     try {
-        await cmd.main(bot, m, args, prefix);
+        if (cmd.nsfw && !m.channel.nsfw) {
+            bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
+            return;
+        }
+        else {
+            await cmd.main(bot, m, args, prefix);
+        }
     }
     catch (err) {
         console.log(err);

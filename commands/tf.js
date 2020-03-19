@@ -13,5 +13,6 @@ module.exports = {
         var story = await getStory(m, args, command, type, isNSFW, responseColor);
         Bot.createMessage(m.channel.id, story);
     },
-    help: "A TF responses"
+    help: "A TF responses",
+    nsfw: true
 };
