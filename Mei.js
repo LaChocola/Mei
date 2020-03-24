@@ -457,7 +457,7 @@ bot.on("messageCreate", async function(m) {
 });
 
 bot.on("guildMemberAdd", async function(guild, member) {
-    var memberCount = guild.members.filter(m => !m.bot).length;
+    var memberCount = guild.realMemberCount;
     var date = member.joinedAt;
     var date2 = member.createdAt;
     var name = member.nick || member.username;
