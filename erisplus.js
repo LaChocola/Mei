@@ -27,6 +27,8 @@ function init(Eris) {
      */
     Object.defineProperty(Eris.Message.prototype, "botCount", {
         get: function() {
+            // When a guild is first loaded, guild.members contain all members who are either online, have a role, or have a guild nick.
+            // If a bot is offline, has no roles, and has no guild nick, it will be missing from guild.botCount
             return this.members.filter(m => m.bot).length;
         }
     });
