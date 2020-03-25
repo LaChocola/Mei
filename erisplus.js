@@ -4,6 +4,9 @@ const misc = require("./misc");
 
 function init(Eris) {
     /**
+     * @external Guild
+     */
+    /**
      * @external Message
      */
     /**
@@ -15,6 +18,30 @@ function init(Eris) {
     /**
      * @external Client
      */
+
+    /**
+     * The number of bots in this guild
+     *
+     * @memberOf external:Guild#
+     * @member botCount
+     */
+    Object.defineProperty(Eris.Message.prototype, "botCount", {
+        get: function() {
+            return this.members.filter(m => m.bot).length;
+        }
+    });
+
+    /**
+     * The number of non-bot members in this guild
+     *
+     * @memberOf external:Guild#
+     * @member realMemberCount
+     */
+    Object.defineProperty(Eris.Message.prototype, "realMemberCount", {
+        get: function() {
+            return this.memberCount - this.botCount;
+        }
+    });
 
     /**
      * The guild this message was sent to (if sent to a guild)
