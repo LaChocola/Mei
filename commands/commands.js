@@ -64,20 +64,15 @@ module.exports = {
         var commands = await getCommands();
         var publicCommands = commands.filter(c => !c.hidden);
         var lines = publicCommands.map(c => formatHelpLine(c, prefix));
-        var pages = getPages(lines, 1024);
-        var fields = pages.map(function(p) {
-            return {
-                name: "\u200b",
-                value: p,
-                inline: false
-            };
-        });
+        var pages = getPages(lines, 2048);
 
-        Bot.createMessage(m.channel.id, {
-            embed: {
-                color: 0x5A459C,
-                fields: fields
-            }
+        pages.forEach(function(p) {
+            m.channel.createMessage({
+                embed: {
+                    color: 0x5A459C,
+                    description: p
+                }
+            });
         });
     },
     help: "List of commands"
