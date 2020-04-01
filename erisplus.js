@@ -25,7 +25,7 @@ function init(Eris) {
      * @memberOf external:Guild#
      * @member botCount
      */
-    Object.defineProperty(Eris.Message.prototype, "botCount", {
+    Object.defineProperty(Eris.Guild.prototype, "botCount", {
         get: function() {
             // When a guild is first loaded, guild.members contain all members who are either online, have a role, or have a guild nick.
             // If a bot is offline, has no roles, and has no guild nick, it will be missing from guild.botCount
@@ -39,7 +39,7 @@ function init(Eris) {
      * @memberOf external:Guild#
      * @member realMemberCount
      */
-    Object.defineProperty(Eris.Message.prototype, "realMemberCount", {
+    Object.defineProperty(Eris.Guild.prototype, "realMemberCount", {
         get: function() {
             return this.memberCount - this.botCount;
         }
