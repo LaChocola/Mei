@@ -4,6 +4,8 @@ const escapeStringRegexp = require("escape-string-regexp");
 const path = require("path");
 const fs = require("fs").promises;
 
+const splitPages = require("../utils/splitPages");
+
 // Returns a list of commands
 /*  [
  *      {
@@ -38,33 +40,13 @@ function formatHelpLine(command, prefix) {
     return helpLine;
 }
 
-// format lines into pages of a maximum size
-function getPages(lines, limit) {
-    var pages = [lines.shift()];    // Initialize first page with first line
-
-    lines.forEach(function(line) {
-        line = line.slice(0, limit);  // Limit each line to 1024 characters
-        var appended = pages[pages.length - 1] + "\n" + line;
-        if (appended.length <= limit) {
-            // If appending the command help doesn't go past the page limit, then just append to the current page
-            pages[pages.length - 1] = appended;
-        }
-        else {
-            // Otherwise, start a new page
-            pages.push(line);
-        }
-    });
-
-    return pages;
-}
-
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(Bot, m, args, prefix) {
         var commands = await getCommands();
         var publicCommands = commands.filter(c => !c.hidden);
-        var lines = publicCommands.map(c => formatHelpLine(c, prefix));
-        var pages = getPages(lines, 2048);
+        var helpText = publicCommands.map(c => formatHelpLine(c, prefix)).join("\n");
+        var pages = splitPages(helpText, 2048);
 
         pages.forEach(function(p) {
             m.channel.createMessage({
