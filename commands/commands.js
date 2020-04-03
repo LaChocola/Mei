@@ -35,7 +35,7 @@ async function getCommands() {
 
 // Takes a command and prefix, and returns a help line string
 function formatHelpLine(command, prefix) {
-    var help = command.help.replace(new RegExp(escapeStringRegexp("[prefix]"), "g"));
+    var help = command.help.replace(new RegExp(escapeStringRegexp("[prefix]"), "g"), prefix);
     var helpLine = "`" + prefix + command.name + "` " + help + ".";
     return helpLine;
 }
