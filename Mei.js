@@ -526,8 +526,8 @@ bot.on("guildMemberAdd", async function(guild, member) {
 });
 
 bot.on("guildMemberRemove", async function(guild, member) {
+    var memberCount = guild.realMemberCount;
     var guildsdata = await serversdb.load();
-    var memberCount = guild.members.filter(m => !m.bot).length;
     if (!(guildsdata[guild.id] && guildsdata[guild.id].notifications)) {
         return;
     }
