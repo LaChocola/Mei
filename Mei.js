@@ -26,7 +26,7 @@ var bot = Eris(conf.tokens.mei);
 var commandContentsMap = {};
 
 if (!fs) {
-    console.log("Mei requires Node.js version 10 or above");
+    console.log("Mei requires Node.js version number 10 or above");
     return;
 }
 
