@@ -148,7 +148,7 @@ function init(Eris) {
     Object.defineProperty(Eris.Member.prototype, "name", {
         get: function() {
             var member = this;
-            return member.nickname || member.username;
+            return member.nick || member.username;
         }
     });
 
