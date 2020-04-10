@@ -2,62 +2,6 @@
 
 const serversdb = require("../servers");
 const misc = require("../misc");
-const ids = require("../ids");
-
-// If the guild owner has changed, then update the guild data
-async function updateGuildData(Bot, m, data) {
-    var guildData = data[m.guild.id];
-    if (!guildData) {
-        return;
-    }
-    if (guildData.owner !== m.guild.ownerID) {
-        Bot.createMessage(m.channel.id, "New server owner detected, updating database.")
-            .then(misc.deleteIn(5000));
-        guildData.owner = m.guild.ownerID;
-        await serversdb.save(data);
-    }
-}
-
-/*
- * Check if user is a mod
- *
- * User must be at least one of the following:
- *  - Guild owner
- *  - Have at least one of the following permissions:
- *      - banMembers
- *      - administrator
- *      - manageChannels
- *      - manageGuild
- *      - manageMessages
- *  - Configured as a guild mod in Mei (!edit mod add @role)
- *  - Have a role that is configured as a guild mod role in Mei (!edit mod add @role)
- */
-function isMod(guildData, member, guild) {
-    var isOwner = member.id === guild.ownerID;
-    if (isOwner) {
-        return true;
-    }
-
-    var perms = member.permission.json;
-    var pArray = ["banMembers", "administrator", "manageChannels", "manageGuild", "manageMessages"];
-    // var pArray = ["banMembers", "administrator", "manageChannels", "manageGuild", "manageMessages", "kickMembers"];
-    var hasPerms = pArray.some(p => perms[p]);
-    if (hasPerms) {
-        return true;
-    }
-
-    var userIsMod = guildData && guildData.mods && guildData.mods[member.id];
-    if (userIsMod) {
-        return true;
-    }
-
-    var hasModRole = guildData && guildData.modRoles && member.roles.some(roleId => guildData.modRoles[roleId]);
-    if (hasModRole) {
-        return true;
-    }
-
-    return false;
-}
 
 // Get recent messages from a channel
 async function getMessages(Bot, channelId, messageCount, userId) {
@@ -107,10 +51,9 @@ module.exports = {
 
         var argsArray = m.cleanContent.replace(`${prefix}clean `, "").split(" ");
 
-        var data = await serversdb.load();
-        await updateGuildData(Bot, m, data);
-        var guildData = data[m.guild.id];
-        var member = m.guild.members.get(m.author.id);
+        var guildsdata = await serversdb.load();
+
+        await misc.updateGuild(m, guildsdata);
 
         // If a number is included in args, delete that many message
         var intArg = argsArray.find(arg => misc.isNum(arg));
@@ -123,10 +66,9 @@ module.exports = {
         var mentionedId = m.mentions[0] && m.mentions[0].id;
 
         // Only Chocola or mods can run this command
-        var userIsMod = isMod(guildData, member, m.guild);
-        var isChocola = m.author.id === ids.users.chocola;
-
-        if (!(userIsMod || isChocola)) {
+        var memberIsMod = misc.isMod(m.member, m.guild, guildsdata[m.guild.id]);
+        var hasPerms = misc.hasSomePerms(m.member, ["administrator", "manageMessages"]);
+        if (!(memberIsMod || hasPerms)) {
             var rejectResponses = [
                 "Are you a real villan?",
                 "Have you ever caught a good guy?\nLike a real super hero?",
@@ -137,29 +79,26 @@ module.exports = {
                 "Roses are red\nfuck me ;)"
             ];
             var rejectResponse = misc.choose(rejectResponses);
-            Bot.createMessage(m.channel.id, rejectResponse);
+            m.reply(rejectResponse);
             return;
         }
 
         if (!(mentionedId || argAll)) {
-            Bot.createMessage(m.channel.id, "Please mention who you want to clean or say 'all', and optionally, a number of messages to delete from them")
-                .then(misc.deleteIn(5000));
+            m.reply("Please mention who you want to clean or say 'all', and optionally, a number of messages to delete from them", 5000);
             return;
         }
 
         var msgIds = await getMessages(Bot, m.channel.id, deleteCount, mentionedId);
 
         if (msgIds.length === 0) {
-            Bot.createMessage(m.channel.id, "Nothing to clean up")
-                .then(misc.deleteIn(5000));
+            m.reply("Nothing to clean up", 5000);
             return;
         }
 
-        var progressMsg = await Bot.createMessage(m.channel.id, `Cleaning ${msgIds.length} messages`);
-        await deleteMessages(Bot, m.channel.id, msgIds, encodeURIComponent(`${msgIds.length} messages cleaned. Approved by ${m.author.username}#${m.author.discriminator}`));
+        var progressMsg = await m.reply(`Cleaning ${msgIds.length} messages`);
+        await deleteMessages(Bot, m.channel.id, msgIds, encodeURIComponent(`${msgIds.length} messages cleaned. Approved by ${m.member.fullname}`));
         await progressMsg.delete();
-        Bot.createMessage(m.channel.id, `Cleaned ${msgIds.length} messages`)
-            .then(misc.deleteIn(5000));
+        m.reply(`Cleaned ${msgIds.length} messages`, 5000);
     },
     help: "Clean stuff. `[prefix]clean @Chocola X` to delete the last X messages. Defaults to 100"
 };
