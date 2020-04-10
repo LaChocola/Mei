@@ -14,7 +14,7 @@ module.exports = {
         var argsArray = args.split(" ");
 
         var memberIsMod = misc.isMod(m.member, m.guild, guildsdata[m.guild.id]);
-        var hasPerms = misc.hasSomePerms(m.member, ["administrator", "manageRoles"]);
+        var hasPerms = misc.hasSomePerms(m.member, ["administrator", "banMembers"]);
         if (!(memberIsMod || hasPerms)) {
             var responses = [
                 "Are you a real villan?",
