@@ -195,6 +195,10 @@ function isMod(member, guild, guilddata) {
     return false;
 }
 
+function unique(items) {
+    return [...new Set(items)];
+}
+
 module.exports = {
     choose,
     chooseHand,
@@ -213,5 +217,6 @@ module.exports = {
     deleteIn,
     updateGuild,
     hasSomePerms,
-    isMod
+    isMod,
+    unique
 };
