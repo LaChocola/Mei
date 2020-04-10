@@ -30,11 +30,9 @@ module.exports = {
 
         var undoArg = argsArray.includes("undo");
 
-        var modName = m.member.name;
-        var [mentionString, reason] = m.content.replace(prefix + "ban ", "").replace(/\bundo\b/, "").split(" | ", 2);
-        if (!reason) {
-            reason = `Banned by: ${modName}`;
-        }
+        var cleanArgs = m.content.replace(prefix + "ban ", "").replace(/\bundo\b/, "");
+
+        var [mentionString, reason] = cleanArgs.split(" | ", 2);
 
         var stringIds = mentionString.split(" ").filter(id => /^\d+$/.test(id));
         var mentionIds = m.mentions.map(m => m.id);
@@ -45,6 +43,8 @@ module.exports = {
             m.deleteIn(5000);
             return;
         }
+
+        var modName = m.member.name;
 
         for (var id of idsToBan) {
             var userToBan = await Bot.users.get(id) || { fullname: "Unknown User" };
@@ -70,7 +70,7 @@ module.exports = {
             }
             else {
                 try {
-                    await m.guild.banMember(id, 0, reason);
+                    await m.guild.banMember(id, 0, reason || `Banned by: ${modName}`);
                     m.reply(misc.chooseHand() + " Successfully banned: " + userToBan.fullname + " (" + id + ")", 5000);
                 }
                 catch (err) {
@@ -88,6 +88,7 @@ module.exports = {
                 }
             }
         }
+
         m.deleteIn(5000);
     },
     help: "Ban someone..."
