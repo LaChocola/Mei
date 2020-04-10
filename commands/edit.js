@@ -67,7 +67,7 @@ module.exports = {
             return;
         }
 
-        if (lowerargs.includes("hoards")) {
+        if (subcommand === "hoards") {
             if (lowerargs.includes("enable")) {
                 if (!guildsdata[guild.id].hoards) {
                     guildsdata[guild.id].hoards = true;
@@ -99,7 +99,7 @@ module.exports = {
                 });
             }
         }
-        else if (lowerargs.includes("notifications")) {
+        else if (subcommand === "notifications") {
             if (lowerargs.includes("banlog")) {
                 if (lowerargs.includes("disable")) {
                     if (guildsdata[guild.id].notifications.banLog) {
@@ -363,7 +363,7 @@ module.exports = {
                 }
             }
         }
-        else if (lowerargs.includes("prefix")) {
+        else if (subcommand === "prefix") {
             let prefix = args.replace(/\bprefix\b/i, "");
             if (prefix.startsWith(" ")) {
                 prefix = prefix.slice(1);
@@ -378,7 +378,7 @@ module.exports = {
                 }, 5000);
             });
         }
-        else if (lowerargs.match(/\bart\b/i)) {
+        else if (subcommand === "art") {
             if (lowerargs.includes("remove")) {
                 if (guildsdata[guild.id].art) {
                     delete guildsdata[guild.id].art;
@@ -444,7 +444,7 @@ module.exports = {
                 }
             }
         }
-        else if (lowerargs.includes("adds")) {
+        else if (subcommand === "adds") {
             if (lowerargs.includes("enable")) {
                 guildsdata[guild.id].adds = true;
                 await serversdb.save(guildsdata);
@@ -494,7 +494,7 @@ module.exports = {
                 });
             }
         }
-        else if (lowerargs.includes("roles")) {
+        else if (subcommand === "roles") {
             if (!guildsdata[guild.id].roles) {
                 guildsdata[guild.id].roles = {};
             }
@@ -742,7 +742,7 @@ module.exports = {
                 });
             }
         }
-        else if (lowerargs.includes("mod")) {
+        else if (subcommand === "mod") {
             if (lowerargs.includes("add")) {
                 if (m.roleMentions[0]) {
                     if (!guildsdata[guild.id].modRoles) {
