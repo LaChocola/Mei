@@ -10,10 +10,12 @@ module.exports = {
 
         var argsArray = args.split(" ").filter(a => a);
 
+        await misc.updateGuild(m, guildsdata);
+
         var memberIsMod = misc.isMod(m.member, m.guild, guildsdata[m.guild.id]);
         var hasPerms = misc.hasSomePerms(m.member, ["administrator", "banMembers"]);
         if (!(memberIsMod || hasPerms)) {
-            var responses = [
+            var rejectResponses = [
                 "Are you a real villan?",
                 "Have you ever caught a good guy?\nLike a real super hero?",
                 "Have you ever tried a disguise?",
@@ -22,8 +24,8 @@ module.exports = {
                 "Fuck Off",
                 "Roses are red\nfuck me ;)"
             ];
-            var response = misc.choose(responses);
-            m.reply(response, 5000);
+            var rejectResponse = misc.choose(rejectResponses);
+            m.reply(rejectResponse, 5000);
             m.deleteIn(5000);
             return;
         }
