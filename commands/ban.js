@@ -33,14 +33,12 @@ module.exports = {
 
         var member = m.guild.members.find(function(member) {
             var memberName = member.nick || member.username;
-            if (memberName.toLowerCase() === name1.toLowerCase()) {
-                return true;
-            }
+            return memberName.toLowerCase() === name1.toLowerCase();
         });
         var mentioned = m.mentions[0] || member;
         var name;
         var undo = false;
-        var guardian = m.channel.guild.members.get(m.author.id).nick || m.author.username;
+        var guardian = m.member.nick || m.author.username;
         if (m.mentions[0] && m.mentions.length < 2) {
             name = mentioned.username;
         }
