@@ -36,7 +36,7 @@ module.exports = {
             reason = `Banned by: ${modName}`;
         }
 
-        var stringIds = mentionString.split(" ").filter(id => /\d+/.test(id));
+        var stringIds = mentionString.split(" ").filter(id => /^\d+$/.test(id));
         var mentionIds = m.mentions.map(m => m.id);
         var idsToBan = misc.unique(stringIds.concat(mentionIds));
 
