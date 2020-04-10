@@ -1,7 +1,7 @@
 "use strict";
 
 const ids = require("./ids");
-const serversdb = require("./serversdb");
+const serversdb = require("./servers");
 
 const escapeStringRegexp = require("escape-string-regexp");
 
