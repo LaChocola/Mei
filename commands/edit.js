@@ -763,7 +763,7 @@ module.exports = {
 
                     guildsdata[guild.id].mods[m.mentions[0].id] = true;
                     await serversdb.save(guildsdata);
-                    Bot.createMessage(m.channel.id, m.mentions[0].username + " is now a registered moderator").then(function(msg) {
+                    Bot.createMessage(m.channel.id, m.mentions[0].fullname + " is now a registered moderator").then(function(msg) {
                         setTimeout(function() {
                             Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -799,7 +799,7 @@ module.exports = {
                     if (guildsdata[guild.id].mods[m.mentions[0].id]) {
                         delete guildsdata[guild.id].mods[m.mentions[0].id];
                         await serversdb.save(guildsdata);
-                        Bot.createMessage(m.channel.id, m.mentions[0].username + " is no longer a registered moderator").then(function(msg) {
+                        Bot.createMessage(m.channel.id, m.mentions[0].fullname + " is no longer a registered moderator").then(function(msg) {
                             setTimeout(function() {
                                 Bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                 Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
