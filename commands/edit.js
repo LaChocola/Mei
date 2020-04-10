@@ -46,12 +46,6 @@ module.exports = {
             return re.test(lowerargs);
         });
 
-        // User didn't provide an appropriate subcommand
-        if (!subcommand) {
-            m.reply("These are the settings you can **edit** (Bold represents the default setting):\n\n`prefix`: <prefix>, Change the prefix Mei uses in this server, Default prefix is **`" + conf.prefix + "`**\n\n`mod`: add | remove, <@person> | <@role>. Add a moderator, or a role for moderators to use Mei\"s admin features, and edit settings\n\n`roles`: add <role> | remove <role> | create <role> | delete <role>, Add or remove the roles Mei can give to users, or create and delete roles in the server. (Roles created by Mei will have no power and no color, and will be at the bottom of the role list)\n\n`notifications`: banlog | updates | welcome, enable <@channel> | disable, Allows you to enable, disable, or change channels that certain notifications appear in. Currently supports a log channel for all bans, a log of all users joining and leaving, and editing the welcome message that Mei gives when users join, and what channel each appears in.\n\n`art`: remove | add <#channel>, Adds a channel for Mei to use in the `" + prefix + "art` command");
-            return;
-        }
-
         // Update guild data
         await misc.updateGuild(m, guildsdata);
 
@@ -64,6 +58,12 @@ module.exports = {
         if (!(memberIsMod || hasAdminPerms || (subcommand !== "mod" && hasBasicPerms))) {
             m.reply("You must be the server owner, or have moderator permissions to run this command. Have the server owner use `" + prefix + "edit mod add @you` or `" + prefix + "edit mod add @modRole`", 20000);
             m.deleteIn(20000);
+            return;
+        }
+
+        // User didn't provide an appropriate subcommand
+        if (!subcommand) {
+            m.reply("These are the settings you can **edit** (Bold represents the default setting):\n\n`prefix`: <prefix>, Change the prefix Mei uses in this server, Default prefix is **`" + conf.prefix + "`**\n\n`mod`: add | remove, <@person> | <@role>. Add a moderator, or a role for moderators to use Mei\"s admin features, and edit settings\n\n`roles`: add <role> | remove <role> | create <role> | delete <role>, Add or remove the roles Mei can give to users, or create and delete roles in the server. (Roles created by Mei will have no power and no color, and will be at the bottom of the role list)\n\n`notifications`: banlog | updates | welcome, enable <@channel> | disable, Allows you to enable, disable, or change channels that certain notifications appear in. Currently supports a log channel for all bans, a log of all users joining and leaving, and editing the welcome message that Mei gives when users join, and what channel each appears in.\n\n`art`: remove | add <#channel>, Adds a channel for Mei to use in the `" + prefix + "art` command");
             return;
         }
 
