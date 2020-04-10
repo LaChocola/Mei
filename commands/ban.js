@@ -31,14 +31,12 @@ module.exports = {
             return;
         }
 
-        function isThisUsernameThatUsername(member) {
+        var member = m.guild.members.find(function(member) {
             var memberName = member.nick || member.username;
             if (memberName.toLowerCase() === name1.toLowerCase()) {
                 return true;
             }
-        }
-
-        var member = m.guild.members.find(isThisUsernameThatUsername);
+        });
         var mentioned = m.mentions[0] || member;
         var name;
         var undo = false;
