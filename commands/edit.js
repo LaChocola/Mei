@@ -56,14 +56,14 @@ module.exports = {
         // Check if user has permissions for admin commands ("mod")
         var hasAdminPerms = misc.hasSomePerms(m.member, ["administrator", "manageRoles"]);
         if (!(memberIsMod || hasAdminPerms || (subcommand !== "mod" && hasBasicPerms))) {
-            m.reply("You must be the server owner, or have moderator permissions to run this command. Have the server owner use `" + prefix + "edit mod add @you` or `" + prefix + "edit mod add @modRole`", 20000);
-            m.deleteIn(20000);
+            await m.reply("You must be the server owner, or have moderator permissions to run this command. Have the server owner use `" + prefix + "edit mod add @you` or `" + prefix + "edit mod add @modRole`", 20000);
+            await m.deleteIn(20000);
             return;
         }
 
         // User didn't provide an appropriate subcommand
         if (!subcommand) {
-            m.reply("These are the settings you can **edit** (Bold represents the default setting):\n\n`prefix`: <prefix>, Change the prefix Mei uses in this server, Default prefix is **`" + conf.prefix + "`**\n\n`mod`: add | remove, <@person> | <@role>. Add a moderator, or a role for moderators to use Mei\"s admin features, and edit settings\n\n`roles`: add <role> | remove <role> | create <role> | delete <role>, Add or remove the roles Mei can give to users, or create and delete roles in the server. (Roles created by Mei will have no power and no color, and will be at the bottom of the role list)\n\n`notifications`: banlog | updates | welcome, enable <@channel> | disable, Allows you to enable, disable, or change channels that certain notifications appear in. Currently supports a log channel for all bans, a log of all users joining and leaving, and editing the welcome message that Mei gives when users join, and what channel each appears in.\n\n`art`: remove | add <#channel>, Adds a channel for Mei to use in the `" + prefix + "art` command");
+            await m.reply("These are the settings you can **edit** (Bold represents the default setting):\n\n`prefix`: <prefix>, Change the prefix Mei uses in this server, Default prefix is **`" + conf.prefix + "`**\n\n`mod`: add | remove, <@person> | <@role>. Add a moderator, or a role for moderators to use Mei\"s admin features, and edit settings\n\n`roles`: add <role> | remove <role> | create <role> | delete <role>, Add or remove the roles Mei can give to users, or create and delete roles in the server. (Roles created by Mei will have no power and no color, and will be at the bottom of the role list)\n\n`notifications`: banlog | updates | welcome, enable <@channel> | disable, Allows you to enable, disable, or change channels that certain notifications appear in. Currently supports a log channel for all bans, a log of all users joining and leaving, and editing the welcome message that Mei gives when users join, and what channel each appears in.\n\n`art`: remove | add <#channel>, Adds a channel for Mei to use in the `" + prefix + "art` command");
             return;
         }
 
@@ -364,19 +364,17 @@ module.exports = {
             }
         }
         else if (subcommand === "prefix") {
-            let prefix = args.replace(/\bprefix\b/i, "");
-            if (prefix.startsWith(" ")) {
-                prefix = prefix.slice(1);
+            var newPrefix = args.replace(/\bprefix\b/i, "");
+            newPrefix = newPrefix.trim();
+            if (newPrefix.length === 0) {
+                await m.reply("`prefix`: <prefix>, Change the prefix Mei uses in this server, Default prefix is **`" + conf.prefix + "`**");
+                return;
             }
 
-            guildsdata[guild.id].prefix = prefix;
+            guildsdata[guild.id].prefix = newPrefix;
             await serversdb.save(guildsdata);
-            Bot.createMessage(m.channel.id, "Setting server prefix to: `" + prefix + "`").then(function(msg) {
-                setTimeout(function() {
-                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                }, 5000);
-            });
+            await m.reply("Setting server prefix to: `" + newPrefix + "`", 5000);
+            await m.deleteIn(5000);
         }
         else if (subcommand === "art") {
             if (lowerargs.includes("remove")) {

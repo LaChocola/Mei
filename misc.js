@@ -127,8 +127,7 @@ async function updateGuild(m, guildsdata) {
             name: m.guild.name,
             owner: m.guild.ownerID
         };
-        m.reply(`Server: ${m.guild.name} added to database. Populating information ${chooseHand()}`, 5000);
-        m.deleteIn(5000);
+        await m.reply(`Server: ${m.guild.name} added to database. Populating information ${chooseHand()}`, 5000);
         changed = true;
     }
 
@@ -136,14 +135,14 @@ async function updateGuild(m, guildsdata) {
 
     // Update guild owner, if changed
     if (guildData.owner !== m.guild.ownerID) {
-        m.reply("New server owner detected, updating database.", 5000);
+        await m.reply("New server owner detected, updating database.", 5000);
         guildData.owner = m.guild.ownerID;
         changed = true;
     }
 
     // Update guild name, if changed
     if (guildData.name !== m.guild.name) {
-        m.reply("New server name detected, updating database.", 5000);
+        await m.reply("New server name detected, updating database.", 5000);
         guildData.name = m.guild.name;
         changed = true;
     }
