@@ -47,7 +47,7 @@ module.exports = {
             else {
                 var perms = await guild.members.get(member.id).permission.json;
                 var pArray = ["banMembers", "administrator", "manageGuild"];
-                if (perms[pArray[0]] || perms[pArray[1]] || perms[pArray[2]] || perms[pArray[3]] || perms[pArray[4]]) {
+                if (perms[pArray[0]] || perms[pArray[1]] || perms[pArray[2]]) {
                     return true;
                 }
                 return false;

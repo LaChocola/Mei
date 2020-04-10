@@ -53,7 +53,7 @@ module.exports = {
             else {
                 const perms = guild.members.get(member.id).permission.json;
                 const pArray = ["banMembers", "administrator", "manageChannels", "manageGuild"];
-                if (perms[pArray[0]] || perms[pArray[1]] || perms[pArray[2]] || perms[pArray[3]] || perms[pArray[4]]) {
+                if (perms[pArray[0]] || perms[pArray[1]] || perms[pArray[2]] || perms[pArray[3]]) {
                     return true;
                 }
                 return false;
@@ -89,8 +89,13 @@ module.exports = {
         if (!guild) {
             return;
         }
-        const modCheck = await isMod(m.channel.guild.members.get(m.author.id), guild);
+        var member = m.channel.guild.members.get(m.author.id)
+        var modCheck = await isMod(member, guild);
         if (m.author.id !== guild.ownerID && m.author.id !== ids.users.chocola && modCheck !== true) {
+            console.log("Denied");
+            console.log(modCheck);
+            console.log(await isMod(member, guild));            
+            console.log(guild.members.get(m.author.id).permission.json);
             Bot.createMessage(m.channel.id, "You must be the server owner, or have moderator permissions to run this command. Have the server owner use `" + prefix + "edit mod add @you` or `" + prefix + "edit mod add @modRole`").then(function(msg) {
                 return setTimeout(function() {
                     Bot.deleteMessage(m.channel.id, m.id, "Timeout");
