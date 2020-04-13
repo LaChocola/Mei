@@ -109,5 +109,15 @@
             }
         ],
         "space-infix-ops": 1
-    }
+    },
+    "overrides": [
+        {
+            "files": ["**/*.test.js"],
+            "plugins": ["jest"],
+            "env": {
+                "jest/globals": true
+            },
+            "extends": ["plugin:jest/recommended"]
+        }
+    ]
 }
