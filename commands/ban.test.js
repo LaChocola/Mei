@@ -62,7 +62,7 @@ serversdb.load.mockResolvedValue({
 });
 serversdb.save.mockResolvedValue();
 
-test(".ban", async function() {
+test("!ban", async function() {
     var bot = getbot();
     var m = getm();
     var args = "";
