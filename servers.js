@@ -6,7 +6,7 @@ const dbname = "servers";
 
 /*
     Guild Data
-    data = [
+    data = {
         "[guildid]": {
             "name": "[guild name]",
             "owner": "[guild ownerID]",
@@ -63,7 +63,7 @@ const dbname = "servers";
                 "choices": ["[choice]"]
             }
         }
-    ]
+    }
  */
 
 async function load() {
