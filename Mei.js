@@ -26,7 +26,7 @@ var bot = Eris(conf.tokens.mei);
 var commandContentsMap = {};
 
 if (!fs) {
-    console.log("Mei requires Node.js version 10 or above");
+    console.log("Mei requires Node.js version number 10 or above");
     return;
 }
 
@@ -159,10 +159,12 @@ bot.on("messageCreate", async function(m) {
         console.log(`${m.author.fullname} (${m.author.id}): ${m.content}`);
         try {
             await m.reply("Your messages do not serve me here, bug.");
+            return;
         }
         catch(err) {
             if (err.code !== 50007) {
                 console.log(err);
+                return;
             }
         }
     }
@@ -318,6 +320,13 @@ bot.on("messageCreate", async function(m) {
 
 // shit bot
 bot.on("messageCreate", async function(m) {
+    if (m.author.bot) {
+        return;
+    }
+
+    if (!m.guild) {
+        return;
+    }
     // If shit bot says "you joined" in #welcome
     if (m.guild.id === ids.guilds.r_macrophilia
         && m.author.id === ids.users.dyno
@@ -463,7 +472,7 @@ bot.on("messageCreate", async function(m) {
 });
 
 bot.on("guildMemberAdd", async function(guild, member) {
-    var memberCount = guild.members.filter(m => !m.bot).length;
+    var memberCount = guild.realMemberCount;
     var date = member.joinedAt;
     var date2 = member.createdAt;
     var name = member.nick || member.username;
@@ -523,8 +532,8 @@ bot.on("guildMemberAdd", async function(guild, member) {
 });
 
 bot.on("guildMemberRemove", async function(guild, member) {
+    var memberCount = guild.realMemberCount;
     var guildsdata = await serversdb.load();
-    var memberCount = guild.members.filter(m => !m.bot).length;
     if (!(guildsdata[guild.id] && guildsdata[guild.id].notifications)) {
         return;
     }

@@ -4,6 +4,9 @@ const misc = require("./misc");
 
 function init(Eris) {
     /**
+     * @external Guild
+     */
+    /**
      * @external Message
      */
     /**
@@ -15,6 +18,32 @@ function init(Eris) {
     /**
      * @external Client
      */
+
+    /**
+     * The number of bots in this guild
+     *
+     * @memberOf external:Guild#
+     * @member botCount
+     */
+    Object.defineProperty(Eris.Guild.prototype, "botCount", {
+        get: function() {
+            // When a guild is first loaded, guild.members contain all members who are either online, have a role, or have a guild nick.
+            // If a bot is offline, has no roles, and has no guild nick, it will be missing from guild.botCount
+            return this.members.filter(m => m.bot).length;
+        }
+    });
+
+    /**
+     * The number of non-bot members in this guild
+     *
+     * @memberOf external:Guild#
+     * @member realMemberCount
+     */
+    Object.defineProperty(Eris.Guild.prototype, "realMemberCount", {
+        get: function() {
+            return this.memberCount - this.botCount;
+        }
+    });
 
     /**
      * The guild this message was sent to (if sent to a guild)
@@ -119,7 +148,7 @@ function init(Eris) {
     Object.defineProperty(Eris.Member.prototype, "name", {
         get: function() {
             var member = this;
-            return member.nickname || member.username;
+            return member.nick || member.username;
         }
     });
 

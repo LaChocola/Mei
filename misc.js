@@ -1,5 +1,8 @@
 "use strict";
 
+const ids = require("./ids");
+const serversdb = require("./servers");
+
 const escapeStringRegexp = require("escape-string-regexp");
 
 function delay(ms) {
@@ -115,6 +118,87 @@ function deleteIn(timeout) {
     };
 }
 
+async function updateGuild(m, guildsdata) {
+    var changed = false;
+
+    // Add guild if missing
+    if (!guildsdata[m.guild.id]) {
+        guildsdata[m.guild.id] = {
+            name: m.guild.name,
+            owner: m.guild.ownerID
+        };
+        await m.reply(`Server: ${m.guild.name} added to database. Populating information ${chooseHand()}`, 5000);
+        changed = true;
+    }
+
+    var guildData = guildsdata[m.guild.id];
+
+    // Update guild owner, if changed
+    if (guildData.owner !== m.guild.ownerID) {
+        await m.reply("New server owner detected, updating database.", 5000);
+        guildData.owner = m.guild.ownerID;
+        changed = true;
+    }
+
+    // Update guild name, if changed
+    if (guildData.name !== m.guild.name) {
+        await m.reply("New server name detected, updating database.", 5000);
+        guildData.name = m.guild.name;
+        changed = true;
+    }
+
+    // Save any changes
+    if (changed) {
+        await serversdb.save(guildsdata);
+    }
+}
+
+function hasSomePerms(member, permlist) {
+    var hasPerm = permlist.some(function(perm) {
+        return member.permission.has(perm);
+    });
+    return hasPerm;
+}
+
+function isMod(member, guild, guilddata) {
+    if (!guilddata) {
+        guilddata = {};
+    }
+
+    // member is owner
+    if (member.id === guild.ownerID) {
+        return true;
+    }
+
+    // member is chocola
+    if (member.id === ids.users.chocola) {
+        return true;
+    }
+
+    // member is mod
+    var guildmods = guilddata.mods && Object.keys(guilddata.mods) || [];
+    if (guildmods.includes(member.id)) {
+        return true;
+    }
+
+    // member has mod role
+    var guildmodroles = guilddata.modRoles && Object.keys(guilddata.modRoles) || [];
+    var memberroles = member.roles;
+    var hasmodrole = guildmodroles.some(function(modrole) {
+        return memberroles.includes(modrole);
+    });
+    if (hasmodrole) {
+        return true;
+    }
+
+    // member is not a mod
+    return false;
+}
+
+function unique(items) {
+    return [...new Set(items)];
+}
+
 module.exports = {
     choose,
     chooseHand,
@@ -130,5 +214,9 @@ module.exports = {
     timestampToSnowflake,
     splitArray,
     delay,
-    deleteIn
+    deleteIn,
+    updateGuild,
+    hasSomePerms,
+    isMod,
+    unique
 };

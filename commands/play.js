@@ -199,7 +199,7 @@ async function getInfo(code) {
         info = await yt.getInfo("https://www.youtube.com/watch?v=" + code);
     }
     catch (err) {
-        console.warning(`Failed to get info for ${code}: ${err}`);
+        console.warn(`Failed to get info for ${code}: ${err}`);
     }
     return info;
 }
