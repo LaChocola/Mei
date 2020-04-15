@@ -830,6 +830,7 @@ test("!ban [@mention] | reason as unauthorized user", async function() {
     var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858> | Please let me in");
     m.member.name = "AWK";
     m.member.id = "236223047093321728";
+    m.mentions = [{ id: "435088936730361858" }];
 
     await ban.main(bot, m, args, prefix);
 
