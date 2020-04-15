@@ -16,7 +16,7 @@ module.exports = {
         var hasPerms = misc.hasSomePerms(m.member, ["administrator", "banMembers"]);
         if (!(memberIsMod || hasPerms)) {
             var rejectResponses = [
-                "Are you a real villan?",
+                "Are you a real villain?",
                 "Have you ever caught a good guy?\nLike a real super hero?",
                 "Have you ever tried a disguise?",
                 "What are you doing?!?!?!",
@@ -53,7 +53,7 @@ module.exports = {
 
             if (undoArg) {
                 try {
-                    await m.guild.unbanMember(id, "Unbanned by: " + modName);
+                    await m.guild.unbanMember(id, reason || `Unbanned by: ${modName}`);
                     m.reply(misc.chooseHand() + " Successfully unbanned: " + userToBan.fullname + " (" + id + ")", 5000);
                 }
                 catch (err) {
@@ -62,7 +62,7 @@ module.exports = {
                             m.reply("Uhm, think about what you just tried to do...", 5000);
                         }
                         else {
-                            m.reply("I do not have permisson to unban that user. Please make sure I have the `Ban Member` permission", 5000);
+                            m.reply("I do not have permission to unban that user. Please make sure I have the `Ban Member` permission", 5000);
                         }
                         return;
                     }
@@ -81,7 +81,7 @@ module.exports = {
                             m.reply("I can not ban the owner of the server, sorry.", 5000);
                         }
                         else {
-                            m.reply("I do not have permisson to ban that user. Please make sure I have the `Ban Member` permission, and that my highest role is above theirs", 5000);
+                            m.reply("I do not have permission to ban that user. Please make sure I have the `Ban Member` permission, and that my highest role is above theirs", 5000);
                         }
                         return;
                     }
