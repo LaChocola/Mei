@@ -75,6 +75,8 @@ serversdb.load.mockResolvedValue({
 });
 serversdb.save.mockResolvedValue();
 
+// Test without arguments
+
 test("!ban", async function() {
     var { bot, m, args, prefix } = buildArgs("ban");
     m.member.name = "Natalie";
@@ -88,6 +90,8 @@ test("!ban", async function() {
     expect(m.guild.unbanMember).not.toHaveBeenCalled();
 });
 
+// Test variations as owner
+
 test("!ban [id] as owner", async function() {
     var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858");
     m.member.name = "Natalie";
@@ -100,8 +104,6 @@ test("!ban [id] as owner", async function() {
     expect(m.guild.banMember).toBeCalledWith("435088936730361858", 0, "Banned by: Natalie");
     expect(m.guild.unbanMember).not.toHaveBeenCalled();
 });
-
-// Test variations as owner
 
 test("!ban [id] | reason as owner", async function() {
     var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858 | Because I wanted to");
@@ -698,8 +700,8 @@ test("!ban [@mention] with banMembers permission", async function() {
     var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858>");
     m.member.name = "Arceus";
     m.member.id = "239598274103738369";
-    m.mentions = [{ id: "435088936730361858" }];
     m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "banMembers");
+    m.mentions = [{ id: "435088936730361858" }];
 
     await ban.main(bot, m, args, prefix);
 
@@ -713,8 +715,8 @@ test("!ban [@mention] | reason with banMembers permission", async function() {
     var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858> | Because I wanted to");
     m.member.name = "Arceus";
     m.member.id = "239598274103738369";
-    m.mentions = [{ id: "435088936730361858" }];
     m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "banMembers");
+    m.mentions = [{ id: "435088936730361858" }];
 
     await ban.main(bot, m, args, prefix);
 
@@ -758,8 +760,8 @@ test("!ban undo [@mention] with banMembers permission", async function() {
     var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858>");
     m.member.name = "Arceus";
     m.member.id = "239598274103738369";
-    m.mentions = [{ id: "435088936730361858" }];
     m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "banMembers");
+    m.mentions = [{ id: "435088936730361858" }];
 
     await ban.main(bot, m, args, prefix);
 
@@ -773,8 +775,8 @@ test("!ban undo [@mention] | reason with banMembers permission", async function(
     var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858> | Because I wanted to");
     m.member.name = "Arceus";
     m.member.id = "239598274103738369";
-    m.mentions = [{ id: "435088936730361858" }];
     m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "banMembers");
+    m.mentions = [{ id: "435088936730361858" }];
 
     await ban.main(bot, m, args, prefix);
 
