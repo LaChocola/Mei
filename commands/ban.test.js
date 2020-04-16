@@ -146,6 +146,22 @@ test("!ban [@mention] | reason as owner", async function() {
     expect(m.guild.unbanMember).not.toHaveBeenCalled();
 });
 
+test("!ban [id] as owner with missing permissions", async function() {
+    var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858");
+    m.member.name = "Natalie";
+    m.member.id = "137269976255037440";
+    m.guild.banMember.mockImplementationOnce(async function() {
+        throw { code: 50013 };
+    });
+
+    await ban.main(bot, m, args, prefix);
+
+    expect(m.reply).toBeCalledWith("I do not have permission to ban that user. Please make sure I have the `Ban Member` permission, and that my highest role is above theirs", 5000);
+    expect(m.deleteIn).toBeCalledWith(5000);
+    expect(m.guild.banMember).toBeCalledWith("435088936730361858", 0, "Banned by: Natalie");
+    expect(m.guild.unbanMember).not.toHaveBeenCalled();
+});
+
 // Test unban variations as owner
 
 test("!ban undo [id] as owner", async function() {
@@ -201,6 +217,23 @@ test("!ban undo [@mention] | reason as owner", async function() {
     expect(m.deleteIn).toBeCalledWith(5000);
     expect(m.guild.banMember).not.toHaveBeenCalled();
     expect(m.guild.unbanMember).toBeCalledWith("435088936730361858", "Because I wanted to");
+});
+
+test("!ban undo [id] as owner with missing permissions", async function() {
+    var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858");
+    m.member.name = "Natalie";
+    m.member.id = "137269976255037440";
+    m.mentions = [{ id: "435088936730361858" }];
+    m.guild.unbanMember.mockImplementationOnce(async function() {
+        throw { code: 50013 };
+    });
+
+    await ban.main(bot, m, args, prefix);
+
+    expect(m.reply).toBeCalledWith("I do not have permission to unban that user. Please make sure I have the `Ban Member` permission", 5000);
+    expect(m.deleteIn).toBeCalledWith(5000);
+    expect(m.guild.banMember).not.toHaveBeenCalled();
+    expect(m.guild.unbanMember).toBeCalledWith("435088936730361858", "Unbanned by: Natalie");
 });
 
 // Test variations as a mod

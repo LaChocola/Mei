@@ -64,10 +64,10 @@ module.exports = {
                         else {
                             m.reply("I do not have permission to unban that user. Please make sure I have the `Ban Member` permission", 5000);
                         }
-                        return;
                     }
-
-                    m.reply("Something went wrong while trying to unban that member", 5000);
+                    else {
+                        m.reply("Something went wrong while trying to unban that member", 5000);
+                    }
                 }
             }
             else {
@@ -83,10 +83,10 @@ module.exports = {
                         else {
                             m.reply("I do not have permission to ban that user. Please make sure I have the `Ban Member` permission, and that my highest role is above theirs", 5000);
                         }
-                        return;
                     }
-
-                    m.reply("Something went wrong while trying to ban that member", 5000);
+                    else {
+                        m.reply("Something went wrong while trying to ban that member", 5000);
+                    }
                 }
             }
         }
