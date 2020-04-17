@@ -3,71 +3,6 @@
 const ban = require("./ban");
 const serversdb = require("../servers");
 
-/*
- * # Users
- * Server owner: Natalie (137269976255037440)
- * Mod: DigiDuncan (271803699095928832)
- * ModRole: Kelly (236336628828733443)
- * Chocola: Chocola (161027274764713984)
- * administrator permission: Rel (338386561572012032)
- * banMembers permission: Arceus (239598274103738369)
- * Unauthorized User: AWK (236223047093321728)
- * Target: Pete Smith (435088936730361858)
- * Second Target: Nelly (310836984388124672)
- *
- * # Roles
- * ModRole: Code Monkey (658900877956087808)
- */
-
-function buildArgs(command, args, prefix) {
-    if (!args) {
-        args = "";
-    }
-    if (!prefix) {
-        prefix = "!";
-    }
-
-    var bot = {
-        users: {
-            get: jest.fn().mockName("get").mockImplementation(function(id) {
-                if (id === "435088936730361858") {
-                    return { fullname: "Pete Smith#1234" };
-                }
-                else if (id === "310836984388124672") {
-                    return { fullname: "Nelly#5678" };
-                }
-                else {
-                    return undefined;
-                }
-            })
-        }
-    };
-
-    var m = {
-        guild: {
-            id: "161027274764713984",
-            name: "SizeDev",
-            ownerID: "137269976255037440",
-            banMember: jest.fn().mockName("banMember").mockResolvedValue(),
-            unbanMember: jest.fn().mockName("unbanMember").mockResolvedValue()
-        },
-        reply: jest.fn().mockName("reply").mockResolvedValue(),
-        member: {
-            name: "Natalie",
-            id: "137269976255037440",
-            roles: [],
-            permission: {
-                has: jest.fn().mockName("has").mockReturnValue(false)
-            }
-        },
-        deleteIn: jest.fn().mockName("deleteIn").mockResolvedValue(),
-        content: `${prefix}${command} ${args}`.trim(),
-        mentions: []
-    };
-
-    return { bot, m, args, prefix };
-}
-
 jest.mock("../servers");
 
 serversdb.load.mockResolvedValue({
@@ -85,7 +20,7 @@ serversdb.load.mockResolvedValue({
 serversdb.save.mockResolvedValue();
 
 test("!ban", async function() {
-    var { bot, m, args, prefix } = buildArgs("ban");
+    var { bot, m, args, prefix } = setupCmd("ban");
     m.member.name = "Natalie";
     m.member.id = "137269976255037440";
 
@@ -99,7 +34,7 @@ test("!ban", async function() {
 
 describe("Banning as owner", function() {
     test("!ban [id] as owner", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858");
         m.member.name = "Natalie";
         m.member.id = "137269976255037440";
 
@@ -112,7 +47,7 @@ describe("Banning as owner", function() {
     });
 
     test("!ban [id] | reason as owner", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858 | Because I wanted to");
         m.member.name = "Natalie";
         m.member.id = "137269976255037440";
 
@@ -125,7 +60,7 @@ describe("Banning as owner", function() {
     });
 
     test("!ban [@mention] as owner", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858>");
         m.member.name = "Natalie";
         m.member.id = "137269976255037440";
         m.mentions = [{ id: "435088936730361858" }];
@@ -139,7 +74,7 @@ describe("Banning as owner", function() {
     });
 
     test("!ban [@mention] | reason as owner", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858> | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858> | Because I wanted to");
         m.member.name = "Natalie";
         m.member.id = "137269976255037440";
         m.mentions = [{ id: "435088936730361858" }];
@@ -153,7 +88,7 @@ describe("Banning as owner", function() {
     });
 
     test("!ban [id] as owner with missing permissions", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858");
         m.member.name = "Natalie";
         m.member.id = "137269976255037440";
         m.guild.banMember.mockImplementationOnce(async function() {
@@ -169,7 +104,7 @@ describe("Banning as owner", function() {
     });
 
     test("!ban [id] [id] | reason as owner", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858 310836984388124672 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858 310836984388124672 | Because I wanted to");
         m.member.name = "Natalie";
         m.member.id = "137269976255037440";
 
@@ -186,7 +121,7 @@ describe("Banning as owner", function() {
 
 describe("Banning as mod", function() {
     test("!ban [id] as mod", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858");
         m.member.name = "DigiDuncan";
         m.member.id = "271803699095928832";
 
@@ -199,7 +134,7 @@ describe("Banning as mod", function() {
     });
 
     test("!ban [id] | reason as mod", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858 | Because I wanted to");
         m.member.name = "DigiDuncan";
         m.member.id = "271803699095928832";
 
@@ -212,7 +147,7 @@ describe("Banning as mod", function() {
     });
 
     test("!ban [@mention] as mod", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858>");
         m.member.name = "DigiDuncan";
         m.member.id = "271803699095928832";
         m.mentions = [{ id: "435088936730361858" }];
@@ -226,7 +161,7 @@ describe("Banning as mod", function() {
     });
 
     test("!ban [@mention] | reason as mod", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858> | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858> | Because I wanted to");
         m.member.name = "DigiDuncan";
         m.member.id = "271803699095928832";
         m.mentions = [{ id: "435088936730361858" }];
@@ -242,7 +177,7 @@ describe("Banning as mod", function() {
 
 describe("Banning as someone with a modRole", function() {
     test("!ban [id] as modRole", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858");
         m.member.name = "Kelly";
         m.member.id = "236336628828733443";
         m.member.roles = ["658900877956087808"];
@@ -256,7 +191,7 @@ describe("Banning as someone with a modRole", function() {
     });
 
     test("!ban [id] | reason as modRole", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858 | Because I wanted to");
         m.member.name = "Kelly";
         m.member.id = "236336628828733443";
         m.member.roles = ["658900877956087808"];
@@ -270,7 +205,7 @@ describe("Banning as someone with a modRole", function() {
     });
 
     test("!ban [@mention] as modRole", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858>");
         m.member.name = "Kelly";
         m.member.id = "236336628828733443";
         m.member.roles = ["658900877956087808"];
@@ -285,7 +220,7 @@ describe("Banning as someone with a modRole", function() {
     });
 
     test("!ban [@mention] | reason as modRole", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858> | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858> | Because I wanted to");
         m.member.name = "Kelly";
         m.member.id = "236336628828733443";
         m.member.roles = ["658900877956087808"];
@@ -302,7 +237,7 @@ describe("Banning as someone with a modRole", function() {
 
 describe("Banning as Chocola", function() {
     test("!ban [id] as Chocola", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858");
         m.member.name = "Chocola";
         m.member.id = "161027274764713984";
 
@@ -315,7 +250,7 @@ describe("Banning as Chocola", function() {
     });
 
     test("!ban [id] | reason as Chocola", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858 | Because I wanted to");
         m.member.name = "Chocola";
         m.member.id = "161027274764713984";
 
@@ -328,7 +263,7 @@ describe("Banning as Chocola", function() {
     });
 
     test("!ban [@mention] as Chocola", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858>");
         m.member.name = "Chocola";
         m.member.id = "161027274764713984";
         m.mentions = [{ id: "435088936730361858" }];
@@ -342,7 +277,7 @@ describe("Banning as Chocola", function() {
     });
 
     test("!ban [@mention] | reason as Chocola", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858> | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858> | Because I wanted to");
         m.member.name = "Chocola";
         m.member.id = "161027274764713984";
         m.mentions = [{ id: "435088936730361858" }];
@@ -358,7 +293,7 @@ describe("Banning as Chocola", function() {
 
 describe("Banning as someone with administrator permission", function() {
     test("!ban [id] with administrator permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858");
         m.member.name = "Rel";
         m.member.id = "338386561572012032";
         m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "administrator");
@@ -372,7 +307,7 @@ describe("Banning as someone with administrator permission", function() {
     });
 
     test("!ban [id] | reason with administrator permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858 | Because I wanted to");
         m.member.name = "Rel";
         m.member.id = "338386561572012032";
         m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "administrator");
@@ -386,7 +321,7 @@ describe("Banning as someone with administrator permission", function() {
     });
 
     test("!ban [@mention] with administrator permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858>");
         m.member.name = "Rel";
         m.member.id = "338386561572012032";
         m.mentions = [{ id: "435088936730361858" }];
@@ -401,7 +336,7 @@ describe("Banning as someone with administrator permission", function() {
     });
 
     test("!ban [@mention] | reason with administrator permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858> | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858> | Because I wanted to");
         m.member.name = "Rel";
         m.member.id = "338386561572012032";
         m.mentions = [{ id: "435088936730361858" }];
@@ -418,7 +353,7 @@ describe("Banning as someone with administrator permission", function() {
 
 describe("Banning as someone with banMembers permission", function() {
     test("!ban [id] with banMembers permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858");
         m.member.name = "Arceus";
         m.member.id = "239598274103738369";
         m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "banMembers");
@@ -432,7 +367,7 @@ describe("Banning as someone with banMembers permission", function() {
     });
 
     test("!ban [id] | reason with banMembers permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858 | Because I wanted to");
         m.member.name = "Arceus";
         m.member.id = "239598274103738369";
         m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "banMembers");
@@ -446,7 +381,7 @@ describe("Banning as someone with banMembers permission", function() {
     });
 
     test("!ban [@mention] with banMembers permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858>");
         m.member.name = "Arceus";
         m.member.id = "239598274103738369";
         m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "banMembers");
@@ -461,7 +396,7 @@ describe("Banning as someone with banMembers permission", function() {
     });
 
     test("!ban [@mention] | reason with banMembers permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858> | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858> | Because I wanted to");
         m.member.name = "Arceus";
         m.member.id = "239598274103738369";
         m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "banMembers");
@@ -478,7 +413,7 @@ describe("Banning as someone with banMembers permission", function() {
 
 describe("Banning as unauthorized user", function() {
     test("!ban [id] as unauthorized user", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858");
         m.member.name = "AWK";
         m.member.id = "236223047093321728";
 
@@ -491,7 +426,7 @@ describe("Banning as unauthorized user", function() {
     });
 
     test("!ban [id] | reason as unauthorized user", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858 | Please let me in");
+        var { bot, m, args, prefix } = setupCmd("ban", "435088936730361858 | Please let me in");
         m.member.name = "AWK";
         m.member.id = "236223047093321728";
 
@@ -504,7 +439,7 @@ describe("Banning as unauthorized user", function() {
     });
 
     test("!ban [@mention] unauthorized user", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858> | Please let me in");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858> | Please let me in");
         m.member.name = "AWK";
         m.member.id = "236223047093321728";
         m.mentions = [{ id: "435088936730361858" }];
@@ -518,7 +453,7 @@ describe("Banning as unauthorized user", function() {
     });
 
     test("!ban [@mention] | reason as unauthorized user", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "<@!435088936730361858> | Please let me in");
+        var { bot, m, args, prefix } = setupCmd("ban", "<@!435088936730361858> | Please let me in");
         m.member.name = "AWK";
         m.member.id = "236223047093321728";
         m.mentions = [{ id: "435088936730361858" }];
@@ -534,7 +469,7 @@ describe("Banning as unauthorized user", function() {
 
 describe("Unbanning as owner", function() {
     test("!ban undo [id] as owner", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858");
         m.member.name = "Natalie";
         m.member.id = "137269976255037440";
         m.mentions = [{ id: "435088936730361858" }];
@@ -548,7 +483,7 @@ describe("Unbanning as owner", function() {
     });
 
     test("!ban undo [id] | reason as owner", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858 | Because I wanted to");
         m.member.name = "Natalie";
         m.member.id = "137269976255037440";
 
@@ -561,7 +496,7 @@ describe("Unbanning as owner", function() {
     });
 
     test("!ban undo [@mention] as owner", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858>");
         m.member.name = "Natalie";
         m.member.id = "137269976255037440";
         m.mentions = [{ id: "435088936730361858" }];
@@ -575,7 +510,7 @@ describe("Unbanning as owner", function() {
     });
 
     test("!ban undo [@mention] | reason as owner", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858> | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858> | Because I wanted to");
         m.member.name = "Natalie";
         m.member.id = "137269976255037440";
         m.mentions = [{ id: "435088936730361858" }];
@@ -589,7 +524,7 @@ describe("Unbanning as owner", function() {
     });
 
     test("!ban undo [id] as owner with missing permissions", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858");
         m.member.name = "Natalie";
         m.member.id = "137269976255037440";
         m.mentions = [{ id: "435088936730361858" }];
@@ -606,7 +541,7 @@ describe("Unbanning as owner", function() {
     });
 
     test("!ban undo [id] [id] | reason as owner", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858 310836984388124672 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858 310836984388124672 | Because I wanted to");
         m.member.name = "Natalie";
         m.member.id = "137269976255037440";
 
@@ -623,7 +558,7 @@ describe("Unbanning as owner", function() {
 
 describe("Unbanning as mod", function() {
     test("!ban undo [id] as mod", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858");
         m.member.name = "DigiDuncan";
         m.member.id = "271803699095928832";
 
@@ -636,7 +571,7 @@ describe("Unbanning as mod", function() {
     });
 
     test("!ban undo [id] | reason as mod", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858 | Because I wanted to");
         m.member.name = "DigiDuncan";
         m.member.id = "271803699095928832";
 
@@ -649,7 +584,7 @@ describe("Unbanning as mod", function() {
     });
 
     test("!ban undo [@mention] as mod", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858>");
         m.member.name = "DigiDuncan";
         m.member.id = "271803699095928832";
         m.mentions = [{ id: "435088936730361858" }];
@@ -663,7 +598,7 @@ describe("Unbanning as mod", function() {
     });
 
     test("!ban undo [@mention] | reason as mod", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858> | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858> | Because I wanted to");
         m.member.name = "DigiDuncan";
         m.member.id = "271803699095928832";
         m.mentions = [{ id: "435088936730361858" }];
@@ -679,7 +614,7 @@ describe("Unbanning as mod", function() {
 
 describe("Unbanning as someone with a modRole", function() {
     test("!ban undo [id] as modRole", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858");
         m.member.name = "Kelly";
         m.member.id = "236336628828733443";
         m.member.roles = ["658900877956087808"];
@@ -693,7 +628,7 @@ describe("Unbanning as someone with a modRole", function() {
     });
 
     test("!ban undo [id] | reason as modRole", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858 | Because I wanted to");
         m.member.name = "Kelly";
         m.member.id = "236336628828733443";
         m.member.roles = ["658900877956087808"];
@@ -707,7 +642,7 @@ describe("Unbanning as someone with a modRole", function() {
     });
 
     test("!ban undo [@mention] as modRole", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858>");
         m.member.name = "Kelly";
         m.member.id = "236336628828733443";
         m.member.roles = ["658900877956087808"];
@@ -722,7 +657,7 @@ describe("Unbanning as someone with a modRole", function() {
     });
 
     test("!ban undo [@mention] | reason as modRole", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858> | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858> | Because I wanted to");
         m.member.name = "Kelly";
         m.member.id = "236336628828733443";
         m.member.roles = ["658900877956087808"];
@@ -739,7 +674,7 @@ describe("Unbanning as someone with a modRole", function() {
 
 describe("Unbanning as Chocola", function() {
     test("!ban undo [id] as Chocola", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858");
         m.member.name = "Chocola";
         m.member.id = "161027274764713984";
 
@@ -752,7 +687,7 @@ describe("Unbanning as Chocola", function() {
     });
 
     test("!ban undo [id] | reason as Chocola", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858 | Because I wanted to");
         m.member.name = "Chocola";
         m.member.id = "161027274764713984";
 
@@ -765,7 +700,7 @@ describe("Unbanning as Chocola", function() {
     });
 
     test("!ban undo [@mention] as Chocola", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858>");
         m.member.name = "Chocola";
         m.member.id = "161027274764713984";
         m.mentions = [{ id: "435088936730361858" }];
@@ -779,7 +714,7 @@ describe("Unbanning as Chocola", function() {
     });
 
     test("!ban undo [@mention] | reason as Chocola", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858> | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858> | Because I wanted to");
         m.member.name = "Chocola";
         m.member.id = "161027274764713984";
         m.mentions = [{ id: "435088936730361858" }];
@@ -795,7 +730,7 @@ describe("Unbanning as Chocola", function() {
 
 describe("Unbanning as someone with administrator permission", function() {
     test("!ban undo [id] with administrator permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858");
         m.member.name = "Rel";
         m.member.id = "338386561572012032";
         m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "administrator");
@@ -809,7 +744,7 @@ describe("Unbanning as someone with administrator permission", function() {
     });
 
     test("!ban undo [id] | reason with administrator permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858 | Because I wanted to");
         m.member.name = "Rel";
         m.member.id = "338386561572012032";
         m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "administrator");
@@ -823,7 +758,7 @@ describe("Unbanning as someone with administrator permission", function() {
     });
 
     test("!ban undo [@mention] with administrator permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858>");
         m.member.name = "Rel";
         m.member.id = "338386561572012032";
         m.mentions = [{ id: "435088936730361858" }];
@@ -838,7 +773,7 @@ describe("Unbanning as someone with administrator permission", function() {
     });
 
     test("!ban undo [@mention] | reason with administrator permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858> | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858> | Because I wanted to");
         m.member.name = "Rel";
         m.member.id = "338386561572012032";
         m.mentions = [{ id: "435088936730361858" }];
@@ -854,7 +789,7 @@ describe("Unbanning as someone with administrator permission", function() {
 
 describe("Unbanning as someone with banMembers permission", function() {
     test("!ban undo [id] with banMembers permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858");
         m.member.name = "Arceus";
         m.member.id = "239598274103738369";
         m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "banMembers");
@@ -868,7 +803,7 @@ describe("Unbanning as someone with banMembers permission", function() {
     });
 
     test("!ban undo [id] | reason with banMembers permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858 | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858 | Because I wanted to");
         m.member.name = "Arceus";
         m.member.id = "239598274103738369";
         m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "banMembers");
@@ -882,7 +817,7 @@ describe("Unbanning as someone with banMembers permission", function() {
     });
 
     test("!ban undo [@mention] with banMembers permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858>");
         m.member.name = "Arceus";
         m.member.id = "239598274103738369";
         m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "banMembers");
@@ -897,7 +832,7 @@ describe("Unbanning as someone with banMembers permission", function() {
     });
 
     test("!ban undo [@mention] | reason with banMembers permission", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858> | Because I wanted to");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858> | Because I wanted to");
         m.member.name = "Arceus";
         m.member.id = "239598274103738369";
         m.member.permission.has = jest.fn().mockName("has").mockImplementation(perm => perm === "banMembers");
@@ -914,7 +849,7 @@ describe("Unbanning as someone with banMembers permission", function() {
 
 describe("Unbanning as unauthorized user", function() {
     test("!ban undo [id] as unauthorized user", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858");
         m.member.name = "AWK";
         m.member.id = "236223047093321728";
 
@@ -927,7 +862,7 @@ describe("Unbanning as unauthorized user", function() {
     });
 
     test("!ban undo [id] | reason as unauthorized user", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858 | Please let me in");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo 435088936730361858 | Please let me in");
         m.member.name = "AWK";
         m.member.id = "236223047093321728";
 
@@ -940,7 +875,7 @@ describe("Unbanning as unauthorized user", function() {
     });
 
     test("!ban undo [@mention] unauthorized user", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858>");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858>");
         m.member.name = "AWK";
         m.member.id = "236223047093321728";
         m.mentions = [{ id: "435088936730361858" }];
@@ -954,7 +889,7 @@ describe("Unbanning as unauthorized user", function() {
     });
 
     test("!ban undo [@mention] | reason as unauthorized user", async function() {
-        var { bot, m, args, prefix } = buildArgs("ban", "undo <@!435088936730361858> | Please let me in");
+        var { bot, m, args, prefix } = setupCmd("ban", "undo <@!435088936730361858> | Please let me in");
         m.member.name = "AWK";
         m.member.id = "236223047093321728";
 

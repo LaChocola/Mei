@@ -70,5 +70,8 @@
     "Node.js"
   ],
   "author": "Chocola",
-  "license": "MIT"
+  "license": "MIT",
+  "jest": {
+    "setupFilesAfterEnv": ["./__fixtures__/commands.js"]
+  }
 }

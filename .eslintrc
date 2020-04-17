@@ -112,12 +112,22 @@
     },
     "overrides": [
         {
-            "files": ["**/*.test.js"],
-            "plugins": ["jest"],
+            "files": [
+                "**/*.test.js",
+                "__fixtures__/*.js"
+            ],
+            "plugins": [
+                "jest"
+            ],
             "env": {
                 "jest/globals": true
             },
-            "extends": ["plugin:jest/recommended"]
+            "extends": [
+                "plugin:jest/recommended"
+            ],
+            "globals": {
+                "setupCmd": true
+            }
         }
     ]
 }
