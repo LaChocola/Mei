@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var names = m.cleanContent.replace(new RegExp("^[ " + escapeStringRegexp(prefix) + "ship\\t]+[^a-zA-Z]+|[" + escapeStringRegexp(prefix) + "ship \\t]+[^a-zA-Z]$|" + escapeStringRegexp(prefix) + "ship", "i"), "").split(" | ");
         if (names[0] !== undefined) {
             if (names[0].startsWith("@")) {
@@ -58,26 +58,26 @@ module.exports = {
         }
 
         if (m.mentions.length !== 2) { // If there are not 2 people mentioned,
-            Bot.createMessage(m.channel.id, "Ship someone together~\n\nUse `" + prefix + "ship <@user1> <@user2>` or `" + prefix + "ship username1 | username2`");
+            bot.createMessage(m.channel.id, "Ship someone together~\n\nUse `" + prefix + "ship <@user1> <@user2>` or `" + prefix + "ship username1 | username2`");
             return;
         }
 
         if (m.mentions[0].avatar == null) { // If there is no avatar
-            Bot.createMessage(m.channel.id, `Lovely shi... Where's your avatar? You should add one ${m.mentions[0].username} ;-; *winks*\n~~no avatar/profile pic was detected~~`);
+            bot.createMessage(m.channel.id, `Lovely shi... Where's your avatar? You should add one ${m.mentions[0].username} ;-; *winks*\n~~no avatar/profile pic was detected~~`);
             return;
         }
 
         if (m.mentions[1].avatar == null) { // If there is no avatar
-            Bot.createMessage(m.channel.id, `Lovely shi... Where's your avatar? You should add one ${m.mentions[1].username} *winks*\n~~no avatar/profile pic was detected~~`);
+            bot.createMessage(m.channel.id, `Lovely shi... Where's your avatar? You should add one ${m.mentions[1].username} *winks*\n~~no avatar/profile pic was detected~~`);
             return;
         }
 
-        Bot.sendChannelTyping(m.channel.id).then(async function() {
+        bot.sendChannelTyping(m.channel.id).then(async function() {
             try {
                 var firstName = m.channel.guild.members.get(m.mentions[0].id).nick || m.mentions[0].username;
                 var lastName = m.channel.guild.members.get(m.mentions[1].id).nick || m.mentions[1].username;
                 if (firstName === lastName) {
-                    Bot.createMessage(m.channel.id, "Lovely shi...Uhm, can you two stop being weird?\n~~both names are the same~~");
+                    bot.createMessage(m.channel.id, "Lovely shi...Uhm, can you two stop being weird?\n~~both names are the same~~");
                     return;
                 }
                 var firstPart = firstName.substring(0, firstName.length / 2);
@@ -100,20 +100,20 @@ module.exports = {
                 user2.resize(128, 128);
                 bg.resize(384, 128).composite(user1, 0, 0).composite(user2, 256, 0).getBuffer(Jimp.AUTO, function(err, buffer) {
                     if (random && !random1) {
-                        Bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; I will find someone for you~ ~~Only one user was detected. Auto matching with a random online member~~\nIntroducing: **${firstPart}${lastPart}**`, {
+                        bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; I will find someone for you~ ~~Only one user was detected. Auto matching with a random online member~~\nIntroducing: **${firstPart}${lastPart}**`, {
                             "file": buffer,
                             "name": file
                         });
                         return;
                     }
                     if (random && random1) {
-                        Bot.createMessage(m.channel.id, `Lovely shi... No one? What were you expecting ${m.author.username}? :thinking: I will find some people to match~ ~~No users were detected. Auto matching 2 random online members~~\nIntroducing: **${firstPart}${lastPart}**`, {
+                        bot.createMessage(m.channel.id, `Lovely shi... No one? What were you expecting ${m.author.username}? :thinking: I will find some people to match~ ~~No users were detected. Auto matching 2 random online members~~\nIntroducing: **${firstPart}${lastPart}**`, {
                             "file": buffer,
                             "name": file
                         });
                         return;
                     }
-                    Bot.createMessage(m.channel.id, `Lovely shipping~\nIntroducing: **${firstPart}${lastPart}**`, {
+                    bot.createMessage(m.channel.id, `Lovely shipping~\nIntroducing: **${firstPart}${lastPart}**`, {
                         "file": buffer,
                         "name": file
                     });
@@ -121,7 +121,7 @@ module.exports = {
             }
             catch (error) {
                 console.log(error);
-                return Bot.createMessage(m.channel.id, "Something went wrong...");
+                return bot.createMessage(m.channel.id, "Something went wrong...");
             }
         });
     },

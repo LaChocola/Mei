@@ -4,16 +4,16 @@ const misc = require("../misc");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         if (m.mentions.length > 2) {
-            Bot.createMessage(m.channel.id, "That's too many pats to give :angry:");
+            bot.createMessage(m.channel.id, "That's too many pats to give :angry:");
             return;
         }
-        await Bot.sendChannelTyping(m.channel.id);
+        await bot.sendChannelTyping(m.channel.id);
 
         // If the user mentions only themself
         if (m.mentions.length === 1 && m.author.id === m.mentions[0].id) {
-            Bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; *hugs you*`);
+            bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; *hugs you*`);
             return;
         }
 
@@ -39,7 +39,7 @@ module.exports = {
             title = pet + ", You got a pat from " + authorName + "~";
         }
 
-        Bot.createMessage(m.channel.id, {
+        bot.createMessage(m.channel.id, {
             embed: {
                 title: title,
                 color: 0xA260F6,

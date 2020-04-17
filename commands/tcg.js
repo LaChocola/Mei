@@ -6,7 +6,7 @@ const misc = require("../misc");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var cards = await pokemon.card.where({ supertype: "pokemon" });
         var chosen = misc.choose(cards);
 
@@ -18,7 +18,7 @@ module.exports = {
         var weaknesses = weakness && (weakness.type + ": " + weakness.value) || "None";
         var resistances = resistance && (resistance.type + ": " + resistance.value) || "None";
 
-        Bot.createMessage(m.channel.id, {
+        bot.createMessage(m.channel.id, {
             embed: {
                 title: chosen.name,
                 color: 0xA260F6,

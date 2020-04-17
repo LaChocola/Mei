@@ -2,7 +2,7 @@
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         // Why do we override the prefix???
         // prefix = "!";
         args = m.content.slice(prefix.length).split(" ");
@@ -17,7 +17,7 @@ module.exports = {
             message = "**Embedded Text:**\n" + message;
         }
 
-        Bot.createMessage(m.channel.id, {
+        bot.createMessage(m.channel.id, {
             embed: {
                 color: 0xA260F6,
                 description: message

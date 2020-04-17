@@ -45,7 +45,7 @@ async function searchExHentai(searchString) {
     j.setCookie(request.cookie("ipb_pass_hash=" + conf.tokens.exhentai.hash), searchUrl);
     j.setCookie(request.cookie("sl=dm_1"), searchUrl);
 
-    //await Bot.sendChannelTyping(m.channel.id);
+    //await bot.sendChannelTyping(m.channel.id);
 
     try {
         var body = await request({
@@ -91,7 +91,7 @@ async function checkEHentai(url) {
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
 
         var cmdString = `${prefix}ex`;
         var cleanArgs = m.cleanContent.slice(cmdString.length).trim();
@@ -103,14 +103,14 @@ module.exports = {
         }
         catch(err) {
             if (err instanceof SiteUnavailableError) {
-                Bot.createMessage(m.channel.id, "Cannot access sad panda 🐼");
+                bot.createMessage(m.channel.id, "Cannot access sad panda 🐼");
                 return;
             }
             throw err;
         }
 
         if (results.length === 0) {
-            Bot.createMessage(m.channel.id, "No results found :(");
+            bot.createMessage(m.channel.id, "No results found :(");
             return;
         }
 
@@ -129,7 +129,7 @@ module.exports = {
         }
 
         var name = m.author.nick || m.author.username;
-        await Bot.createMessage(m.channel.id, {
+        await bot.createMessage(m.channel.id, {
             "content": "Results on Exhentai for **" + searchString + "**",
             "embed": {
                 "color": 0xA260F6,

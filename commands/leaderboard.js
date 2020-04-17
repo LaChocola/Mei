@@ -43,7 +43,7 @@ function getLeaderboard(m, sorted, users, userCount, title) {
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var data = await peopledb.load();
 
         function rank(obj) {
@@ -64,13 +64,13 @@ module.exports = {
 
         var embed;
         if (args.toLowerCase().includes("global")) {
-            embed = getLeaderboard(m, sorted, Bot.users, 26, "Global");
+            embed = getLeaderboard(m, sorted, bot.users, 26, "Global");
         }
         else {
             embed = getLeaderboard(m, sorted, m.channel.guild.members, 11, "Guild");
         }
 
-        Bot.createMessage(m.channel.id, embed);
+        bot.createMessage(m.channel.id, embed);
 
     },
     help: "Shows hoard leaderboards"

@@ -59,9 +59,9 @@ async function searchGoogleScraper(args) {
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         args = m.cleanContent.replace(`${prefix}search `, "").trim();
-        var message = await Bot.createMessage(m.channel.id, "`Searching...`");
+        var message = await bot.createMessage(m.channel.id, "`Searching...`");
 
         try {
             try {

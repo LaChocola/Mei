@@ -5,7 +5,7 @@ const misc = require("../misc");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var guildsdata = await serversdb.load();
 
         var argsArray = args.split(" ").filter(a => a);
@@ -49,7 +49,7 @@ module.exports = {
         var modName = m.member.name;
 
         for (var id of idsToBan) {
-            var userToBan = Bot.users.get(id) || { fullname: "Unknown User" };
+            var userToBan = bot.users.get(id) || { fullname: "Unknown User" };
 
             if (undoArg) {
                 try {

@@ -9,7 +9,7 @@ const ids = require("../ids");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var people = await peopledb.load();
 
         function isNumeric(num) {
@@ -20,7 +20,7 @@ module.exports = {
         }
         var name = m.author.nick || m.author.username;
         if (m.content.toLowerCase() === `${prefix}booru list`) {
-            Bot.createMessage(m.channel.id, {
+            bot.createMessage(m.channel.id, {
                 content: "",
                 embed: {
                     color: 0xA260F6,
@@ -99,10 +99,10 @@ module.exports = {
             }
         });
         if (limit !== null && (limit < 1 || limit > 10)) {
-            Bot.createMessage(m.channel.id, "Please provide a limit between 1 and 10.").then((msg) => {
+            bot.createMessage(m.channel.id, "Please provide a limit between 1 and 10.").then((msg) => {
                 return setTimeout(function() {
-                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                 }, 10000);
             });
             return;
@@ -111,7 +111,7 @@ module.exports = {
         site = site || "giantessbooru.com";
         if (tags.length < 1) {
             tags.push("giantess");
-            Bot.createMessage(m.channel.id, `No search tags were added. Defaulting to search for \`giantess\` on site: \`${site}\``);
+            bot.createMessage(m.channel.id, `No search tags were added. Defaulting to search for \`giantess\` on site: \`${site}\``);
         }
         var cleanTags = tags.join(", ");
 
@@ -1303,7 +1303,7 @@ module.exports = {
                 }
                 const maths = Math.floor(Math.random() * link_array.length);
                 if (link_array.length === 0) {
-                    Bot.createMessage(m.channel.id, "No image found for: **" + tags.join(", ") + "**");
+                    bot.createMessage(m.channel.id, "No image found for: **" + tags.join(", ") + "**");
                     return;
                 }
                 const number = maths + 1;
@@ -1327,7 +1327,7 @@ module.exports = {
                         }
                     }
                 };
-                Bot.createMessage(m.channel.id, data);
+                bot.createMessage(m.channel.id, data);
                 return;
             });
             return;
@@ -1335,14 +1335,14 @@ module.exports = {
 
         if (site === "danbooru" || site === "dan" || site === "db") {
             if (tags.length > 1) {
-                Bot.createMessage(m.channel.id, "Danbooru doesn't support searching with multiple tags this way. Only the first tag was used");
+                bot.createMessage(m.channel.id, "Danbooru doesn't support searching with multiple tags this way. Only the first tag was used");
             }
             booru.search(site, [tags[0]], { limit, random: true }).then(function(images) {
                 if (images.length === 0) {
-                    Bot.createMessage(m.channel.id, "No images were found on `" + site + "` for: **" + [tags[0]].join(", ") + "**").then((msg) => {
+                    bot.createMessage(m.channel.id, "No images were found on `" + site + "` for: **" + [tags[0]].join(", ") + "**").then((msg) => {
                         return setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 180000);
                     });
                     return;
@@ -1372,23 +1372,23 @@ module.exports = {
                     if (i === 0) {
                         data.content = "Results on **" + site + "**";
                     }
-                    Bot.createMessage(m.channel.id, data);
+                    bot.createMessage(m.channel.id, data);
                 });
             })
                 .catch(err => {
                     if (err.name === "BooruError") {
                         // It"s a custom error thrown by the package
                         if (err.message === "You didn\"t give any images") {
-                            Bot.createMessage(m.channel.id, "No images were found on `" + site + "` for: " + tags[0]);
+                            bot.createMessage(m.channel.id, "No images were found on `" + site + "` for: " + tags[0]);
                             return;
                         }
                         console.log(err.message);
-                        Bot.createMessage(m.channel.id, err.message);
+                        bot.createMessage(m.channel.id, err.message);
                     }
                     else {
                         // This means I messed up. Whoops.
                         console.log(err);
-                        Bot.createMessage(m.channel.id, "An unknown error has occured");
+                        bot.createMessage(m.channel.id, "An unknown error has occured");
                     }
                 });
             return;
@@ -1397,10 +1397,10 @@ module.exports = {
         booru.search(site, tags.join(" | ").split(" | "), { limit, random: true })
             .then(function(images) {
                 if (images.length === 0) {
-                    Bot.createMessage(m.channel.id, "No images were found on `" + site + "` for: **" + tags.join(", ") + "**").then((msg) => {
+                    bot.createMessage(m.channel.id, "No images were found on `" + site + "` for: **" + tags.join(", ") + "**").then((msg) => {
                         return setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 180000);
                     });
                     return;
@@ -1430,26 +1430,26 @@ module.exports = {
                     if (i === 0) {
                         data.content = "Results on **" + site + "**";
                     }
-                    Bot.createMessage(m.channel.id, data);
+                    bot.createMessage(m.channel.id, data);
                 });
             })
             .catch(err => {
                 if (err.name === "BooruError") {
                     // It"s a custom error thrown by the package
                     if (err.message === "You didn\"t give any images") {
-                        Bot.createMessage(m.channel.id, "No images were found on `" + site + "` for: **" + tags.join(", ") + "**");
+                        bot.createMessage(m.channel.id, "No images were found on `" + site + "` for: **" + tags.join(", ") + "**");
                         return;
                     }
                     console.log(err.message);
-                    Bot.createMessage(m.channel.id, err.message);
+                    bot.createMessage(m.channel.id, err.message);
                 }
                 else {
                     // This means I messed up. Whoops.
                     console.log(err);
-                    Bot.createMessage(m.channel.id, "An unknown error has occured, please try again later").then((msg) => {
+                    bot.createMessage(m.channel.id, "An unknown error has occured, please try again later").then((msg) => {
                         return setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 180000);
                     });
                 }

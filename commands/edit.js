@@ -6,7 +6,7 @@ const misc = require("../misc");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var guildsdata = await serversdb.load();
 
         var lowerargs = args.toLowerCase();
@@ -72,18 +72,18 @@ module.exports = {
                 if (!guildsdata[guild.id].hoards) {
                     guildsdata[guild.id].hoards = true;
                     await serversdb.save(guildsdata);
-                    Bot.createMessage(m.channel.id, "Hoards enabled for all reactions").then(function(msg) {
+                    bot.createMessage(m.channel.id, "Hoards enabled for all reactions").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
                 else if (guildsdata[guild.id].hoards) {
-                    Bot.createMessage(m.channel.id, "Hoards have already been enabled in this server").then(function(msg) {
+                    bot.createMessage(m.channel.id, "Hoards have already been enabled in this server").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -91,10 +91,10 @@ module.exports = {
             else {
                 guildsdata[guild.id].hoards = false;
                 await serversdb.save(guildsdata);
-                Bot.createMessage(m.channel.id, "Hoards set to :heart_eyes: only").then(function(msg) {
+                bot.createMessage(m.channel.id, "Hoards set to :heart_eyes: only").then(function(msg) {
                     setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
                 });
             }
@@ -105,31 +105,31 @@ module.exports = {
                     if (guildsdata[guild.id].notifications.banLog) {
                         delete guildsdata[guild.id].notifications.banLog;
                         await serversdb.save(guildsdata);
-                        Bot.createMessage(m.channel.id, "Ban Logs disabled").then(function(msg) {
+                        bot.createMessage(m.channel.id, "Ban Logs disabled").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                     }
                     else {
-                        Bot.createMessage(m.channel.id, "No ban log is currently set, I can't disable what isn't there.").then(function(msg) {
+                        bot.createMessage(m.channel.id, "No ban log is currently set, I can't disable what isn't there.").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                     }
                 }
                 else if (lowerargs.includes("enable")) {
                     if (!m.channelMentions[0]) {
-                        Bot.createMessage(m.channel.id, "Please mention which channel you want the ban log to appear in");
+                        bot.createMessage(m.channel.id, "Please mention which channel you want the ban log to appear in");
                         return;
                     }
 
-                    const channel = Bot.getChannel(m.channelMentions[0]);
-                    if (channel.permissionsOf(Bot.user.id).json.sendMessages !== true) {
-                        Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
+                    const channel = bot.getChannel(m.channelMentions[0]);
+                    if (channel.permissionsOf(bot.user.id).json.sendMessages !== true) {
+                        bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
                     }
 
@@ -138,21 +138,21 @@ module.exports = {
                     }
                     guildsdata[guild.id].notifications.banLog = channel.id;
                     await serversdb.save(guildsdata);
-                    Bot.createMessage(m.channel.id, "Added Ban Log to channel: " + channel.mention).then(function(msg) {
+                    bot.createMessage(m.channel.id, "Added Ban Log to channel: " + channel.mention).then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
                 else if (guildsdata[guild.id].notifications.banLog) {
-                    Bot.createMessage(m.channel.id, `The current ban log is in:\n<#${guildsdata[guild.id].notifications.banLog}>`);
+                    bot.createMessage(m.channel.id, `The current ban log is in:\n<#${guildsdata[guild.id].notifications.banLog}>`);
                 }
                 else {
-                    Bot.createMessage(m.channel.id, "No ban log channel has been set yet. Use `" + prefix + "edit notifications banlog enable #channel` to add logs to that channel").then(function(msg) {
+                    bot.createMessage(m.channel.id, "No ban log channel has been set yet. Use `" + prefix + "edit notifications banlog enable #channel` to add logs to that channel").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -161,32 +161,32 @@ module.exports = {
                 if (lowerargs.includes("disable")) {
                     if (guildsdata[guild.id].notifications.updates) {
                         delete guildsdata[guild.id].notifications.updates;
-                        Bot.createMessage(m.channel.id, "Update Messages disabled").then(function(msg) {
+                        bot.createMessage(m.channel.id, "Update Messages disabled").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                         await serversdb.save(guildsdata);
                     }
                     else {
-                        Bot.createMessage(m.channel.id, "Update messages are not currently enabled, I can't disable what isn't there.").then(function(msg) {
+                        bot.createMessage(m.channel.id, "Update messages are not currently enabled, I can't disable what isn't there.").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                     }
                 }
                 else if (lowerargs.includes("enable")) {
                     if (!m.channelMentions[0]) {
-                        Bot.createMessage(m.channel.id, "Please mention which channel you want the update messages to appear in");
+                        bot.createMessage(m.channel.id, "Please mention which channel you want the update messages to appear in");
                         return;
                     }
 
-                    const channel = Bot.getChannel(m.channelMentions[0]);
-                    if (channel.permissionsOf(Bot.user.id).json.sendMessages !== true) {
-                        Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
+                    const channel = bot.getChannel(m.channelMentions[0]);
+                    if (channel.permissionsOf(bot.user.id).json.sendMessages !== true) {
+                        bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
                     }
 
@@ -195,21 +195,21 @@ module.exports = {
                     }
                     guildsdata[guild.id].notifications.updates = channel.id;
                     await serversdb.save(guildsdata);
-                    Bot.createMessage(m.channel.id, "Added update messages to channel: " + channel.mention).then(function(msg) {
+                    bot.createMessage(m.channel.id, "Added update messages to channel: " + channel.mention).then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
                 else if (guildsdata[guild.id].notifications.updates) {
-                    Bot.createMessage(m.channel.id, `The current update messages are set to go in:\n<#${guildsdata[guild.id].notifications.updates}>`);
+                    bot.createMessage(m.channel.id, `The current update messages are set to go in:\n<#${guildsdata[guild.id].notifications.updates}>`);
                 }
                 else {
-                    Bot.createMessage(m.channel.id, "No update message channel has been set yet. Use `" + prefix + "edit notifications updates enable <@channel>` to add update messages to that channel").then(function(msg) {
+                    bot.createMessage(m.channel.id, "No update message channel has been set yet. Use `" + prefix + "edit notifications updates enable <@channel>` to add update messages to that channel").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -219,18 +219,18 @@ module.exports = {
                     if (guildsdata[guild.id].notifications.welcome) {
                         delete guildsdata[guild.id].notifications.welcome;
                         await serversdb.save(guildsdata);
-                        Bot.createMessage(m.channel.id, "Welcome message removed").then(function(msg) {
+                        bot.createMessage(m.channel.id, "Welcome message removed").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                     }
                     else {
-                        Bot.createMessage(m.channel.id, "No welcome message was found, I can't remove what isn't there.").then(function(msg) {
+                        bot.createMessage(m.channel.id, "No welcome message was found, I can't remove what isn't there.").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                     }
@@ -241,14 +241,14 @@ module.exports = {
                     }
 
                     if (!m.channelMentions[0]) {
-                        Bot.createMessage(m.channel.id, "Please mention which channel you want the welcome message to appear in, then type the welcome message");
+                        bot.createMessage(m.channel.id, "Please mention which channel you want the welcome message to appear in, then type the welcome message");
                         return;
                     }
 
                     const channelID = m.channelMentions[0];
                     const channel = m.channel.guild.channels.get(channelID);
-                    if (channel.permissionsOf(Bot.user.id).json.sendMessages !== true) {
-                        Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
+                    if (channel.permissionsOf(bot.user.id).json.sendMessages !== true) {
+                        bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
                     }
 
@@ -257,19 +257,19 @@ module.exports = {
                         message = message.trim();
                     }
                     if (message.length < 1) {
-                        Bot.createMessage(m.channel.id, `Please type a welcome message to be added to ${channel.mention} at the end of this command`).then(function(msg) {
+                        bot.createMessage(m.channel.id, `Please type a welcome message to be added to ${channel.mention} at the end of this command`).then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 10000);
                         });
                         return;
                     }
 
-                    Bot.createMessage(m.channel.id, "Adding Welcome message: \"" + message + "\"\nto channel: " + channel.mention).then(function(msg) {
+                    bot.createMessage(m.channel.id, "Adding Welcome message: \"" + message + "\"\nto channel: " + channel.mention).then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                     guildsdata[guild.id].notifications.welcome = {};
@@ -278,13 +278,13 @@ module.exports = {
                 }
                 else if (guildsdata[guild.id].notifications.welcome) {
                     const msg = Object.values(guildsdata[guild.id].notifications.welcome)[0];
-                    Bot.createMessage(m.channel.id, "The current welcome message is set as:\n\n" + msg);
+                    bot.createMessage(m.channel.id, "The current welcome message is set as:\n\n" + msg);
                 }
                 else {
-                    Bot.createMessage(m.channel.id, "No welcome message has been set yet.").then(function(msg) {
+                    bot.createMessage(m.channel.id, "No welcome message has been set yet.").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -293,19 +293,19 @@ module.exports = {
                 if (lowerargs.includes("remove")) {
                     if (guildsdata[guild.id].notifications.welcome) {
                         delete guildsdata[guild.id].notifications.leave;
-                        Bot.createMessage(m.channel.id, "Leave message removed").then(function(msg) {
+                        bot.createMessage(m.channel.id, "Leave message removed").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                         await serversdb.save(guildsdata);
                     }
                     else {
-                        Bot.createMessage(m.channel.id, "No leave message was found, I can't remove what isn't there.").then(function(msg) {
+                        bot.createMessage(m.channel.id, "No leave message was found, I can't remove what isn't there.").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                     }
@@ -316,14 +316,14 @@ module.exports = {
                     }
 
                     if (!m.channelMentions[0]) {
-                        Bot.createMessage(m.channel.id, "Please mention which channel you want the leave message to appear in, then type the welcome message");
+                        bot.createMessage(m.channel.id, "Please mention which channel you want the leave message to appear in, then type the welcome message");
                         return;
                     }
 
                     const channelID = m.channelMentions[0];
                     const channel = m.channel.guild.channels.get(channelID);
-                    if (channel.permissionsOf(Bot.user.id).json.sendMessages !== true) {
-                        Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
+                    if (channel.permissionsOf(bot.user.id).json.sendMessages !== true) {
+                        bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                         return;
                     }
 
@@ -332,17 +332,17 @@ module.exports = {
                         message = message.trim();
                     }
                     if (message.length === 0) {
-                        Bot.createMessage(m.channel.id, `Please type a leave message to be added to ${channel.mention}`).then(function(msg) {
+                        bot.createMessage(m.channel.id, `Please type a leave message to be added to ${channel.mention}`).then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                     }
-                    Bot.createMessage(m.channel.id, "Adding Leave message: \"" + message + "\"\nto channel: " + channel.mention).then(function(msg) {
+                    bot.createMessage(m.channel.id, "Adding Leave message: \"" + message + "\"\nto channel: " + channel.mention).then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                     guildsdata[guild.id].notifications.leave = {};
@@ -351,13 +351,13 @@ module.exports = {
                 }
                 else if (guildsdata[guild.id].notifications.leave) {
                     const msg = Object.values(guildsdata[guild.id].notifications.welcome)[0];
-                    Bot.createMessage(m.channel.id, "The current leave message is set as:\n\n" + msg);
+                    bot.createMessage(m.channel.id, "The current leave message is set as:\n\n" + msg);
                 }
                 else {
-                    Bot.createMessage(m.channel.id, "No leave message has been set yet.").then(function(msg) {
+                    bot.createMessage(m.channel.id, "No leave message has been set yet.").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -381,43 +381,43 @@ module.exports = {
                 if (guildsdata[guild.id].art) {
                     delete guildsdata[guild.id].art;
                     await serversdb.save(guildsdata);
-                    Bot.createMessage(m.channel.id, "Art channel removed").then(function(msg) {
+                    bot.createMessage(m.channel.id, "Art channel removed").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
                 else {
-                    Bot.createMessage(m.channel.id, "No art channel was found, I can't remove what isn't there.").then(function(msg) {
+                    bot.createMessage(m.channel.id, "No art channel was found, I can't remove what isn't there.").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
             }
             else if (lowerargs.includes("add")) {
                 const channelID = m.channelMentions[0] || m.content.replace(prefix + "edit ", "").replace("art", "").replace("add", "").replace("<#", "").replace(">", "").trim();
-                const channel = Bot.getChannel(channelID);
+                const channel = bot.getChannel(channelID);
                 if (channel === undefined || !channel.id) {
-                    Bot.createMessage(m.channel.id, "I couldn't find the channel you were looking to add, please make sure it is somewhere I can see, and try again.").then(function(msg) {
+                    bot.createMessage(m.channel.id, "I couldn't find the channel you were looking to add, please make sure it is somewhere I can see, and try again.").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
-                else if (channel.permissionsOf(Bot.user.id).json.sendMessages !== true) {
-                    Bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
+                else if (channel.permissionsOf(bot.user.id).json.sendMessages !== true) {
+                    bot.createMessage(m.channel.id, "I need permission to send messages and read messages in that channel. Please modify my permissions and try again.");
                 }
                 else {
                     guildsdata[guild.id].art = channel.id;
                     await serversdb.save(guildsdata);
-                    Bot.createMessage(m.channel.id, "Setting art channel to: " + channel.mention).then(function(msg) {
+                    bot.createMessage(m.channel.id, "Setting art channel to: " + channel.mention).then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -425,18 +425,18 @@ module.exports = {
             else {
                 if (guildsdata[guild.id].art) {
                     const channel = guildsdata[guild.id].art;
-                    Bot.createMessage(m.channel.id, `The current art channel is set to: <#${channel}>`).then(function(msg) {
+                    bot.createMessage(m.channel.id, `The current art channel is set to: <#${channel}>`).then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
                 else {
-                    Bot.createMessage(m.channel.id, "No art channel has been set yet. You can set the art channel using the command: `" + prefix + "edit art add #channel`").then(function(msg) {
+                    bot.createMessage(m.channel.id, "No art channel has been set yet. You can set the art channel using the command: `" + prefix + "edit art add #channel`").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -465,18 +465,18 @@ module.exports = {
                 if (!isNaN(Number(number)) && number > 0 && number < 31) {
                     guildsdata[guild.id].adds = number * 60000;
                     await serversdb.save(guildsdata);
-                    Bot.createMessage(m.channel.id, `Hoard add counter enabled. Setting timeout to ${number} minutes.`).then(function(msg) {
+                    bot.createMessage(m.channel.id, `Hoard add counter enabled. Setting timeout to ${number} minutes.`).then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
                 else {
-                    Bot.createMessage(m.channel.id, "Hoard add counter enabled").then(function(msg) {
+                    bot.createMessage(m.channel.id, "Hoard add counter enabled").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -484,10 +484,10 @@ module.exports = {
             else if (lowerargs.includes("disable")) {
                 guildsdata[guild.id].adds = false;
                 await serversdb.save(guildsdata);
-                Bot.createMessage(m.channel.id, "Hoard add counter disabled").then(function(msg) {
+                bot.createMessage(m.channel.id, "Hoard add counter disabled").then(function(msg) {
                     setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
                 });
             }
@@ -505,10 +505,10 @@ module.exports = {
                 if (serverRoles.indexOf(lowerargs) > -1) {
                     var foundRoles = await m.guild.roles.filter(findRole);
                     if (hasDuplicates(lowerargs) || foundRoles.length > 1) {
-                        Bot.createMessage(m.channel.id, "There is more than one role with that name. I am not sure which you want me to add").then(function(msg) {
+                        bot.createMessage(m.channel.id, "There is more than one role with that name. I am not sure which you want me to add").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                         return;
@@ -516,26 +516,26 @@ module.exports = {
 
                     var role = foundRoles[0];
                     if (!role.id) {
-                        Bot.createMessage(m.channel.id, "I couldn't find the role you were looking for").then(function(msg) {
+                        bot.createMessage(m.channel.id, "I couldn't find the role you were looking for").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                         return;
                     }
 
-                    const perms = m.channel.guild.members.get(Bot.user.id).permission.json;
+                    const perms = m.channel.guild.members.get(bot.user.id).permission.json;
                     if (!perms.manageRoles) {
-                        Bot.createMessage(m.channel.id, "I need permissions to be able to add roles, please add the \"Manage Roles\" permission to me");
+                        bot.createMessage(m.channel.id, "I need permissions to be able to add roles, please add the \"Manage Roles\" permission to me");
                         return;
                     }
 
                     if (guildsdata[guild.id].roles[lowerargs]) {
-                        Bot.createMessage(m.channel.id, "That role is already assignable").then(function(msg) {
+                        bot.createMessage(m.channel.id, "That role is already assignable").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                         return;
@@ -543,18 +543,18 @@ module.exports = {
 
                     guildsdata[guild.id].roles[lowerargs] = role.id;
                     await serversdb.save(guildsdata);
-                    Bot.createMessage(m.channel.id, lowerargs + " is now an assignable role").then(function(msg) {
+                    bot.createMessage(m.channel.id, lowerargs + " is now an assignable role").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
                 else {
-                    Bot.createMessage(m.channel.id, args + " is not a role that has been made in this server").then(function(msg) {
+                    bot.createMessage(m.channel.id, args + " is not a role that has been made in this server").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -566,20 +566,20 @@ module.exports = {
                 }
 
                 if (!guildsdata[guild.id].roles[lowerargs]) {
-                    Bot.createMessage(m.channel.id, "That role has not been added yet").then(function(msg) {
+                    bot.createMessage(m.channel.id, "That role has not been added yet").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                     return;
                 }
 
                 if (hasDuplicates(lowerargs)) {
-                    Bot.createMessage(m.channel.id, "There is more than one role with that name. I am not sure which you want me to remove").then(function(msg) {
+                    bot.createMessage(m.channel.id, "There is more than one role with that name. I am not sure which you want me to remove").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                     return;
@@ -587,17 +587,17 @@ module.exports = {
 
                 delete guildsdata[guild.id].roles[lowerargs];
                 await serversdb.save(guildsdata);
-                Bot.createMessage(m.channel.id, lowerargs + " is no longer assignable").then(function(msg) {
+                bot.createMessage(m.channel.id, lowerargs + " is no longer assignable").then(function(msg) {
                     setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
                 });
             }
             else if (lowerargs.includes("create")) {
-                const perms = m.channel.guild.members.get(Bot.user.id).permission.json;
+                const perms = m.channel.guild.members.get(bot.user.id).permission.json;
                 if (!perms.manageRoles) {
-                    Bot.createMessage(m.channel.id, "I need permissions to be able to create roles, please add the \"Manage Roles\" permission to me");
+                    bot.createMessage(m.channel.id, "I need permissions to be able to create roles, please add the \"Manage Roles\" permission to me");
                     return;
                 }
 
@@ -609,46 +609,46 @@ module.exports = {
                 const selectedRole = args;
                 const length = m.channel.guild.roles.filter(r => r.name.toLowerCase() === selectedRole.toLowerCase()).length;
                 if (length > 0) {
-                    Bot.createMessage(m.channel.id, "There is already a role with that name. Please either choose a different name, or add that role manually").then(function(msg) {
+                    bot.createMessage(m.channel.id, "There is already a role with that name. Please either choose a different name, or add that role manually").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                     return;
                 }
 
                 if (guildsdata[guild.id] && guildsdata[guild.id].roles && guildsdata[guild.id].roles[selectedRole] && selectedRole !== undefined) {
-                    Bot.createMessage(m.channel.id, "That role is already created, and assignable").then(function(msg) {
+                    bot.createMessage(m.channel.id, "That role is already created, and assignable").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                     return;
                 }
 
-                var newRole = await Bot.createRole(m.channel.guild.id, {
+                var newRole = await bot.createRole(m.channel.guild.id, {
                     name: `${selectedRole}`,
                     permissions: 104188992,
                     reason: `Role created by ${m.author.username}`
                 });
                 guildsdata[guild.id].roles[selectedRole] = newRole.id;
                 await serversdb.save(guildsdata);
-                Bot.createMessage(m.channel.id, `The role \`${newRole.name}\` has been created successfully, and is now assignable`).then(function(msg) {
+                bot.createMessage(m.channel.id, `The role \`${newRole.name}\` has been created successfully, and is now assignable`).then(function(msg) {
                     setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
                 });
             }
             else if (lowerargs.includes("delete")) {
-                const perms = m.channel.guild.members.get(Bot.user.id).permission.json;
+                const perms = m.channel.guild.members.get(bot.user.id).permission.json;
                 if (!perms.manageRoles) {
-                    Bot.createMessage(m.channel.id, "I need permissions to be able to delete roles, please add the \"Manage Roles\" permission to me").then(function(msg) {
+                    bot.createMessage(m.channel.id, "I need permissions to be able to delete roles, please add the \"Manage Roles\" permission to me").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                     return;
@@ -660,10 +660,10 @@ module.exports = {
                 }
                 const serverRoles = m.guild.roles.map(roleSearch);
                 if (hasDuplicates(lowerargs)) {
-                    Bot.createMessage(m.channel.id, "There is more than one role with that name. Please either choose a different name, or delete that role manually").then(function(msg) {
+                    bot.createMessage(m.channel.id, "There is more than one role with that name. Please either choose a different name, or delete that role manually").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                     return;
@@ -672,18 +672,18 @@ module.exports = {
                 if (serverRoles.indexOf(lowerargs) > -1) {
                     const role = m.guild.roles.find(findRole);
                     if (!role.id) {
-                        Bot.createMessage(m.channel.id, "I couldn't find the role you were looking for").then(function(msg) {
+                        bot.createMessage(m.channel.id, "I couldn't find the role you were looking for").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                         return;
                     }
 
-                    const perms = m.channel.guild.members.get(Bot.user.id).permission.json;
+                    const perms = m.channel.guild.members.get(bot.user.id).permission.json;
                     if (!perms.manageRoles) {
-                        Bot.createMessage(m.channel.id, "I need permissions to be able to add roles, please add the \"Manage Roles\" permission to me");
+                        bot.createMessage(m.channel.id, "I need permissions to be able to add roles, please add the \"Manage Roles\" permission to me");
                         return;
                     }
 
@@ -691,20 +691,20 @@ module.exports = {
                         delete guildsdata[guild.id].roles[lowerargs];
                         await serversdb.save(guildsdata);
                     }
-                    Bot.deleteRole(m.channel.guild.id, role.id, `Role deleted by ${m.member.name}`).then(function() {
-                        Bot.createMessage(m.channel.id, `The role \`${lowerargs}\` has been deleted successfully`).then(function(msg) {
+                    bot.deleteRole(m.channel.guild.id, role.id, `Role deleted by ${m.member.name}`).then(function() {
+                        bot.createMessage(m.channel.id, `The role \`${lowerargs}\` has been deleted successfully`).then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                     });
                 }
                 else {
-                    Bot.createMessage(m.channel.id, args + " is not a role that has been made in this server").then(function(msg) {
+                    bot.createMessage(m.channel.id, args + " is not a role that has been made in this server").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -716,26 +716,26 @@ module.exports = {
                     if (!exists) {
                         delete guildsdata[guild.id].roles[role];
                         await serversdb.save(guildsdata);
-                        Bot.createMessage(m.channel.id, role + " updated successfully").then(function(msg) {
+                        bot.createMessage(m.channel.id, role + " updated successfully").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 1000);
                         });
                     }
                     else {
-                        Bot.createMessage(m.channel.id, role + " is valid, no change needed").then(function(msg) {
+                        bot.createMessage(m.channel.id, role + " is valid, no change needed").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 1000);
                         });
                     }
                 }
             }
             else {
-                Bot.createMessage(m.channel.id, `You can edit the roles, and do things like adding and removing roles that Mei can give to people, and creating and deleting roles.\nSimply say things like \`${prefix}edit roles create tiny\` to *create* a role called "tiny" or \`${prefix}edit roles add giantess\` to let users get the "giantess" role from Mei when they use the \`${prefix}role\` command`).then(function(msg) {
+                bot.createMessage(m.channel.id, `You can edit the roles, and do things like adding and removing roles that Mei can give to people, and creating and deleting roles.\nSimply say things like \`${prefix}edit roles create tiny\` to *create* a role called "tiny" or \`${prefix}edit roles add giantess\` to let users get the "giantess" role from Mei when they use the \`${prefix}role\` command`).then(function(msg) {
                     setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 25000);
                 });
             }
@@ -749,10 +749,10 @@ module.exports = {
 
                     guildsdata[guild.id].modRoles[m.roleMentions[0]] = true;
                     await serversdb.save(guildsdata);
-                    Bot.createMessage(m.channel.id, "That role is now a registered moderator role").then(function(msg) {
+                    bot.createMessage(m.channel.id, "That role is now a registered moderator role").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -763,10 +763,10 @@ module.exports = {
 
                     guildsdata[guild.id].mods[m.mentions[0].id] = true;
                     await serversdb.save(guildsdata);
-                    Bot.createMessage(m.channel.id, m.mentions[0].fullname + " is now a registered moderator").then(function(msg) {
+                    bot.createMessage(m.channel.id, m.mentions[0].fullname + " is now a registered moderator").then(function(msg) {
                         setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -780,15 +780,15 @@ module.exports = {
                     if (guildsdata[guild.id].modRoles[m.roleMentions[0]]) {
                         delete guildsdata[guild.id].modRoles[m.roleMentions[0]];
                         await serversdb.save(guildsdata);
-                        Bot.createMessage(m.channel.id, "That role is no longer a registered moderator role").then(function(msg) {
+                        bot.createMessage(m.channel.id, "That role is no longer a registered moderator role").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                     }
                     else {
-                        Bot.createMessage(m.channel.id, "That role is not currently a registered moderator role, and can't be removed");
+                        bot.createMessage(m.channel.id, "That role is not currently a registered moderator role, and can't be removed");
                     }
                 }
                 else if (m.mentions[0]) {
@@ -799,15 +799,15 @@ module.exports = {
                     if (guildsdata[guild.id].mods[m.mentions[0].id]) {
                         delete guildsdata[guild.id].mods[m.mentions[0].id];
                         await serversdb.save(guildsdata);
-                        Bot.createMessage(m.channel.id, m.mentions[0].fullname + " is no longer a registered moderator").then(function(msg) {
+                        bot.createMessage(m.channel.id, m.mentions[0].fullname + " is no longer a registered moderator").then(function(msg) {
                             setTimeout(function() {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                             }, 5000);
                         });
                     }
                     else {
-                        Bot.createMessage(m.channel.id, "That currently is not currently a registered moderator, and can't be removed");
+                        bot.createMessage(m.channel.id, "That currently is not currently a registered moderator, and can't be removed");
                     }
                 }
             }

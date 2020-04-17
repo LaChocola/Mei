@@ -101,10 +101,10 @@ async function loadGuildData(m, data) {
     return guildData;
 }
 
-async function processQueue(Bot, guildid, textChannel) {
+async function processQueue(bot, guildid, textChannel) {
     var data = await serversdb.load();
     var guildData = data[guildid];
-    var voiceConnection = Bot.voiceConnections.get(guildid);
+    var voiceConnection = bot.voiceConnections.get(guildid);
 
     // We are no longer connected to a voice channel
     if (!voiceConnection) {
@@ -112,7 +112,7 @@ async function processQueue(Bot, guildid, textChannel) {
         return;
     }
 
-    var voiceChannel = Bot.getChannel(voiceConnection.channelID);
+    var voiceChannel = bot.getChannel(voiceConnection.channelID);
 
     // We are already playing something (this shouldn't happen)
     if (voiceConnection.playing) {
@@ -129,7 +129,7 @@ async function processQueue(Bot, guildid, textChannel) {
         queueLength = Object.keys(guildData.music.queue).length;
         if (queueLength > 0) {
             // If songs have been added to the queue, process the next item
-            await processQueue(Bot, guildid, textChannel);
+            await processQueue(bot, guildid, textChannel);
         }
         else if (!voiceConnection.playing) {
             // If songs have not been added to the queue AND we are not currently playing anything, disconnect from voice channel
@@ -155,7 +155,7 @@ async function processQueue(Bot, guildid, textChannel) {
     if (!code) {
         console.warn("EMPTY ITEM IN THE QUEUE");
         // Just try to process the next item in the queue
-        await processQueue(Bot, guildid, textChannel);
+        await processQueue(bot, guildid, textChannel);
         return;
     }
 
@@ -168,7 +168,7 @@ async function processQueue(Bot, guildid, textChannel) {
                 sentMsg.delete("Timeout");
             });
         // Just try to process the next item in the queue
-        await processQueue(Bot, guildid, textChannel);
+        await processQueue(bot, guildid, textChannel);
         return;
     }
 
@@ -488,7 +488,7 @@ async function volumeCommand(m, voiceConnection, volumeArg) {
     }
 }
 
-async function playCommand(Bot, m, voiceConnection, cleanArgs) {
+async function playCommand(bot, m, voiceConnection, cleanArgs) {
     var isPlaying = voiceConnection && voiceConnection.playing;
 
     await addToQueue(m, cleanArgs, isPlaying);
@@ -499,7 +499,7 @@ async function playCommand(Bot, m, voiceConnection, cleanArgs) {
     }
 
     // Join user voice channel
-    var voiceChannel = Bot.getChannel(m.member.voiceState.channelID);
+    var voiceChannel = bot.getChannel(m.member.voiceState.channelID);
     voiceConnection = await voiceChannel.join();
 
     // Bot is not in Voice Channel
@@ -509,18 +509,18 @@ async function playCommand(Bot, m, voiceConnection, cleanArgs) {
 
     // when the song ends
     voiceConnection.on("end", async function() {
-        await processQueue(Bot, m.guild.id, m.channel);
+        await processQueue(bot, m.guild.id, m.channel);
     });
     voiceConnection.on("error", function(err) {
         console.error(`VoiceConnection error: ${err}`);
     });
     // Start the first call to the queue
-    await processQueue(Bot, m.guild.id, m.channel);
+    await processQueue(bot, m.guild.id, m.channel);
 }
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         // Delete the user's message in 5 seconds
         misc.delay(5000).then(() => m.delete("Timeout"));
 
@@ -549,7 +549,7 @@ module.exports = {
             return;
         }
 
-        var voiceConnection = Bot.voiceConnections.get(m.guild.id);
+        var voiceConnection = bot.voiceConnections.get(m.guild.id);
 
         // Clear the queue if the bot got disconnected
         if (!(voiceConnection && voiceConnection.playing)) {
@@ -586,7 +586,7 @@ module.exports = {
             await volumeCommand(m, voiceConnection, volumeArg);
         }
         else {
-            await playCommand(Bot, m, voiceConnection, cleanArgs);
+            await playCommand(bot, m, voiceConnection, cleanArgs);
         }
     },
     help: "`[prefix]play <YT URL>` | `[prefix]play <search>` to play | `[prefix]play stop` to stop"

@@ -2,7 +2,7 @@
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var guild = m.channel.guild;
         var roleNames = guild.roles.map(r => r.name).join("  |  ");
         if (roleNames.length > 2000) {

@@ -4,25 +4,25 @@ const serversdb = require("../servers");
 const misc = require("../misc");
 
 // Get recent messages from a channel
-async function getMessages(Bot, channelId, messageCount, userId) {
+async function getMessages(bot, channelId, messageCount, userId) {
     var msgIds;
     if (userId) {
         var maxHistoryCount = 102;
-        var msgHistory = await Bot.getMessages(channelId, maxHistoryCount);
+        var msgHistory = await bot.getMessages(channelId, maxHistoryCount);
         msgIds = msgHistory
             .filter(msg => msg.author.id === userId)
             .slice(0, messageCount)
             .map(msg => msg.id);
     }
     else {
-        var msgs = await Bot.getMessages(channelId, messageCount);
+        var msgs = await bot.getMessages(channelId, messageCount);
         msgIds = msgs.map(msg => msg.id);
     }
     return msgIds;
 }
 
 // Bulk delete messages
-async function deleteMessages(Bot, channelId, msgIds, message) {
+async function deleteMessages(bot, channelId, msgIds, message) {
     // Only messages less than two weeks old can be bulk deleted
     var twoWeeksAgo = Date.now() - 1421280000000;
     var twoWeeksAgoId = misc.timestampToSnowflake(twoWeeksAgo);
@@ -31,7 +31,7 @@ async function deleteMessages(Bot, channelId, msgIds, message) {
     while (bulkDelete.length >= 2) {
         // Only 2-100 messages can be bulk deleted at a time
         var toDelete = bulkDelete.splice(0, 100);
-        await Bot.deleteMessages(channelId, toDelete, message);
+        await bot.deleteMessages(channelId, toDelete, message);
     }
 
     // If there is a remaining message we couldn't bulk delete, then just single delete it
@@ -40,13 +40,13 @@ async function deleteMessages(Bot, channelId, msgIds, message) {
     }
 
     for (let id of singleDelete) {
-        await Bot.deleteMessage(channelId, id, message);
+        await bot.deleteMessage(channelId, id, message);
     }
 }
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         await m.delete();
 
         var argsArray = m.cleanContent.replace(`${prefix}clean `, "").split(" ");
@@ -88,7 +88,7 @@ module.exports = {
             return;
         }
 
-        var msgIds = await getMessages(Bot, m.channel.id, deleteCount, mentionedId);
+        var msgIds = await getMessages(bot, m.channel.id, deleteCount, mentionedId);
 
         if (msgIds.length === 0) {
             m.reply("Nothing to clean up", 5000);
@@ -96,7 +96,7 @@ module.exports = {
         }
 
         var progressMsg = await m.reply(`Cleaning ${msgIds.length} messages`);
-        await deleteMessages(Bot, m.channel.id, msgIds, encodeURIComponent(`${msgIds.length} messages cleaned. Approved by ${m.member.fullname}`));
+        await deleteMessages(bot, m.channel.id, msgIds, encodeURIComponent(`${msgIds.length} messages cleaned. Approved by ${m.member.fullname}`));
         await progressMsg.delete();
         m.reply(`Cleaned ${msgIds.length} messages`, 5000);
     },

@@ -42,7 +42,7 @@ function formatHelpLine(command, prefix) {
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var commands = await getCommands();
         var publicCommands = commands.filter(c => !c.hidden);
         var helpText = publicCommands.map(c => formatHelpLine(c, prefix)).join("\n");
