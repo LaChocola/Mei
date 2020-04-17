@@ -968,5 +968,3 @@ test("!ban undo [@mention] | reason as unauthorized user", async function() {
     expect(m.guild.banMember).not.toHaveBeenCalled();
     expect(m.guild.unbanMember).not.toHaveBeenCalled();
 });
-
-// TODO: Add tests for banning multiple users at the same time
