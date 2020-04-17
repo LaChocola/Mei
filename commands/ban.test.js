@@ -13,6 +13,7 @@ const serversdb = require("../servers");
  * banMembers permission: Arceus (239598274103738369)
  * Unauthorized User: AWK (236223047093321728)
  * Target: Pete Smith (435088936730361858)
+ * Second Target: Nelly (310836984388124672)
  *
  * # Roles
  * ModRole: Code Monkey (658900877956087808)
@@ -28,8 +29,16 @@ function buildArgs(command, args, prefix) {
 
     var bot = {
         users: {
-            get: jest.fn().mockName("get").mockResolvedValue({
-                fullname: "Pete Smith#1234"
+            get: jest.fn().mockName("get").mockImplementation(function(id) {
+                if (id === "435088936730361858") {
+                    return { fullname: "Pete Smith#1234" };
+                }
+                else if (id === "310836984388124672") {
+                    return { fullname: "Nelly#5678" };
+                }
+                else {
+                    return undefined;
+                }
             })
         }
     };
@@ -162,6 +171,21 @@ test("!ban [id] as owner with missing permissions", async function() {
     expect(m.guild.unbanMember).not.toHaveBeenCalled();
 });
 
+test("!ban [id] [id] | reason as owner", async function() {
+    var { bot, m, args, prefix } = buildArgs("ban", "435088936730361858 310836984388124672 | Because I wanted to");
+    m.member.name = "Natalie";
+    m.member.id = "137269976255037440";
+
+    await ban.main(bot, m, args, prefix);
+
+    expect(m.reply).toBeCalledWith(expect.stringMatching(/:ok_hand:(:skin-tone-1:|:skin-tone-2:|:skin-tone-3:|:skin-tone-4:|:skin-tone-5:|) Successfully banned: Pete Smith#1234 \(435088936730361858\)/), 5000);
+    expect(m.reply).toBeCalledWith(expect.stringMatching(/:ok_hand:(:skin-tone-1:|:skin-tone-2:|:skin-tone-3:|:skin-tone-4:|:skin-tone-5:|) Successfully banned: Nelly#5678 \(310836984388124672\)/), 5000);
+    expect(m.deleteIn).toBeCalledWith(5000);
+    expect(m.guild.banMember).toBeCalledWith("435088936730361858", 0, "Because I wanted to");
+    expect(m.guild.banMember).toBeCalledWith("310836984388124672", 0, "Because I wanted to");
+    expect(m.guild.unbanMember).not.toHaveBeenCalled();
+});
+
 // Test unban variations as owner
 
 test("!ban undo [id] as owner", async function() {
@@ -234,6 +258,21 @@ test("!ban undo [id] as owner with missing permissions", async function() {
     expect(m.deleteIn).toBeCalledWith(5000);
     expect(m.guild.banMember).not.toHaveBeenCalled();
     expect(m.guild.unbanMember).toBeCalledWith("435088936730361858", "Unbanned by: Natalie");
+});
+
+test("!ban undo [id] [id] | reason as owner", async function() {
+    var { bot, m, args, prefix } = buildArgs("ban", "undo 435088936730361858 310836984388124672 | Because I wanted to");
+    m.member.name = "Natalie";
+    m.member.id = "137269976255037440";
+
+    await ban.main(bot, m, args, prefix);
+
+    expect(m.reply).toBeCalledWith(expect.stringMatching(/:ok_hand:(:skin-tone-1:|:skin-tone-2:|:skin-tone-3:|:skin-tone-4:|:skin-tone-5:|) Successfully unbanned: Pete Smith#1234 \(435088936730361858\)/), 5000);
+    expect(m.reply).toBeCalledWith(expect.stringMatching(/:ok_hand:(:skin-tone-1:|:skin-tone-2:|:skin-tone-3:|:skin-tone-4:|:skin-tone-5:|) Successfully unbanned: Nelly#5678 \(310836984388124672\)/), 5000);
+    expect(m.deleteIn).toBeCalledWith(5000);
+    expect(m.guild.banMember).not.toHaveBeenCalled();
+    expect(m.guild.unbanMember).toBeCalledWith("435088936730361858", "Because I wanted to");
+    expect(m.guild.unbanMember).toBeCalledWith("310836984388124672", "Because I wanted to");
 });
 
 // Test variations as a mod

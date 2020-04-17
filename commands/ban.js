@@ -49,7 +49,7 @@ module.exports = {
         var modName = m.member.name;
 
         for (var id of idsToBan) {
-            var userToBan = await Bot.users.get(id) || { fullname: "Unknown User" };
+            var userToBan = Bot.users.get(id) || { fullname: "Unknown User" };
 
             if (undoArg) {
                 try {
