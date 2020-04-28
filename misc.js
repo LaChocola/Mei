@@ -90,10 +90,10 @@ function leftShift(n, s) {
     return n * (2 ** s);
 }
 
-function timestampToSnowflake(d) {
-    var epoch = 1421280000000;
+function timestampToSnowflake(t) {
+    var epoch = 1420070400000;
     var dateFieldOffset = 22;
-    var snowflake = leftShift(d - epoch, dateFieldOffset);
+    var snowflake = leftShift(t - epoch, dateFieldOffset);
     return snowflake;
 }
 
