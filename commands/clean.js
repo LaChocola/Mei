@@ -24,7 +24,9 @@ async function getMessages(Bot, channelId, messageCount, userId) {
 // Bulk delete messages
 async function deleteMessages(Bot, channelId, msgIds, message) {
     // Only messages less than two weeks old can be bulk deleted
-    var twoWeeksAgo = Date.now() - 1421280000000;
+    // It would be nice to replace all this date logic with the moment.js library.
+    var twoWeeksInMs = 2 * 7 * 24 * 60 * 60 * 1000;
+    var twoWeeksAgo = Date.now().valueOf() - twoWeeksInMs;
     var twoWeeksAgoId = misc.timestampToSnowflake(twoWeeksAgo);
     var [bulkDelete, singleDelete] = misc.splitArray(msgIds, id => id > twoWeeksAgoId);
 
