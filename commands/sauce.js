@@ -5,9 +5,9 @@ const sagiri = require("sagiri")(conf.tokens.sauce);
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         if (m.content.length < 7 && !m.attachments || m.content === `${prefix}sauce` && m.attachments.length === 0) {
-            Bot.createMessage(m.channel.id, "Please add an image, or image url");
+            bot.createMessage(m.channel.id, "Please add an image, or image url");
             return;
         }
 
@@ -62,7 +62,7 @@ module.exports = {
                     icon_url: image
                 }
             };
-            Bot.createMessage(m.channel.id, {
+            bot.createMessage(m.channel.id, {
                 embed: msg
             });
         }
@@ -70,14 +70,14 @@ module.exports = {
             console.log(err);
             var errString = err.toString();
             if (errString.includes("You need an image") || errString.includes("Supplied URL is not usable") || errString.includes("Error: Got HTML response while expecting JSON")) {
-                Bot.createMessage(m.channel.id, "No sauce found, please try uploading an image");
+                bot.createMessage(m.channel.id, "No sauce found, please try uploading an image");
                 return;
             }
             if (errString.includes("No Results")) {
-                Bot.createMessage(m.channel.id, "No Results found, sorry :sob:");
+                bot.createMessage(m.channel.id, "No Results found, sorry :sob:");
                 return;
             }
-            Bot.createMessage(m.channel.id, "An error has occured, please try using an actual image and trying again");
+            bot.createMessage(m.channel.id, "An error has occured, please try using an actual image and trying again");
             return;
         }
     },

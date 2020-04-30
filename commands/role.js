@@ -4,7 +4,7 @@ const serversdb = require("../servers");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         const data = await serversdb.load();
 
         const hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
@@ -14,34 +14,34 @@ module.exports = {
         const guild = m.guild;
         m.content = m.content.toLowerCase();
         if (m.content.trim() === `${prefix}role` || m.content.trim() === `${prefix}role `) {
-            Bot.createMessage(m.channel.id, "What do you want to do? | `" + prefix + "role add <role name>` | `" + prefix + "role remove <role name>` | `" + prefix + "role list`");
+            bot.createMessage(m.channel.id, "What do you want to do? | `" + prefix + "role add <role name>` | `" + prefix + "role remove <role name>` | `" + prefix + "role list`");
             return;
         }
         if (m.content.includes(`${prefix}role  `)) {
-            Bot.createMessage(m.channel.id, "One space Please");
+            bot.createMessage(m.channel.id, "One space Please");
             return;
         }
         if (m.content.includes(`${prefix}role   `)) {
-            Bot.createMessage(m.channel.id, "***One*** space Please");
+            bot.createMessage(m.channel.id, "***One*** space Please");
             return;
         }
         var roles = data[guild.id] && data[guild.id].roles && Object.keys(data[guild.id].roles)[0] && data[guild.id].roles || undefined;
 
         if (!roles) {
-            Bot.createMessage(m.channel.id, "No roles have been set up yet. Use `" + prefix + "edit roles` to add and remove assignable roles. (Requires Moderator Permissions)").then(msg => {
+            bot.createMessage(m.channel.id, "No roles have been set up yet. Use `" + prefix + "edit roles` to add and remove assignable roles. (Requires Moderator Permissions)").then(msg => {
                 return setTimeout(() => {
-                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                 }, 10000);
             });
             return;
         }
 
         if (m.mentions.length > 0 && m.mentions[0].id !== m.author.id) {
-            Bot.createMessage(m.channel.id, "You can only assign roles to yourself").then(msg => {
+            bot.createMessage(m.channel.id, "You can only assign roles to yourself").then(msg => {
                 return setTimeout(() => {
-                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                 }, 1000);
             });
             return;
@@ -49,10 +49,10 @@ module.exports = {
 
         if (m.content.includes("list")) {
             if (!data[guild.id].roles) {
-                Bot.createMessage(m.channel.id, "No roles have been set up yet. Use `" + prefix + "edit roles` to add and remove assignable roles. (Requires Moderator Permissions)").then(msg => {
+                bot.createMessage(m.channel.id, "No roles have been set up yet. Use `" + prefix + "edit roles` to add and remove assignable roles. (Requires Moderator Permissions)").then(msg => {
                     return setTimeout(() => {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 10000);
                 });
                 return;
@@ -64,15 +64,15 @@ module.exports = {
                 if (!exists) {
                     delete data[guild.id].roles[role];
                     await serversdb.save(data);
-                    Bot.createMessage(m.channel.id, role + " updated successfully").then(msg => {
+                    bot.createMessage(m.channel.id, role + " updated successfully").then(msg => {
                         return setTimeout(() => {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 1000);
                     });
                 }
             }
-            Bot.createMessage(m.channel.id, {
+            bot.createMessage(m.channel.id, {
                 content: "",
                 embed: {
                     color: 0xA260F6,
@@ -87,31 +87,31 @@ module.exports = {
                 let content = m.cleanContent.toLowerCase().replace(`${prefix}role add `, "").trim();
                 if (roles[content]) {
                     let roleID = roles[content];
-                    Bot.addGuildMemberRole(guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
-                        return Bot.createMessage(m.channel.id, hand + " Successfully added: " + content).then(msg => {
+                    bot.addGuildMemberRole(guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
+                        return bot.createMessage(m.channel.id, hand + " Successfully added: " + content).then(msg => {
                             return setTimeout(() => {
-                                Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
                             }, 7000) && setTimeout(() => {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             }, 7000);
                         });
                     }).catch((err) => {
                         if (err.code === 50013) {
-                            Bot.createMessage(m.channel.id, "I don't have permission to give assign that role to you. Please make sure I have `Manage Roles` permissions, and that the role you are trying to assign is under my highest role").then(msg => {
+                            bot.createMessage(m.channel.id, "I don't have permission to give assign that role to you. Please make sure I have `Manage Roles` permissions, and that the role you are trying to assign is under my highest role").then(msg => {
                                 return setTimeout(() => {
-                                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
                                 }, 10000);
                             });
                         }
                     });
                     return;
                 }
-                Bot.createMessage(m.channel.id, "\"" + content + "\" is not a role that as been set up in this server").then(msg => {
+                bot.createMessage(m.channel.id, "\"" + content + "\" is not a role that as been set up in this server").then(msg => {
                     return setTimeout(() => {
-                        Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
                     }, 7000) && setTimeout(() => {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     }, 7000);
                 });
                 return;
@@ -124,7 +124,7 @@ module.exports = {
                 for (const e of iterator) {
                     if (roles[e[1]]) {
                         let roleID = roles[e[1]];
-                        Bot.addGuildMemberRole(guild.id, m.author.id, roleID, "They...asked for it?");
+                        bot.addGuildMemberRole(guild.id, m.author.id, roleID, "They...asked for it?");
                         found.push(e[1]);
                     }
                     else if (!roles[e[1]]) {
@@ -132,21 +132,21 @@ module.exports = {
                     }
                 }
                 if (found.length > 0) {
-                    Bot.createMessage(m.channel.id, hand + " Successfully added: " + found.join(", ")).then(msg => {
+                    bot.createMessage(m.channel.id, hand + " Successfully added: " + found.join(", ")).then(msg => {
                         return setTimeout(() => {
-                            Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
                         }, 5000) && setTimeout(() => {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
                     });
                     return;
                 }
                 if (notFound.length > 0) {
-                    Bot.createMessage(m.channel.id, down + " Unable to add: " + notFound.join(", ")).then(msg => {
+                    bot.createMessage(m.channel.id, down + " Unable to add: " + notFound.join(", ")).then(msg => {
                         return setTimeout(() => {
-                            Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
                         }, 5000) && setTimeout(() => {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -159,22 +159,22 @@ module.exports = {
                 let content = m.cleanContent.toLowerCase().replace(`${prefix}role remove `, "");
                 if (roles[content]) {
                     let roleID = roles[content];
-                    Bot.removeGuildMemberRole(guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
-                        return Bot.createMessage(m.channel.id, hand + " Successfully removed: " + content).then(msg => {
+                    bot.removeGuildMemberRole(guild.id, m.author.id, roleID, "They...asked for it?").then(() => {
+                        return bot.createMessage(m.channel.id, hand + " Successfully removed: " + content).then(msg => {
                             return setTimeout(() => {
-                                Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
+                                bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
                             }, 5000) && setTimeout(() => {
-                                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                                bot.deleteMessage(m.channel.id, m.id, "Timeout");
                             }, 5000);
                         });
                     });
                 }
                 else {
-                    Bot.createMessage(m.channel.id, content + ": Not found").then(msg => {
+                    bot.createMessage(m.channel.id, content + ": Not found").then(msg => {
                         return setTimeout(() => {
-                            Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
                         }, 5000) && setTimeout(() => {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
                     });
                 }
@@ -187,7 +187,7 @@ module.exports = {
                 for (const e of iterator) {
                     if (roles[e[1]]) {
                         let roleID = roles[e[1]];
-                        Bot.removeGuildMemberRole(guild.id, m.author.id, roleID, "They...asked for it?");
+                        bot.removeGuildMemberRole(guild.id, m.author.id, roleID, "They...asked for it?");
                         found.push(e[1]);
                     }
                     else if (!roles[e[1]]) {
@@ -195,20 +195,20 @@ module.exports = {
                     }
                 }
                 if (found.length > 0) {
-                    Bot.createMessage(m.channel.id, hand + " Successfully removed: " + found.join(", ")).then(msg => {
+                    bot.createMessage(m.channel.id, hand + " Successfully removed: " + found.join(", ")).then(msg => {
                         return setTimeout(() => {
-                            Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
                         }, 5000) && setTimeout(() => {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
                     });
                 }
                 if (notFound.length > 0) {
-                    Bot.createMessage(m.channel.id, down + " Unable to remove: " + notFound.join(", ")).then(msg => {
+                    bot.createMessage(m.channel.id, down + " Unable to remove: " + notFound.join(", ")).then(msg => {
                         return setTimeout(() => {
-                            Bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(msg.channel.id, msg.id, "Timeout");
                         }, 5000) && setTimeout(() => {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
                         }, 5000);
                     });
                 }

@@ -2,13 +2,13 @@
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         args = m.content.replace(`${prefix}d `, "");
         if (args.split("|").length > 2) {
-            Bot.createMessage(m.channel.id, "You are onle able to roll 2 dice at once. Please use the following format: `" + prefix + "d 1d20 | 2d10` to roll multiple dice.").then((msg) => {
+            bot.createMessage(m.channel.id, "You are onle able to roll 2 dice at once. Please use the following format: `" + prefix + "d 1d20 | 2d10` to roll multiple dice.").then((msg) => {
                 return setTimeout(function() {
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 }, 15000);
             });
             return;
@@ -27,28 +27,28 @@ module.exports = {
             amount = amount.trim();
         }
         if (+dice < 0 || +amount < 0 || (args2 && +dice2 < 0 || args2 && +amount2 < 0)) {
-            Bot.createMessage(m.channel.id, "No negative numbers are allowed. Please put the roll in the format of `" + prefix + "d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.").then((msg) => {
+            bot.createMessage(m.channel.id, "No negative numbers are allowed. Please put the roll in the format of `" + prefix + "d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.").then((msg) => {
                 return setTimeout(function() {
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 }, 15000);
             });
             return;
         }
         if (!+dice || !+amount || (args2 && !+dice2 || args2 && !+amount2)) {
-            Bot.createMessage(m.channel.id, "Please put the roll in the format of `" + prefix + "d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.").then((msg) => {
+            bot.createMessage(m.channel.id, "Please put the roll in the format of `" + prefix + "d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.").then((msg) => {
                 return setTimeout(function() {
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 }, 15000);
             });
             return;
         }
         if (dice > 30 || dice2 > 30) {
-            Bot.createMessage(m.channel.id, "Please roll with a smaller number of dice, or break your roll into multiple different rolls").then((msg) => {
+            bot.createMessage(m.channel.id, "Please roll with a smaller number of dice, or break your roll into multiple different rolls").then((msg) => {
                 return setTimeout(function() {
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 }, 15000);
             });
             return;
@@ -81,7 +81,7 @@ module.exports = {
                 "inline": "true"
             });
         }
-        Bot.createMessage(m.channel.id, { embed: msg });
+        bot.createMessage(m.channel.id, { embed: msg });
     },
     help: "Dice rolling. `[prefix]d 2d20` or `[prefix]d 3d20 | 2d10` for dfferent values"
 };

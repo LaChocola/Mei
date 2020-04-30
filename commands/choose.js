@@ -4,11 +4,11 @@ const misc = require("../misc");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var list = m.cleanContent.replace(prefix, "").replace(/choose/i, "");
 
         if (!list) {
-            Bot.createMessage(m.channel.id, "You need to add your choices, seperated by ` | `");
+            bot.createMessage(m.channel.id, "You need to add your choices, seperated by ` | `");
             return;
         }
 
@@ -25,7 +25,7 @@ module.exports = {
 
         var msg = misc.choose(comments).replace("{choice}", choice);
 
-        Bot.createMessage(m.channel.id, msg);
+        bot.createMessage(m.channel.id, msg);
     },
     help: "This or that?"
 };

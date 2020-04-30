@@ -4,7 +4,7 @@ const datadb = require("../data");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var data = await datadb.load();
 
         var name1 = m.cleanContent.replace(`${prefix}stats `, "");
@@ -34,7 +34,7 @@ module.exports = {
         var percent = ((userUses / commands.totalRuns) * 100).toFixed(2);
         var userStats = "**`" + userUses + "`**/" + commands.totalRuns + " commands (" + percent + "%)\n\n";
         var statList = stats.join("\n");
-        Bot.createMessage(m.channel.id, {
+        bot.createMessage(m.channel.id, {
             content: "Stats for: " + name + "\n",
             embed: {
                 color: 0x5A459C,

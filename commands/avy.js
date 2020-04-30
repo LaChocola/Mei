@@ -2,7 +2,7 @@
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var mentionedArg = m.cleanContent.slice(`${prefix}avy`.length).trim().toLowerCase();
 
         var mentioned;

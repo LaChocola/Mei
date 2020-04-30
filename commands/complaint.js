@@ -4,7 +4,7 @@ const ids = require("../ids");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var response;
         if (m.author.id === ids.users.chocola) {
             response = ":ok_hand:";
@@ -12,7 +12,7 @@ module.exports = {
         else {
             response = "Stop Whining";
         }
-        Bot.createMessage(m.channel.id, response);
+        bot.createMessage(m.channel.id, response);
     },
     help: "No"
 };

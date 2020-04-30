@@ -4,7 +4,7 @@ const timeago = require("timeago.js");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var name1 = m.cleanContent.replace(prefix, "").replace(/date/i, "").trim();
         function isThisUsernameThatUsername(member) {
             var memberName = member.nick || member.username;
@@ -32,10 +32,10 @@ module.exports = {
             mentioned = await m.channel.guild.members.get(id);
         }
         if (!mentioned && +args2.length > 1) {
-            Bot.createMessage(m.channel.id, "I could not find that member or id in this server").then((msg) => {
+            bot.createMessage(m.channel.id, "I could not find that member or id in this server").then((msg) => {
                 return setTimeout(function() {
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 }, 5000);
             });
             return;
@@ -51,10 +51,10 @@ module.exports = {
         var ago = timeago.format(date);
         var ago2 = timeago.format(date2);
         var diff = date - date2;
-        Bot.createMessage(m.channel.id, "**" + name + "**\nJoined: " + length + " | " + ago + "\nCreated: " + length2 + " | " + ago2);
+        bot.createMessage(m.channel.id, "**" + name + "**\nJoined: " + length + " | " + ago + "\nCreated: " + length2 + " | " + ago2);
 
         if (diff < 86400000) {
-            Bot.createMessage(m.channel.id, ":warning: **" + name + "** Joined less than 24 hours after creating account");
+            bot.createMessage(m.channel.id, ":warning: **" + name + "** Joined less than 24 hours after creating account");
         }
     },
     help: "Date a user joined the server"

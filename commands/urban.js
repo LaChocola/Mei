@@ -5,7 +5,7 @@ const esc = require("unidecode");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var word = m.content.replace(`${prefix}urban `, "");
         var urbanJsonURL = "http://api.urbandictionary.com/v0/define?term=" + esc(word);
 
@@ -22,7 +22,7 @@ module.exports = {
         }
 
         if (!result) {
-            Bot.createMessage(m.channel.id, "Not found");
+            bot.createMessage(m.channel.id, "Not found");
             return;
         }
 
@@ -32,11 +32,11 @@ module.exports = {
             "<" + result.permalink + ">";
 
         if (message.length > 2000) {
-            Bot.createMessage(m.channel.id, `Sorry, the definition of **${result.word}** is too long to post.`);
+            bot.createMessage(m.channel.id, `Sorry, the definition of **${result.word}** is too long to post.`);
             return;
         }
 
-        Bot.createMessage(m.channel.id, {
+        bot.createMessage(m.channel.id, {
             content: `Urban Dictionary definition of **${result.word}**:\n`,
             embed: {
                 color: 0xA260F6,

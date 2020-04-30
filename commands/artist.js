@@ -6,7 +6,7 @@ const peopledb = require("../people");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var data = await peopledb.load();
 
         var name1 = m.cleanContent.replace(new RegExp(escapeStringRegexp(prefix) + "artist ", "i"), "");
@@ -33,10 +33,10 @@ module.exports = {
 
         if (args.toLowerCase().includes("add ")) {
             if (mentioned.id !== m.author.id) {
-                Bot.createMessage(m.channel.id, "Okay....but that isn't you").then((msg) => {
+                bot.createMessage(m.channel.id, "Okay....but that isn't you").then((msg) => {
                     return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
                 });
                 return;
@@ -48,30 +48,30 @@ module.exports = {
                 incoming = split2;
             }
             if (data.people[id].links[incoming[0]]) {
-                Bot.createMessage(m.channel.id, incoming[0] + " has already been added, silly~").then((msg) => {
+                bot.createMessage(m.channel.id, incoming[0] + " has already been added, silly~").then((msg) => {
                     return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 10000);
                 });
                 return;
             }
             else {
                 if (incoming.length > 2) {
-                    Bot.createMessage(m.channel.id, "You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`" + prefix + "artist add Patreon <https://patreon.com/Chocola>`").then((msg) => {
+                    bot.createMessage(m.channel.id, "You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`" + prefix + "artist add Patreon <https://patreon.com/Chocola>`").then((msg) => {
                         return setTimeout(function() {
-                            Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                         }, 15000);
                     });
                     return;
                 }
                 data.people[id].links[incoming[0]] = incoming[1];
                 await peopledb.save(data);
-                Bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand).then((msg) => {
+                bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand).then((msg) => {
                     return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
                 });
                 return;
@@ -80,10 +80,10 @@ module.exports = {
 
         if (args.includes("remove")) {
             if (mentioned.id !== m.author.id) {
-                Bot.createMessage(m.channel.id, "Okay....but that isn't you").then((msg) => {
+                bot.createMessage(m.channel.id, "Okay....but that isn't you").then((msg) => {
                     return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
                 });
                 return;
@@ -98,19 +98,19 @@ module.exports = {
             if (data.people[id].links[incoming[0]]) {
                 delete data.people[id].links[incoming[0]];
                 await peopledb.save(data);
-                Bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + ":** from your links " + hand).then((msg) => {
+                bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + ":** from your links " + hand).then((msg) => {
                     return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 5000);
                 });
                 return;
             }
             else {
-                Bot.createMessage(m.channel.id, "Sorry, I couldn't find** " + incoming[0] + "** in your links").then((msg) => {
+                bot.createMessage(m.channel.id, "Sorry, I couldn't find** " + incoming[0] + "** in your links").then((msg) => {
                     return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     }, 10000);
                 });
                 return;
@@ -118,10 +118,10 @@ module.exports = {
         }
 
         if (Object.keys(data.people[id].links).length === 0) {
-            Bot.createMessage(m.channel.id, "I could find any links for **" + name + "** :(").then((msg) => {
+            bot.createMessage(m.channel.id, "I could find any links for **" + name + "** :(").then((msg) => {
                 return setTimeout(function() {
-                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                 }, 10000);
             });
             return;
@@ -131,7 +131,7 @@ module.exports = {
             Object.keys(links).forEach(function(key) {
                 linkArray.push(key + ": " + links[key] + "\n");
             });
-            Bot.createMessage(m.channel.id, {
+            bot.createMessage(m.channel.id, {
                 content: "",
                 embed: {
                     color: 0xA260F6,

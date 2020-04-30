@@ -5,7 +5,7 @@ const ids = require("../ids");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var data = await datadb.load();
 
         if (m.author.id !== ids.users.chocola) {
@@ -47,32 +47,32 @@ module.exports = {
             var reason = args2[1].trim();
         }
         if (!name) {
-            var user = await Bot.users.get(id);
+            var user = await bot.users.get(id);
             if (!user || !user.username) {
                 name = "Unknown User";
                 return;
             }
             name = user.username;
         }
-        var discrim = await Bot.users.get(id).discriminator;
+        var discrim = await bot.users.get(id).discriminator;
         if (discrim) {
             name = `${name}#${discrim}`;
         }
         if (!id) {
-            Bot.createMessage(m.channel.id, "User or User ID not found. Please enter a user or user id, and try again").then((msg) => {
+            bot.createMessage(m.channel.id, "User or User ID not found. Please enter a user or user id, and try again").then((msg) => {
                 return setTimeout(function() {
-                    Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
                 }, 2500);
             });
         }
         var argsArray = args.split(" ");
         if (argsArray.includes("undo")) {
             if (!data.banned.global[id]) {
-                Bot.createMessage(m.channel.id, `The ID "${id}" was not found in the list of ignored users. Nothing to undo.`).then((msg) => {
+                bot.createMessage(m.channel.id, `The ID "${id}" was not found in the list of ignored users. Nothing to undo.`).then((msg) => {
                     return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     }, 5000);
                 });
                 return;
@@ -80,10 +80,10 @@ module.exports = {
             if (data.banned.global[id]) {
                 delete data.banned.global[id];
                 await datadb.save(data);
-                Bot.createMessage(m.channel.id, `Welcome back, ${name} (${id}) ${hand}`).then((msg) => {
+                bot.createMessage(m.channel.id, `Welcome back, ${name} (${id}) ${hand}`).then((msg) => {
                     return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     }, 5000);
                 });
             }
@@ -91,10 +91,10 @@ module.exports = {
         }
         if (id) {
             if (data.banned.global[id]) {
-                Bot.createMessage(m.channel.id, `${name} (${id}) is already in the ignored users list. Nothing to add.`).then((msg) => {
+                bot.createMessage(m.channel.id, `${name} (${id}) is already in the ignored users list. Nothing to add.`).then((msg) => {
                     return setTimeout(function() {
-                        Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                        Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     }, 5000);
                 });
                 return;
@@ -109,10 +109,10 @@ module.exports = {
         console.log(id, reason, data.banned.global);
 
         await datadb.save(data);
-        Bot.createMessage(m.channel.id, `Goodbye, ${name} (${id}) ${hand}`).then((msg) => {
+        bot.createMessage(m.channel.id, `Goodbye, ${name} (${id}) ${hand}`).then((msg) => {
             return setTimeout(function() {
-                Bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                Bot.deleteMessage(m.channel.id, m.id, "Timeout");
+                bot.deleteMessage(m.channel.id, msg.id, "Timeout");
+                bot.deleteMessage(m.channel.id, m.id, "Timeout");
             }, 5000);
         });
     },

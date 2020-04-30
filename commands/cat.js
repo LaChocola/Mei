@@ -5,7 +5,7 @@ const randomCat = require("random-cat");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
-    main: async function(Bot, m, args, prefix) {
+    main: async function(bot, m, args, prefix) {
         var catURL;
         try {
             var body = await request("http://aws.random.cat/meow", { simple: true });
@@ -20,11 +20,11 @@ module.exports = {
         }
 
         if (!catURL) {
-            Bot.createMessage(m.channel.id, "Sorry, no kitties at the moment. :frowning2: Please try again later.");
+            bot.createMessage(m.channel.id, "Sorry, no kitties at the moment. :frowning2: Please try again later.");
             return;
         }
 
-        Bot.createMessage(m.channel.id, {
+        bot.createMessage(m.channel.id, {
             embed: {
                 color: 0xA260F6,
                 image: {
