@@ -9,6 +9,7 @@ const escapeStringRegexp = require("escape-string-regexp");
 const { choose, capitalize, chunkArray, chooseMember, getMentionedId } = require("./misc");
 const datadb = require("./data");
 const peopledb = require("./people");
+const servers = require("./servers")
 const ids = require("./ids");
 
 // Subtype Aliases
@@ -72,7 +73,7 @@ function getSubtype(s) {
 async function getAllGTSNames(uid, guildid) {
     var customNames = await getCustomGTSNames(uid);
 
-    var defaultNames = getDefaultGTSNames(guildid);
+    var defaultNames = await getDefaultGTSNames(guildid);
 
     var allNames = customNames.concat(defaultNames);
     return allNames;
@@ -88,25 +89,13 @@ async function getGTSNames(uid, guildid) {
     return names;
 }
 
-function getDefaultGTSNames(guildid) {
+async function getDefaultGTSNames(guildid) {
     var defaultNames = ["Mei", "Sucy", "2B", "Mt. Lady", "Vena", "Miku", "Lexi", "Baiken", "Ryuko", "Sombra", "Wolfer", "Gwen", "Mercy", "Gwynevere", "Tracer", "Aqua", "Megumin", "Cortana", "Yuna", "Lulu", "Rikku", "Rosalina", "Samus", "Princess Peach", "Palutena", "Shin", "Kimmy", "Zoey", "Camilla", "Lillian", "Narumi", "D.va"];
-    var guildNames = {
-        // Krumbly's ant farm only
-        [ids.guilds.krumblysantfarm]: ["Mei", "Sucy", "2B", "Mt. Lady", "Rika", "Miku", "Lexi", "Lucy", "Ryuko", "Krumbly"],
-        // r/Macrophilia Only
-        [ids.guilds.r_macrophilia]: ["Miau"],
-        // Giantess Archive
-        [ids.guilds.giantessarchive]: ["Brittany", "Bethany", "Alicia", "Katie", "Cali", "Asuna", "Cat", "Brianna", "Emily", "Alice", "Yuri", "Monica", "Brie", "Sierra"],
-        // The Big House Only
-        [ids.guilds.bighouse]: defaultNames.concat(["Zem", "Ardy", "Vas"]),
-        // Small World Only
-        [ids.guilds.smallworld]: defaultNames.concat(["Docop", "Mikki", "Spellgirl"]),
-        // The Giantess Club Only
-        [ids.guilds.giantessclub]: ["Yami", "Mikan", "Momo", "Nana", "Yui", "May", "Dawn", "Hilda", "Rosa", "Serena", "Palutena", "Wii Fit Trainer", "Lucina", "Robin", "Corrin", "Bayonetta", "Zelda", "Sheik", "Tifa", "Chun-li", "R. Mika", "Daisy", "Misty", "Gardevoir", "Lyn", "Cammy", "Angewomon", "Liara", "Samara", "Tali", "Miranda", "Cus", "Marcarita", "Vados", "Wendy", "Sabrina", "Cana", "Erza", "Levy", "Lucy", "Wendy Marvell"]
-    };
-
-    var names = guildNames[guildid] || defaultNames;
-
+    var guilds = await servers.load();
+    if (guilds[guildid] && guilds[guildid].names) {
+        var guildNames = guilds[guildid].names
+    }
+    var names = guildNames || defaultNames;
     return names;
 }
 
