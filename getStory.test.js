@@ -2,6 +2,7 @@
 
 const datadb = require("./data");
 const peopledb = require("./people");
+const serversdb = require("./servers");
 const getStory = require("./getStory");
 
 function getm(options) {
@@ -39,6 +40,7 @@ function getm(options) {
 
 jest.mock("./data");
 jest.mock("./people");
+jest.mock("./servers");
 
 datadb.load.mockResolvedValue({
     commands: {
@@ -65,6 +67,9 @@ peopledb.load.mockResolvedValue({
         "161027274764713984": {
         }
     }
+});
+
+serversdb.load.mockResolvedValue({
 });
 
 describe("Gentle Responses", function() {
