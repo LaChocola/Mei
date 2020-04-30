@@ -11,14 +11,14 @@
     "aesthetics": "^2.1.0",
     "apiai": "^4.0.3",
     "async-lock": "^1.2.2",
-    "booru": "^2.1.0",
+    "booru": "^2.2.3",
     "cheerio": "^1.0.0-rc.3",
     "colors": "^1.4.0",
     "dotenv": "^8.2.0",
     "eris": "^0.11.2",
     "escape-string-regexp": "^3.0.0",
     "haikudos": "^1.0.7",
-    "jimp": "^0.10.1",
+    "jimp": "^0.10.3",
     "markov-generator": "^1.2.2",
     "node-schedule": "^1.3.2",
     "ordinal": "^1.0.3",
@@ -35,14 +35,15 @@
     "timeago.js": "^4.0.2",
     "timediff": "^1.1.1",
     "translitterify": "^1.0.0",
+    "typescript": "^3.8.3",
     "unidecode": "^0.1.8",
     "url-parse": "^1.4.7",
     "uuid": "^7.0.3",
     "uws": "^100.0.1",
     "ytdl": "^1.2.0",
-    "ytdl-core": "^2.0.1",
+    "ytdl-core": "^2.1.1",
     "ytsearch": "^1.0.4",
-    "ytsr": "^0.1.12"
+    "ytsr": "^0.1.13"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.1",
@@ -56,7 +57,7 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-plugin-jest": "^23.8.2",
-    "jest": "^25.3.0"
+    "jest": "^25.5.2"
   },
   "engines": {
     "node": ">=10.0.0 <12.0.0"
@@ -72,6 +73,8 @@
   "author": "Chocola",
   "license": "MIT",
   "jest": {
-    "setupFilesAfterEnv": ["./__fixtures__/commands.js"]
+    "setupFilesAfterEnv": [
+      "./__fixtures__/commands.js"
+    ]
   }
 }
