@@ -114,7 +114,8 @@
         {
             "files": [
                 "**/*.test.js",
-                "__fixtures__/*.js"
+                "__fixtures__/*.js",
+                "__mocks__/*.js"
             ],
             "plugins": [
                 "jest"

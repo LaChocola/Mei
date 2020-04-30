@@ -1,23 +1,8 @@
 "use strict";
 
 const ban = require("./ban");
-const serversdb = require("../servers");
 
 jest.mock("../servers");
-
-serversdb.load.mockResolvedValue({
-    "161027274764713984": {
-        name: "SizeDev",
-        owner: "137269976255037440",
-        mods: {
-            "271803699095928832": true
-        },
-        modRoles: {
-            "658900877956087808": true
-        }
-    }
-});
-serversdb.save.mockResolvedValue();
 
 test("!ban", async function() {
     var { bot, m, args, prefix } = setupCmd("ban");

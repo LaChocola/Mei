@@ -1,8 +1,5 @@
 "use strict";
 
-const datadb = require("./data");
-const peopledb = require("./people");
-const serversdb = require("./servers");
 const getStory = require("./getStory");
 
 function getm(options) {
@@ -41,36 +38,6 @@ function getm(options) {
 jest.mock("./data");
 jest.mock("./people");
 jest.mock("./servers");
-
-datadb.load.mockResolvedValue({
-    commands: {
-        "g": {
-            users: {
-                "161027274764713984": 100
-            }
-        },
-        "v": {
-            users: {
-                "161027274764713984": 100
-            }
-        },
-        "tf": {
-            users: {
-                "161027274764713984": 100
-            }
-        }
-    }
-});
-
-peopledb.load.mockResolvedValue({
-    people: {
-        "161027274764713984": {
-        }
-    }
-});
-
-serversdb.load.mockResolvedValue({
-});
 
 describe("Gentle Responses", function() {
     test("!g", async function() {
