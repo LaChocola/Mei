@@ -92,10 +92,7 @@ async function getGTSNames(uid, guildid) {
 async function getDefaultGTSNames(guildid) {
     var defaultNames = ["Mei", "Sucy", "2B", "Mt. Lady", "Vena", "Miku", "Lexi", "Baiken", "Ryuko", "Sombra", "Wolfer", "Gwen", "Mercy", "Gwynevere", "Tracer", "Aqua", "Megumin", "Cortana", "Yuna", "Lulu", "Rikku", "Rosalina", "Samus", "Princess Peach", "Palutena", "Shin", "Kimmy", "Zoey", "Camilla", "Lillian", "Narumi", "D.va"];
     var guilds = await servers.load();
-    if (guilds[guildid] && guilds[guildid].names) {
-        var guildNames = guilds[guildid].names
-    }
-    var names = guildNames || defaultNames;
+    var names = (guilds[guildid] && guilds[guildid].names) || defaultNames;
     return names;
 }
 
