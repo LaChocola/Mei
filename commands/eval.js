@@ -32,7 +32,7 @@ module.exports = {
 
         if (!isAdmin && !isCoolKid) {
             var responses = [
-                "Are you a real villan?",
+                "Are you a real villain?",
                 "Have you ever caught a good guy? \nLike a real super hero?",
                 "Have you ever tried a disguise?",
                 "What are you doing?!?!?!",
