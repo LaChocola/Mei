@@ -229,7 +229,7 @@ bot.on("messageCreate", async function(m) {
             let commands = await misc.listCommands();
 
             if (commands.includes(command)) {
-                let cmd = await misc.loadCommand();
+                let cmd = await misc.loadCommand(command);
                 console.log(cmd);
 
                 if (cmd.disable) {
@@ -248,15 +248,13 @@ bot.on("messageCreate", async function(m) {
                 await m.reply(`${command} is not a valid command, please try again.`, 5000);
                 await m.deleteIn(5000);
             }
-            return;
         }
-
-        if (m.content.includes("enable")) {
+        else if (m.content.includes("enable")) {
             let command = m.content.replace("pls", "").replace("enable", "").replace("!", "").trim();
             let commands = await misc.listCommands();
 
             if (commands.includes(command)) {
-                let cmd = await misc.loadCommand();
+                let cmd = await misc.loadCommand(command);
                 if (!cmd.disable) {
                     await m.reply(`${command} is already enabled. Doing nothing.`, 5000);
                     await m.deleteIn(5000);
@@ -267,12 +265,10 @@ bot.on("messageCreate", async function(m) {
                 //await fs.writeFile(path.join(__dirname, "commands", command + ".js"), JSON.stringify(cmd));
                 await m.reply(`${command} has been enabled.`, 5000);
                 await m.deleteIn(5000);
-                return;
             }
             else {
                 await m.reply(`${command} is not a valid command, please try again.`, 5000);
                 await m.deleteIn(5000);
-                return;
             }
         }
     }
@@ -398,7 +394,7 @@ bot.on("messageCreate", async function(m) {
     }
 
     timestamps.push(Date.now());
-    let cmd = await misc.loadCommand();
+    let cmd = await misc.loadCommand(command);
 
     timestamps.push(Date.now());
     data.commands.totalRuns++;
