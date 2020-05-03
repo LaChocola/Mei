@@ -248,10 +248,8 @@ bot.on("messageCreate", async function(m) {
                 await m.reply(`${command} is not a valid command, please try again.`, 5000);
                 await m.deleteIn(5000);
             }
-            return;
         }
-
-        if (m.content.includes("enable")) {
+        else if (m.content.includes("enable")) {
             let command = m.content.replace("pls", "").replace("enable", "").replace("!", "").trim();
             let commands = await misc.listCommands();
 
@@ -267,12 +265,10 @@ bot.on("messageCreate", async function(m) {
                 //await fs.writeFile(path.join(__dirname, "commands", command + ".js"), JSON.stringify(cmd));
                 await m.reply(`${command} has been enabled.`, 5000);
                 await m.deleteIn(5000);
-                return;
             }
             else {
                 await m.reply(`${command} is not a valid command, please try again.`, 5000);
                 await m.deleteIn(5000);
-                return;
             }
         }
     }
