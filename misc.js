@@ -1,9 +1,12 @@
 "use strict";
 
+const path = require("path");
+const fs = require("fs").promises;
+const escapeStringRegexp = require("escape-string-regexp");
+const reload = require("require-reload")(require);
+
 const ids = require("./ids");
 const serversdb = require("./servers");
-
-const escapeStringRegexp = require("escape-string-regexp");
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -199,6 +202,42 @@ function unique(items) {
     return [...new Set(items)];
 }
 
+// Get a list of all commands
+async function listCommands() {
+    var commands = await fs.readdir(path.join(__dirname, "commands"));
+    commands = commands.filter(c => c.endsWith(".js"));         // Only list js files
+    commands = commands.filter(c => !c.endsWith(".test.js"));   // Ignore jest files
+    commands = commands.map(c => path.parse(c).name);           // Remove the extension
+    return commands;
+}
+
+var commandContentsMap = {};
+
+// Load a command, reloading it if the file has changed
+async function loadCommand(name) {
+    var filename = name + ".js";
+    var cmdpath = path.join(__dirname, "commands", filename);
+
+    const commandContents = await fs.readFile(cmdpath);
+    var cmd;
+    if (commandContentsMap[name] !== commandContents) {
+        cmd = reload(cmdpath);
+        commandContentsMap[name] = commandContents;
+    }
+    else {
+        cmd = require(cmdpath);
+    }
+    return cmd;
+}
+
+// Load a command
+function quickloadCommand(name) {
+    var filename = name + ".js";
+    var cmdpath = path.join(__dirname, "commands", filename);
+    var cmd = require(cmdpath);
+    return cmd;
+}
+
 module.exports = {
     choose,
     chooseHand,
@@ -218,5 +257,8 @@ module.exports = {
     updateGuild,
     hasSomePerms,
     isMod,
-    unique
+    unique,
+    listCommands,
+    loadCommand,
+    quickloadCommand
 };

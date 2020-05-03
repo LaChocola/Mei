@@ -1,17 +1,17 @@
 "use strict";
 
 const escapeStringRegexp = require("escape-string-regexp");
-const path = require("path");
-const fs = require("fs").promises;
+
+const misc = require("../misc");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
-        args = args.replace(prefix, "");
-        if (args !== "") {
-            var commands = await fs.readdir(path.join(__dirname));
-            if (commands.indexOf(args + ".js") > -1) {
-                var cmd = require(path.join(__dirname, args + ".js"));
+        var commandName = args.replace(prefix, "");
+        if (commandName !== "") {
+            var commands = await misc.listCommands();
+            if (commands.includes(args)) {
+                var cmd = misc.quickloadCommand(commandName);
                 if (!cmd.hidden) {
                     bot.createMessage(m.channel.id, "`" + prefix + args + "`, " + cmd.help.replace(new RegExp(escapeStringRegexp("[prefix]"), "g"), prefix));
                     return;

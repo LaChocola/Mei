@@ -1,9 +1,8 @@
 "use strict";
 
 const escapeStringRegexp = require("escape-string-regexp");
-const path = require("path");
-const fs = require("fs").promises;
 
+const misc = require("../misc");
 const splitPages = require("../utils/splitPages");
 
 // Returns a list of commands
@@ -17,14 +16,12 @@ const splitPages = require("../utils/splitPages");
  *  ]
  */
 async function getCommands() {
-    var files = await fs.readdir(path.join(__dirname));
-
-    var commands = files.map(function(file) {
-        var cmd = require(path.join(__dirname, file));
-        var cmdName = path.parse(file).name;
+    var commandNames = await misc.listCommands();
+    var commands = commandNames.map(function(name) {
+        var cmd = misc.quickloadCommand(name);
 
         return {
-            name: cmdName,
+            name: name,
             help: cmd.help,
             hidden: cmd.hidden
         };
