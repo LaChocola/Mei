@@ -9,9 +9,7 @@ const ErisPlus = require("./erisplus");
 const Eris = ErisPlus(require("eris"));
 
 require("colors");
-const path = require("path");
 const fs = require("fs").promises;
-const reload = require("require-reload")(require);
 
 const conf = require("./conf");
 const datadb = require("./data");
@@ -23,7 +21,6 @@ const ids = require("./ids");
 conf.load();
 
 var bot = Eris(conf.tokens.mei);
-var commandContentsMap = {};
 
 console.log(`Copyright (C) ${new Date().getFullYear()} Chocola
     
@@ -35,7 +32,7 @@ the Free Software Foundation, either version 3 of the License, or
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.\n`)
+GNU General Public License for more details.\n`);
 
 if (!fs) {
     console.log("Mei requires Node.js version number 10 or above");
@@ -229,17 +226,10 @@ bot.on("messageCreate", async function(m) {
 
         if (m.content.includes("disable")) {
             let command = m.content.replace("pls", "").replace("disable", "").replace("!", "").trim();
-            let commands = await fs.readdir(path.join(__dirname, "commands"));
-            if (commands.indexOf(command + ".js") > -1) {
-                const commandContents = await fs.readFile(path.join(__dirname, "commands", command + ".js"));
-                let cmd;
-                if (commandContentsMap[command] !== commandContents) {
-                    cmd = await reload(path.join(__dirname, "commands", command + ".js"));
-                    commandContentsMap[command] = commandContents;
-                }
-                else {
-                    cmd = await require(path.join(__dirname, "commands", command + ".js"));
-                }
+            let commands = await misc.listCommands();
+
+            if (commands.includes(command)) {
+                let cmd = await misc.loadCommand();
                 console.log(cmd);
 
                 if (cmd.disable) {
@@ -249,7 +239,8 @@ bot.on("messageCreate", async function(m) {
                 }
                 cmd.disable = true;
                 console.log(cmd);
-                await fs.writeFile(path.join(__dirname, "commands", command + ".js"), JSON.stringify(cmd));
+                // This will not do what you want it to. Command files are not json files.
+                //await fs.writeFile(path.join(__dirname, "commands", command + ".js"), JSON.stringify(cmd));
                 await m.reply(`${command} has been disabled.`, 5000);
                 await m.deleteIn(5000);
             }
@@ -262,24 +253,18 @@ bot.on("messageCreate", async function(m) {
 
         if (m.content.includes("enable")) {
             let command = m.content.replace("pls", "").replace("enable", "").replace("!", "").trim();
-            let commands = await fs.readdir(path.join(__dirname, "commands"));
-            if (commands.indexOf(command + ".js") > -1) {
-                const commandContents = await fs.readFile(path.join(__dirname, "commands", command + ".js"));
-                let cmd;
-                if (commandContentsMap[command] !== commandContents) {
-                    cmd = await reload(path.join(__dirname, "commands", command + ".js"));
-                    commandContentsMap[command] = commandContents;
-                }
-                else {
-                    cmd = await require(path.join(__dirname, "commands", command + ".js"));
-                }
+            let commands = await misc.listCommands();
+
+            if (commands.includes(command)) {
+                let cmd = await misc.loadCommand();
                 if (!cmd.disable) {
                     await m.reply(`${command} is already enabled. Doing nothing.`, 5000);
                     await m.deleteIn(5000);
                     return;
                 }
                 cmd.disable = false;
-                await fs.writeFile(path.join(__dirname, "commands", command + ".js"), JSON.stringify(cmd));
+                // This will not do what you want it to. Command files are not json files.
+                //await fs.writeFile(path.join(__dirname, "commands", command + ".js"), JSON.stringify(cmd));
                 await m.reply(`${command} has been enabled.`, 5000);
                 await m.deleteIn(5000);
                 return;
@@ -403,26 +388,17 @@ bot.on("messageCreate", async function(m) {
     }
 
     timestamps.push(Date.now());
-    var commands = await fs.readdir(path.join(__dirname, "commands"));
+    var commands = await misc.listCommands();
 
     timestamps.push(Date.now());
     var command = m.content.slice(prefix.length).split(" ", 1)[0].toLowerCase();
     // Ignore non-existant commands
-    if (!commands.includes(command + ".js")) {
+    if (!commands.includes(command)) {
         return;
     }
 
     timestamps.push(Date.now());
-    var cmdPath = path.join(__dirname, "commands", command + ".js");
-    const commandContents = await fs.readFile(cmdPath);
-    let cmd;
-    if (commandContentsMap[command] !== commandContents) {
-        cmd = reload(path.join(cmdPath));
-        commandContentsMap[command] = commandContents;
-    }
-    else {
-        cmd = require(path.join(cmdPath));
-    }
+    let cmd = await misc.loadCommand();
 
     timestamps.push(Date.now());
     data.commands.totalRuns++;
