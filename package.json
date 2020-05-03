@@ -70,8 +70,8 @@
     "Bot",
     "Node.js"
   ],
-  "author": "Chocola",
-  "license": "MIT",
+  "author": "Chocola (https://chocola.codes)",
+  "license": "GPL-3.0-or-later",
   "jest": {
     "setupFilesAfterEnv": [
       "./__fixtures__/commands.js"

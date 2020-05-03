@@ -80,10 +80,11 @@ function init(Eris) {
      * @arg {Boolean} [content.tts] Set the message TTS flag
      * @arg {Boolean} [content.disableEveryone] Whether to filter @everyone/@here or not (overrides default)
      * @arg {Number} [timeout] If provided, how long in milliseconds to display the message before deleting it
+     * @arg {Boolean} [clean] If provided, whether to delete the original message or not.
      * @returns {Promise<Message>}
      */
     Object.defineProperty(Eris.Message.prototype, "reply", {
-        value: async function(content, timeout) {
+        value: async function(content, timeout, clean) {
             var m = this;
 
             var file = null;
@@ -101,7 +102,9 @@ function init(Eris) {
             if (timeout) {
                 sentMsg.then(m => m.deleteIn(timeout));
             }
-
+            if (clean) {
+                m.deleteIn(timeout);
+            }
             return sentMsg;
         }
     });
@@ -125,6 +128,15 @@ function init(Eris) {
                         if (err.code === 50013) {
                             console.warn("WRN".black.bgYellow
                                 + " Missing Permissions for update".magenta.bold
+                                + " - ".blue.bold + m.guild.name.cyan.bold
+                                + " > ".blue.bold + "#" + m.channel.name.green.bold
+                                + " (" `https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}`.bold.red
+                                + ")");
+                            return;
+                        }
+                        if (err.code === 10008) {
+                            console.warn("WRN".black.bgYellow
+                                + " Message provided is unknown or missing".magenta.bold
                                 + " - ".blue.bold + m.guild.name.cyan.bold
                                 + " > ".blue.bold + "#" + m.channel.name.green.bold
                                 + " (" `https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}`.bold.red
