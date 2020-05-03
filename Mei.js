@@ -229,7 +229,7 @@ bot.on("messageCreate", async function(m) {
             let commands = await misc.listCommands();
 
             if (commands.includes(command)) {
-                let cmd = await misc.loadCommand();
+                let cmd = await misc.loadCommand(command);
                 console.log(cmd);
 
                 if (cmd.disable) {
@@ -256,7 +256,7 @@ bot.on("messageCreate", async function(m) {
             let commands = await misc.listCommands();
 
             if (commands.includes(command)) {
-                let cmd = await misc.loadCommand();
+                let cmd = await misc.loadCommand(command);
                 if (!cmd.disable) {
                     await m.reply(`${command} is already enabled. Doing nothing.`, 5000);
                     await m.deleteIn(5000);
@@ -398,7 +398,7 @@ bot.on("messageCreate", async function(m) {
     }
 
     timestamps.push(Date.now());
-    let cmd = await misc.loadCommand();
+    let cmd = await misc.loadCommand(command);
 
     timestamps.push(Date.now());
     data.commands.totalRuns++;
