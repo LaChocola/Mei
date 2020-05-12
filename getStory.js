@@ -129,16 +129,18 @@ async function getLewdCountsSummary(type) {
 
     var pool = await loadLewdPool();
 
-    var total = 0;
-    var lines = [];
     var typepool = pool[type];
-    Object.keys(typepool).forEach(function(subtype) {
-        var subtypepool = typepool[subtype];
-        var count = subtypepool.length;
-        total += count;
-        lines.push("**" + capitalize(subtype) + " " + friendlyType + ":** " + count);
+    var total = typepool.length;
+    var tagcounts = {};
+    typepool.forEach(function(story) {
+        story.tags.forEach(function(tag) {
+            tagcounts[tag] = (tagcounts[tag] || 0) + 1;
+        });
     });
-    lines.unshift("**Total " + friendlyType + ":** " + total);
+    var lines = Object.items(tagcounts).map(function([tag, count]) {
+        return `**${capitalize(tag)} ${friendlyType}:** ${count}`;
+    });
+    lines.unshift(`**Total ${friendlyType}:** ${total}`);
 
     var output = lines.join("\n\n");
     return output;
@@ -247,14 +249,12 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
     //==========select from pool
     var pool = await loadLewdPool();
 
-    var candidates = pool[type][subtype] || [];
+    var candidates = pool[type].filter(s => s.tags.contains(subtype));
     if (candidates.length === 0) {
-        Object.values(pool[type]).forEach(function(subpool) {
-            candidates = candidates.concat(subpool);
-        });
+        candidates = pool[type];
     }
 
-    var lewdmessage = choose(candidates);
+    var lewdmessage = choose(candidates).text;
 
     //==================perform replacements==============
 
