@@ -249,7 +249,7 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
     //==========select from pool
     var pool = await loadLewdPool();
 
-    var candidates = pool[type].filter(s => s.tags.contains(subtype));
+    var candidates = pool[type].filter(s => s.tags.includes(subtype));
     if (candidates.length === 0) {
         candidates = pool[type];
     }
