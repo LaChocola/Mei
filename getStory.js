@@ -9,8 +9,7 @@ const escapeStringRegexp = require("escape-string-regexp");
 const { choose, capitalize, chunkArray, chooseMember, getMentionedId } = require("./misc");
 const datadb = require("./data");
 const peopledb = require("./people");
-const servers = require("./servers")
-const ids = require("./ids");
+const servers = require("./servers");
 
 // Subtype Aliases
 function getSubtypeAliasMap() {
