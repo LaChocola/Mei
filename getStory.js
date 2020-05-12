@@ -137,7 +137,7 @@ async function getLewdCountsSummary(type) {
             tagcounts[tag] = (tagcounts[tag] || 0) + 1;
         });
     });
-    var lines = Object.items(tagcounts).map(function([tag, count]) {
+    var lines = Object.entries(tagcounts).map(function([tag, count]) {
         return `**${capitalize(tag)} ${friendlyType}:** ${count}`;
     });
     lines.unshift(`**Total ${friendlyType}:** ${total}`);
