@@ -172,9 +172,17 @@ async function processQueue(bot, guildid, textChannel) {
         return;
     }
 
-    var song = yt.downloadFromInfo(info, {
-        filter: "audioonly"
-    });
+    try {
+        var song = yt.downloadFromInfo(info, {
+            filter: "audioonly"
+        });
+    }
+    catch (err) {
+        console.error("Error downloading song", err);
+        console.log("Skipping to next song in queue");
+        await processQueue(bot, guildid, textChannel);
+        return;
+    }
     voiceConnection.play(song, {
         inlineVolume: true
     });
@@ -509,7 +517,12 @@ async function playCommand(bot, m, voiceConnection, cleanArgs) {
 
     // when the song ends
     voiceConnection.on("end", async function() {
-        await processQueue(bot, m.guild.id, m.channel);
+        try {
+            await processQueue(bot, m.guild.id, m.channel);
+        }
+        catch (err) {
+            console.error("Error processing queue", err);
+        }
     });
     voiceConnection.on("error", function(err) {
         console.error(`VoiceConnection error: ${err}`);
