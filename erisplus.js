@@ -130,7 +130,7 @@ function init(Eris) {
                                 + " Missing Permissions for update".magenta.bold
                                 + " - ".blue.bold + m.guild.name.cyan.bold
                                 + " > ".blue.bold + "#" + m.channel.name.green.bold
-                                + " (" `https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}`.bold.red
+                                + " (" + `https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}`.bold.red
                                 + ")");
                             return;
                         }
@@ -139,7 +139,7 @@ function init(Eris) {
                                 + " Message provided is unknown or missing".magenta.bold
                                 + " - ".blue.bold + m.guild.name.cyan.bold
                                 + " > ".blue.bold + "#" + m.channel.name.green.bold
-                                + " (" `https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}`.bold.red
+                                + " (" + `https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}`.bold.red
                                 + ")");
                             return;
                         }
