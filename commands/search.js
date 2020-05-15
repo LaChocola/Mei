@@ -61,9 +61,8 @@ module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
         args = m.cleanContent.replace(`${prefix}search`, "").trim();
-        console.log(args)
         if (!args) {
-            m.reply(`${this.help}\nAdd a term to search for the result using the format \`${prefix}search <term>\`. Ex: \`${prefix}search discord\``, 10000, true)
+            m.reply(`${this.help}\nAdd a term to search for the result using the format \`${prefix}search <term>\`. Ex: \`${prefix}search discord\``, 10000, true);
             return;
         }
         var message = await bot.createMessage(m.channel.id, "`Searching...`");
