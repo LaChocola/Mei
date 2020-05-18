@@ -1,6 +1,7 @@
 "use strict";
 
 const dbmanager = require("./dbmanager");
+const ids = require("./ids");
 
 const dbname = "servers";
 
@@ -67,11 +68,16 @@ const dbname = "servers";
  */
 
 async function load() {
-    return await dbmanager.load(dbname);
+    var guildsdata = await dbmanager.load(dbname);
+    // Fill in an empty file with default structure
+    if (!guildsdata.checksum) {
+        guildsdata.checksum = ids.users.chocola;
+    }
+    return guildsdata;
 }
 
-async function save(data) {
-    return await dbmanager.save(dbname, data);
+async function save(guildsdata) {
+    return await dbmanager.save(dbname, guildsdata);
 }
 
 module.exports = {
