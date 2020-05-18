@@ -8,7 +8,7 @@ const peopledb = require("../people");
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
-        var data = await peopledb.load();
+        var peopledata = await peopledb.load();
 
         var name1 = m.cleanContent.replace(new RegExp(escapeStringRegexp(prefix) + "fetish", "i"), "");
 
@@ -31,11 +31,11 @@ module.exports = {
         var id = mentioned.id;
         var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
         var hand = hands[Math.floor(Math.random() * hands.length)];
-        if (!data.people[id]) {
-            data.people[id] = {};
+        if (!peopledata.people[id]) {
+            peopledata.people[id] = {};
         }
-        if (!data.people[id].fetishes) {
-            data.people[id].fetishes = {};
+        if (!peopledata.people[id].fetishes) {
+            peopledata.people[id].fetishes = {};
         }
         if (args.toLowerCase().includes("search ")) {
             if (args.toLowerCase().includes("dislike")) {
@@ -45,7 +45,7 @@ module.exports = {
                 for (let e of iterator) {
                     incoming.push(capFirstLetter(e[1].trim()));
                 }
-                let matches = Object.keys(data.people).filter(k => data.people[k].fetishes && data.people[k].fetishes[`${incoming[0]}`] === "dislike");
+                let matches = Object.keys(peopledata.people).filter(k => peopledata.people[k].fetishes && peopledata.people[k].fetishes[`${incoming[0]}`] === "dislike");
                 if (matches.length < 1) {
                     bot.createMessage(m.channel.id, "No matches found");
                     return;
@@ -73,7 +73,7 @@ module.exports = {
                 for (let e of iterator) {
                     incoming.push(capFirstLetter(e[1].trim()));
                 }
-                let matches = Object.keys(data.people).filter(k => data.people[k].fetishes && data.people[k].fetishes[`${incoming[0]}`] === "like");
+                let matches = Object.keys(peopledata.people).filter(k => peopledata.people[k].fetishes && peopledata.people[k].fetishes[`${incoming[0]}`] === "like");
                 if (matches.length < 1) {
                     bot.createMessage(m.channel.id, "No matches found");
                     return;
@@ -97,9 +97,9 @@ module.exports = {
                 return;
             }
             let incoming = name1.replace(/\bremove\b/i, "").replace(" ", "").split("|");
-            if (data.people[id].fetishes[capFirstLetter(incoming[0])]) {
-                delete data.people[id].fetishes[capFirstLetter(incoming[0])];
-                await peopledb.save(data);
+            if (peopledata.people[id].fetishes[capFirstLetter(incoming[0])]) {
+                delete peopledata.people[id].fetishes[capFirstLetter(incoming[0])];
+                await peopledb.save(peopledata);
                 bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + "** from your fetish list" + hand).then((msg) => {
                     setTimeout(function() {
                         bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -141,7 +141,7 @@ module.exports = {
                 });
                 return;
             }
-            if (data.people[id].fetishes[incoming[0]]) {
+            if (peopledata.people[id].fetishes[incoming[0]]) {
                 bot.createMessage(m.channel.id, "That's already been added, silly~").then((msg) => {
                     return setTimeout(function() {
                         bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -162,8 +162,8 @@ module.exports = {
                     });
                     return;
                 }
-                data.people[id].fetishes[incoming[0]] = "dislike";
-                await peopledb.save(data);
+                peopledata.people[id].fetishes[incoming[0]] = "dislike";
+                await peopledb.save(peopledata);
                 bot.createMessage(m.channel.id, "Added Dislike: **" + incoming[0] + "** " + hand).then((msg) => {
                     setTimeout(function() {
                         bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -173,8 +173,8 @@ module.exports = {
                 return;
             }
             else {
-                data.people[id].fetishes[incoming[0]] = "like";
-                await peopledb.save(data);
+                peopledata.people[id].fetishes[incoming[0]] = "like";
+                await peopledb.save(peopledata);
                 bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + hand).then((msg) => {
                     return setTimeout(function() {
                         bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -184,13 +184,13 @@ module.exports = {
                 return;
             }
         }
-        if (Object.keys(data.people[id].fetishes).length < 1) {
+        if (Object.keys(peopledata.people[id].fetishes).length < 1) {
             bot.createMessage(m.channel.id, "I could find any fetish list for **" + unidecode(name) + "** :(");
             return;
         }
         else {
-            var fetishes = data.people[id].fetishes;
-            var fetishes2 = data.people[m.author.id];
+            var fetishes = peopledata.people[id].fetishes;
+            var fetishes2 = peopledata.people[m.author.id];
             if (!fetishes2.fetishes || !fetishes2) {
                 bot.createMessage(m.channel.id, "You need to have a fetish list in order to compare lists with someone, silly bug");
                 return;
@@ -256,7 +256,7 @@ module.exports = {
                     content: "",
                     embed: {
                         color: 0xA260F6,
-                        title: Object.keys(data.people[id].fetishes).length + " fetishes for **" + unidecode(name) + "**",
+                        title: Object.keys(peopledata.people[id].fetishes).length + " fetishes for **" + unidecode(name) + "**",
                         fields: [{
                             name: ":green_heart: Likes: " + likes.length,
                             value: likes.join("\n"),

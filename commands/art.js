@@ -8,22 +8,22 @@ const hand = hands[Math.floor(Math.random() * hands.length)];
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
-        var data = await serversdb.load();
+        var guildsdata = await serversdb.load();
 
         var guild = m.channel.guild;
-        if (!data[guild.id]) {
-            data[guild.id] = {};
-            data[guild.id].name = guild.name;
-            data[guild.id].owner = guild.ownerID;
+        if (!guildsdata[guild.id]) {
+            guildsdata[guild.id] = {};
+            guildsdata[guild.id].name = guild.name;
+            guildsdata[guild.id].owner = guild.ownerID;
             bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${hand}`).then(function(msg) {
                 return setTimeout(function() {
                     bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                 }, 5000);
             });
-            await serversdb.save(data);
+            await serversdb.save(guildsdata);
         }
-        if (!data[guild.id].art) {
+        if (!guildsdata[guild.id].art) {
             bot.createMessage(m.channel.id, `An art channel has not been set up for this server. Please have a mod add one using the command: \`${prefix}edit art add #channel\``).then(function(msg) {
                 return setTimeout(function() {
                     bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -38,10 +38,10 @@ module.exports = {
                 index = args;
             }
         }
-        var channel = data[guild.id].art;
+        var channel = guildsdata[guild.id].art;
         channel = bot.getChannel(channel);
-        if (data[guild.id].art && !channel) {
-            bot.createMessage(m.channel.id, `The selected art channel, <#${data[guild.id].art}>, has either been deleted, or I no longer have access to it. Please set the art channel to an existing channel that I have access to.`).then(function(msg) {
+        if (guildsdata[guild.id].art && !channel) {
+            bot.createMessage(m.channel.id, `The selected art channel, <#${guildsdata[guild.id].art}>, has either been deleted, or I no longer have access to it. Please set the art channel to an existing channel that I have access to.`).then(function(msg) {
                 return setTimeout(function() {
                     bot.deleteMessage(m.channel.id, msg.id, "Timeout");
                     bot.deleteMessage(m.channel.id, m.id, "Timeout");

@@ -64,11 +64,11 @@ function msToHMS(ms) {
     return time.map(n => n.toString().padStart(2, "0")).join(":");
 }
 
-async function loadGuildData(m, data) {
+async function loadGuildData(m, guildsdata) {
     var guild = m.guild;
     var guildChanged = false;
-    if (!data[guild.id]) {
-        data[guild.id] = {
+    if (!guildsdata[guild.id]) {
+        guildsdata[guild.id] = {
             name: guild.name,
             owner: guild.ownerID
         };
@@ -79,31 +79,31 @@ async function loadGuildData(m, data) {
             });
         guildChanged = true;
     }
-    var guildData = data[guild.id];
+    var guilddata = guildsdata[guild.id];
     // I am bad with storage, I know
-    if (!guildData.music) {
-        guildData.music = {};
+    if (!guilddata.music) {
+        guilddata.music = {};
         guildChanged = true;
     }
-    if (!guildData.music.queue) {
-        guildData.music.queue = {};
+    if (!guilddata.music.queue) {
+        guilddata.music.queue = {};
         guildChanged = true;
     }
-    if (!guildData.music.current) {
-        guildData.music.current = {};
+    if (!guilddata.music.current) {
+        guilddata.music.current = {};
         guildChanged = true;
     }
 
     if (guildChanged) {
-        await serversdb.save(data);
+        await serversdb.save(guildsdata);
     }
 
-    return guildData;
+    return guilddata;
 }
 
 async function processQueue(bot, guildid, textChannel) {
-    var data = await serversdb.load();
-    var guildData = data[guildid];
+    var guildsdata = await serversdb.load();
+    var guilddata = guildsdata[guildid];
     var voiceConnection = bot.voiceConnections.get(guildid);
 
     // We are no longer connected to a voice channel
@@ -121,12 +121,12 @@ async function processQueue(bot, guildid, textChannel) {
     }
 
     // if there is no other song in the queue, leave the voice channel and have a wonderful day
-    var queueLength = Object.keys(guildData.music.queue).length;
+    var queueLength = Object.keys(guilddata.music.queue).length;
     if (queueLength === 0) {
         await misc.delay(5000);
-        data = await serversdb.load();
-        guildData = data[guildid];
-        queueLength = Object.keys(guildData.music.queue).length;
+        guildsdata = await serversdb.load();
+        guilddata = guildsdata[guildid];
+        queueLength = Object.keys(guilddata.music.queue).length;
         if (queueLength > 0) {
             // If songs have been added to the queue, process the next item
             await processQueue(bot, guildid, textChannel);
@@ -147,9 +147,9 @@ async function processQueue(bot, guildid, textChannel) {
     }
 
     // Pop the first item off the queue
-    var [code, requester] = Object.entries(guildData.music.queue)[0];
-    delete guildData.music.queue[code];
-    await serversdb.save(data);
+    var [code, requester] = Object.entries(guilddata.music.queue)[0];
+    delete guilddata.music.queue[code];
+    await serversdb.save(guildsdata);
 
     // Empty item in the queue (this shouldn't happen)
     if (!code) {
@@ -194,11 +194,11 @@ async function processQueue(bot, guildid, textChannel) {
             sentMsg.delete("Timeout");
         });
 
-    guildData.music.current = {
+    guilddata.music.current = {
         code: code,
         player: requester
     };
-    await serversdb.save(data);
+    await serversdb.save(guildsdata);
 }
 
 async function getInfo(code) {
@@ -214,8 +214,8 @@ async function getInfo(code) {
 
 async function addToQueue(m, args, isPlaying) {
     var guildid = m.guild.id;
-    var data = await serversdb.load();
-    var guildData = data[guildid];
+    var guildsdata = await serversdb.load();
+    var guilddata = guildsdata[guildid];
 
     var code = parseCode(args);
     console.log("code:", code);
@@ -242,10 +242,10 @@ async function addToQueue(m, args, isPlaying) {
     }
 
     // Song is already in the queue
-    if (guildData.music.queue[code]) {
-        var codes = Object.keys(guildData.music.queue);
+    if (guilddata.music.queue[code]) {
+        var codes = Object.keys(guilddata.music.queue);
         var position = codes.indexOf(code) + 1;
-        var existingRequester = guildData.music.queue[code];
+        var existingRequester = guilddata.music.queue[code];
         m.channel.createMessage("That song has already been requested by: **" + existingRequester + "**. It is at queue position: `" + position + "`")
             .then(async function(sentMsg) {
                 await misc.delay(5000);
@@ -255,7 +255,7 @@ async function addToQueue(m, args, isPlaying) {
     }
 
     // Too many items already in queue
-    var queueLength = Object.keys(guildData.music.queue).length;
+    var queueLength = Object.keys(guilddata.music.queue).length;
     if (queueLength >= 15) {
         m.channel.createMessage("Sorry, only 15 songs are allowed in the queue at a time")
             .then(async function(sentMsg) {
@@ -267,8 +267,8 @@ async function addToQueue(m, args, isPlaying) {
 
     // Add the song to the queue
     var requester = `${m.author.username + "#" + m.author.discriminator}`;
-    guildData.music.queue[code] = requester;
-    await serversdb.save(data);
+    guilddata.music.queue[code] = requester;
+    await serversdb.save(guildsdata);
 
     console.log("final code:", code);
 
@@ -537,7 +537,7 @@ module.exports = {
         // Delete the user's message in 5 seconds
         misc.delay(5000).then(() => m.delete("Timeout"));
 
-        var data = await serversdb.load();
+        var guildsdata = await serversdb.load();
         var cleanArgs = m.cleanContent.slice(`${prefix}play`.length).trim();
         console.log("ARGS: " + cleanArgs);
         if (cleanArgs === "") {
@@ -554,7 +554,7 @@ module.exports = {
         var cmdVolume = Boolean(volumeMatch);
         var volumeArg = volumeMatch && volumeMatch[1];
 
-        var guildData = await loadGuildData(m, data);
+        var guildData = await loadGuildData(m, guildsdata);
 
         // User isn't in a Voice Channel
         if (!m.member.voiceState.channelID) {
@@ -567,7 +567,7 @@ module.exports = {
         // Clear the queue if the bot got disconnected
         if (!(voiceConnection && voiceConnection.playing)) {
             guildData.music.queue = {};
-            await serversdb.save(data);
+            await serversdb.save(guildsdata);
         }
 
         // User is in different Voice Channel and shouldn't be doing anything

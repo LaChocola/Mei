@@ -6,7 +6,7 @@ const peopledb = require("../people");
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
-        var data = await peopledb.load();
+        var peopledata = await peopledb.load();
 
         var name1 = m.cleanContent.replace(new RegExp(escapeStringRegexp(prefix) + "hoard", "i"), "");
         function isThisUsernameThatUsername(member) {
@@ -34,13 +34,13 @@ module.exports = {
                     });
                     return;
                 }
-                if (data.people[id].hoard) {
-                    let hoard = Object.keys(data.people[id].hoard);
+                if (peopledata.people[id].hoard) {
+                    let hoard = Object.keys(peopledata.people[id].hoard);
                     var counter = [];
                     var total = 0;
                     for (let item of hoard) {
-                        if (data.people[id].hoard[item]) {
-                            var count = Object.keys(data.people[id].hoard[item]).length;
+                        if (peopledata.people[id].hoard[item]) {
+                            var count = Object.keys(peopledata.people[id].hoard[item]).length;
                         }
                         total = total + count;
                         counter.push(`${item}: ${count} items`);
@@ -57,7 +57,7 @@ module.exports = {
                         }
                     });
                 }
-                else if (!data.people[id].hoard) {
+                else if (!peopledata.people[id].hoard) {
                     bot.createMessage(m.channel.id, "You do not currently have a hoard. Please react to messages with your hoard emoji's in order to create a hoard").then((msg) => {
                         return setTimeout(function() {
                             bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -95,8 +95,8 @@ module.exports = {
                 if (/<a:([a-zA-Z0-9]+):[0-9]+>/.exec(args[0])) {
                     args[0] = /<a:([a-zA-Z0-9]+):[0-9]+>/.exec(args[0])[1];
                 }
-                if (data.people[id].hoard) {
-                    let hoard = Object.keys(data.people[id].hoard);
+                if (peopledata.people[id].hoard) {
+                    let hoard = Object.keys(peopledata.people[id].hoard);
                     if (hoard[args[0]]) {
                         bot.createMessage(m.channel.id, args[0] + " is already one of your hoards").then((msg) => {
                             return setTimeout(function() {
@@ -107,13 +107,13 @@ module.exports = {
                         return;
                     }
                 }
-                if (!data.people[id].hoard) {
-                    data.people[id].hoard = {};
-                    await peopledb.save(data);
+                if (!peopledata.people[id].hoard) {
+                    peopledata.people[id].hoard = {};
+                    await peopledb.save(peopledata);
                 }
-                if (!data.people[id].hoard[args[0]]) {
-                    data.people[id].hoard[args[0]] = {};
-                    await peopledb.save(data);
+                if (!peopledata.people[id].hoard[args[0]]) {
+                    peopledata.people[id].hoard[args[0]] = {};
+                    await peopledb.save(peopledata);
                     bot.createMessage(m.channel.id, "Successfully added hoard: " + args[0]).then((msg) => {
                         return setTimeout(function() {
                             bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -150,15 +150,15 @@ module.exports = {
                     args[0] = /<:([a-zA-Z0-9]+):[0-9]+>/.exec(args[0])[1];
                 }
                 if (!isNaN(+args[1]) && 0 < +args[1]) {
-                    if (data.people[id].hoard) {
-                        let hoard = Object.keys(data.people[id].hoard);
+                    if (peopledata.people[id].hoard) {
+                        let hoard = Object.keys(peopledata.people[id].hoard);
                         args[1] = +args[1];
                         --args[1];
                         if (hoard.indexOf(args[0]) > -1) {
-                            if (data.people[id].hoard[args[0]]) {
-                                let item = Object.keys(data.people[id].hoard[args[0]])[args[1]];
-                                delete data.people[id].hoard[args[0]][item];
-                                await peopledb.save(data);
+                            if (peopledata.people[id].hoard[args[0]]) {
+                                let item = Object.keys(peopledata.people[id].hoard[args[0]])[args[1]];
+                                delete peopledata.people[id].hoard[args[0]][item];
+                                await peopledb.save(peopledata);
                                 bot.createMessage(m.channel.id, `Successfully deleted item ${args[1] + 1} from ${args[0]}`).then((msg) => {
                                     return setTimeout(function() {
                                         bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -177,11 +177,11 @@ module.exports = {
                         }
                     }
                 }
-                if (data.people[id].hoard) {
-                    let hoard = Object.keys(data.people[id].hoard);
+                if (peopledata.people[id].hoard) {
+                    let hoard = Object.keys(peopledata.people[id].hoard);
                     if (hoard.indexOf(args[0]) > -1) {
-                        delete data.people[id].hoard[args[0]];
-                        await peopledb.save(data);
+                        delete peopledata.people[id].hoard[args[0]];
+                        await peopledb.save(peopledata);
                         bot.createMessage(m.channel.id, args[0] + " Successfully deleted").then((msg) => {
                             return setTimeout(function() {
                                 bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -203,7 +203,7 @@ module.exports = {
                     });
                     return;
                 }
-                if (!data.people[id].hoard) {
+                if (!peopledata.people[id].hoard) {
                     bot.createMessage(m.channel.id, "You do not currently have a hoard. Please react to messages with your hoard emoji's in order to create a hoard").then((msg) => {
                         return setTimeout(function() {
                             bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -258,8 +258,8 @@ module.exports = {
             </body>
             </html>`;
                 var exports = [];
-                let hoard = data.people[id].hoard;
-                var keys = Object.keys(data.people[id].hoard);
+                let hoard = peopledata.people[id].hoard;
+                var keys = Object.keys(peopledata.people[id].hoard);
                 var y = 0;
                 for (let i = 0; i < keys.length; i++) {
                     var category = keys[i];
@@ -314,7 +314,7 @@ module.exports = {
                 return;
             }
         }
-        if (!data.people[id] || !data.people[id].hoard) {
+        if (!peopledata.people[id] || !peopledata.people[id].hoard) {
             bot.createMessage(m.channel.id, `Could not find any hoard for **${name}**`).then((msg) => {
                 return setTimeout(function() {
                     bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -323,12 +323,12 @@ module.exports = {
             });
             return;
         }
-        let hoard = Object.keys(data.people[id].hoard);
+        let hoard = Object.keys(peopledata.people[id].hoard);
         var rando = hoard[Math.floor(Math.random() * hoard.length)];
         if (hoard.indexOf(args[0]) > -1) {
             rando = hoard[hoard.indexOf(args[0])];
         }
-        var origID = data.people[id].hoard[rando];
+        var origID = peopledata.people[id].hoard[rando];
         let index = `Item ${hoard.indexOf(rando) + 1} of ${hoard.length} from :heart_eyes: hoard`;
         if (!origID || !origID.length) {
             var hoardInnder = Object.keys(origID);

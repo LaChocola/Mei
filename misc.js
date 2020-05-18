@@ -134,19 +134,19 @@ async function updateGuild(m, guildsdata) {
         changed = true;
     }
 
-    var guildData = guildsdata[m.guild.id];
+    var guilddata = guildsdata[m.guild.id];
 
     // Update guild owner, if changed
-    if (guildData.owner !== m.guild.ownerID) {
+    if (guilddata.owner !== m.guild.ownerID) {
         await m.reply("New server owner detected, updating database.", 5000);
-        guildData.owner = m.guild.ownerID;
+        guilddata.owner = m.guild.ownerID;
         changed = true;
     }
 
     // Update guild name, if changed
-    if (guildData.name !== m.guild.name) {
+    if (guilddata.name !== m.guild.name) {
         await m.reply("New server name detected, updating database.", 5000);
-        guildData.name = m.guild.name;
+        guilddata.name = m.guild.name;
         changed = true;
     }
 

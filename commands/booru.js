@@ -10,7 +10,7 @@ const ids = require("../ids");
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
-        var people = await peopledb.load();
+        var peopledata = await peopledb.load();
 
         function isNumeric(num) {
             return !isNaN(Number(num));
@@ -130,24 +130,24 @@ module.exports = {
             var dislikes = [];
 
             var id = m.author.id;
-            if (!people.people[id]) {
-                people.people[id] = {};
-                await peopledb.save(people);
+            if (!peopledata.people[id]) {
+                peopledata.people[id] = {};
+                await peopledb.save(peopledata);
             }
-            if (!people.people[id].fetishes) {
-                people.people[id].fetishes = {};
-                await peopledb.save(people);
+            if (!peopledata.people[id].fetishes) {
+                peopledata.people[id].fetishes = {};
+                await peopledb.save(peopledata);
             }
-            if (people.people[id].fetishes.Furry === "like") {
+            if (peopledata.people[id].fetishes.Furry === "like") {
                 furry = true;
             }
-            if (people.people[id].fetishes.Male === "like") {
+            if (peopledata.people[id].fetishes.Male === "like") {
                 male = true;
             }
-            if (people.people[id].fetishes.Scat === "like") {
+            if (peopledata.people[id].fetishes.Scat === "like") {
                 scat = true;
             }
-            if (people.people[id].fetishes.Booru === "like") {
+            if (peopledata.people[id].fetishes.Booru === "like") {
                 scat = true;
                 male = true;
                 furry = true;
@@ -1229,7 +1229,7 @@ module.exports = {
                 "zoom": "dislike",
                 "みとん": "dislike"
             };
-            const fetishes = people.people[id].fetishes;
+            const fetishes = peopledata.people[id].fetishes;
             const lowerOther = await Object.entries(fetishes).map(v => [v[0].toLowerCase(), v[1]]).reduce((map, val) => {
                 map[val[0]] = val[1];
                 return map;

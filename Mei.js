@@ -56,8 +56,8 @@ bot.on("ready", async function() {
 
 bot.on("guildBanAdd", async function(guild, user) {
     var guildsdata = await serversdb.load();
-    var guildData = guildsdata[guild.id];
-    var banLogChannelId = guildData && guildData.notifications && guildData.notifications.banLog;
+    var guilddata = guildsdata[guild.id];
+    var banLogChannelId = guilddata && guilddata.notifications && guilddata.notifications.banLog;
     if (!banLogChannelId) {
         return;
     }
@@ -114,8 +114,8 @@ bot.on("guildBanAdd", async function(guild, user) {
 
 bot.on("guildBanRemove", async function(guild, user) {
     var guildsdata = await serversdb.load();
-    var guildData = guildsdata[guild.id];
-    var banLogChannelId = guildData && guildData.notifications && guildData.notifications.banLog;
+    var guilddata = guildsdata[guild.id];
+    var banLogChannelId = guilddata && guilddata.notifications && guilddata.notifications.banLog;
     if (!banLogChannelId) {
         return;
     }
@@ -358,16 +358,16 @@ bot.on("messageCreate", async function(m) {
     // Guild specific prefix
     conf.load();
     var guildsdata = await serversdb.load();
-    var guildData = guildsdata[m.guild.id];
-    var prefix = guildData && guildData.prefix || conf.prefix;
+    var guilddata = guildsdata[m.guild.id];
+    var prefix = guilddata && guilddata.prefix || conf.prefix;
 
     // Game mode
-    if (guildData
-        && guildData.game
-        && guildData.game.channel === m.channel.id
-        && guildData.game.player === m.author.id
-        && guildData.game.active
-        && guildData.game.choices.includes(m.content)
+    if (guilddata
+        && guilddata.game
+        && guilddata.game.channel === m.channel.id
+        && guilddata.game.player === m.author.id
+        && guilddata.game.active
+        && guilddata.game.choices.includes(m.content)
     ) {
         m.content = prefix + "t " + m.content;
     }
@@ -462,14 +462,14 @@ bot.on("guildMemberAdd", async function(guild, member) {
     var name = member.nick || member.username;
     var diff = date - date2;
     var guildsdata = await serversdb.load();
-    var guildData = guildsdata[guild.id];
+    var guilddata = guildsdata[guild.id];
 
-    if (!(guildData && guildData.notifications)) {
+    if (!(guilddata && guilddata.notifications)) {
         return;
     }
 
-    if (guildData.notifications.updates) {
-        var updatesChannelId = guildData.notifications.updates;
+    if (guilddata.notifications.updates) {
+        var updatesChannelId = guilddata.notifications.updates;
         try {
             await bot.createMessage(updatesChannelId, {
                 embed: {
@@ -496,8 +496,8 @@ bot.on("guildMemberAdd", async function(guild, member) {
         }
     }
 
-    if (guildData.notifications.welcome) {
-        var [welcomeChannelId, welcomeMessage] = Object.entries(guildData.notifications.welcome)[0];
+    if (guilddata.notifications.welcome) {
+        var [welcomeChannelId, welcomeMessage] = Object.entries(guilddata.notifications.welcome)[0];
         if (welcomeChannelId && welcomeMessage) {
             welcomeMessage = welcomeMessage
                 .replace("[name]", `${member.username}`)
@@ -623,19 +623,19 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
 
         // Load guild data and message
         var guildsdata = await serversdb.load();
-        var guildData = guildsdata[m.guild.id];
+        var guilddata = guildsdata[m.guild.id];
 
         // Ignore the giveaway creator
-        if (userID === guildData.giveaways.creator) {
+        if (userID === guilddata.giveaways.creator) {
             return;
         }
 
-        if (guildData
-            && guildData.giveaways
-            && guildData.giveaways.running
-            && m.id === guildData.giveaways.mID
+        if (guilddata
+            && guilddata.giveaways
+            && guilddata.giveaways.running
+            && m.id === guilddata.giveaways.mID
         ) {
-            guildData.giveaways.current.contestants[userID] = "entered";
+            guilddata.giveaways.current.contestants[userID] = "entered";
             await serversdb.save(guildsdata);
         }
     }
@@ -662,20 +662,20 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
 
         // Load guild data and message
         var guildsdata = await serversdb.load();
-        var guildData = guildsdata[m.guild.id];
+        var guilddata = guildsdata[m.guild.id];
 
         // Ignore the giveaway creator
-        if (userID === guildData.giveaways.creator) {
+        if (userID === guilddata.giveaways.creator) {
             return;
         }
 
-        if (guildData
-            && guildData.giveaways
-            && guildData.giveaways.running
-            && m.id === guildData.giveaways.mID
-            && guildData.giveaways.current.contestants[userID]
+        if (guilddata
+            && guilddata.giveaways
+            && guilddata.giveaways.running
+            && m.id === guilddata.giveaways.mID
+            && guilddata.giveaways.current.contestants[userID]
         ) {
-            delete guildData.giveaways.current.contestants[userID];
+            delete guilddata.giveaways.current.contestants[userID];
             await serversdb.save(guildsdata);
         }
     }
@@ -709,10 +709,10 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
 
         // Load the guild data
         var guildsdata = await serversdb.load();
-        var guildData = guildsdata[m.guild.id];
+        var guilddata = guildsdata[m.guild.id];
 
         // If guild hoards are disabled and the emoji is not 😍, then skip adding to a hoard
-        var hoardsDisabled = guildData && guildData.hoards === false;
+        var hoardsDisabled = guilddata && guilddata.hoards === false;
         if (hoardsDisabled && emoji.name !== "😍") {
             return;
         }
@@ -786,7 +786,7 @@ bot.on("messageReactionAdd", async function(m, emoji, userID) {
         }
 
         // Don't display milestones if disabled on guild
-        var guildAddsSetting = guildData && guildData.adds; // True or False or number of milliseconds to display milestone notifications
+        var guildAddsSetting = guilddata && guilddata.adds; // True or False or number of milliseconds to display milestone notifications
         if (guildAddsSetting === false) {
             return;
         }
@@ -813,10 +813,10 @@ bot.on("messageReactionRemove", async function(m, emoji, userID) {
 
         // Load guild data
         var guildsdata = await serversdb.load();
-        var guildData = guildsdata[m.guild.id];
+        var guilddata = guildsdata[m.guild.id];
 
         // If guild hoards are disabled and the emoji is not 😍, then skip removing from a hoard
-        var hoardsDisabled = guildData && guildData.hoards === false;
+        var hoardsDisabled = guilddata && guilddata.hoards === false;
         if (hoardsDisabled && emoji.name !== "😍") {
             return;
         }
