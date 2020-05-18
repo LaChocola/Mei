@@ -5,7 +5,7 @@ const serversdb = require("../servers");
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
-        const data = await serversdb.load();
+        const guildsdata = await serversdb.load();
 
         const hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
         const hand = hands[Math.floor(Math.random() * hands.length)];
@@ -25,7 +25,7 @@ module.exports = {
             bot.createMessage(m.channel.id, "***One*** space Please");
             return;
         }
-        var roles = data[guild.id] && data[guild.id].roles && Object.keys(data[guild.id].roles)[0] && data[guild.id].roles || undefined;
+        var roles = guildsdata[guild.id] && guildsdata[guild.id].roles && Object.keys(guildsdata[guild.id].roles)[0] && guildsdata[guild.id].roles || undefined;
 
         if (!roles) {
             bot.createMessage(m.channel.id, "No roles have been set up yet. Use `" + prefix + "edit roles` to add and remove assignable roles. (Requires Moderator Permissions)").then(msg => {
@@ -48,7 +48,7 @@ module.exports = {
         }
 
         if (m.content.includes("list")) {
-            if (!data[guild.id].roles) {
+            if (!guildsdata[guild.id].roles) {
                 bot.createMessage(m.channel.id, "No roles have been set up yet. Use `" + prefix + "edit roles` to add and remove assignable roles. (Requires Moderator Permissions)").then(msg => {
                     return setTimeout(() => {
                         bot.deleteMessage(m.channel.id, m.id, "Timeout");
@@ -58,12 +58,12 @@ module.exports = {
                 return;
             }
 
-            var rolesKeys = Object.keys(data[guild.id].roles);
+            var rolesKeys = Object.keys(guildsdata[guild.id].roles);
             for (var role of rolesKeys) {
-                const exists = guild.roles.find(r => r.id === data[guild.id].roles[role]);
+                const exists = guild.roles.find(r => r.id === guildsdata[guild.id].roles[role]);
                 if (!exists) {
-                    delete data[guild.id].roles[role];
-                    await serversdb.save(data);
+                    delete guildsdata[guild.id].roles[role];
+                    await serversdb.save(guildsdata);
                     bot.createMessage(m.channel.id, role + " updated successfully").then(msg => {
                         return setTimeout(() => {
                             bot.deleteMessage(m.channel.id, m.id, "Timeout");

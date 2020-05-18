@@ -1,6 +1,7 @@
 "use strict";
 
 const dbmanager = require("./dbmanager");
+const ids = require("./ids");
 
 const dbname = "data";
 
@@ -25,7 +26,24 @@ const dbname = "data";
  */
 
 async function load() {
-    return await dbmanager.load(dbname);
+    var data = await dbmanager.load(dbname);
+    // Fill in an empty file with default structure
+    if (!data.checksum) {
+        data.checksum = ids.users.chocola;
+    }
+    if (!data.banned) {
+        data.banned = {};
+    }
+    if (!data.banned.global) {
+        data.banned.global = {};
+    }
+    if (!data.commands) {
+        data.commands = {};
+    }
+    if (!data.commands.totalRuns) {
+        data.commands.totalRuns = 0;
+    }
+    return data;
 }
 
 async function save(data) {

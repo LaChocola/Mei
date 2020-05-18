@@ -10,6 +10,12 @@ function init(Eris) {
      * @external Message
      */
     /**
+     * @external PrivateChannel
+     */
+    /**
+     * @external TextChannel
+     */
+    /**
      * @external Member
      */
     /**
@@ -70,6 +76,63 @@ function init(Eris) {
         }
     });
 
+    function channelSend(content, timeout) {
+        var channel = this;
+
+        var file = null;
+        if (content.file) {
+            file = {
+                file: content.file,
+                name: content.name
+            };
+            delete content.file;
+            delete content.name;
+        }
+
+        var sentMsg = channel.createMessage(content, file);
+
+        if (timeout) {
+            sentMsg.then(m => m.deleteIn(timeout));
+        }
+        return sentMsg;
+    }
+
+    /**
+     * Send a message to a Channel
+     *
+     * @memberOf external:PrivateChannel#
+     * @member send
+     * @arg {String | Array | Object} content A string, array of strings, or object. If an object is passed:
+     * @arg {String} content.content A content string
+     * @arg {Object} [content.embed] An embed object. See [the official Discord API documentation entry](https://discordapp.com/developers/docs/resources/channel#embed-object) for object structure
+     * @arg {Boolean} [content.tts] Set the message TTS flag
+     * @arg {Boolean} [content.disableEveryone] Whether to filter @everyone/@here or not (overrides default)
+     * @arg {Number} [timeout] If provided, how long in milliseconds to display the message before deleting it
+     * @arg {Boolean} [clean] If provided, whether to delete the original message or not.
+     * @returns {Promise<Message>}
+     */
+    Object.defineProperty(Eris.PrivateChannel.prototype, "send", {
+        value: channelSend
+    });
+
+    /**
+     * Send a message to a Channel
+     *
+     * @memberOf external:TextChannel#
+     * @member send
+     * @arg {String | Array | Object} content A string, array of strings, or object. If an object is passed:
+     * @arg {String} content.content A content string
+     * @arg {Object} [content.embed] An embed object. See [the official Discord API documentation entry](https://discordapp.com/developers/docs/resources/channel#embed-object) for object structure
+     * @arg {Boolean} [content.tts] Set the message TTS flag
+     * @arg {Boolean} [content.disableEveryone] Whether to filter @everyone/@here or not (overrides default)
+     * @arg {Number} [timeout] If provided, how long in milliseconds to display the message before deleting it
+     * @arg {Boolean} [clean] If provided, whether to delete the original message or not.
+     * @returns {Promise<Message>}
+     */
+    Object.defineProperty(Eris.TextChannel.prototype, "send", {
+        value: channelSend
+    });
+
     /**
      * Reply to the message
      * @memberOf external:Message#
@@ -86,26 +149,10 @@ function init(Eris) {
     Object.defineProperty(Eris.Message.prototype, "reply", {
         value: async function(content, timeout, clean) {
             var m = this;
-
-            var file = null;
-            if (content.file) {
-                file = {
-                    file: content.file,
-                    name: content.name
-                };
-                delete content.file;
-                delete content.name;
-            }
-
-            var sentMsg = m.channel.createMessage(content, file);
-
-            if (timeout) {
-                sentMsg.then(m => m.deleteIn(timeout));
-            }
             if (clean) {
                 m.deleteIn(timeout);
             }
-            return sentMsg;
+            return await m.channel.send(content, timeout);
         }
     });
 

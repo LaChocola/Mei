@@ -29,6 +29,10 @@ async function loadFrom(path) {
         data = JSON.parse(rawdata);
     }
     catch (err) {
+        // If the file does exist, just pretend we have a blank file
+        if (err.code === "ENOENT") {
+            return {};
+        }
         console.error(`Error loading ${path}: ${err}`);
     }
     return data;

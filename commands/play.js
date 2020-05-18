@@ -3,10 +3,13 @@
 const yt = require("ytdl-core");
 const progress = require("progress-string");
 const ytsr = require("ytsr");
+const AsyncLock = require("async-lock");
 
-const misc = require("../misc");
+const { choose, delay, isNum, toNum } = require("../misc");
 const serversdb = require("../servers");
 
+// maxPending: 0 is replaced with the default 1000, so I have to use maxPending: -1 to avoid triggering the default
+var lock = new AsyncLock();
 var hands = [":wave::skin-tone-1:", ":wave::skin-tone-2:", ":wave::skin-tone-3:", ":wave::skin-tone-4:", ":wave::skin-tone-5:", ":wave:"];
 
 function parseCode(args) {
@@ -72,11 +75,7 @@ async function loadGuildData(m, data) {
             name: guild.name,
             owner: guild.ownerID
         };
-        m.channel.createMessage(`Server: ${guild.name} added to database. Populating information ${misc.choose(hands)}`)
-            .then(async function(sentMsg) {
-                await misc.delay(5000);
-                sentMsg.delete("Timeout");
-            });
+        m.reply(`Server: ${guild.name} added to database. Populating information ${choose(hands)}`, 5000);
         guildChanged = true;
     }
     var guildData = data[guild.id];
@@ -101,104 +100,149 @@ async function loadGuildData(m, data) {
     return guildData;
 }
 
-async function processQueue(bot, guildid, textChannel) {
-    var data = await serversdb.load();
-    var guildData = data[guildid];
-    var voiceConnection = bot.voiceConnections.get(guildid);
+async function checkIfDone(bot, guildId, textChannelId) {
+    try {
+        await lock.acquire(guildId, async function() {
+            await delay(5000);
+            console.debug("Checking to see if new music was added");
+            var guild = bot.guilds.get(guildId);
+            var textChannel = guild.channels.get(textChannelId);
+            var guildsdata = await serversdb.load();
+            var guildData = guildsdata[guildId];
+            var voiceConnection = bot.voiceConnections.get(guildId);
 
-    // We are no longer connected to a voice channel
-    if (!voiceConnection) {
-        console.warn("TRIED TO PROCESS QUEUE WHILE NOT CONNECTED");
-        return;
-    }
+            // We are no longer connected to a voice channel
+            if (!voiceConnection) {
+                console.warn("TRIED TO CHECK IF DONE WHILE NOT CONNECTED");
+                return;
+            }
 
-    var voiceChannel = bot.getChannel(voiceConnection.channelID);
+            var voiceChannel = bot.getChannel(voiceConnection.channelID);
 
-    // We are already playing something (this shouldn't happen)
-    if (voiceConnection.playing) {
-        console.warn("TRIED TO PROCESS QUEUE WHILE ALREADY PLAYING");
-        return;
-    }
-
-    // if there is no other song in the queue, leave the voice channel and have a wonderful day
-    var queueLength = Object.keys(guildData.music.queue).length;
-    if (queueLength === 0) {
-        await misc.delay(5000);
-        data = await serversdb.load();
-        guildData = data[guildid];
-        queueLength = Object.keys(guildData.music.queue).length;
-        if (queueLength > 0) {
+            var queueLength = Object.keys(guildData.music.queue).length;
             // If songs have been added to the queue, process the next item
-            await processQueue(bot, guildid, textChannel);
-        }
-        else if (!voiceConnection.playing) {
+            if (queueLength > 0) {
+                console.debug("Music was added, processing queue");
+                processQueue(bot, guildId, textChannelId);
+                return;
+            }
+
+            // We're playing music, don't need to do anything
+            if (voiceConnection.playing) {
+                return;
+            }
+
             // If songs have not been added to the queue AND we are not currently playing anything, disconnect from voice channel
             if (voiceConnection.channelID) {
+                console.debug("No music was added, leaving channel");
                 voiceChannel.leave();
             }
 
-            textChannel.createMessage(`Thanks for Listening ${misc.choose(hands)}`)
-                .then(async function(sentMsg) {
-                    await misc.delay(20000);
-                    sentMsg.delete("Timeout");
-                });
-        }
-        return;
-    }
-
-    // Pop the first item off the queue
-    var [code, requester] = Object.entries(guildData.music.queue)[0];
-    delete guildData.music.queue[code];
-    await serversdb.save(data);
-
-    // Empty item in the queue (this shouldn't happen)
-    if (!code) {
-        console.warn("EMPTY ITEM IN THE QUEUE");
-        // Just try to process the next item in the queue
-        await processQueue(bot, guildid, textChannel);
-        return;
-    }
-
-    // if there is another song in the queue, try to play that song
-    var info = await getInfo(code);
-    if (!info) {
-        textChannel.createMessage(`Sorry, I wasn't able to play a video with the code: ${code}`)
-            .then(async function(sentMsg) {
-                await misc.delay(5000);
-                sentMsg.delete("Timeout");
-            });
-        // Just try to process the next item in the queue
-        await processQueue(bot, guildid, textChannel);
-        return;
-    }
-
-    try {
-        var song = yt.downloadFromInfo(info, {
-            filter: "audioonly"
+            textChannel.send(`Thanks for Listening ${choose(hands)}`, 20000);
         });
+    }
+    catch(err) {
+        if (err.message === "Too much pending tasks") {
+            console.error("Tried to call checkIfDone more than once");
+            return;
+        }
+        console.error("Error waiting for new music", err);
+    }
+    console.debug("Left checkIfDone()")
+}
+
+async function processQueue(bot, guildId, textChannelId) {
+    try {
+        var guild = bot.guilds.get(guildId);
+        var textChannel = guild.channels.get(textChannelId);
+        // Only allow one process to run processQueue per guild
+        var guildsdata = await serversdb.load();
+        var guildData = guildsdata[guildId];
+        var voiceConnection = bot.voiceConnections.get(guildId);
+
+        // We are no longer connected to a voice channel
+        if (!voiceConnection) {
+            console.warn("TRIED TO PROCESS QUEUE WHILE NOT CONNECTED");
+            return;
+        }
+
+        // We are already playing something (this shouldn't happen)
+        if (voiceConnection.playing) {
+            console.warn("TRIED TO PROCESS QUEUE WHILE ALREADY PLAYING");
+            return;
+        }
+
+        // if there is no other song in the queue, leave the voice channel and have a wonderful day
+        var queueLength = Object.keys(guildData.music.queue).length;
+        if (queueLength === 0) {
+            checkIfDone(bot, guildId, textChannelId);
+            return;
+        }
+
+        // Pop the first item off the queue
+        var [code, requester] = Object.entries(guildData.music.queue)[0];
+        delete guildData.music.queue[code];
+        await serversdb.save(guildsdata);
+
+        // Empty item in the queue (this shouldn't happen)
+        if (!code) {
+            console.warn("EMPTY ITEM IN THE QUEUE");
+            // Just try to process the next item in the queue
+            processQueue(bot, guildId, textChannelId);
+            return;
+        }
+
+        // if there is another song in the queue, try to play that song
+        var info = await getInfo(code);
+        if (!info) {
+            textChannel.send(`Sorry, I wasn't able to play a video with the code: ${code}`, 5000);
+            // Just try to process the next item in the queue
+            processQueue(bot, guildId, textChannelId);
+            return;
+        }
+
+        try {
+            var song = yt.downloadFromInfo(info, {
+                filter: "audioonly"
+            });
+        }
+        catch (err) {
+            console.error("Error downloading song", err);
+            console.log("Skipping to next song in queue");
+            processQueue(bot, guildId, textChannelId);
+            return;
+        }
+
+        voiceConnection.play(song, {
+            inlineVolume: true
+        });
+        // If playback fails, then we need to kill the encoder
+        if (!voiceConnection.playing) {
+            textChannel.send(`Sorry, I wasn't able to play the video: ${info.title}`, 5000);
+            voiceConnection.stopPlaying();
+            processQueue(bot, guildId, textChannelId);
+            return;
+        }
+
+        // Setup event handling for when a song ends
+        voiceConnection.once("end", async function() {
+            console.debug("EVENT: end");
+            processQueue(bot, guildId, textChannelId);
+        });
+
+        voiceConnection.setVolume(0.3);
+
+        textChannel.send("Now playing: `" + info.title + "` [" + msToHMS(+info.length_seconds * 1000) + "m] requested by **" + requester + "**", 5000);
+
+        guildData.music.current = {
+            code: code,
+            player: requester
+        };
+        await serversdb.save(guildsdata);
     }
     catch (err) {
-        console.error("Error downloading song", err);
-        console.log("Skipping to next song in queue");
-        await processQueue(bot, guildid, textChannel);
-        return;
+        console.error("Error processing queue", err);
     }
-    voiceConnection.play(song, {
-        inlineVolume: true
-    });
-    voiceConnection.setVolume(0.3);
-
-    textChannel.createMessage("Now playing: `" + info.title + "` [" + msToHMS(+info.length_seconds * 1000) + "m] requested by **" + requester + "**")
-        .then(async function(sentMsg) {
-            await misc.delay(5000);
-            sentMsg.delete("Timeout");
-        });
-
-    guildData.music.current = {
-        code: code,
-        player: requester
-    };
-    await serversdb.save(data);
 }
 
 async function getInfo(code) {
@@ -212,10 +256,10 @@ async function getInfo(code) {
     return info;
 }
 
-async function addToQueue(m, args, isPlaying) {
+async function addToQueue(bot, m, args) {
     var guildid = m.guild.id;
-    var data = await serversdb.load();
-    var guildData = data[guildid];
+    var guildsdata = await serversdb.load();
+    var guildData = guildsdata[guildid];
 
     var code = parseCode(args);
     console.log("code:", code);
@@ -223,21 +267,13 @@ async function addToQueue(m, args, isPlaying) {
     // Could not find code in queue. Try a youtube search instead.
     if (!code) {
         m.channel.sendTyping();
-        m.channel.createMessage("Searching youtube for: `" + args + "`")
-            .then(async function(sentMsg) {
-                await misc.delay(5000);
-                sentMsg.delete("Timeout");
-            });
+        m.reply("Searching youtube for: `" + args + "`", 5000);
         code = await searchCode(args);
     }
 
     // Invalid code
     if (!code) {
-        m.channel.createMessage(`Sorry, I wasn't able to play a video with the code: ${code}`)
-            .then(async function(sentMsg) {
-                await misc.delay(5000);
-                sentMsg.delete("Timeout");
-            });
+        m.reply(`Sorry, I wasn't able to play a video with the code: ${code}`, 5000);
         return;
     }
 
@@ -246,29 +282,21 @@ async function addToQueue(m, args, isPlaying) {
         var codes = Object.keys(guildData.music.queue);
         var position = codes.indexOf(code) + 1;
         var existingRequester = guildData.music.queue[code];
-        m.channel.createMessage("That song has already been requested by: **" + existingRequester + "**. It is at queue position: `" + position + "`")
-            .then(async function(sentMsg) {
-                await misc.delay(5000);
-                sentMsg.delete("Timeout");
-            });
+        m.reply("That song has already been requested by: **" + existingRequester + "**. It is at queue position: `" + position + "`", 5000);
         return;
     }
 
     // Too many items already in queue
     var queueLength = Object.keys(guildData.music.queue).length;
     if (queueLength >= 15) {
-        m.channel.createMessage("Sorry, only 15 songs are allowed in the queue at a time")
-            .then(async function(sentMsg) {
-                await misc.delay(5000);
-                sentMsg.delete("Timeout");
-            });
+        m.reply("Sorry, only 15 songs are allowed in the queue at a time", 5000);
         return;
     }
 
     // Add the song to the queue
     var requester = `${m.author.username + "#" + m.author.discriminator}`;
     guildData.music.queue[code] = requester;
-    await serversdb.save(data);
+    await serversdb.save(guildsdata);
 
     console.log("final code:", code);
 
@@ -278,59 +306,54 @@ async function addToQueue(m, args, isPlaying) {
     }
 
     // If we are starting a new queue, skip the "added to queue" message, since the queue processor is about to show a "now playing" message.
-    if (isPlaying) {
-        m.channel.createMessage("Added: `" + info.title + "` [" + msToHMS(+info.length_seconds * 1000) + "m] to queue. Requested by **" + requester + "**")
-            .then(async function(sentMsg) {
-                await misc.delay(5000);
-                sentMsg.delete("Timeout");
-            });
+    var voiceConnection = bot.voiceConnections.get(m.guild.id);
+    if (voiceConnection && voiceConnection.playing) {
+        m.reply("Added: `" + info.title + "` [" + msToHMS(+info.length_seconds * 1000) + "m] to queue. Requested by **" + requester + "**", 5000);
     }
 }
 
-async function resumeCommand(m, voiceConnection) {
-    var isPlaying = voiceConnection && voiceConnection.playing;
-    if (!isPlaying || !voiceConnection.paused) {
-        m.channel.createMessage("Nothing is currently playing");
+async function resumeCommand(bot, m) {
+    var voiceConnection = bot.voiceConnections.get(m.guild.id);
+    if (!(voiceConnection && voiceConnection.playing)) {
+        m.reply("Nothing is currently playing");
         return;
     }
-    m.channel.createMessage("Resuming music.");
+    if (!voiceConnection.paused) {
+        return;
+    }
+    m.reply("Resuming music.", 5000);
     voiceConnection.resume();
 }
 
-async function stopCommand(m, voiceConnection) {
-    var isPlaying = voiceConnection && voiceConnection.playing;
-    if (!isPlaying) {
-        m.channel.createMessage("Nothing is currently playing");
+async function stopCommand(bot, m) {
+    var voiceConnection = bot.voiceConnections.get(m.guild.id);
+    if (!(voiceConnection && voiceConnection.playing)) {
+        m.reply("Nothing is currently playing");
         return;
     }
-    m.channel.createMessage("Stopping song.")
-        .then(async function(sentMsg) {
-            await misc.delay(5000);
-            sentMsg.delete("Timeout");
-        });
+    m.reply("Stopping song.", 5000);
     voiceConnection.stopPlaying();
 }
 
-async function pauseCommand(m, voiceConnection) {
-    var isPlaying = voiceConnection && voiceConnection.playing;
+async function pauseCommand(bot, m) {
+    var voiceConnection = bot.voiceConnections.get(m.guild.id);
     // someone asks to pause the song
-    if (!isPlaying || voiceConnection.paused) {
-        m.channel.createMessage("Nothing is currently playing");
+    if (!(voiceConnection && voiceConnection.playing)) {
+        m.reply("Nothing is currently playing");
         return;
     }
-    m.channel.createMessage("Pausing music.")
-        .then(async function(sentMsg) {
-            await misc.delay(5000);
-            sentMsg.delete("Timeout");
-        });
+    if (voiceConnection.paused) {
+        return;
+    }
+    m.reply("Pausing music.", 5000);
     voiceConnection.pause();
 }
 
-async function currentCommand(m, voiceConnection, guildData, cmdList) {
-    var isPlaying = voiceConnection && voiceConnection.playing;
+async function currentCommand(bot, m, guildData, cmdList) {
+    var voiceConnection = bot.voiceConnections.get(m.guild.id);
     // someone asks for current song info
-    if (!isPlaying) {
-        m.channel.createMessage("Nothing is currently playing");
+    if (!(voiceConnection && voiceConnection.playing)) {
+        m.reply("Nothing is currently playing");
         return;
     }
 
@@ -346,7 +369,7 @@ async function currentCommand(m, voiceConnection, guildData, cmdList) {
     }
 
     if (!(currentCode && currentRequester)) {
-        m.channel.createMessage("Nothing is currently playing");
+        m.reply("Nothing is currently playing");
         return;
     }
 
@@ -359,7 +382,7 @@ async function currentCommand(m, voiceConnection, guildData, cmdList) {
         }
     });
 
-    m.channel.createMessage({
+    m.reply({
         embed: {
             title: `:musical_note:  ${info.title} :musical_note:`,
             url: `https://youtu.be/${currentCode}?t=${msToHMS(start).replace(":", "m")}s`,
@@ -379,27 +402,22 @@ async function currentCommand(m, voiceConnection, guildData, cmdList) {
                 inline: true
             }]
         }
-    })
-        .then(async function(sentMsg) {
-            await misc.delay(end - start);
-            sentMsg.delete("Timeout");
-        });
+    }, end - start);
 }
 
-async function listCommand(m, voiceConnection, guildData) {
-    var isPlaying = voiceConnection && voiceConnection.playing;
+async function listCommand(bot, m, guildData) {
+    var voiceConnection = bot.voiceConnections.get(m.guild.id);
     // display queue of songs if it exists
-    if (!isPlaying) {
-        m.channel.createMessage("Nothing is currently playing");
+    if (!(voiceConnection && voiceConnection.playing)) {
+        m.reply("Nothing is currently playing");
         return;
     }
 
     // Display queue of songs if it exists
     await m.channel.sendTyping();
-    console.log(guildData.music.queue);
 
     if (!Object.entries(guildData.music.queue)) {
-        m.channel.createMessage("The queue is empty right now");
+        m.reply("The queue is empty right now");
         return;
     }
 
@@ -414,7 +432,7 @@ async function listCommand(m, voiceConnection, guildData) {
     }));
 
     try {
-        await m.channel.createMessage({
+        await m.reply({
             embed: {
                 color: 0xA260F6,
                 title: `${songs.length} songs currently queued`,
@@ -424,23 +442,19 @@ async function listCommand(m, voiceConnection, guildData) {
     }
     catch (err) {
         if (err.code === 50013) {
-            m.channel.createMessage("I do not have permisson to embed links in this channel. Please make sure I have the `embed links` permission on my highest role, and that the channel permissions are not overriding it.")
-                .then(async function(sentMsg) {
-                    await misc.delay(5000);
-                    sentMsg.delete("Timeout");
-                });
+            m.reply("I do not have permisson to embed links in this channel. Please make sure I have the `embed links` permission on my highest role, and that the channel permissions are not overriding it.", 5000);
         }
     }
 }
 
-async function volumeCommand(m, voiceConnection, volumeArg) {
-    var isPlaying = voiceConnection && voiceConnection.playing;
-    if (!isPlaying) {
+async function volumeCommand(bot, m, volumeArg) {
+    var voiceConnection = bot.voiceConnections.get(m.guild.id);
+    if (!(voiceConnection && voiceConnection.playing)) {
         return;
     }
     // someone asks to set the volume to a specific percentage
-    if (misc.isNum(volumeArg)) {
-        let newVolumePerc = misc.toNum(volumeArg);
+    if (isNum(volumeArg)) {
+        let newVolumePerc = toNum(volumeArg);
         let newVolume = newVolumePerc / 100;
         newVolume = Math.min(Math.max(0, newVolume), 1.5);
 
@@ -448,11 +462,7 @@ async function volumeCommand(m, voiceConnection, volumeArg) {
             return;
         }
 
-        m.channel.createMessage(`Setting Volume to ${newVolumePerc.toFixed(0)}%`)
-            .then(async function(sentMsg) {
-                await misc.delay(5000);
-                sentMsg.delete("Timeout");
-            });
+        m.reply(`Setting Volume to ${newVolumePerc.toFixed(0)}%`, 5000);
 
         voiceConnection.setVolume(newVolume);
     }
@@ -464,11 +474,7 @@ async function volumeCommand(m, voiceConnection, volumeArg) {
             return;
         }
         let newVolumePerc = newVolume * 100;
-        m.channel.createMessage(`Setting Volume to ${newVolumePerc.toFixed(0)}%`)
-            .then(async function(sentMsg) {
-                await misc.delay(5000);
-                sentMsg.delete("Timeout");
-            });
+        m.reply(`Setting Volume to ${newVolumePerc.toFixed(0)}%`, 5000);
         voiceConnection.setVolume(newVolume);
     }
     else if (volumeArg === "up") {
@@ -479,69 +485,69 @@ async function volumeCommand(m, voiceConnection, volumeArg) {
             return;
         }
         let newVolumePerc = newVolume * 100;
-        m.channel.createMessage(`Setting Volume to ${newVolumePerc.toFixed(0)}%`)
-            .then(async function(sentMsg) {
-                await misc.delay(5000);
-                sentMsg.delete("Timeout");
-            });
+        m.reply(`Setting Volume to ${newVolumePerc.toFixed(0)}%`, 5000);
         voiceConnection.setVolume(newVolume);
     }
     else { // show current volume level
         let volumePerc = voiceConnection.volume * 100;
-        m.channel.createMessage(`Volume is set to ${volumePerc}%`)
-            .then(async function(sentMsg) {
-                await misc.delay(5000);
-                sentMsg.delete("Timeout");
-            });
+        m.reply(`Volume is set to ${volumePerc}%`, 5000);
     }
 }
 
-async function playCommand(bot, m, voiceConnection, cleanArgs) {
-    var isPlaying = voiceConnection && voiceConnection.playing;
+// Get the voice connection, or create one if not yet connected
+async function initVoiceConnection(bot, guildId, voiceChannelId) {
+    var guild = bot.guilds.get(guildId);
+    var voiceChannel = guild.channels.get(voiceChannelId);
 
-    await addToQueue(m, cleanArgs, isPlaying);
+    var voiceConnection = bot.voiceConnections.get(guildId);
 
-    // start a song since the bot is not currently playing anything, and the voice connection should be ready
-    if (isPlaying) {
-        return;
+    // Connection already exists
+    if (voiceConnection) {
+        if (voiceConnection.channelID !== voiceChannelId) {
+            // This shouldn't happen
+            throw new Error("Bot is in a different voice channel than user.");
+        }
+        // Return an existing voiceConnection
+        return voiceConnection;
     }
 
-    // Join user voice channel
-    var voiceChannel = bot.getChannel(m.member.voiceState.channelID);
+    // Connection doesn't exist, create a new one
     voiceConnection = await voiceChannel.join();
 
-    // Bot is not in Voice Channel
-    if (!voiceConnection.channelID) {
-        return;
-    }
-
-    // when the song ends
-    voiceConnection.on("end", async function() {
-        try {
-            await processQueue(bot, m.guild.id, m.channel);
-        }
-        catch (err) {
-            console.error("Error processing queue", err);
-        }
-    });
+    // Setup error event handling
     voiceConnection.on("error", function(err) {
         console.error(`VoiceConnection error: ${err}`);
     });
-    // Start the first call to the queue
-    await processQueue(bot, m.guild.id, m.channel);
+    voiceConnection.on("ready", function() {
+        console.error("VoiceConnection ready");
+    });
+
+    return voiceConnection;
 }
+
+async function playCommand(bot, m, cleanArgs) {
+    // Add item to the queue
+    await addToQueue(bot, m, cleanArgs);
+    // Setup the voice connection
+    await initVoiceConnection(bot, m.guild.id, m.member.voiceState.channelID);
+    // Start the first call to the queue
+    processQueue(bot, m.guild.id, m.channel.id);
+}
+
+var x = 0;
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
+        console.log("X: ", x);
+        x = 1;
         // Delete the user's message in 5 seconds
-        misc.delay(5000).then(() => m.delete("Timeout"));
+        m.deleteIn(5000);
 
-        var data = await serversdb.load();
+        var guildsdata = await serversdb.load();
         var cleanArgs = m.cleanContent.slice(`${prefix}play`.length).trim();
-        console.log("ARGS: " + cleanArgs);
         if (cleanArgs === "") {
-            m.channel.createMessage(`Please say what you want to do. e.g. \`${prefix}play <youtube link>\`, \`${prefix}play queue\`, \`${prefix}play current\`, or \`${prefix}play stop\``);
+            m.reply(`Please say what you want to do. e.g. \`${prefix}play <youtube link>\`, \`${prefix}play queue\`, \`${prefix}play current\`, or \`${prefix}play stop\``);
             return;
         }
 
@@ -554,11 +560,11 @@ module.exports = {
         var cmdVolume = Boolean(volumeMatch);
         var volumeArg = volumeMatch && volumeMatch[1];
 
-        var guildData = await loadGuildData(m, data);
+        var guildData = await loadGuildData(m, guildsdata);
 
         // User isn't in a Voice Channel
         if (!m.member.voiceState.channelID) {
-            m.channel.createMessage("You must be in a Voice Channel to play a song");
+            m.reply("You must be in a Voice Channel to play a song");
             return;
         }
 
@@ -567,39 +573,35 @@ module.exports = {
         // Clear the queue if the bot got disconnected
         if (!(voiceConnection && voiceConnection.playing)) {
             guildData.music.queue = {};
-            await serversdb.save(data);
+            await serversdb.save(guildsdata);
         }
 
         // User is in different Voice Channel and shouldn't be doing anything
         if (voiceConnection && voiceConnection.channelID !== m.member.voiceState.channelID) {
-            m.channel.createMessage("You must be in the same Voice Channel as me to play a song")
-                .then(async function(sentMsg) {
-                    await misc.delay(5000);
-                    sentMsg.delete("Timeout");
-                });
+            m.reply("You must be in the same Voice Channel as me to play a song", 5000);
             return;
         }
 
         if (cmdResume) {
-            await resumeCommand(m, voiceConnection);
+            await resumeCommand(bot, m);
         }
         else if (cmdStop) {
-            await stopCommand(m, voiceConnection);
+            await stopCommand(bot, m);
         }
         else if (cmdPause) {
-            await pauseCommand(m, voiceConnection);
+            await pauseCommand(bot, m);
         }
         else if (cmdCurrent || (cmdList && Object.entries(guildData.music.queue).length === 0)) {
-            await currentCommand(m, voiceConnection, guildData, cmdList);
+            await currentCommand(bot, m, guildData, cmdList);
         }
         else if (cmdList) {
-            await listCommand(m, voiceConnection, guildData);
+            await listCommand(bot, m, guildData);
         }
         else if (cmdVolume) {
-            await volumeCommand(m, voiceConnection, volumeArg);
+            await volumeCommand(bot, m, volumeArg);
         }
         else {
-            await playCommand(bot, m, voiceConnection, cleanArgs);
+            await playCommand(bot, m, cleanArgs);
         }
     },
     help: "`[prefix]play <YT URL>` | `[prefix]play <search>` to play | `[prefix]play stop` to stop"

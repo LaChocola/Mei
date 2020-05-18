@@ -1,6 +1,7 @@
 "use strict";
 
 const dbmanager = require("./dbmanager");
+const ids = require("./ids");
 
 const dbname = "people";
 
@@ -30,7 +31,15 @@ const dbname = "people";
  */
 
 async function load() {
-    return await dbmanager.load(dbname);
+    var peopledata = await dbmanager.load(dbname);
+    // Fill in an empty file with default structure
+    if (!peopledata.checksum) {
+        peopledata.checksum = ids.users.chocola;
+    }
+    if (!peopledata.people) {
+        peopledata.people = {};
+    }
+    return peopledata;
 }
 
 async function save(data) {
