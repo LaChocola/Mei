@@ -25,14 +25,13 @@ module.exports = {
         try {
             const bg = await Jimp.read("https://owo.whats-th.is/b3e262.jpg");
             const nameFont = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-            bg.clone()
-                .print(nameFont, 550, 145, name)
-                .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
-                    bot.createMessage(m.channel.id, "Weirdo", {
-                        file: buffer,
-                        name: "furry.png"
-                    });
-                });
+            var out = bg.clone()
+                .print(nameFont, 550, 145, name);
+            var buffer = await out.getBufferAsync(Jimp.MIME_PNG);
+            bot.createMessage(m.channel.id, "Weirdo", {
+                file: buffer,
+                name: "furry.png"
+            });
         }
         catch (error) {
             console.log(error);

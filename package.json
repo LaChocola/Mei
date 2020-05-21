@@ -71,10 +71,5 @@
     "Node.js"
   ],
   "author": "Chocola (https://chocola.codes)",
-  "license": "GPL-3.0-or-later",
-  "jest": {
-    "setupFilesAfterEnv": [
-      "./__fixtures__/commands.js"
-    ]
-  }
+  "license": "GPL-3.0-or-later"
 }

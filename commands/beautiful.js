@@ -33,15 +33,14 @@ module.exports = {
             const bg = await Jimp.read("https://owo.whats-th.is/495acb.jpg");
             const avy = await Jimp.read(pic);
             avy.resize(95, 106);
-            bg.clone()
+            var out = bg.clone()
                 .blit(avy, 253, 23)
-                .blit(avy, 258, 224)
-                .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
-                    bot.createMessage(m.channel.id, "", {
-                        "file": buffer,
-                        "name": name + "beautiful.png"
-                    });
-                });
+                .blit(avy, 258, 224);
+            var buffer = await out.getBufferAsync(Jimp.MIME_PNG);
+            bot.createMessage(m.channel.id, "", {
+                "file": buffer,
+                "name": name + "beautiful.png"
+            });
         }
         catch (error) {
             console.log(error);

@@ -98,25 +98,25 @@ module.exports = {
                 const user2 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[1].id}/${m.mentions[1].avatar}.png?size=1024`); // TODO Repalce with gif supporting detection
                 user1.resize(128, 128);
                 user2.resize(128, 128);
-                bg.resize(384, 128).composite(user1, 0, 0).composite(user2, 256, 0).getBuffer(Jimp.AUTO, function(err, buffer) {
-                    if (random && !random1) {
-                        bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; I will find someone for you~ ~~Only one user was detected. Auto matching with a random online member~~\nIntroducing: **${firstPart}${lastPart}**`, {
-                            "file": buffer,
-                            "name": file
-                        });
-                        return;
-                    }
-                    if (random && random1) {
-                        bot.createMessage(m.channel.id, `Lovely shi... No one? What were you expecting ${m.author.username}? :thinking: I will find some people to match~ ~~No users were detected. Auto matching 2 random online members~~\nIntroducing: **${firstPart}${lastPart}**`, {
-                            "file": buffer,
-                            "name": file
-                        });
-                        return;
-                    }
-                    bot.createMessage(m.channel.id, `Lovely shipping~\nIntroducing: **${firstPart}${lastPart}**`, {
+                var out = bg.resize(384, 128).composite(user1, 0, 0).composite(user2, 256, 0);
+                var buffer = await out.getBufferAsync(Jimp.AUTO);
+                if (random && !random1) {
+                    bot.createMessage(m.channel.id, `Lovely shi... Alone? Don't be like that ${m.author.username} ;-; I will find someone for you~ ~~Only one user was detected. Auto matching with a random online member~~\nIntroducing: **${firstPart}${lastPart}**`, {
                         "file": buffer,
                         "name": file
                     });
+                    return;
+                }
+                if (random && random1) {
+                    bot.createMessage(m.channel.id, `Lovely shi... No one? What were you expecting ${m.author.username}? :thinking: I will find some people to match~ ~~No users were detected. Auto matching 2 random online members~~\nIntroducing: **${firstPart}${lastPart}**`, {
+                        "file": buffer,
+                        "name": file
+                    });
+                    return;
+                }
+                bot.createMessage(m.channel.id, `Lovely shipping~\nIntroducing: **${firstPart}${lastPart}**`, {
+                    "file": buffer,
+                    "name": file
                 });
             }
             catch (error) {

@@ -93,7 +93,7 @@
         "no-path-concat": 2,
         "function-paren-newline": [
             1,
-            "never"
+            "consistent"
         ],
         "space-before-function-paren": [
             1,

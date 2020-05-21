@@ -5,8 +5,7 @@ process.on("unhandledRejection", (err, promise) => {
     console.error(err ? err.stack : promise);
 });
 
-const ErisPlus = require("./erisplus");
-const Eris = ErisPlus(require("eris"));
+const Eris = require("./erisplus");
 
 require("colors");
 const fs = require("fs").promises;

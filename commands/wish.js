@@ -32,29 +32,27 @@ module.exports = {
             bot.createMessage(m.channel.id, "This Command can't be used with more than one mention");
             return;
         }
-        bot.sendChannelTyping(m.channel.id).then(async function() {
-            try {
-                const bg = await Jimp.read("https://owo.whats-th.is/4Vp1MUG.png");
-                const avy = await Jimp.read(pic);
-                const nameFont = await Jimp.loadFont("https://raw.githubusercontent.com/LaChocola/Mei/master/db/fonts/trebuchetms/TrebuchetMS.fnt");
-                const timeFont = await Jimp.loadFont("https://raw.githubusercontent.com/LaChocola/Mei/master/db/fonts/timefont/timeFont.fnt");
-                avy.resize(141, 116);
-                bg.clone()
-                    .blit(avy, 15, 12)
-                    .print(nameFont, 215, 30, name)
-                    .print(timeFont, 460, 37, time)
-                    .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
-                        bot.createMessage(m.channel.id, "", {
-                            file: buffer,
-                            name: "wish.png"
-                        });
-                    });
-            }
-            catch (error) {
-                console.log(error);
-                return bot.createMessage(m.channel.id, "Something went wrong...");
-            }
-        });
+        await bot.sendChannelTyping(m.channel.id);
+        try {
+            const bg = await Jimp.read("https://owo.whats-th.is/4Vp1MUG.png");
+            const avy = await Jimp.read(pic);
+            const nameFont = await Jimp.loadFont("https://raw.githubusercontent.com/LaChocola/Mei/master/db/fonts/trebuchetms/TrebuchetMS.fnt");
+            const timeFont = await Jimp.loadFont("https://raw.githubusercontent.com/LaChocola/Mei/master/db/fonts/timefont/timeFont.fnt");
+            avy.resize(141, 116);
+            var out = bg.clone()
+                .blit(avy, 15, 12)
+                .print(nameFont, 215, 30, name)
+                .print(timeFont, 460, 37, time);
+            var buffer = await out.getBufferAsync(Jimp.MIME_PNG);
+            bot.createMessage(m.channel.id, "", {
+                file: buffer,
+                name: "wish.png"
+            });
+        }
+        catch (error) {
+            console.log(error);
+            return bot.createMessage(m.channel.id, "Something went wrong...");
+        }
     },
     help: ";)",
     type: "Image Command"

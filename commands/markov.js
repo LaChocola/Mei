@@ -1,6 +1,7 @@
 "use strict";
 
 const MarkovGen = require("markov-generator");
+
 const ids = require("../ids");
 
 module.exports = {
