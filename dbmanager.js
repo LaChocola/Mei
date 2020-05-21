@@ -51,7 +51,7 @@ async function load(dbname) {
             data = await loadFrom(backupath);
             // If we successfully loaded the backup, save it
             if (data) {
-                await save(data);
+                await save(dbname, data);
                 console.log("Restore Successful");
             }
         }
