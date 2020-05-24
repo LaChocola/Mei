@@ -438,8 +438,9 @@ bot.on("messageCreate", async function(m) {
             bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
             return;
         }
+
         if (cmd.disable) {
-            bot.createMessage(m.channel.id, `Sorry. \`${prefix}${command}\` has been temporarily disabled. Please try again later.`)
+            bot.createMessage(m.channel.id, `Sorry. \`${prefix}${command}\` has been temporarily disabled. Please try again later.`);
             console.warn("WRN".black.bgYellow
             + ` ${prefix}${command} is currently disabled`.magenta.bold
             + " - ".blue.bold + m.guild.name.cyan.bold
@@ -448,9 +449,8 @@ bot.on("messageCreate", async function(m) {
             + ")");
             return;
         }
-        else {
-            await cmd.main(bot, m, args, prefix);
-        }
+
+        await cmd.main(bot, m, args, prefix);
     }
     catch (err) {
         console.log(err);
