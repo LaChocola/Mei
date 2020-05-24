@@ -203,6 +203,7 @@ async function processQueue(bot, guildid, textChannel) {
 
 async function getInfo(code) {
     var info;
+    console.debug("Getting info for code:", code);
     try {
         info = await yt.getInfo("https://www.youtube.com/watch?v=" + code);
     }
