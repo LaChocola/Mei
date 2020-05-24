@@ -1,5 +1,7 @@
 "use strict";
 
+const domain = require("domain");
+
 const yt = require("ytdl-core");
 const progress = require("progress-string");
 const ytsr = require("ytsr");
@@ -12,7 +14,6 @@ var hands = [":wave::skin-tone-1:", ":wave::skin-tone-2:", ":wave::skin-tone-3:"
 function parseCode(args) {
     args = args || "";
     var code = undefined;
-
     try {
         code = yt.getVideoID(args);
     }
@@ -202,15 +203,28 @@ async function processQueue(bot, guildid, textChannel) {
 }
 
 async function getInfo(code) {
-    var info;
-    console.debug("Getting info for code:", code);
-    try {
-        info = await yt.getInfo("https://www.youtube.com/watch?v=" + code);
-    }
-    catch (err) {
-        console.warn(`Failed to get info for ${code}: ${err}`);
-    }
-    return info;
+    return new Promise(function(resolve, reject) {
+        console.debug("Getting info for code:", code);
+
+        // Domain code to catch uncaughtException coming from yt.getInfo()
+        // https://nodejs.org/api/domain.html
+        var d = domain.create();
+        d.on("error", function(err) {
+            console.warn(`Uncaught exception while trying to get info for ${code}: ${err}`);
+            resolve(undefined);
+        });
+
+        d.run(function() {
+            yt.getInfo("https://www.youtube.com/watch?v=" + code)
+                .then(function(info) {
+                    resolve(info);
+                })
+                .catch(function(err) {
+                    console.warn(`Failed to get info for ${code}: ${err}`);
+                    resolve(undefined);
+                });
+        });
+    });
 }
 
 async function addToQueue(m, args, isPlaying) {
