@@ -441,7 +441,7 @@ bot.on("messageCreate", async function(m) {
         if (cmd.disable) {
             bot.createMessage(m.channel.id, `Sorry. \`${prefix}${command}\` has been temporarily disabled. Please try again later.`)
             console.warn("WRN".black.bgYellow
-            + `${prefix}${command} is currently disabled`.magenta.bold
+            + ` ${prefix}${command} is currently disabled`.magenta.bold
             + " - ".blue.bold + m.guild.name.cyan.bold
             + " > ".blue.bold + "#" + m.channel.name.green.bold
             + " (" + `https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}`.bold.red
