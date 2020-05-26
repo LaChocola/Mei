@@ -1,7 +1,5 @@
 "use strict";
 
-const domain = require("domain");
-
 const yt = require("ytdl-core");
 const progress = require("progress-string");
 const ytsr = require("ytsr");
@@ -203,28 +201,16 @@ async function processQueue(bot, guildid, textChannel) {
 }
 
 async function getInfo(code) {
-    return new Promise(function(resolve, reject) {
-        console.debug("Getting info for code:", code);
+    console.debug(`Getting info for code: ${code}`);
 
-        // Domain code to catch uncaughtException coming from yt.getInfo()
-        // https://nodejs.org/api/domain.html
-        var d = domain.create();
-        d.on("error", function(err) {
-            console.warn(`Uncaught exception while trying to get info for ${code}: ${err}`);
-            resolve(undefined);
-        });
-
-        d.run(function() {
-            yt.getInfo("https://www.youtube.com/watch?v=" + code)
-                .then(function(info) {
-                    resolve(info);
-                })
-                .catch(function(err) {
-                    console.warn(`Failed to get info for ${code}: ${err}`);
-                    resolve(undefined);
-                });
-        });
-    });
+    var info;
+    try {
+        info = await yt.getInfo("https://www.youtube.com/watch?v=" + code);
+    }
+    catch(err) {
+        console.warn(`Error getting info for code: ${code}` , err);
+    }
+    return info;
 }
 
 async function addToQueue(m, args, isPlaying) {
@@ -618,5 +604,5 @@ module.exports = {
         }
     },
     help: "`[prefix]play <YT URL>` | `[prefix]play <search>` to play | `[prefix]play stop` to stop",
-    disable: true
+    disable: false
 };
