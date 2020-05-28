@@ -2,8 +2,7 @@
 
 const serversdb = require("../servers");
 
-const hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-const hand = hands[Math.floor(Math.random() * hands.length)];
+const { isNum, toNum, chooseHand } = require("../misc");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
@@ -15,7 +14,7 @@ module.exports = {
             guildsdata[guild.id] = {};
             guildsdata[guild.id].name = guild.name;
             guildsdata[guild.id].owner = guild.ownerID;
-            bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${hand}`).then(function(msg) {
+            bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${chooseHand()}`).then(function(msg) {
                 return setTimeout(function() {
                     bot.deleteMessage(m.channel.id, m.id, "Timeout");
                     bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -33,10 +32,8 @@ module.exports = {
             return;
         }
         var index = 5000;
-        if (args) {
-            if (!isNaN(+args)) {
-                index = args;
-            }
+        if (isNum(args)) {
+            index = toNum(args);
         }
         var channel = guildsdata[guild.id].art;
         channel = bot.getChannel(channel);
