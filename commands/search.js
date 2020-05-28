@@ -60,8 +60,8 @@ async function searchGoogleScraper(args) {
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
-        args = m.cleanContent.replace(`${prefix}search`, "").trim();
-        if (!args) {
+        var cleanArgs = m.cleanContent.replace(`${prefix}search`, "").trim();
+        if (!cleanArgs) {
             m.reply(`${this.help}\nAdd a term to search for the result using the format \`${prefix}search <term>\`. Ex: \`${prefix}search discord\``, 10000, true);
             return;
         }
@@ -69,7 +69,7 @@ module.exports = {
 
         try {
             try {
-                var result = await searchGoogleApi(args);
+                var result = await searchGoogleApi(cleanArgs);
             }
             catch (err) {
                 console.log(err);
@@ -77,7 +77,7 @@ module.exports = {
                     throw err;
                 }
                 console.log("Falling back on HTML scraper...");
-                result = await searchGoogleScraper(args);
+                result = await searchGoogleScraper(cleanArgs);
             }
         }
         catch (err) {
