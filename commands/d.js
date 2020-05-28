@@ -3,8 +3,8 @@
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
-        args = m.content.replace(`${prefix}d `, "");
-        if (args.split("|").length > 2) {
+        var cleanArgs = m.content.replace(`${prefix}d `, "");
+        if (cleanArgs.split("|").length > 2) {
             bot.createMessage(m.channel.id, "You are onle able to roll 2 dice at once. Please use the following format: `" + prefix + "d 1d20 | 2d10` to roll multiple dice.").then((msg) => {
                 return setTimeout(function() {
                     bot.deleteMessage(m.channel.id, msg.id, "Timeout");
@@ -13,13 +13,13 @@ module.exports = {
             });
             return;
         }
-        if (args.split("|")[1]) {
-            var args2 = args.split("|")[1].trim();
+        if (cleanArgs.split("|")[1]) {
+            var args2 = cleanArgs.split("|")[1].trim();
             var dice2 = args2.split("d")[0].trim() || null;
             var amount2 = args2.split("d")[1].trim() || null;
         }
-        var dice = args.split("|")[0].split("d")[0] || null;
-        var amount = args.split("|")[0].split("d")[1] || null;
+        var dice = cleanArgs.split("|")[0].split("d")[0] || null;
+        var amount = cleanArgs.split("|")[0].split("d")[1] || null;
         if (dice) {
             dice = dice.trim();
         }
