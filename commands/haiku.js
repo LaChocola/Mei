@@ -4,6 +4,7 @@ const Haikudos = require("haikudos");
 
 // Wrap Haikudo's callback in a promise
 async function HaikudosPromise() {
+    // eslint-disable-next-line no-unused-vars
     return new Promise(function(resolve, reject) {
         Haikudos(function(haiku) {
             resolve(haiku);

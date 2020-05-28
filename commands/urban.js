@@ -8,8 +8,8 @@ module.exports = {
     main: async function(bot, m, args, prefix) {
         var word = m.content.replace(`${prefix}urban`, "").trim();
         if (!word) {
-            m.reply(`${this.help}\nAdd a term to search on Urban Dictionary. \`${prefix}urban <term>\`. Ex: \`${prefix}search discord\``, 10000)
-            return
+            m.reply(`${this.help}\nAdd a term to search on Urban Dictionary. \`${prefix}urban <term>\`. Ex: \`${prefix}search discord\``, 10000);
+            return;
         }
         var urbanJsonURL = "http://api.urbandictionary.com/v0/define?term=" + esc(word);
 

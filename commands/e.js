@@ -7,7 +7,7 @@ module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
         if (m.content === `${prefix}e`) {
-            bot.createMessage(m.channel.id, "Please add something i.e. ``" + prefix+ "e Whats cooler than being cool``");
+            bot.createMessage(m.channel.id, "Please add something i.e. ``" + prefix + "e Whats cooler than being cool``");
             return;
         }
         args = unidecode(args);

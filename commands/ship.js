@@ -44,15 +44,16 @@ module.exports = {
             }
         }
 
+        var random;
         if (args.toLowerCase().includes("random")) {
-            var random = m.channel.guild.members.filter(m => !m.bot && m.status !== "offline");
+            random = m.channel.guild.members.filter(m => !m.bot && m.status !== "offline");
             var random1 = random[Math.floor(Math.random() * random.length)];
             random = random[Math.floor(Math.random() * random.length)];
             m.mentions.push(random, random1);
         }
 
         if (m.mentions.length === 1) { // If the user mentions only one person assign a random match
-            var random = m.channel.guild.members.filter(m => !m.bot && m.status !== "offline");
+            random = m.channel.guild.members.filter(m => !m.bot && m.status !== "offline");
             random = random[Math.floor(Math.random() * random.length)];
             m.mentions.push(random);
         }
