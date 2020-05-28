@@ -5,15 +5,15 @@ module.exports = {
     main: async function(bot, m, args, prefix) {
         // Why do we override the prefix???
         // prefix = "!";
-        args = m.content.slice(prefix.length).split(" ");
-        args.shift();
+        var cleanArgs = m.content.slice(prefix.length).split(" ");
+        cleanArgs.shift();
 
-        var message = args.join(" ");
-        if (args.includes("code")) {
+        var message = cleanArgs.join(" ");
+        if (cleanArgs.includes("code")) {
             message = "```" + message + "```";
         }
 
-        if (!args.includes("blank")) {
+        if (!cleanArgs.includes("blank")) {
             message = "**Embedded Text:**\n" + message;
         }
 
