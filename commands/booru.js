@@ -30,7 +30,7 @@ module.exports = {
             });
             return;
         }
-        args = m.cleanContent.toLowerCase().replace(`${prefix}booru`, "").trim().split(", ");
+        var cleanArgs = m.cleanContent.toLowerCase().replace(`${prefix}booru`, "").trim().split(", ");
 
         // TODO: Move this into a separate `getArgs()` function
         /* Sets:
@@ -83,7 +83,7 @@ module.exports = {
         var limit = null;
         var site = null;
 
-        var tags = args.filter(function(arg) {
+        var tags = cleanArgs.filter(function(arg) {
             if (arg) {
                 if (limit === null && isNumeric(arg)) {
                     limit = Math.floor(Number(arg));
