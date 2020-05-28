@@ -12,7 +12,6 @@ var hands = [":wave::skin-tone-1:", ":wave::skin-tone-2:", ":wave::skin-tone-3:"
 function parseCode(args) {
     args = args || "";
     var code = undefined;
-
     try {
         code = yt.getVideoID(args);
     }
@@ -202,12 +201,14 @@ async function processQueue(bot, guildid, textChannel) {
 }
 
 async function getInfo(code) {
+    console.debug(`Getting info for code: ${code}`);
+
     var info;
     try {
         info = await yt.getInfo("https://www.youtube.com/watch?v=" + code);
     }
-    catch (err) {
-        console.warn(`Failed to get info for ${code}: ${err}`);
+    catch(err) {
+        console.warn(`Error getting info for code: ${code}` , err);
     }
     return info;
 }
@@ -603,5 +604,5 @@ module.exports = {
         }
     },
     help: "`[prefix]play <YT URL>` | `[prefix]play <search>` to play | `[prefix]play stop` to stop",
-    disable: true
+    disable: false
 };
