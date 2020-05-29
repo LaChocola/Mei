@@ -8,6 +8,7 @@ module.exports = {
     main: async function(bot, m, args, prefix) {
         // ignore non-chocolas
         if (!(m.author.id === ids.users.chocola || m.author.id === bot.getOwnerID())) {
+            console.log("Unauthorized attempt to run reload command.");
             return;
         }
         var cmdName = args.toLowerCase();
