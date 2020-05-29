@@ -203,5 +203,20 @@ Object.defineProperty(Eris.User.prototype, "fullname", {
     }
 });
 
+/**
+ * Get user id of the bot's owner
+ *
+ * @memberOf external:Client#
+ * @member getOwnerID
+ */
+Object.defineProperty(Eris.Client.prototype, "getOwnerID", {
+    value: async function() {
+        var bot = this;
+        var appinfo = await bot.getOAuthApplication();
+        // This may not work properly for teams?
+        return appinfo.owner.id;
+    }
+});
+
 module.exports = Eris;
 
