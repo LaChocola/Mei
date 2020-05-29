@@ -45,7 +45,7 @@ function getCommand(name) {
 }
 
 // Get a loaded command
-function getAllCommands(name) {
+function getAllCommands() {
     return Array.from(commands.values());
 }
 
