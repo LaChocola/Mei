@@ -14,7 +14,7 @@ async function isEnabled(name, data) {
     if (!commands.has(name)) {
         return false;
     }
-    var enabled = data.commands[name].enabled;
+    var enabled = data.commands[name] && data.commands[name].enabled;
     if (enabled === undefined) {
         enabled = true;
     }
@@ -26,6 +26,13 @@ async function disableCommand(name, data) {
     if (!commands.has(name)) {
         return;
     }
+    if (!data.commands[name]) {
+        data.commands[name] = {
+            totalUses: 0,
+            users: {},
+            enabled: true
+        };
+    }
     data.commands[name].enabled = false;
     await datadb.save(data);
 }
@@ -34,6 +41,13 @@ async function disableCommand(name, data) {
 async function enableCommand(name, data) {
     if (!commands.has(name)) {
         return;
+    }
+    if (!data.commands[name]) {
+        data.commands[name] = {
+            totalUses: 0,
+            users: {},
+            enabled: true
+        };
     }
     data.commands[name].enabled = true;
     await datadb.save(data);

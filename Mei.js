@@ -399,7 +399,8 @@ bot.on("messageCreate", async function(m) {
     if (!data.commands[cmdName]) {
         data.commands[cmdName] = {
             totalUses: 0,
-            users: {}
+            users: {},
+            enabled: true
         };
     }
     if (!data.commands[cmdName].users[m.author.id]) {
