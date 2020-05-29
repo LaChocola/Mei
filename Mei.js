@@ -198,6 +198,8 @@ bot.on("messageCreate", async function(m) {
     if (cmdName === "pls") {
         if (subCmdName === "stop") {
             await m.reply("Let me rest my eyes for a moment", 1500, true);
+            // This needs a delay in order to give m.reply() time to delete the messages
+            await misc.delay(2000);
             process.exit(0);
         }
 
