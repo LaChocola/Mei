@@ -2,16 +2,16 @@
 
 const escapeStringRegexp = require("escape-string-regexp");
 
-const misc = require("../misc");
+const cmdmanager = require("../cmdmanager");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
         var commandName = args.replace(prefix, "");
         if (commandName !== "") {
-            var commands = await misc.listCommands();
+            var commands = cmdmanager.list();
             if (commands.includes(args)) {
-                var cmd = misc.quickloadCommand(commandName);
+                var cmd = cmdmanager.get(commandName);
                 if (!cmd.hidden) {
                     bot.createMessage(m.channel.id, "`" + prefix + args + "`, " + cmd.help.replace(new RegExp(escapeStringRegexp("[prefix]"), "g"), prefix));
                     return;

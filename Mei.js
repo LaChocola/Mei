@@ -11,6 +11,7 @@ require("colors");
 const fs = require("fs").promises;
 
 const conf = require("./conf");
+const cmdmanager = require("./cmdmanager");
 const datadb = require("./data");
 const peopledb = require("./people");
 const serversdb = require("./servers");
@@ -18,6 +19,7 @@ const misc = require("./misc");
 const ids = require("./ids");
 
 conf.load();
+cmdmanager.loadAll();
 
 var bot = Eris(conf.tokens.mei);
 
@@ -192,83 +194,68 @@ bot.on("messageCreate", async function(m) {
         return;
     }
 
-    if (m.content.includes("pls")) {
-        if (m.content.includes("stop")) {
-            var sentMsg = await m.reply("Let me rest my eyes for a moment");
-            await misc.delay(1500);
-            await sentMsg.delete("Timeout");
-            await m.delete("Timeout");
+    var [ cmdName, subCmdName, args] = misc.splitBySpace(m.content, 2);
+    if (cmdName === "pls") {
+        if (subCmdName === "stop") {
+            await m.reply("Let me rest my eyes for a moment", 1500, true);
             process.exit(0);
         }
 
-        if (m.content.includes("override")) {
+        if (subCmdName === "override") {
             await m.reply("Chocola Recognized. Permission overrides engaged. I am at your service~", 2000);
             return;
         }
 
-        if (m.guild.id === ids.guilds.smallworld) {
-            if (m.content.includes(" mute") && m.mentions.length > 0) {
-                for (let mention of m.mentions) {
-                    await bot.addGuildMemberRole(m.guild.id, mention.id, ids.roles.role2, "Daddy said shush");
-                    await m.reply(misc.chooseHand(), 5000);
-                }
-                return;
+        if (subCmdName === "mute" && m.mentions.length > 0 && m.guild.id === ids.guilds.smallworld) {
+            for (let mention of m.mentions) {
+                await bot.addGuildMemberRole(m.guild.id, mention.id, ids.roles.role2, "Daddy said shush");
+                await m.reply(misc.chooseHand(), 5000);
             }
-            if (m.content.includes(" unmute") && m.mentions.length > 0) {
-                for (let mention of m.mentions) {
-                    await bot.removeGuildMemberRole(m.guild.id, mention.id, ids.roles.role2, "Daddy said speak");
-                    await m.reply(misc.chooseHand(), 5000);
-                }
-                return;
-            }
+            return;
         }
 
-        if (m.content.includes("disable")) {
-            let command = m.content.replace("pls", "").replace("disable", "").replace("!", "").trim();
-            let commands = await misc.listCommands();
-
-            if (commands.includes(command)) {
-                let cmd = await misc.loadCommand(command);
-                console.log(cmd);
-
-                if (cmd.disable) {
-                    await m.reply(`${command} is already disabled. Doing nothing.`, 5000);
-                    await m.deleteIn(5000);
-                    return;
-                }
-                cmd.disable = true;
-                console.log(cmd);
-                // This will not do what you want it to. Command files are not json files.
-                //await fs.writeFile(path.join(__dirname, "commands", command + ".js"), JSON.stringify(cmd));
-                await m.reply(`${command} has been disabled.`, 5000);
-                await m.deleteIn(5000);
+        if (subCmdName === "unmute" && m.mentions.length > 0 && m.guild.id === ids.guilds.smallworld) {
+            for (let mention of m.mentions) {
+                await bot.removeGuildMemberRole(m.guild.id, mention.id, ids.roles.role2, "Daddy said speak");
+                await m.reply(misc.chooseHand(), 5000);
             }
-            else {
-                await m.reply(`${command} is not a valid command, please try again.`, 5000);
-                await m.deleteIn(5000);
-            }
+            return;
         }
-        else if (m.content.includes("enable")) {
-            let command = m.content.replace("pls", "").replace("enable", "").replace("!", "").trim();
-            let commands = await misc.listCommands();
 
-            if (commands.includes(command)) {
-                let cmd = await misc.loadCommand(command);
-                if (!cmd.disable) {
-                    await m.reply(`${command} is already enabled. Doing nothing.`, 5000);
-                    await m.deleteIn(5000);
-                    return;
-                }
-                cmd.disable = false;
-                // This will not do what you want it to. Command files are not json files.
-                //await fs.writeFile(path.join(__dirname, "commands", command + ".js"), JSON.stringify(cmd));
-                await m.reply(`${command} has been enabled.`, 5000);
-                await m.deleteIn(5000);
+        if (subCmdName === "disable") {
+            let command = args;
+
+            if (!cmdmanager.has(command)) {
+                await m.reply(`${command} is not a valid command, please try again.`, 5000, true);
+                return;
             }
-            else {
-                await m.reply(`${command} is not a valid command, please try again.`, 5000);
-                await m.deleteIn(5000);
+
+            if (!cmdmanager.isEnabled(command)) {
+                await m.reply(`${command} is already disabled. Doing nothing.`, 5000, true);
+                return;
             }
+
+            cmdmanager.disable(command);
+            await m.reply(`${command} has been disabled.`, 5000, true);
+            return;
+        }
+
+        if (subCmdName === "enable") {
+            let command = args;
+
+            if (!cmdmanager.has(command)) {
+                await m.reply(`${command} is not a valid command, please try again.`, 5000, true);
+                return;
+            }
+
+            if (!cmdmanager.isEnabled(command)) {
+                await m.reply(`${command} is already enabled. Doing nothing.`, 5000, true);
+                return;
+            }
+
+            cmdmanager.enable(command);
+            await m.reply(`${command} has been enabled.`, 5000, true);
+            return;
         }
     }
 });
@@ -344,7 +331,6 @@ bot.on("messageCreate", async function(m) {
     }
 
     const timestamps = [Date.now()];
-
     var data = await datadb.load();
 
     // Ignore banned users
@@ -358,7 +344,7 @@ bot.on("messageCreate", async function(m) {
     conf.load();
     var guildsdata = await serversdb.load();
     var guilddata = guildsdata[m.guild.id];
-    var prefix = guilddata && guilddata.prefix || conf.prefix;
+    m.prefix = guilddata && guilddata.prefix || conf.prefix;
 
     // Game mode
     if (guilddata
@@ -368,46 +354,45 @@ bot.on("messageCreate", async function(m) {
         && guilddata.game.active
         && guilddata.game.choices.includes(m.content)
     ) {
-        m.content = prefix + "t " + m.content;
+        m.content = m.prefix + "t " + m.content;
     }
 
     // Only accept commands starting with prefix
-    if (!m.content.startsWith(prefix)) {
+    if (!m.content.startsWith(m.prefix)) {
         return;
     }
 
     timestamps.push(Date.now());
     // Ignore play command on this guild
-    if (m.guild.id === ids.guilds.guild2 && m.content.startsWith(`${prefix}play`)) {
+    if (m.guild.id === ids.guilds.guild2 && m.content.startsWith(`${m.prefix}play`)) {
         return;
     }
 
     timestamps.push(Date.now());
-    var commands = await misc.listCommands();
 
     timestamps.push(Date.now());
-    var command = m.content.slice(prefix.length).split(" ", 1)[0].toLowerCase();
+    var cmdName = m.content.slice(m.prefix.length).split(" ", 1)[0].toLowerCase();
     // Ignore non-existent commands
-    if (!commands.includes(command)) {
+    if (!cmdmanager.has(cmdName)) {
         return;
     }
 
     timestamps.push(Date.now());
-    let cmd = await misc.loadCommand(command);
+    let cmd = cmdmanager.get(cmdName);
 
     timestamps.push(Date.now());
     data.commands.totalRuns++;
-    if (!data.commands[command]) {
-        data.commands[command] = {
+    if (!data.commands[cmdName]) {
+        data.commands[cmdName] = {
             totalUses: 0,
             users: {}
         };
     }
-    if (!data.commands[command].users[m.author.id]) {
-        data.commands[command].users[m.author.id] = 0;
+    if (!data.commands[cmdName].users[m.author.id]) {
+        data.commands[cmdName].users[m.author.id] = 0;
     }
-    data.commands[command].users[m.author.id]++;
-    data.commands[command].totalUses++;
+    data.commands[cmdName].users[m.author.id]++;
+    data.commands[cmdName].totalUses++;
 
     timestamps.push(Date.now());
     await datadb.save(data);
@@ -421,7 +406,7 @@ bot.on("messageCreate", async function(m) {
     var logchannel = `#${m.channel.name}`.green.bold;
     var logdivArrow = " > ".blue.bold;
     var logdivDash = " - ".blue.bold;
-    var logcmd = `${prefix}${command}`.bold;
+    var logcmd = `${m.prefix}${cmdName}`.bold;
     var logargs = `${args}`.bold;
 
     timestamps.push(Date.now());
@@ -434,14 +419,14 @@ bot.on("messageCreate", async function(m) {
 
     try {
         if (cmd.nsfw && !m.channel.nsfw) {
-            bot.createMessage(m.channel.id, "This command can only be used in NSFW channels");
+            m.reply("This command can only be used in NSFW channels");
             return;
         }
 
-        if (cmd.disable) {
-            bot.createMessage(m.channel.id, `Sorry. \`${prefix}${command}\` has been temporarily disabled. Please try again later.`);
+        if (!cmdmanager.isEnabled(cmdName, data)) {
+            m.reply(`Sorry. \`${m.prefix}${cmdName}\` has been temporarily disabled. Please try again later.`);
             console.warn("WRN".black.bgYellow
-            + ` ${prefix}${command} is currently disabled`.magenta.bold
+            + ` ${m.prefix}${cmdName} is currently disabled`.magenta.bold
             + " - ".blue.bold + m.guild.name.cyan.bold
             + " > ".blue.bold + "#" + m.channel.name.green.bold
             + " (" + `https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}`.bold.red
@@ -449,7 +434,7 @@ bot.on("messageCreate", async function(m) {
             return;
         }
 
-        await cmd.main(bot, m, args, prefix);
+        await cmd.main(bot, m, args, m.prefix);
     }
     catch (err) {
         console.log(err);

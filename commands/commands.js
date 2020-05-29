@@ -2,33 +2,8 @@
 
 const escapeStringRegexp = require("escape-string-regexp");
 
-const misc = require("../misc");
+const cmdmanager = require("../cmdmanager");
 const splitPages = require("../utils/splitPages");
-
-// Returns a list of commands
-/*  [
- *      {
- *          name: "commandname",
- *          help: "command help string",
- *          hidden: true/false,
- *      },
- *      ...
- *  ]
- */
-async function getCommands() {
-    var commandNames = await misc.listCommands();
-    var commands = commandNames.map(function(name) {
-        var cmd = misc.quickloadCommand(name);
-
-        return {
-            name: name,
-            help: cmd.help,
-            hidden: cmd.hidden
-        };
-    });
-
-    return commands;
-}
 
 // Takes a command and prefix, and returns a help line string
 function formatHelpLine(command, prefix) {
@@ -40,13 +15,13 @@ function formatHelpLine(command, prefix) {
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
-        var commands = await getCommands();
+        var commands = cmdmanager.getAll();
         var publicCommands = commands.filter(c => !c.hidden);
         var helpText = publicCommands.map(c => formatHelpLine(c, prefix)).join("\n");
         var pages = splitPages(helpText, 2048);
 
         pages.forEach(function(p) {
-            m.channel.createMessage({
+            m.reply({
                 embed: {
                     color: 0x5A459C,
                     description: p
