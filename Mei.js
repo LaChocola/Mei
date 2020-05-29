@@ -226,18 +226,23 @@ bot.on("messageCreate", async function(m) {
             let command = args;
             let data = await datadb.load();
 
+            if (!command) {
+                await m.reply("Please specify a command to disable.", 5000, true);
+                return;
+            }
+
             if (!cmdmanager.has(command)) {
-                await m.reply(`${command} is not a valid command, please try again.`, 5000, true);
+                await m.reply(`"${command}" is not a valid command, please try again.`, 5000, true);
                 return;
             }
 
             if (!await cmdmanager.isEnabled(command, data)) {
-                await m.reply(`${command} is already disabled. Doing nothing.`, 5000, true);
+                await m.reply(`"${command}" is already disabled. Doing nothing.`, 5000, true);
                 return;
             }
 
             await cmdmanager.disable(command, data);
-            await m.reply(`${command} has been disabled.`, 5000, true);
+            await m.reply(`"${command}" has been disabled.`, 5000, true);
             return;
         }
 
@@ -245,18 +250,23 @@ bot.on("messageCreate", async function(m) {
             let command = args;
             let data = await datadb.load();
 
+            if (!command) {
+                await m.reply("Please specify a command to enable.", 5000, true);
+                return;
+            }
+
             if (!cmdmanager.has(command)) {
-                await m.reply(`${command} is not a valid command, please try again.`, 5000, true);
+                await m.reply(`"${command}" is not a valid command, please try again.`, 5000, true);
                 return;
             }
 
             if (!await cmdmanager.isEnabled(command, data)) {
-                await m.reply(`${command} is already enabled. Doing nothing.`, 5000, true);
+                await m.reply(`"${command}" is already enabled. Doing nothing.`, 5000, true);
                 return;
             }
 
             await cmdmanager.enable(command, data);
-            await m.reply(`${command} has been enabled.`, 5000, true);
+            await m.reply(`"${command}" has been enabled.`, 5000, true);
             return;
         }
     }
