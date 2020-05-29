@@ -413,7 +413,7 @@ bot.on("messageCreate", async function(m) {
     await datadb.save(data);
 
     // Commands
-    var args = m.content.replace(/\[\?\]/ig, "").split(" ");
+    var args = m.content.split(" ");
     args.splice(0, 1);
     args = args.join(" ");
     var loguser = `${m.author.fullname}`.magenta.bold;
