@@ -262,7 +262,7 @@ bot.on("messageCreate", async function(m) {
                 return;
             }
 
-            if (!await cmdmanager.isEnabled(command, data)) {
+            if (await cmdmanager.isEnabled(command, data)) {
                 await m.reply(`"${command}" is already enabled. Doing nothing.`, 5000, true);
                 return;
             }
