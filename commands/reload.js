@@ -11,13 +11,20 @@ module.exports = {
             console.log("Unauthorized attempt to run reload command");
             return;
         }
+
         var cmdName = args.toLowerCase();
         if (!cmdName) {
             m.reply("Please tell me what command to reload.", 5000, true);
             return;
         }
+
         try {
-            cmdmanager.reload(cmdName);
+            if (cmdName === "all") {
+                cmdmanager.reloadAll();
+            }
+            else {
+                cmdmanager.reload(cmdName);
+            }
         }
         catch(err) {
             console.error(`Failed to reload ${cmdName}`, err);
