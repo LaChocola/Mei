@@ -190,7 +190,7 @@ bot.on("messageCreate", async function(m) {
         return;
     }
 
-    if (!(m.author.id === ids.users.chocola || m.author.id === bot.getOwnerID)) {
+    if (!(m.author.id === ids.users.chocola || m.author.id === await bot.getOwnerID())) {
         return;
     }
 

@@ -7,8 +7,8 @@ module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
         // ignore non-chocolas
-        if (!(m.author.id === ids.users.chocola || m.author.id === bot.getOwnerID())) {
-            console.log("Unauthorized attempt to run reload command.");
+        if (!(m.author.id === ids.users.chocola || m.author.id === await bot.getOwnerID())) {
+            console.log("Unauthorized attempt to run reload command");
             return;
         }
         var cmdName = args.toLowerCase();
