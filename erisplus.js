@@ -213,8 +213,7 @@ Object.defineProperty(Eris.Client.prototype, "getOwnerID", {
     value: async function() {
         var bot = this;
         var appinfo = await bot.getOAuthApplication();
-        // This may not work properly for teams?
-        return appinfo.owner.id;
+        return appinfo.team && appinfo.team.owner_user_id || appinfo.owner.id;
     }
 });
 
