@@ -437,7 +437,7 @@ bot.on("messageCreate", async function(m) {
             return;
         }
 
-        if (!cmdmanager.isEnabled(cmdName, data)) {
+        if (!await cmdmanager.isEnabled(cmdName, data)) {
             m.reply(`Sorry. \`${m.prefix}${cmdName}\` has been temporarily disabled. Please try again later.`);
             console.warn("WRN".black.bgYellow
             + ` ${m.prefix}${cmdName} is currently disabled`.magenta.bold
