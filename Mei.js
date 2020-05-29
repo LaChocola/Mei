@@ -190,7 +190,7 @@ bot.on("messageCreate", async function(m) {
         return;
     }
 
-    if (m.author.id !== ids.users.chocola) {
+    if (!(m.author.id === ids.users.chocola || m.author.id === bot.getOwnerID)) {
         return;
     }
 
@@ -224,36 +224,38 @@ bot.on("messageCreate", async function(m) {
 
         if (subCmdName === "disable") {
             let command = args;
+            let data = await datadb.load();
 
             if (!cmdmanager.has(command)) {
                 await m.reply(`${command} is not a valid command, please try again.`, 5000, true);
                 return;
             }
 
-            if (!cmdmanager.isEnabled(command)) {
+            if (!await cmdmanager.isEnabled(command, data)) {
                 await m.reply(`${command} is already disabled. Doing nothing.`, 5000, true);
                 return;
             }
 
-            cmdmanager.disable(command);
+            await cmdmanager.disable(command, data);
             await m.reply(`${command} has been disabled.`, 5000, true);
             return;
         }
 
         if (subCmdName === "enable") {
             let command = args;
+            let data = await datadb.load();
 
             if (!cmdmanager.has(command)) {
                 await m.reply(`${command} is not a valid command, please try again.`, 5000, true);
                 return;
             }
 
-            if (!cmdmanager.isEnabled(command)) {
+            if (!await cmdmanager.isEnabled(command, data)) {
                 await m.reply(`${command} is already enabled. Doing nothing.`, 5000, true);
                 return;
             }
 
-            cmdmanager.enable(command);
+            await cmdmanager.enable(command, data);
             await m.reply(`${command} has been enabled.`, 5000, true);
             return;
         }
