@@ -51,9 +51,14 @@ global.setupCmd = function(command, args) {
 
     var botUser = new Eris.User({ id: "615778246180601876" });
 
+    var peteSmithUser = new Eris.User({ id: "435088936730361858" });
+    peteSmithUser.fullname = "Pete Smith#1234";
+    var nellyUser = new Eris.User({ id: "310836984388124672" });
+    nellyUser.fullname = "Nelly#5678";
+
     var bot = new Eris.Client();
-    bot.users.add({ id: "435088936730361858", fullname: "Pete Smith#1234" });
-    bot.users.add({ id: "310836984388124672", fullname: "Nelly#5678" });
+    bot.users.add(peteSmithUser);
+    bot.users.add(nellyUser);
     bot.users.add(user);
     bot.createMessage.mockResolvedValue(new Eris.Message({ id: "2" }));
     bot.uptime = 1000;
