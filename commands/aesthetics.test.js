@@ -2,7 +2,6 @@
 
 const aesthetics = require("./aesthetics");
 
-// Stub test to be expanded on later
 test("!aesthetics", async function() {
     var { bot, m, args, prefix } = setupCmd("aesthetics");
 
