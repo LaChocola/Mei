@@ -26,13 +26,17 @@ ${1} | ${32} | ${4294967296}
 });
 
 test.each`
-limit         | expected
-${undefined}  | ${["aaaa", "bbbb", "ccccc", "dddd"]}
-${1}          | ${["aaaa", "bbbb    ccccc dddd"]}
-${2}          | ${["aaaa", "bbbb", "ccccc dddd"]}
-${3}          | ${["aaaa", "bbbb", "ccccc", "dddd"]}
-${4}          | ${["aaaa", "bbbb", "ccccc", "dddd"]}
-`("splitBySpace(' aaaa       bbbb    ccccc dddd', $limit)", function({ limit, expected }) {
-    var result = misc.splitBySpace(" aaaa       bbbb    ccccc dddd", limit);
+s                                   | limit         | expected
+${""}                               | ${undefined}  | ${[""]}
+${""}                               | ${1}          | ${["", ""]}
+${""}                               | ${5}          | ${["", "", "", "", "", ""]}
+${" aaaa       bbbb    ccccc dddd"} | ${undefined}  | ${["aaaa", "bbbb", "ccccc", "dddd"]}
+${" aaaa       bbbb    ccccc dddd"} | ${1}          | ${["aaaa", "bbbb    ccccc dddd"]}
+${" aaaa       bbbb    ccccc dddd"} | ${2}          | ${["aaaa", "bbbb", "ccccc dddd"]}
+${" aaaa       bbbb    ccccc dddd"} | ${3}          | ${["aaaa", "bbbb", "ccccc", "dddd"]}
+${" aaaa       bbbb    ccccc dddd"} | ${4}          | ${["aaaa", "bbbb", "ccccc", "dddd", ""]}
+${" aaaa       bbbb    ccccc dddd"} | ${5}          | ${["aaaa", "bbbb", "ccccc", "dddd", "", ""]}
+`("splitBySpace($s, $limit)", function({ s, limit, expected }) {
+    var result = misc.splitBySpace(s, limit);
     expect(result).toEqual(expected);
 });

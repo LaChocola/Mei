@@ -210,15 +210,10 @@ function splitBySpace(s, limit) {
         parts = [];
         for (var i = 0; i < limit; i++) {
             var part = s.split(/\s+/, 1)[0];
-            if (part === "") {
-                break;
-            }
             s = s.slice(part.length).trim();
             parts.push(part);
         }
-        if (s !== "") {
-            parts.push(s);
-        }
+        parts.push(s);
     }
     return parts;
 }

@@ -17,6 +17,7 @@ const peopledb = require("./people");
 const serversdb = require("./servers");
 const misc = require("./misc");
 const ids = require("./ids");
+const pls = require("./pls");
 
 conf.load();
 cmdmanager.loadAll();
@@ -182,95 +183,11 @@ bot.on("messageCreate", async function(m) {
 
 // pls commands
 bot.on("messageCreate", async function(m) {
-    if (m.author.bot) {
-        return;
+    try {
+        await pls(bot, m);
     }
-
-    if (!m.guild) {
-        return;
-    }
-
-    if (!(m.author.id === ids.users.chocola || m.author.id === await bot.getOwnerID())) {
-        return;
-    }
-
-    var [ cmdName, subCmdName, args] = misc.splitBySpace(m.content, 2);
-    if (cmdName === "pls") {
-        if (subCmdName === "stop") {
-            await m.reply("Let me rest my eyes for a moment", 1500, true);
-            // This needs a delay in order to give m.reply() time to delete the messages
-            await misc.delay(2000);
-            process.exit(0);
-        }
-
-        if (subCmdName === "override") {
-            await m.reply("Chocola Recognized. Permission overrides engaged. I am at your service~", 2000);
-            return;
-        }
-
-        if (subCmdName === "mute" && m.mentions.length > 0 && m.guild.id === ids.guilds.smallworld) {
-            for (let mention of m.mentions) {
-                await bot.addGuildMemberRole(m.guild.id, mention.id, ids.roles.role2, "Daddy said shush");
-                await m.reply(misc.chooseHand(), 5000);
-            }
-            return;
-        }
-
-        if (subCmdName === "unmute" && m.mentions.length > 0 && m.guild.id === ids.guilds.smallworld) {
-            for (let mention of m.mentions) {
-                await bot.removeGuildMemberRole(m.guild.id, mention.id, ids.roles.role2, "Daddy said speak");
-                await m.reply(misc.chooseHand(), 5000);
-            }
-            return;
-        }
-
-        if (subCmdName === "disable") {
-            let command = args;
-            let data = await datadb.load();
-
-            if (!command) {
-                await m.reply("Please specify a command to disable.", 5000, true);
-                return;
-            }
-
-            if (!cmdmanager.has(command)) {
-                await m.reply(`"${command}" is not a valid command, please try again.`, 5000, true);
-                return;
-            }
-
-            if (!await cmdmanager.isEnabled(command, data)) {
-                await m.reply(`"${command}" is already disabled. Doing nothing.`, 5000, true);
-                return;
-            }
-
-            await cmdmanager.disable(command, data);
-            await m.reply(`"${command}" has been disabled.`, 5000, true);
-            return;
-        }
-
-        if (subCmdName === "enable") {
-            let command = args;
-            let data = await datadb.load();
-
-            if (!command) {
-                await m.reply("Please specify a command to enable.", 5000, true);
-                return;
-            }
-
-            if (!cmdmanager.has(command)) {
-                await m.reply(`"${command}" is not a valid command, please try again.`, 5000, true);
-                return;
-            }
-
-            if (await cmdmanager.isEnabled(command, data)) {
-                await m.reply(`"${command}" is already enabled. Doing nothing.`, 5000, true);
-                return;
-            }
-
-            await cmdmanager.enable(command, data);
-            await m.reply(`"${command}" has been enabled.`, 5000, true);
-            return;
-        }
+    catch(err) {
+        console.error("Error processing pls command", err);
     }
 });
 
