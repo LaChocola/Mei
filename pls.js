@@ -91,15 +91,65 @@ var plsCommands = {
     },
     // eslint-disable-next-line no-unused-vars
     "load": async function(bot, m, args) {
-        // TODO: Add load command
+        var cmdName = args.toLowerCase();
+        if (!cmdName) {
+            m.reply("Please tell me what command to load.", 5000, true);
+            return;
+        }
+
+        try {
+            cmdmanager.load(cmdName);
+        }
+        catch(err) {
+            console.error(`Failed to load ${cmdName}`, err);
+            m.reply(`I couldn't load ${cmdName}.`, 5000, true);
+            return;
+        }
+
+        m.reply(`Successfully load ${cmdName}`, 5000, true);
     },
     // eslint-disable-next-line no-unused-vars
     "unload": async function(bot, m, args) {
-        // TODO: Add unload command
+        var cmdName = args.toLowerCase();
+        if (!cmdName) {
+            m.reply("Please tell me what command to unload.", 5000, true);
+            return;
+        }
+
+        try {
+            cmdmanager.unload(cmdName);
+        }
+        catch(err) {
+            console.error(`Failed to unload ${cmdName}`, err);
+            m.reply(`I couldn't unload ${cmdName}.`, 5000, true);
+            return;
+        }
+
+        m.reply(`Successfully unload ${cmdName}`, 5000, true);
     },
     // eslint-disable-next-line no-unused-vars
     "reload": async function(bot, m, args) {
-        // TODO: Add reload command
+        var cmdName = args.toLowerCase();
+        if (!cmdName) {
+            m.reply("Please tell me what command to reload.", 5000, true);
+            return;
+        }
+
+        try {
+            if (cmdName === "all") {
+                cmdmanager.reloadAll();
+            }
+            else {
+                cmdmanager.reload(cmdName);
+            }
+        }
+        catch(err) {
+            console.error(`Failed to reload ${cmdName}`, err);
+            m.reply(`I couldn't reload ${cmdName}.`, 5000, true);
+            return;
+        }
+
+        m.reply(`Successfully reloaded ${cmdName}`, 5000, true);
     }
 };
 
@@ -112,7 +162,8 @@ async function pls(bot, m) {
         return;
     }
 
-    if (!(m.author.id === ids.users.chocola || m.author.id === await bot.getOwnerID())) {
+    var isOwner = m.author.id === ids.users.chocola || m.author.id === await bot.getOwnerID();
+    if (!isOwner) {
         return;
     }
 
