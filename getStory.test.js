@@ -129,7 +129,6 @@ describe("Gentle Responses", function() {
     });
 });
 
-
 describe("Violent Responses", function() {
     test("!v", async function() {
         var m = getm({ channel: { nsfw: true } });
