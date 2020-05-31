@@ -46,7 +46,6 @@
       },
       "Eris Plus": {
         "href": "../erisplus/index.html",
-        "target": "_blank",
         "class": "menu-item",
         "id": "erisplus_link"
       }
