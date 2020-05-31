@@ -5,7 +5,6 @@ after_success:
   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
   - chmod +x send.sh
   - ./send.sh success $WEBHOOK_URL
-  - ls
   - npm run build-docs
   - npm run build-erisplus-docs
 after_failure:
