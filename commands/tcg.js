@@ -18,7 +18,7 @@ module.exports = {
         var weaknesses = weakness && (weakness.type + ": " + weakness.value) || "None";
         var resistances = resistance && (resistance.type + ": " + resistance.value) || "None";
 
-        bot.createMessage(m.channel.id, {
+        m.reply({
             embed: {
                 title: chosen.name,
                 color: 0xA260F6,

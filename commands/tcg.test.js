@@ -10,7 +10,7 @@ test("!tcg", async function() {
 
     await tcg.main(bot, m, args, prefix);
 
-    expect(bot.createMessage).toBeCalledWith("658894691311550474", {
+    expect(m.reply).toBeCalledWith({
         embed: {
             color: 10641654,
             fields: [
