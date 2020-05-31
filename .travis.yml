@@ -13,18 +13,20 @@ after_failure:
   - ./send.sh failure $WEBHOOK_URL
 deploy:
   - provider: pages:git
-    edge: true
+    skip_cleanup: true
+    keep_history: true
     repo: nfearnley/Mei-docs
     target_branch: develop
-    deploy_key: $GITHUB_DOCS_TOKEN
+    github_token: $GITHUB_TOKEN
     local_dir: jsdocs
     on:
       branch: develop
   - provider: pages:git
-    edge: true
+    skip_cleanup: true
+    keep_history: true
     repo: nfearnley/Mei-docs
     target_branch: master
-    deploy_key: $GITHUB_DOCS_TOKEN
+    github_token: $GITHUB_TOKEN
     local_dir: jsdocs
     on:
       branch: master
