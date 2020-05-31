@@ -12,20 +12,19 @@ after_failure:
   - chmod +x send.sh
   - ./send.sh failure $WEBHOOK_URL
 deploy:
-  provider: pages:git
-  edge: true
-  repo: nfearnley/Mei-docs
-  target_branch: develop
-  deploy_key: $GITHUB_DOCS_TOKEN
-  local_dir: jsdocs
-  on:
-    branch: develop
-deploy:
-  provider: pages:git
-  edge: true
-  repo: nfearnley/Mei-docs
-  target_branch: master
-  deploy_key: $GITHUB_DOCS_TOKEN
-  local_dir: jsdocs
-  on:
-    branch: master
+  - provider: pages:git
+    edge: true
+    repo: nfearnley/Mei-docs
+    target_branch: develop
+    deploy_key: $GITHUB_DOCS_TOKEN
+    local_dir: jsdocs
+    on:
+      branch: develop
+  - provider: pages:git
+    edge: true
+    repo: nfearnley/Mei-docs
+    target_branch: master
+    deploy_key: $GITHUB_DOCS_TOKEN
+    local_dir: jsdocs
+    on:
+      branch: master
