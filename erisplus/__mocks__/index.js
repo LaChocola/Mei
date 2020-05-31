@@ -1,8 +1,8 @@
 "use strict";
 
 const copyGetter = require("./helpers/copyGetter");
-const Eris = jest.genMockFromModule("../erisplus");
-const orig = jest.requireActual("../erisplus");
+const Eris = jest.genMockFromModule("..");
+const orig = jest.requireActual("..");
 
 Eris.Message.mockImplementation(function(data) {
     if (data) {

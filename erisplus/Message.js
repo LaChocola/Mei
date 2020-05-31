@@ -2,7 +2,7 @@
 
 const Eris = require("eris");
 
-const { delay } = require("./misc");
+const { delay } = require("./utils");
 
 /**
  * @class Message
