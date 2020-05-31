@@ -6,7 +6,7 @@ after_success:
   - chmod +x send.sh
   - ./send.sh success $WEBHOOK_URL
   - npm run build-docs
-  - npm run build-erisplus- docs
+  - npm run build-erisplus-docs
 after_failure:
   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
   - chmod +x send.sh
@@ -15,5 +15,17 @@ deploy:
   provider: pages:git
   edge: true
   repo: nfearnley/Mei-docs
+  target_branch: develop
   deploy_key: $GITHUB_DOCS_TOKEN
   local_dir: jsdocs
+  on:
+    branch: develop
+deploy:
+  provider: pages:git
+  edge: true
+  repo: nfearnley/Mei-docs
+  target_branch: master
+  deploy_key: $GITHUB_DOCS_TOKEN
+  local_dir: jsdocs
+  on:
+    branch: master
