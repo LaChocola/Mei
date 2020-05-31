@@ -12,7 +12,7 @@ after_failure:
   - chmod +x send.sh
   - ./send.sh failure $WEBHOOK_URL
 deploy:
-  - provider: pages:git
+  - provider: pages
     skip_cleanup: true
     keep_history: true
     repo: nfearnley/Mei-docs
@@ -21,7 +21,7 @@ deploy:
     local_dir: jsdocs
     on:
       branch: develop
-  - provider: pages:git
+  - provider: pages
     skip_cleanup: true
     keep_history: true
     repo: nfearnley/Mei-docs
