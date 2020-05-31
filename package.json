@@ -65,7 +65,9 @@
     "node": ">=10.0.0 <12.0.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build-docs": "git rm -rf jsdocs; jsdoc -c jsdoc.json",
+    "build-erisplus-docs": "git rm -rf erisplus/docs; jsdoc -c erisplus/jsdoc.json"
   },
   "keywords": [
     "Discord",
