@@ -19,7 +19,7 @@ deploy:
     repo: nfearnley/Mei-docs
     target_branch: develop
     github_token: $GITHUB_TOKEN
-    local_dir: jsdocs
+    local_dir: docs
     on:
       branch: develop
   - provider: pages
@@ -28,6 +28,6 @@ deploy:
     repo: nfearnley/Mei-docs
     target_branch: master
     github_token: $GITHUB_TOKEN
-    local_dir: jsdocs
+    local_dir: docs
     on:
       branch: master

@@ -1,3 +1,9 @@
+# generated docs
+/docs/erisplus/
+/docs/api/
+/docs/commands/
+
+# configuration
 etc/config.json
 db/data.json
 db/servers.json
@@ -22,5 +28,3 @@ node_modules
 *.njsproj
 *.code-workspace
 /coverage
-/erisplus/docs/
-/jsdocs/

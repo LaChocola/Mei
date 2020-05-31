@@ -15,7 +15,7 @@
   "opts": {
     "template": "node_modules/docdash",
     "recurse": true,
-    "destination": "./jsdocs/",
+    "destination": "docs/api",
     "readme": "./README.md"
   },
   "docdash": {
@@ -43,6 +43,12 @@
         "target": "_blank",
         "class": "menu-item",
         "id": "github_link"
+      },
+      "Eris Plus": {
+        "href": "../erisplus/index.html",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "erisplus_link"
       }
     }
   }

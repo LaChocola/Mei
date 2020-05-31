@@ -15,7 +15,7 @@
   "opts": {
     "template": "node_modules/docdash",
     "recurse": false,
-    "destination": "erisplus/docs/",
+    "destination": "docs/erisplus",
     "readme": "erisplus/README.md"
   },
   "docdash": {
@@ -35,6 +35,12 @@
         "target": "_blank",
         "class": "menu-item",
         "id": "eris_link"
+      },
+      "Mei": {
+        "href": "../api/index.html",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "mei_link"
       }
     }
   }
