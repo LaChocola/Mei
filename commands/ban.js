@@ -10,7 +10,7 @@ module.exports = {
 
         var argsArray = args.split(" ").filter(a => a);
 
-        await misc.updateGuild(m, guildsdata);
+        await misc.updateGuild(m.channel, m.guild, guildsdata);
 
         var memberIsMod = misc.isMod(m.member, m.guild, guildsdata[m.guild.id]);
         var hasPerms = misc.hasSomePerms(m.member, ["administrator", "banMembers"]);

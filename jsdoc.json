@@ -1,0 +1,49 @@
+{
+  "source": {
+    "include": ["."],
+    "includePattern": ".js$",
+    "excludePattern": "(^|\\/|\\\\)(node_modules|docs|jsdocs|erisplus)(\\/|\\\\)"
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true,
+    "name": "Mei"
+  },
+  "opts": {
+    "template": "node_modules/docdash",
+    "recurse": true,
+    "destination": "./jsdocs/",
+    "readme": "./readme.md"
+  },
+  "docdash": {
+    "openGraph": {
+      "title": "Mei",
+      "type": "website",
+      "image": "https://cdn.discordapp.com/avatars/309220487957839872/daf1c46f5798c2ec3cd12a6e129fbd2c.png?size=128",
+      "site_name": "Mei",
+      "url": "https://chocola.codes/mei"
+    },
+    "meta": {
+      "title": "Mei",
+      "description": "Mei discord bot",
+      "keyword": "Mei,discord,bot,giantess,chocola"
+    },
+    "menu": {
+      "Website": {
+        "href": "https://chocola.codes",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "website_link"
+      },
+      "Github": {
+        "href": "https://github.com/LaChocola/Mei",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "github_link"
+      }
+    }
+  }
+}

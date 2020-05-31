@@ -55,7 +55,7 @@ module.exports = {
 
         var guildsdata = await serversdb.load();
 
-        await misc.updateGuild(m, guildsdata);
+        await misc.updateGuild(m.channel, m.guild, guildsdata);
 
         // If a number is included in args, delete that many message
         var intArg = argsArray.find(arg => misc.isNum(arg));

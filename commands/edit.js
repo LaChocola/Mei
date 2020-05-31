@@ -47,7 +47,7 @@ module.exports = {
         });
 
         // Update guild data
-        await misc.updateGuild(m, guildsdata);
+        await misc.updateGuild(m.channel, m.guild, guildsdata);
 
         // Check is user is a mod
         var memberIsMod = misc.isMod(m.member, m.guild, guildsdata[guild.id]);

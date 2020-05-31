@@ -1,0 +1,41 @@
+{
+  "source": {
+    "include": ["erisplus"],
+    "includePattern": ".js$",
+    "excludePattern": "(^|\\/|\\\\)erisplus(\\/|\\\\)docs(\\/|\\\\)"
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true,
+    "name": "Eris Plus"
+  },
+  "opts": {
+    "template": "node_modules/docdash",
+    "recurse": false,
+    "destination": "erisplus/docs/",
+    "readme": "erisplus/README.md"
+  },
+  "docdash": {
+    "openGraph": {
+      "title": "Eris Plus",
+      "type": "website",
+      "site_name": "Eris Plus"
+    },
+    "meta": {
+      "title": "Eris Plus",
+      "description": "Eris Plus",
+      "keyword": "eris,discord,bot"
+    },
+    "menu": {
+      "Eris": {
+        "href": "https://github.com/abalabahaha/eris",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "eris_link"
+      }
+    }
+  }
+}

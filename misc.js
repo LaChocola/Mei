@@ -1,24 +1,56 @@
 "use strict";
 
+/**
+ * Misc utilities module
+ * @module misc
+ */
+
 const escapeStringRegexp = require("escape-string-regexp");
 
 const ids = require("./ids");
 const serversdb = require("./servers");
 
+/**
+ * Return a promise that resolves after a delay in milliseconds
+ * @memberof module:misc
+ * @function
+ * @param {number} ms Delay in milliseconds
+ * @returns {Promise}
+ */
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Misc functions
+/**
+ * Choose a random option from an array of options
+ * @memberof module:misc
+ * @function
+ * @param {Array} arr Array of options to choose from
+ * @returns {any}
+ */
 function choose(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
+/**
+ * Choose a hand emoji with a random skin-tone
+ * @memberof module:misc
+ * @function
+ * @returns {String}
+ */
 function chooseHand() {
     var hands = [":ok_hand::skin-tone-1:", ":ok_hand::skin-tone-2:", ":ok_hand::skin-tone-3:", ":ok_hand::skin-tone-4:", ":ok_hand::skin-tone-5:", ":ok_hand:"];
-    return choose(hands);
+    return misc.choose(hands);
 }
 
+/**
+ * Split an array into even sized chunks
+ * @memberof module:misc
+ * @function
+ * @param {Array} arr
+ * @param {Number} chunkSize
+ * @returns {Array.<Array>}
+ */
 function chunkArray(arr, chunkSize) {
     var chunkCount = Math.ceil(arr.length / chunkSize);
     // eslint-disable-next-line no-unused-vars
@@ -28,21 +60,38 @@ function chunkArray(arr, chunkSize) {
     });
 }
 
+/**
+ * @memberof module:misc
+ * @function
+ * @returns {String}
+ */
 function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-}
+};
 
+/**
+ * 
+ * @memberof module:misc
+ * @function
+ * @returns {Member}
+ */
 function chooseMember(members) {
     var choices = members.filter(m =>
         !m.bot
         && m.status !== "offline");
 
-    var member = choose(choices);
+    var member = misc.choose(choices);
 
     return member && member.id;
-}
+};
 
-// Find the id of a mentioned user
+// 
+/**
+ * Find the id of a mentioned user
+ * @memberof module:misc
+ * @function
+ * @returns {String}
+ */
 function getMentionedId(m, args) {
     var mentionedId = m.mentions[0] && m.mentions[0].id;
     if (mentionedId) {
@@ -58,16 +107,33 @@ function getMentionedId(m, args) {
     }
 
     return undefined;
-}
+};
 
+/**
+ * 
+ * @memberof module:misc
+ * @function
+ * @returns {Boolean}
+ */
 function isObject(value) {
     return value && typeof value === "object" && value.constructor === Object;
-}
+};
 
+/**
+ * 
+ * @memberof module:misc
+ * @function
+ * @returns {Boolean}
+ */
 function isString(value) {
     return typeof value === "string" || value instanceof String;
-}
+};
 
+/**
+ * 
+ * @function
+ * @returns {Boolean}
+ */
 function isNum(num) {
     if (typeof num === "number") {
         return num - num === 0;
@@ -76,27 +142,50 @@ function isNum(num) {
         return Number.isFinite ? Number.isFinite(+num) : isFinite(+num);
     }
     return false;
-}
+};
 
+/**
+ * 
+ * @memberof module:misc
+ * @function
+ * @returns {Number}
+ */
 function toNum(num) {
-    if (!isNum(num)) {
+    if (!misc.isNum(num)) {
         return NaN;
     }
     return Number(num);
-}
+};
 
-// Because javascript bit-wise operations are limited to 32 bits :P
+/**
+ * Because javascript bit-wise operations are limited to 32 bits :P
+ * @memberof module:misc
+ * @function
+ * @returns {Number}
+ */
 function leftShift(n, s) {
     return n * (2 ** s);
-}
+};
 
+/**
+ * 
+ * @memberof module:misc
+ * @function
+ * @returns {Number}
+ */
 function timestampToSnowflake(t) {
     var epoch = 1420070400000;
     var dateFieldOffset = 22;
-    var snowflake = leftShift(t - epoch, dateFieldOffset);
+    var snowflake = misc.leftShift(t - epoch, dateFieldOffset);
     return snowflake;
-}
+};
 
+/**
+ * 
+ * @memberof module:misc
+ * @function
+ * @returns {Array.<Array>}
+ */
 function splitArray(arr, predicate) {
     var trueArr = [];
     var falseArr = [];
@@ -109,41 +198,54 @@ function splitArray(arr, predicate) {
         }
     });
     return [trueArr, falseArr];
-}
+};
 
+/**
+ * 
+ * @memberof module:misc
+ * @function
+ * @returns {Promise}
+ */
 function deleteIn(timeout) {
     return async function(sentMsg) {
-        await delay(timeout);
+        await misc.delay(timeout);
         sentMsg.delete("Timeout");
     };
-}
+};
 
-async function updateGuild(m, guildsdata) {
+/**
+ * Update guild data if it has changed
+ * @memberof module:misc
+ * @function
+ * @param {Eris.Channel} channel
+ * @param {Object} guildsdata
+ */
+async function updateGuild(channel, guild, guildsdata) {
     var changed = false;
 
     // Add guild if missing
-    if (!guildsdata[m.guild.id]) {
-        guildsdata[m.guild.id] = {
-            name: m.guild.name,
-            owner: m.guild.ownerID
+    if (!guildsdata[guild.id]) {
+        guildsdata[guild.id] = {
+            name: guild.name,
+            owner: guild.ownerID
         };
-        await m.reply(`Server: ${m.guild.name} added to database. Populating information ${chooseHand()}`, 5000);
+        await channel.send(`Server: ${guild.name} added to database. Populating information ${misc.chooseHand()}`, 5000);
         changed = true;
     }
 
-    var guilddata = guildsdata[m.guild.id];
+    var guilddata = guildsdata[guild.id];
 
     // Update guild owner, if changed
-    if (guilddata.owner !== m.guild.ownerID) {
-        await m.reply("New server owner detected, updating database.", 5000);
-        guilddata.owner = m.guild.ownerID;
+    if (guilddata.owner !== guild.ownerID) {
+        await channel.send("New server owner detected, updating database.", 5000);
+        guilddata.owner = guild.ownerID;
         changed = true;
     }
 
     // Update guild name, if changed
-    if (guilddata.name !== m.guild.name) {
-        await m.reply("New server name detected, updating database.", 5000);
-        guilddata.name = m.guild.name;
+    if (guilddata.name !== guild.name) {
+        await channel.send("New server name detected, updating database.", 5000);
+        guilddata.name = guild.name;
         changed = true;
     }
 
@@ -151,15 +253,32 @@ async function updateGuild(m, guildsdata) {
     if (changed) {
         await serversdb.save(guildsdata);
     }
-}
+};
 
+/**
+ * Check if a member has at least on of the specified permissions
+ * @memberof module:misc
+ * @function
+ * @param {Eris.Member} member
+ * @param {Array.<String>} permlist
+ * @returns {Boolean}
+ */
 function hasSomePerms(member, permlist) {
     var hasPerm = permlist.some(function(perm) {
         return member.permission.has(perm);
     });
     return hasPerm;
-}
+};
 
+/**
+ * Check if a member is has mod privileges in a guild
+ * @memberof module:misc
+ * @function
+ * @param {Eris.Member} member
+ * @param {Eris.Guild} guild
+ * @param {Object} guilddata
+ * @returns {Boolean}
+ */
 function isMod(member, guild, guilddata) {
     if (!guilddata) {
         guilddata = {};
@@ -193,13 +312,27 @@ function isMod(member, guild, guilddata) {
 
     // member is not a mod
     return false;
-}
+};
 
+/**
+ * Return a copy of an array with all duplicate values removed
+ * @memberof module:misc
+ * @function
+ * @param {Array} items
+ * @returns {Array}
+ */
 function unique(items) {
     return [...new Set(items)];
-}
+};
 
-// Split a string by spaces, up to a limit number of times (default unlimited)
+/**
+ * Split a string by spaces, up to a limit number of times
+ * @memberof module:misc
+ * @function
+ * @param {String} s String to split
+ * @param {String} [limit] Number of times to split the string, defaults to unlimited
+ * @returns {String}
+ */
 function splitBySpace(s, limit) {
     s = s.trim();
     var parts;
@@ -218,7 +351,7 @@ function splitBySpace(s, limit) {
     return parts;
 }
 
-module.exports = {
+var misc = module.exports = {
     choose,
     chooseHand,
     chunkArray,

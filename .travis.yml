@@ -9,3 +9,9 @@ after_failure:
   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
   - chmod +x send.sh
   - ./send.sh failure $WEBHOOK_URL
+deploy:
+  provider: pages:git
+  edge: true
+  repo: nfearnley/Mei-docs
+  deploy_key: $GITHUB_DOCS_TOKEN
+  local_dir: jsdocs

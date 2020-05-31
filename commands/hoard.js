@@ -226,8 +226,10 @@ module.exports = {
                 try {
                     await m.reply({
                         content: `Here is your hoard file as of right now. You have **${y}** active hoards, with **${eLength}** items total. (This message will self destruct in 60 seconds)`,
-                        file: exports,
-                        name: `${id} Hoard Export (${new Date().toLocaleString().split(",")[0]}).html`
+                        file: {
+                            file: exports,
+                            name: `${id} Hoard Export (${new Date().toLocaleString().split(",")[0]}).html`
+                        }
                     }, 60000, true);
                 }
                 catch(err) {
