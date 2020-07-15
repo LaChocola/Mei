@@ -8,5 +8,5 @@ test("!suggest", async function() {
 
     await suggest.main(bot, m, args, prefix);
 
-    expect(bot.createMessage).toBeCalledWith("658894691311550474", "Please add your suggestion. i.e. ``!suggest 'You were smushed by XXX when she forgot to check her seat before sitting down'``, but maybe not that short :P");
+    expect(m.reply).toBeCalledWith("Please add your suggestion. i.e. ``!suggest 'You were smushed by XXX when she forgot to check her seat before sitting down'``, but maybe not that short :P", 30000, true);
 });
