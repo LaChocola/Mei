@@ -28,3 +28,4 @@ node_modules
 *.njsproj
 *.code-workspace
 /coverage
+/ffmpeg.exe
