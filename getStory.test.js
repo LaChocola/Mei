@@ -21,16 +21,9 @@ function getm(options) {
         member: {
             nick: "author_nickname"
         },
-        channel: {
-            nsfw: false
-        },
         mentions: [
         ]
     };
-
-    if (options.channel && options.channel.nsfw !== undefined) {
-        m.channel.nsfw = options.channel.nsfw;
-    }
 
     return m;
 }
@@ -45,10 +38,9 @@ describe("Gentle Responses", function() {
         var args = "";
         var command = "g";
         var type = "gentle";
-        var isNSFW = false;
         var responseColor = 0xFF00DC;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xFF00DC);
         expect(story.embed.title).toBe(":question: Random");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -60,10 +52,9 @@ describe("Gentle Responses", function() {
         var args = "butt";
         var command = "g";
         var type = "gentle";
-        var isNSFW = false;
         var responseColor = 0xFF00DC;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xFF00DC);
         expect(story.embed.title).toBe(":peach: butt");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -75,10 +66,9 @@ describe("Gentle Responses", function() {
         var args = "length";
         var command = "g";
         var type = "gentle";
-        var isNSFW = false;
         var responseColor = 0xFF00DC;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xA260F6);
         expect(story.embed.description).toMatch(/\*\*Names available: \*\*\d+.*/);
     });
@@ -88,10 +78,9 @@ describe("Gentle Responses", function() {
         var args = "someone";
         var command = "g";
         var type = "gentle";
-        var isNSFW = false;
         var responseColor = 0xFF00DC;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xFF00DC);
         expect(story.embed.title).toBe(":question: Random");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -103,10 +92,9 @@ describe("Gentle Responses", function() {
         var args = "victim";
         var command = "g";
         var type = "gentle";
-        var isNSFW = false;
         var responseColor = 0xFF00DC;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xFF00DC);
         expect(story.embed.title).toBe(":question: Random");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -118,10 +106,9 @@ describe("Gentle Responses", function() {
         var args = "Samus";
         var command = "g";
         var type = "gentle";
-        var isNSFW = false;
         var responseColor = 0xFF00DC;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xFF00DC);
         expect(story.embed.title).toBe(":question: Random");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -131,14 +118,13 @@ describe("Gentle Responses", function() {
 
 describe("Violent Responses", function() {
     test("!v", async function() {
-        var m = getm({ channel: { nsfw: true } });
+        var m = getm();
         var args = "";
         var command = "v";
         var type = "violent";
-        var isNSFW = true;
         var responseColor = 0xA260F6;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xA260F6);
         expect(story.embed.title).toBe(":question: Random");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -146,14 +132,13 @@ describe("Violent Responses", function() {
     });
 
     test("!v [subtype]", async function() {
-        var m = getm({ channel: { nsfw: true } });
+        var m = getm();
         var args = "butt";
         var command = "v";
         var type = "violent";
-        var isNSFW = true;
         var responseColor = 0xA260F6;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xA260F6);
         expect(story.embed.title).toBe(":peach: butt");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -161,27 +146,25 @@ describe("Violent Responses", function() {
     });
 
     test("!v length", async function() {
-        var m = getm({ channel: { nsfw: true } });
+        var m = getm();
         var args = "length";
         var command = "v";
         var type = "violent";
-        var isNSFW = true;
         var responseColor = 0xA260F6;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xA260F6);
         expect(story.embed.description).toMatch(/\*\*Names available: \*\*\d+.*/);
     });
 
     test("!v someone", async function() {
-        var m = getm({ channel: { nsfw: true } });
+        var m = getm();
         var args = "someone";
         var command = "v";
         var type = "violent";
-        var isNSFW = true;
         var responseColor = 0xA260F6;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xA260F6);
         expect(story.embed.title).toBe(":question: Random");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -189,14 +172,13 @@ describe("Violent Responses", function() {
     });
 
     test("!v [user]", async function() {
-        var m = getm({ channel: { nsfw: true } });
+        var m = getm();
         var args = "victim";
         var command = "v";
         var type = "violent";
-        var isNSFW = true;
         var responseColor = 0xA260F6;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xA260F6);
         expect(story.embed.title).toBe(":question: Random");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -204,14 +186,13 @@ describe("Violent Responses", function() {
     });
 
     test("!v [giantess]", async function() {
-        var m = getm({ channel: { nsfw: true } });
+        var m = getm();
         var args = "Samus";
         var command = "v";
         var type = "violent";
-        var isNSFW = true;
         var responseColor = 0xA260F6;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xA260F6);
         expect(story.embed.title).toBe(":question: Random");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -221,14 +202,13 @@ describe("Violent Responses", function() {
 
 describe("TF Responses", function() {
     test("!tf", async function() {
-        var m = getm({ channel: { nsfw: true } });
+        var m = getm();
         var args = "";
         var command = "tf";
         var type = "tf";
-        var isNSFW = true;
         var responseColor = 0x00FF8F;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0x00FF8F);
         expect(story.embed.title).toBe(":question: Random");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -236,14 +216,13 @@ describe("TF Responses", function() {
     });
 
     test("!tf [subtype]", async function() {
-        var m = getm({ channel: { nsfw: true } });
+        var m = getm();
         var args = "butt";
         var command = "tf";
         var type = "tf";
-        var isNSFW = true;
         var responseColor = 0x00FF8F;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0x00FF8F);
         expect(story.embed.title).toBe(":peach: butt");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -251,27 +230,25 @@ describe("TF Responses", function() {
     });
 
     test("!tf length", async function() {
-        var m = getm({ channel: { nsfw: true } });
+        var m = getm();
         var args = "length";
         var command = "tf";
         var type = "tf";
-        var isNSFW = true;
         var responseColor = 0x00FF8F;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0xA260F6);
         expect(story.embed.description).toMatch(/\*\*Names available: \*\*\d+.*/);
     });
 
     test("!tf someone", async function() {
-        var m = getm({ channel: { nsfw: true } });
+        var m = getm();
         var args = "someone";
         var command = "tf";
         var type = "tf";
-        var isNSFW = true;
         var responseColor = 0x00FF8F;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0x00FF8F);
         expect(story.embed.title).toBe(":question: Random");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -279,14 +256,13 @@ describe("TF Responses", function() {
     });
 
     test("!tf [user]", async function() {
-        var m = getm({ channel: { nsfw: true } });
+        var m = getm();
         var args = "victim";
         var command = "tf";
         var type = "tf";
-        var isNSFW = true;
         var responseColor = 0x00FF8F;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0x00FF8F);
         expect(story.embed.title).toBe(":question: Random");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
@@ -294,14 +270,13 @@ describe("TF Responses", function() {
     });
 
     test("!tf [giantess]", async function() {
-        var m = getm({ channel: { nsfw: true } });
+        var m = getm();
         var args = "Samus";
         var command = "tf";
         var type = "tf";
-        var isNSFW = true;
         var responseColor = 0x00FF8F;
 
-        var story = await getStory(m, args, command, type, isNSFW, responseColor);
+        var story = await getStory(m, args, command, type, responseColor);
         expect(story.embed.color).toBe(0x00FF8F);
         expect(story.embed.title).toBe(":question: Random");
         expect(story.embed.description).toMatch(/<@161027274764713984>, .*/);
