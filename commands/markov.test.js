@@ -8,5 +8,5 @@ test("!markov", async function() {
 
     await markov.main(bot, m, args, prefix);
 
-    expect(bot.createMessage).toBeCalledWith(m.channel.id, "That user does not have enough messages to make a markov");
+    expect(m.reply).toBeCalledWith("That user does not have enough messages to make a markov", 5000);
 });
