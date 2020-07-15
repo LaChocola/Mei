@@ -41,17 +41,12 @@ module.exports = {
                 "Roses are red\nfuck me ;)"
             ];
             var response = misc.choose(responses);
-            bot.createMessage(m.channel.id, response).then((msg) => {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                }, 5000);
-            });
+            m.reply(response, 5000, true);
             return;
         }
 
         var result = await runEval(bot, m, args, isAdmin);
-        bot.createMessage(m.channel.id, "`" + result + "`");
+        m.reply("`" + result + "`");
         console.log(result);
     },
     help: "Just don't",
