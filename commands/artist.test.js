@@ -10,5 +10,5 @@ test("!artist", async function() {
 
     await artist.main(bot, m, args, prefix);
 
-    expect(bot.createMessage).toBeCalledWith("658894691311550474", "I could find any links for **Natalie** :(");
+    expect(m.reply).toBeCalledWith("I could find any links for **Natalie** :(", 10000, true);
 });

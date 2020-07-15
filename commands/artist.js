@@ -47,44 +47,24 @@ module.exports = {
                 incoming = split2;
             }
             if (peopledata.people[id].links[incoming[0]]) {
-                bot.createMessage(m.channel.id, incoming[0] + " has already been added, silly~").then((msg) => {
-                    return setTimeout(function() {
-                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    }, 10000);
-                });
+                m.reply(incoming[0] + " has already been added, silly~", 10000, true);
                 return;
             }
             else {
                 if (incoming.length > 2) {
-                    bot.createMessage(m.channel.id, "You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`" + prefix + "artist add Patreon <https://patreon.com/Chocola>`").then((msg) => {
-                        return setTimeout(function() {
-                            bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                            bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                        }, 15000);
-                    });
+                    m.reply("You should only be adding the name and the like, any other format is not supported. \n\nValid Example:\n`" + prefix + "artist add Patreon <https://patreon.com/Chocola>`", 15000, true);
                     return;
                 }
                 peopledata.people[id].links[incoming[0]] = incoming[1];
                 await peopledb.save(peopledata);
-                bot.createMessage(m.channel.id, "Added **" + incoming[0] + "** " + chooseHand()).then((msg) => {
-                    return setTimeout(function() {
-                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    }, 5000);
-                });
+                m.reply("Added **" + incoming[0] + "** " + chooseHand(), 5000, true);
                 return;
             }
         }
 
         if (args.includes("remove")) {
             if (mentioned.id !== m.author.id) {
-                bot.createMessage(m.channel.id, "Okay....but that isn't you").then((msg) => {
-                    return setTimeout(function() {
-                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    }, 5000);
-                });
+                m.reply("Okay....but that isn't you", 5000, true);
                 return;
             }
             let split1 = name1.replace(/remove /i, "").replace(": ", " ").split(" ");
@@ -97,32 +77,17 @@ module.exports = {
             if (peopledata.people[id].links[incoming[0]]) {
                 delete peopledata.people[id].links[incoming[0]];
                 await peopledb.save(peopledata);
-                bot.createMessage(m.channel.id, "Removed: **" + incoming[0] + ":** from your links " + chooseHand()).then((msg) => {
-                    return setTimeout(function() {
-                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    }, 5000);
-                });
+                m.reply("Removed: **" + incoming[0] + ":** from your links " + chooseHand(), 5000, true);
                 return;
             }
             else {
-                bot.createMessage(m.channel.id, "Sorry, I couldn't find** " + incoming[0] + "** in your links").then((msg) => {
-                    return setTimeout(function() {
-                        bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                        bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    }, 10000);
-                });
+                m.reply("Sorry, I couldn't find** " + incoming[0] + "** in your links", 10000, true);
                 return;
             }
         }
 
         if (Object.keys(peopledata.people[id].links).length === 0) {
-            bot.createMessage(m.channel.id, "I could find any links for **" + name + "** :(").then((msg) => {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                }, 10000);
-            });
+            m.reply("I could find any links for **" + name + "** :(", 10000, true);
             return;
         }
         else {
@@ -130,7 +95,7 @@ module.exports = {
             Object.keys(links).forEach(function(key) {
                 linkArray.push(key + ": " + links[key] + "\n");
             });
-            bot.createMessage(m.channel.id, {
+            m.reply({
                 content: "",
                 embed: {
                     color: 0xA260F6,
