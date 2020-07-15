@@ -323,15 +323,11 @@ async function generateLewdMessage(smallid, bigname, guildid, type, subtype) {
     return smallname + lewdmessage;
 }
 
-async function getStory(m, args, command, type, isNSFW, responseColor) {
+async function getStory(m, args, command, type, responseColor) {
     var guildid = m.guild.id;
     var guildMembers = m.guild.members;
     var author = m.author;
     var authorNick = m.member && m.member.nick || m.author.username;
-
-    if (isNSFW && !m.channel.nsfw) {
-        return "This command can only be used in NSFW channels";
-    }
 
     args = args.toLowerCase();
     var argLength = args.includes("length");
