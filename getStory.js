@@ -97,7 +97,6 @@ async function getDefaultGTSNames(guildid) {
 
 async function getCustomGTSNames(uid) {
     var data = await peopledb.load();
-    // TODO: This doesn't load data? It won't actually have updated user data.
     return data.people[uid]
         && data.people[uid].names
         && Object.keys(data.people[uid].names) || [];
