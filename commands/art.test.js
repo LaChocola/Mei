@@ -4,7 +4,6 @@ const art = require("./art");
 
 jest.mock("../servers");
 
-// TODO: Test does not exit correctly
 // Stub test to be expanded on later
 test("!art", async function() {
     var { bot, m, args, prefix } = setupCmd("art");
