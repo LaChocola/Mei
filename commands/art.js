@@ -14,21 +14,11 @@ module.exports = {
             guildsdata[guild.id] = {};
             guildsdata[guild.id].name = guild.name;
             guildsdata[guild.id].owner = guild.ownerID;
-            bot.createMessage(m.channel.id, `Server: ${guild.name} added to database. Populating information ${chooseHand()}`).then(function(msg) {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                }, 5000);
-            });
+            m.reply(`Server: ${guild.name} added to database. Populating information ${chooseHand()}`, 5000, true);
             await serversdb.save(guildsdata);
         }
         if (!guildsdata[guild.id].art) {
-            bot.createMessage(m.channel.id, `An art channel has not been set up for this server. Please have a mod add one using the command: \`${prefix}edit art add #channel\``).then(function(msg) {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                }, 10000);
-            });
+            m.reply(`An art channel has not been set up for this server. Please have a mod add one using the command: \`${prefix}edit art add #channel\``, 10000, true);
             return;
         }
         var index = 5000;
@@ -38,33 +28,19 @@ module.exports = {
         var channel = guildsdata[guild.id].art;
         channel = bot.getChannel(channel);
         if (guildsdata[guild.id].art && !channel) {
-            bot.createMessage(m.channel.id, `The selected art channel, <#${guildsdata[guild.id].art}>, has either been deleted, or I no longer have access to it. Please set the art channel to an existing channel that I have access to.`).then(function(msg) {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                }, 15000);
-            });
+            m.reply(`The selected art channel, <#${guildsdata[guild.id].art}>, has either been deleted, or I no longer have access to it. Please set the art channel to an existing channel that I have access to.`, 15000, true);
             return;
         }
         var cName = channel.name;
         var gName = channel.guild.name;
         var icon = channel.guild.iconURL || null;
         if (channel.nsfw && !m.channel.nsfw) {
-            bot.createMessage(m.channel.id, `The selected art channel, <#${channel.id}>, is an nsfw channel, and this channel is not. Please either use this command in an nsfw channel, or set the art channel to a non-nsfw channel`).then(function(msg) {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                }, 10000);
-            });
+            m.reply(`The selected art channel, <#${channel.id}>, is an nsfw channel, and this channel is not. Please either use this command in an nsfw channel, or set the art channel to a non-nsfw channel`, 10000, true);
             return;
         }
         channel = channel.id;
         if (index > 7000) {
-            bot.createMessage(m.channel.id, "I can't grab more than 7000 messages in any channel. Setting limit to 7000").then(function(msg) {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                }, 5000);
-            });
+            m.reply("I can't grab more than 7000 messages in any channel. Setting limit to 7000", 5000);
             index = 7000;
         }
         await bot.sendChannelTyping(m.channel.id);
@@ -91,12 +67,7 @@ module.exports = {
         var chosen = list[number];
         console.log(chosen);
         if (!chosen) {
-            bot.createMessage(m.channel.id, `No art was found within the last \`${index}\` messages. Please try again using more messages`).then(function(msg) {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                }, 5000);
-            });
+            m.reply(`No art was found within the last \`${index}\` messages. Please try again using more messages`, 5000, true);
             return;
         }
         var author = m.channel.guild.members.get(chosen[1][0]) || m.channel.guild.members.get(chosen[1][0]) || bot.users.get(chosen[1][0]);
@@ -121,7 +92,7 @@ module.exports = {
                     }
                 }
             };
-            bot.createMessage(m.channel.id, data);
+            m.reply(data);
             return;
         }
         else {
@@ -143,7 +114,7 @@ module.exports = {
                     }
                 }
             };
-            bot.createMessage(m.channel.id, data);
+            m.reply(data);
         }
         return;
     },
