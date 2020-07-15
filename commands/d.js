@@ -5,12 +5,7 @@ module.exports = {
     main: async function(bot, m, args, prefix) {
         var cleanArgs = m.content.replace(`${prefix}d `, "");
         if (cleanArgs.split("|").length > 2) {
-            bot.createMessage(m.channel.id, "You are onle able to roll 2 dice at once. Please use the following format: `" + prefix + "d 1d20 | 2d10` to roll multiple dice.").then((msg) => {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                }, 15000);
-            });
+            m.reply("You are onle able to roll 2 dice at once. Please use the following format: `" + prefix + "d 1d20 | 2d10` to roll multiple dice.", 15000, true);
             return;
         }
         if (cleanArgs.split("|")[1]) {
@@ -27,30 +22,15 @@ module.exports = {
             amount = amount.trim();
         }
         if (+dice < 0 || +amount < 0 || (args2 && +dice2 < 0 || args2 && +amount2 < 0)) {
-            bot.createMessage(m.channel.id, "No negative numbers are allowed. Please put the roll in the format of `" + prefix + "d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.").then((msg) => {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                }, 15000);
-            });
+            m.reply("No negative numbers are allowed. Please put the roll in the format of `" + prefix + "d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.", 15000, true);
             return;
         }
         if (!+dice || !+amount || (args2 && !+dice2 || args2 && !+amount2)) {
-            bot.createMessage(m.channel.id, "Please put the roll in the format of `" + prefix + "d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.").then((msg) => {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                }, 15000);
-            });
+            m.reply("Please put the roll in the format of `" + prefix + "d 1d20`. where `1` is the number of times to roll, and `20` is the highest number possilbe on the roll.", 15000, true);
             return;
         }
         if (dice > 30 || dice2 > 30) {
-            bot.createMessage(m.channel.id, "Please roll with a smaller number of dice, or break your roll into multiple different rolls").then((msg) => {
-                return setTimeout(function() {
-                    bot.deleteMessage(m.channel.id, msg.id, "Timeout");
-                    bot.deleteMessage(m.channel.id, m.id, "Timeout");
-                }, 15000);
-            });
+            m.reply("Please roll with a smaller number of dice, or break your roll into multiple different rolls", 15000, true);
             return;
         }
         var rolls = [];
@@ -81,7 +61,7 @@ module.exports = {
                 "inline": "true"
             });
         }
-        bot.createMessage(m.channel.id, { embed: msg });
+        m.reply({ embed: msg });
     },
     help: "Dice rolling. `[prefix]d 2d20` or `[prefix]d 3d20 | 2d10` for dfferent values"
 };
