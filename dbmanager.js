@@ -9,6 +9,7 @@ const ids = require("./ids");
 const dbprefix = "./db/";
 const backupprefix = "../../backup/Mei/db/";
 var lock = new AsyncLock();
+var cachedData = {};
 
 function getdbpath(dbname) {
     return `${dbprefix}${dbname}.json`;
@@ -40,6 +41,9 @@ async function loadFrom(path) {
 
 // Load a db by name
 async function load(dbname) {
+    if (cachedData[dbname] !== undefined) {
+        return cachedData[dbname];
+    }
     var dbpath = getdbpath(dbname);
     var backupath = getbackuppath(dbname);
     var data;
@@ -60,6 +64,7 @@ async function load(dbname) {
     if (!data) {
         throw "Unable to load db";
     }
+    cachedData[dbname] = data;
     return data;
 }
 
@@ -69,6 +74,7 @@ async function save(dbname, data) {
     await lock.acquire(dbpath, async function() {
         await fs.writeFile(dbpath, JSON.stringify(data, null, "\t"));
     });
+    cachedData[dbname] = data;
 }
 
 module.exports = {
