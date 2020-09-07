@@ -18,7 +18,7 @@
     "eris": "^0.11.2",
     "escape-string-regexp": "^3.0.0",
     "haikudos": "^1.0.7",
-    "jimp": "^0.10.3",
+    "jimp": "^0.16.1",
     "markov-generator": "^1.2.2",
     "node-schedule": "^1.3.2",
     "ordinal": "^1.0.3",
