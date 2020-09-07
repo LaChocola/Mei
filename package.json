@@ -30,7 +30,6 @@
     "random-puppy": "^1.1.0",
     "request-promise": "^4.2.5",
     "require-reload": "^0.2.2",
-    "safe-eval": "^0.4.1",
     "sagiri": "^3.0.5",
     "timeago.js": "^4.0.2",
     "timediff": "^1.1.1",
