@@ -58,7 +58,7 @@ module.exports = {
                 return;
             }
 
-            var rolesKeys = Object.keys(data[guild.id].roles);
+            var rolesKeys = Object.keys(data[guild.id].roles).sort();
             for (var role of rolesKeys) {
                 const exists = guild.roles.find(r => r.id === data[guild.id].roles[role]);
                 if (!exists) {
