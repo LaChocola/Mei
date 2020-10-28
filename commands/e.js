@@ -6,6 +6,9 @@ const unidecode = require("unidecode");
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
+        bot.createMessage(m.channel.id, "Sorry. This command is currently unavailable. The api used to make this command possible is no longer available. Sorry for any inconvenience.");
+        return;
+        /*
         if (m.content === `${prefix}e`) {
             bot.createMessage(m.channel.id, "Please add something i.e. ``" + prefix+ "e Whats cooler than being cool``");
             return;
@@ -24,6 +27,8 @@ module.exports = {
             .join(" ");
 
         bot.createMessage(m.channel.id, emojis);
+        */
     },
-    help: "Emojify text"
+    help: "Emojify text",
+    hidden: true
 };
