@@ -215,48 +215,142 @@ module.exports = {
                 var time = Date.now();
                 var placeHolder =
                     `<!DOCTYPE html>
-            <html>
-            <style>
-              body {
-                background-color: black;
-                color: white;
-              }
-              p {
-                font-family: "Trebuchet MS", Helvetica, sans-serif;
-                font-size: 1.5vh;
-              }
-              body {
-                background-color: black;
-                color: white;
-              }
-              footer{
-                display: table;
-                text-align: center;
-                margin-left: auto;
-                margin-right: auto;
-                margin-top:2em;
-              }
-              .hover_img a { }
-              .hover_img a span { position:fixed; right: 0; top: 0; height: 100vh; max-width: 70vw; display:none; z-index:99; }
-              .hover_img a span img { height: 100%; max-width: 100%; }
-              .hover_img a:hover span { display:block; }
-            </style>
-            <head>
-              <title>Hoard Export</title>
-            </head>
-            <body>
-              <h2>Hoard Items:</h2>
-              XXX
-              <footer>
-                <p text-align="center"; font-size=0.5vh>
-                This site was automatically generated with the contents of your hoard by Mei#4980 on <script type="text/javascript">document.write(new Date(${time}).toDateString());</script>. Links are all hosted by Discord, and as such may not be available after they are deleted from their servers, if you find any dead links, that is likely the cause. If you enjoy this bot and her features, feel free to check out the links below to join my discord, see Mei's source code, become a patreon, or send a tip through paypal. Any help is much appreciated, and thanks for using my bot. Hope you Enjoy~
-                </p>
-                <p text-align="center"; font-size=0.5vh>
-                  ©Chocola <script type="text/javascript">document.write(new Date().getFullYear());</script> | <a href="https://github.com/LaChocola/Mei">Github</a> <a href="https://discord.gg/HmatPXj">Discord</a> <a href="https://www.patreon.com/Chocola">Patreon</a> <a href="https://www.paypal.me/ChocolaCodes">Paypal</a>
-                </p>
-              </footer>
-            </body>
-            </html>`;
+                    <html>
+                        <head>
+                            <title>Hoard Export</title>
+                            <meta charset="UTF-8">
+                        </head>
+                        <script>
+                            function myFunction(type) {
+                                if (document.body.classList.item(0)) {
+                                    document.body.classList.remove(document.body.classList.item(0))
+                                }
+                                document.body.classList.add(type+'-mode')
+                            }
+                        </script>
+                        <style>
+                        .black-mode {
+                            background-color: #000000;
+                            color: #ffffff;
+                        }
+                        .dark-mode {
+                            background-color: #23272a;
+                            color: #99aab5;
+                            
+                        }
+                        .dark-mode a:link {
+                            color:#18B0D6;
+                        }
+                        .dark-mode a:visited {
+                            color:#a260f6;
+                        }
+                        .dark-mode a:hover {
+                            background-color:#484f55;
+                        }
+                        .dark-mode a:active {
+                            color:#f81df8;
+                            text-decoration: solid;
+                        }
+                        .light-mode {
+                            background-color: #C9CBCD;
+                            color: #23272a;
+                        }
+                        .light-mode a:link {
+                            color:#1880d6;
+                        }
+                        .light-mode a:visited {
+                            color:#a260f6;
+                        }
+                        .light-mode a:hover {
+                            background-color:#c0c0c0;
+                        }
+                        .light-mode a:active {
+                            color:#f81df8;
+                            text-decoration: solid;
+                        }
+                        .white-mode {
+                            background-color: #ffffff;
+                            color: #000000;
+                        }
+                    
+                        .switch-toggle {
+                            float: left;
+                            background: #242729;
+                        }
+                        .switch-toggle input {
+                            position: absolute;
+                            opacity: 0;
+                        }
+                        .switch-toggle input + label {
+                            padding: 7px;
+                            float:left;
+                            color: #fff;
+                            cursor: pointer;
+                        }
+                        .switch-toggle input:checked + label {
+                            background: #a260f6;
+                        }
+                        p {
+                            font-family: "Trebuchet MS", Helvetica, sans-serif;
+                            font-size: 0.75em;
+                            margin-left: 1em;
+                        }
+                        footer {
+                            display: table;
+                            text-align: center;
+                            margin-left: auto;
+                            margin-right: auto;
+                            margin-top: 2em;
+                        }
+                        .hover_img a span {
+                            position: fixed;
+                            right: 0;
+                            top: 0;
+                            height: 100vh;
+                            max-width: 70vw;
+                            display: none;
+                            z-index: 99;
+                        }
+                        .hover_img a span img {
+                            height: 100%;
+                            max-width: 100%;
+                        }
+                        .hover_img a:hover span {
+                            display: block;
+                        }
+                        </style>
+                        <body>
+                        <script>myFunction('dark')</script>
+                        <div class="switch-toggle switch-3 switch-candy" >
+                    
+                            <input id="black" name="state-d" type="radio" />
+                            <label for="black" onclick="myFunction('black')">black</label>
+                        
+                            <input id="dark" name="state-d" type="radio" checked="checked" />
+                            <label for="dark" onclick="myFunction('dark')">dark</label>
+                        
+                            <input id="light" name="state-d" type="radio" />
+                            <label for="light" onclick="myFunction('light')">light</label>
+                    
+                            <input id="white" name="state-d" type="radio" />
+                            <label for="white" onclick="myFunction('white')">white</label>
+                        
+                        </div>
+                        <br>
+                        <h2>Hoard Items:</h2>
+                        <div title="items">
+                        XXX
+                        </div>
+                        <footer>
+                            <p text-align="center"; font-size=0.5vh>
+                            This site was automatically generated with the contents of your hoard by Mei#4980 on <script type="text/javascript">document.write(new Date(${time}).toDateString());</script>. Links are all hosted by Discord, and as such may not be available after they are deleted from their servers, if you find any dead links, that is likely the cause. If you enjoy this bot and her features, feel free to check out the links below to join my discord, see Mei's source code, become a Patron, or send a tip through Paypal. Any help is much appreciated, and thanks for using my bot. Hope you Enjoy~
+                            </p>
+                            <p text-align="center"; font-size=0.5vh>
+                            ©Chocola <script type="text/javascript">document.write(new Date().getFullYear());</script> | <a href="https://github.com/LaChocola/Mei">Github</a> <a href="https://discord.gg/HmatPXj">Discord</a> <a href="https://www.patreon.com/Chocola">Patreon</a> <a href="https://www.paypal.me/ChocolaCodes">Paypal</a>
+                            </p>
+                        </footer>
+                        </body>
+                    </html>`;
                 var exports = [];
                 let hoard = data.people[id].hoard;
                 var keys = Object.keys(data.people[id].hoard);
@@ -393,7 +487,8 @@ module.exports = {
                     },
                     "author": {
                         "name": name,
-                        "icon_url": url
+                        "icon_url": url,
+                        "url": rando
                     },
                     "footer": {
                         "icon_url": og,
@@ -414,7 +509,8 @@ module.exports = {
                         },
                         "author": {
                             "name": name,
-                            "icon_url": url
+                            "icon_url": url,
+                            "url": imgURL[0]
                         },
                         "footer": {
                             "icon_url": og,
