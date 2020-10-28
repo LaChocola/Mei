@@ -15,6 +15,7 @@ const conf = require("./conf");
 const datadb = require("./data");
 const peopledb = require("./people");
 const serversdb = require("./servers");
+const whispersdb = require("./whispers");
 const misc = require("./misc");
 const ids = require("./ids");
 
@@ -333,6 +334,67 @@ bot.on("messageCreate", async function(m) {
 function sum(arr) {
     return arr.reduce((total, val) => total + val);
 }
+
+// whispers
+bot.on("messageCreate", async function(m) {
+    if (!m.guild) {
+        return;
+    }
+    // return if not in a guild text channel
+    if (m.channel.type != 0) {
+        return;
+    }
+    var whispers = await whispersdb.load();
+    if (!Object.keys(whispers)[m.guild.id]) {
+        return;
+    }    
+    var whisper
+    var ids = []
+    
+    for (whisper in Object.keys(whispers)) {
+        if (m.content.toLowerCase().includes(whisper.toLowerCase())) {
+            ids = ids.concat(whispers[whisper])
+        }
+    }
+    for (id in ids) {
+        var access = await m.channel.permissionOf(id).json.readMessages
+        if (access) {
+            var ears = [":ear:",":ear_tone1:",":ear_tone2:",":ear_tone3:", ":ear_tone4:",":ear_tone5:"]
+            var ear = misc.choose(ears)
+            var DMChannel = await bot.getDMChannel(id);
+            try {
+                await DMChannel.createMessage({
+                    "embed": {
+                        "title": `${ear} You hear a faint whisper, and hear a familiar term. ${whisper}`,
+                        "description": `<#${m.channel.id}> by <@${m.author.id}>. Link: https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}\n\`${m.content.replace("`","\`")}\``,
+                        "url": `<https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}>`,
+                        "color": "0xA260F6",
+                        "timestamp": m.timestamp,
+                        "footer": {
+                            "text": "Whispers~"
+                        },
+                        "author": {
+                            "name": whisper,
+                            "url": `https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}`
+                        }
+                    }
+                });
+            }
+            catch(err) {
+                if (err.code === 50007) {
+                    console.warn("WRN".black.bgYellow
+                    + " Missing Permissions to send whisper".magenta.bold
+                    + " - ".blue.bold + `${bot.users.get(id).username}#${bot.users.get(id).discriminator}` 
+                    + " > ".blue.bold + "#" + m.channel.name.green.bold
+                    + " (" + `<@${id}>`.bold.red
+                    + ")");
+                    return;
+                }
+                console.log(err);
+            }
+        }
+    }
+});
 
 // commands
 bot.on("messageCreate", async function(m) {
@@ -702,10 +764,13 @@ function getLinks(m) {
             .map(a => a.url)
             .filter(url => url);
     }
-    else if (m.embeds.length > 0 && m.embeds[0].image) {
-        links = [m.embeds[0].image.url];
+    if (m.embeds.length > 0) {
+        links = links.concat(m.embeds
+            .map(a => a.image && a.image.url)
+            .filter(url => url)
+        )
     }
-    else {
+    else if (!links) {
         links = [m.cleanContent];
     }
     return links;
