@@ -499,7 +499,7 @@ module.exports = {
 
             if (lowerargs.includes("add")) {
                 if (args.replace(/roles /i, "").replace(/add/i, "").toLowerCase().startsWith(" ")) {
-                    args = args.replace(/roles /i, "").replace(/add/i, "").toLowerCase().slice(1);
+                    lowerargs = args.replace(/roles /i, "").replace(/add/i, "").toLowerCase().slice(1);
                 }
                 const serverRoles = m.guild.roles.map(roleSearch);
                 if (serverRoles.indexOf(lowerargs) > -1) {

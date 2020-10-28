@@ -96,7 +96,8 @@ module.exports = {
                 bot.createMessage(m.channel.id, "Okay....but that isn't you");
                 return;
             }
-            let incoming = name1.replace(/\bremove\b/i, "").replace(" ", "").split("|");
+            let incoming = name1.replace(/\bremove\b/i, "").replace(" ", "").trim().split("|");
+            incoming[0] = incoming[0].trim()
             if (data.people[id].fetishes[capFirstLetter(incoming[0])]) {
                 delete data.people[id].fetishes[capFirstLetter(incoming[0])];
                 await peopledb.save(data);
@@ -123,7 +124,7 @@ module.exports = {
                 bot.createMessage(m.channel.id, "Okay....but that isn't you");
                 return;
             }
-            let incomingEntries = name1.replace(/\badd\b/i, "").replace(/^[ \t]+/, "").replace(/[ \t]+$/, "").split("|");
+            let incomingEntries = name1.replace(/\badd\b/i, "").replace(/^[ \t]+/, "").replace(/[ \t]+$/, "").trim().split("|");
             let incoming = [];
             var iterator = incomingEntries.entries();
             for (let e of iterator) {
