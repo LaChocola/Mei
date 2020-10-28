@@ -27,7 +27,8 @@ function getSubtypeAliasMap() {
         "proposal": ["proposal", "mary", "wed", "marriage"],
         "cloth": ["cloth", "panties", "panty", "clothes", "clothing", "bra", "pants", "panty", "panties", "pantie", "underwear", "thong", "thongs"],
         "toy": ["toy", "dildo", "beads", "object", "plug"],
-        "misc": ["misc", "alt", "other"]
+        "misc": ["misc", "alt", "other"],
+        "extreme": ["extreme", "ext", "scat", "bathroom", "fart", "piss", "pee", "toilet"]
     };
 
     var subtypeAliasMap = {};
@@ -41,7 +42,7 @@ function getSubtypeAliasMap() {
     return subtypeAliasMap;
 }
 
-function getSubtype(s) {
+function getSubtype(s, smallid, data) {
     var subtypeAliasMap = getSubtypeAliasMap();
     var subtypeEmojis = {
         "boob": ":melon:",
@@ -56,14 +57,28 @@ function getSubtype(s) {
         "cloth": ":shirt:",
         "toy": ":battery:",
         "misc": ":question:",
+        "extreme": ":toilet:",
         "Random": ":question:"
     };
+
+    var fetishes = (data.people[smallid] && data.people[smallid].fetishes) || undefined
+
+    var extreme = false
 
     var foundAlias = Object.keys(subtypeAliasMap).find(function(alias) {
         return s.match(new RegExp("\\b" + escapeStringRegexp(alias) + "\\b", "i"));
     });
 
     var subtype = subtypeAliasMap[foundAlias] || "Random";
+
+    if (fetishes && (fetishes["Scat"] == "like" || fetishes["Extreme"] == "like")) {
+        extreme = true
+    }
+
+    if (!extreme && subtypeAliasMap[foundAlias] == "extreme") {
+        subtype = "Random"
+    }
+
     var emoji = subtypeEmojis[subtype];
 
     return { subtype, emoji };
@@ -370,9 +385,8 @@ async function getStory(m, args, command, type, isNSFW, responseColor) {
         var names = await getAllGTSNames(smallid, guildid);
         bigNick = names.find(n => args.includes(n.toLowerCase()));
     }
-
-    var { subtype, emoji } = getSubtype(args);
-
+    var people = await peopledb.load();
+    var { subtype, emoji } = getSubtype(args, smallid, people);
     var lewdmessage = await generateLewdMessage(smallid, bigNick, guildid, type, subtype);
 
     var data = await datadb.load();
