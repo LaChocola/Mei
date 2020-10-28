@@ -72,7 +72,7 @@ module.exports = {
         var hasPerms = misc.hasSomePerms(m.member, ["administrator", "manageMessages"]);
         if (!(memberIsMod || hasPerms)) {
             var rejectResponses = [
-                "Are you a real villan?",
+                "Are you a real villain?",
                 "Have you ever caught a good guy?\nLike a real super hero?",
                 "Have you ever tried a disguise?",
                 "What are you doing?!?!?!",
