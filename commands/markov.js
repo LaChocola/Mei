@@ -63,7 +63,7 @@ module.exports = {
             input: messages,
             minLength: 6
         });
-        var sentence = markov.makeChain();
+        var sentence = await markov.makeChain(); 
         if (!messages || !sentence) {
             bot.createMessage(m.channel.id, "Sorry, I couldn't find any messages from **" + mentioned.username + "** in `" + m.channel.name + "`").then(function(msg) {
                 return setTimeout(function() {
