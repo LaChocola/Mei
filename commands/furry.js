@@ -1,7 +1,7 @@
 "use strict";
 
 const Jimp = require("jimp");
-
+const unidecode = require("unidecode");
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
@@ -26,7 +26,7 @@ module.exports = {
             const bg = await Jimp.read("https://owo.whats-th.is/b3e262.jpg");
             const nameFont = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
             bg.clone()
-                .print(nameFont, 550, 145, name)
+                .print(nameFont, 550, 145, unidecode(name))
                 .getBuffer(Jimp.MIME_PNG, function(err, buffer) {
                     bot.createMessage(m.channel.id, "Weirdo", {
                         file: buffer,

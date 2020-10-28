@@ -6,12 +6,13 @@ const Jimp = require("jimp");
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
-        var names = m.cleanContent.replace(new RegExp("^[ " + escapeStringRegexp(prefix) + "ship\\t]+[^a-zA-Z]+|[" + escapeStringRegexp(prefix) + "ship \\t]+[^a-zA-Z]$|" + escapeStringRegexp(prefix) + "ship", "i"), "").split(" | ");
-        if (names[0] !== undefined) {
-            if (names[0].startsWith("@")) {
-                names[0] = names[0].slice(1);
+        var names = m.cleanContent.replace(new RegExp("^[ " + escapeStringRegexp(prefix) + "ship\\t]+[^a-zA-Z]+|[" + escapeStringRegexp(prefix) + "ship \\t]+[^a-zA-Z]$|" + escapeStringRegexp(prefix) + "ship", "i"), "").split(" | ").map(a => a.trim());
+
+        for (var name of names) {
+            if (name.startsWith("@")) {
+                name = name.slice(1);
             }
-            var name1 = names[0];
+            var name1 = name;
 
             var member = m.guild.members.find(function(member) {
                 var memberName = member.nick || member.username;
@@ -19,57 +20,38 @@ module.exports = {
             });
 
             if (member !== undefined) {
-                if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(u => u.id === member.id)) {
+                if (m.mentions.length > -1 && m.mentions.length < 11 && !m.mentions.find(u => u.id === member.id)) {
                     m.mentions.push(member.user);
                 }
             }
-
-            if (names[1] !== undefined) {
-                if (names[1].startsWith("@")) {
-                    names[1] = names[1].slice(1);
-                }
-                var name2 = names[1];
-
-                var member2 = m.guild.members.find(function(member) {
-                    var memberName = member.nick || member.username;
-                    return memberName.toLowerCase() === name2.toLowerCase();
-                });
-
-                if (member2 !== undefined) {
-                    if (m.mentions.length > -1 && m.mentions.length < 2 && !m.mentions.find(u => u.id === member2.id)) {
-                        m.mentions.push(member2.user);
-                    }
-                }
-
-            }
         }
-
+ 
         if (args.toLowerCase().includes("random")) {
             var random = m.channel.guild.members.filter(m => !m.bot && m.status !== "offline");
             var random1 = random[Math.floor(Math.random() * random.length)];
             random = random[Math.floor(Math.random() * random.length)];
-            m.mentions.push(random, random1);
+            m.mentions.push(random.user, random1.user);
         }
 
         if (m.mentions.length === 1) { // If the user mentions only one person assign a random match
             var random = m.channel.guild.members.filter(m => !m.bot && m.status !== "offline");
             random = random[Math.floor(Math.random() * random.length)];
-            m.mentions.push(random);
+            m.mentions.push(random.user);
         }
 
-        if (m.mentions.length !== 2) { // If there are not 2 people mentioned,
+        if (m.mentions.length == 0) { // If there are no people mentioned,
             bot.createMessage(m.channel.id, "Ship someone together~\n\nUse `" + prefix + "ship <@user1> <@user2>` or `" + prefix + "ship username1 | username2`");
             return;
         }
 
-        if (m.mentions[0].avatar == null) { // If there is no avatar
-            bot.createMessage(m.channel.id, `Lovely shi... Where's your avatar? You should add one ${m.mentions[0].username} ;-; *winks*\n~~no avatar/profile pic was detected~~`);
-            return;
-        }
-
-        if (m.mentions[1].avatar == null) { // If there is no avatar
-            bot.createMessage(m.channel.id, `Lovely shi... Where's your avatar? You should add one ${m.mentions[1].username} *winks*\n~~no avatar/profile pic was detected~~`);
-            return;
+        for (var mention of m.mentions) {
+            if (mention.User) {
+                m.mentions[m.mentions.indexOf(mention)] = mention.user
+            }
+            if (mention == null || mention.avatar == null) {
+                bot.createMessage(m.channel.id, `Lovely shi... Where's your avatar? You should add one ${mention.username} ;-; *winks*\n~~no avatar/profile pic was detected~~`);
+                return;
+            };
         }
 
         bot.sendChannelTyping(m.channel.id).then(async function() {
@@ -82,6 +64,7 @@ module.exports = {
                 }
                 var firstPart = firstName.substring(0, firstName.length / 2);
                 var lastPart = lastName.substring(lastName.length / 2);
+                var sName = []
                 var bg = await Jimp.read("https://cdn.discordapp.com/attachments/356012822016163841/560222284606865450/b3e61a.png");
                 var file = "ship.png";
                 // Planned support for gif avatars
@@ -94,8 +77,9 @@ module.exports = {
                 const user1 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.${m.mentions[0].avatarURL.includes(".gif") ? "gif" : "png"}?size=1024`);
                 const user2 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[1].id}/${m.mentions[1].avatar}.${m.mentions[0].avatarURL.includes(".gif") ? "gif" : "png"}?size=1024`);
                 */
-                const user1 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`); // TODO Repalce with gif supporting detection
-                const user2 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[1].id}/${m.mentions[1].avatar}.png?size=1024`); // TODO Repalce with gif supporting detection
+                const user1 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`); // TODO Replace with gif supporting detection
+                const user2 = await Jimp.read(`https://images.discordapp.net/avatars/${m.mentions[1].id}/${m.mentions[1].avatar}.png?size=1024`); // TODO Replace with gif supporting detection
+                var bglen = 128 * (m.mentions.length + 1)
                 user1.resize(128, 128);
                 user2.resize(128, 128);
                 bg.resize(384, 128).composite(user1, 0, 0).composite(user2, 256, 0).getBuffer(Jimp.AUTO, function(err, buffer) {

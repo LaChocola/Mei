@@ -1,6 +1,7 @@
 "use strict";
 
 const Jimp = require("jimp");
+const unidecode = require("unidecode");
 
 // This version of Jimp has an alphabet I created to emulated the DeviantArt username font 'Trebuchet' and timestamp font
 // They are both available at https://github.com/LaChocola/Mei/tree/master/db/fonts
@@ -17,16 +18,14 @@ module.exports = {
         var member = m.guild.members.find(isThisUsernameThatUsername);
         var mentioned = m.mentions[0] || member || m.author;
         var name = m.channel.guild.members.get(mentioned.id).nick || mentioned.username;
+        name = unidecode(name)
         if (name.length > 13) {
             name = name.slice(0, 11) + "..";
         }
-        var pic = `https://images.discordapp.net/avatars/${m.author.id}/${m.author.avatar}.png?size=1024`;
+        var pic = `https://images.discordapp.net/avatars/${mentioned.id}/${mentioned.avatar}.png?size=1024`;
         if (pic.includes("null")) {
             bot.createMessage(m.channel.id, "You need an avatar to use this command");
             return;
-        }
-        if (m.mentions.length === 1) {
-            pic = `https://images.discordapp.net/avatars/${m.mentions[0].id}/${m.mentions[0].avatar}.png?size=1024`;
         }
         else if (m.mentions.length > 1) {
             bot.createMessage(m.channel.id, "This Command can't be used with more than one mention");
