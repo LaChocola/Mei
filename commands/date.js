@@ -1,10 +1,12 @@
 "use strict";
 
 const timeago = require("timeago.js");
+const peopledb = require("../people");
 
 module.exports = {
     // eslint-disable-next-line no-unused-vars
     main: async function(bot, m, args, prefix) {
+        var data = await peopledb.load();
         var name1 = m.cleanContent.replace(prefix, "").replace(/date/i, "").trim();
         function isThisUsernameThatUsername(member) {
             var memberName = member.nick || member.username;
@@ -44,6 +46,9 @@ module.exports = {
             mentioned = await m.channel.guild.members.get(id);
         }
         var date = mentioned.joinedAt;
+        if (data.people[id] && data.people[id].dates) {
+            date = +data.people[id].dates[m.channel.guild.id] || date
+        }
         var date2 = mentioned.createdAt;
         var name = mentioned.nick || mentioned.username;
         var length = new Date(date).toDateString();
